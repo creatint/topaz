@@ -42,13 +42,11 @@ VuMeterView::VuMeterView(scenic::ViewContext view_context, async::Loop* loop)
   });
 }
 
-bool VuMeterView::OnInputEvent(fuchsia::ui::input::InputEvent event) {
-  bool handled = false;
+void VuMeterView::OnInputEvent(fuchsia::ui::input::InputEvent event) {
   if (event.is_pointer()) {
     auto& pointer = event.pointer();
     if (pointer.phase == fuchsia::ui::input::PointerEventPhase::DOWN) {
       ToggleStartStop();
-      handled = true;
     }
   } else if (event.is_keyboard()) {
     auto& keyboard = event.keyboard();
@@ -56,18 +54,15 @@ bool VuMeterView::OnInputEvent(fuchsia::ui::input::InputEvent event) {
       switch (keyboard.hid_usage) {
         case HID_USAGE_KEY_SPACE:
           ToggleStartStop();
-          handled = true;
           break;
         case HID_USAGE_KEY_Q:
           Shutdown();
-          handled = true;
           break;
         default:
           break;
       }
     }
   }
-  return handled;
 }
 
 void VuMeterView::OnSceneInvalidated(
@@ -87,21 +82,21 @@ void VuMeterView::DrawContent(SkCanvas* canvas) {
 
   paint.setColor(SK_ColorCYAN);
   canvas->drawCircle(
-      logical_size().width / 3.0f, logical_size().height / 2,
-      (fast_left_.current() * logical_size().width / 2) / kVuFullWidth, paint);
+      logical_size().x / 3.0f, logical_size().y / 2,
+      (fast_left_.current() * logical_size().x / 2) / kVuFullWidth, paint);
   canvas->drawCircle(
-      2.0f * logical_size().width / 3.0f, logical_size().height / 2,
-      (fast_right_.current() * logical_size().width / 2) / kVuFullWidth, paint);
+      2.0f * logical_size().x / 3.0f, logical_size().y / 2,
+      (fast_right_.current() * logical_size().x / 2) / kVuFullWidth, paint);
 
   paint.setColor(SK_ColorWHITE);
   paint.setStyle(SkPaint::kStroke_Style);
   paint.setStrokeWidth(SkIntToScalar(3));
   canvas->drawCircle(
-      logical_size().width / 3.0f, logical_size().height / 2,
-      (slow_left_.current() * logical_size().width / 2) / kVuFullWidth, paint);
+      logical_size().x / 3.0f, logical_size().y / 2,
+      (slow_left_.current() * logical_size().x / 2) / kVuFullWidth, paint);
   canvas->drawCircle(
-      2.0f * logical_size().width / 3.0f, logical_size().height / 2,
-      (slow_right_.current() * logical_size().width / 2) / kVuFullWidth, paint);
+      2.0f * logical_size().x / 3.0f, logical_size().y / 2,
+      (slow_right_.current() * logical_size().x / 2) / kVuFullWidth, paint);
 }
 
 void VuMeterView::SendCaptureRequest() {

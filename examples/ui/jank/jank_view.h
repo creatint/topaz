@@ -5,8 +5,9 @@
 #ifndef TOPAZ_EXAMPLES_UI_JANK_JANK_VIEW_H_
 #define TOPAZ_EXAMPLES_UI_JANK_JANK_VIEW_H_
 
-#include "examples/ui/lib/skia_font_loader.h"
-#include "examples/ui/lib/skia_view.h"
+#include <fuchsia/fonts/cpp/fidl.h>
+#include <fuchsia/images/cpp/fidl.h>
+#include <fuchsia/ui/input/cpp/fidl.h>
 #include "lib/fxl/macros.h"
 #include "lib/fxl/time/time_point.h"
 #include "third_party/skia/include/core/SkCanvas.h"
@@ -14,6 +15,9 @@
 #include "third_party/skia/include/core/SkFont.h"
 #include "third_party/skia/include/core/SkRect.h"
 #include "third_party/skia/include/core/SkTypeface.h"
+
+#include "examples/ui/lib/skia_font_loader.h"
+#include "examples/ui/lib/skia_view.h"
 
 namespace examples {
 
@@ -37,10 +41,10 @@ class JankView : public scenic::SkiaView {
 
   static const Button kButtons[];
 
-  // |scenic::V1BaseView|
+  // |scenic::BaseView|
   void OnSceneInvalidated(
       fuchsia::images::PresentationInfo presentation_info) override;
-  bool OnInputEvent(fuchsia::ui::input::InputEvent event) override;
+  void OnInputEvent(fuchsia::ui::input::InputEvent event) override;
 
   void DrawContent(SkCanvas* canvas);
   void DrawButton(SkCanvas* canvas, const char* label, const SkRect& bounds);

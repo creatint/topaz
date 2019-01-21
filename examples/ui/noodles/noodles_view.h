@@ -5,6 +5,7 @@
 #ifndef TOPAZ_EXAMPLES_UI_NOODLES_NOODLES_VIEW_H_
 #define TOPAZ_EXAMPLES_UI_NOODLES_NOODLES_VIEW_H_
 
+#include <fuchsia/images/cpp/fidl.h>
 #include "examples/ui/lib/skia_view.h"
 #include "lib/fxl/macros.h"
 
@@ -21,7 +22,7 @@ class NoodlesView : public scenic::SkiaView {
   ~NoodlesView() override = default;
 
  private:
-  // |scenic::V1BaseView|
+  // |scenic::BaseView|
   void OnSceneInvalidated(
       fuchsia::images::PresentationInfo presentation_info) override;
 

@@ -11,8 +11,7 @@
             "fuchsia.fonts.Provider",
             "fuchsia.mediaplayer.Player",
             "fuchsia.tracelink.Registry",
-            "fuchsia.ui.scenic.Scenic",
-            "fuchsia.ui.viewsv1.ViewManager"
+            "fuchsia.ui.scenic.Scenic"
         ]
     }
 }

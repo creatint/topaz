@@ -8,7 +8,9 @@
 #include <memory>
 #include <queue>
 
+#include <fuchsia/images/cpp/fidl.h>
 #include <fuchsia/media/cpp/fidl.h>
+#include <fuchsia/ui/input/cpp/fidl.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/fzl/vmo-mapper.h>
 
@@ -48,10 +50,10 @@ class VuMeterView : public scenic::SkiaView {
     float current_ = 0;
   };
 
-  // |scenic::V1BaseView|
+  // |scenic::BaseView|
   void OnSceneInvalidated(
       fuchsia::images::PresentationInfo presentation_info) override;
-  bool OnInputEvent(fuchsia::ui::input::InputEvent event) override;
+  void OnInputEvent(fuchsia::ui::input::InputEvent event) override;
 
   // Draws the UI.
   void DrawContent(SkCanvas* canvas);

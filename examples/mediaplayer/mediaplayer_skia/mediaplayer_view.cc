@@ -16,6 +16,7 @@
 #include "lib/fxl/logging.h"
 #include "lib/media/timeline/timeline.h"
 #include "lib/media/timeline/type_converters.h"
+#include "lib/ui/scenic/cpp/view_token_pair.h"
 #include "lib/url/gurl.h"
 #include "third_party/skia/include/core/SkColor.h"
 #include "third_party/skia/include/core/SkPath.h"
@@ -23,8 +24,6 @@
 namespace examples {
 
 namespace {
-
-constexpr uint32_t kVideoChildKey = 0u;
 
 constexpr int32_t kDefaultWidth = 640;
 constexpr int32_t kDefaultHeight = 100;
@@ -54,8 +53,7 @@ bool Contains(const fuchsia::math::RectF& rect, float x, float y) {
 MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
                                  async::Loop* loop,
                                  const MediaPlayerParams& params)
-    : V1BaseView(std::move(view_context), "Media Player"),
-
+    : BaseView(std::move(view_context), "Media Player"),
       loop_(loop),
       background_node_(session()),
       controls_widget_(session()) {
@@ -65,9 +63,8 @@ MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
   scenic::Material background_material(session());
   background_material.SetColor(0x1a, 0x23, 0x7e, 0xff);  // Indigo 900
   background_node_.SetMaterial(background_material);
-  parent_node().AddChild(background_node_);
-
-  parent_node().AddChild(controls_widget_);
+  root_node().AddChild(background_node_);
+  root_node().AddChild(controls_widget_);
 
   // We start with a non-zero size so we get a progress bar regardless of
   // whether we get video.
@@ -83,19 +80,14 @@ MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
         HandleStatusChanged(status);
       };
 
-  zx::eventpair video_view_owner_token, video_view_token;
-  if (zx::eventpair::create(0u, &video_view_owner_token, &video_view_token) !=
-      ZX_OK)
-    FXL_NOTREACHED() << "failed to create tokens.";
-  player_->CreateView2(std::move(video_view_token));
+  auto view_tokens = scenic::NewViewTokenPair();
 
-  zx::eventpair video_host_import_token;
-  video_host_node_.reset(new scenic::EntityNode(session()));
-  video_host_node_->ExportAsRequest(&video_host_import_token);
-  parent_node().AddChild(*video_host_node_);
-  GetViewContainer()->AddChild2(kVideoChildKey,
-                                std::move(video_view_owner_token),
-                                std::move(video_host_import_token));
+  player_->CreateView2(std::move(view_tokens.first.value));
+
+  video_host_view_holder_ = std::make_unique<scenic::ViewHolder>(
+      session(), std::move(view_tokens.second), "Player");
+  video_host_node_ = std::make_unique<scenic::EntityNode>(session());
+  video_host_node_->Attach(*video_host_view_holder_);
 
   if (!params.url().empty()) {
     url::GURL url = url::GURL(params.url());
@@ -116,10 +108,7 @@ MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
   prev_frame_time_ = frame_time_;
 }
 
-MediaPlayerView::~MediaPlayerView() {}
-
-bool MediaPlayerView::OnInputEvent(fuchsia::ui::input::InputEvent event) {
-  bool handled = false;
+void MediaPlayerView::OnInputEvent(fuchsia::ui::input::InputEvent event) {
   if (event.is_pointer()) {
     const auto& pointer = event.pointer();
     if (pointer.phase == fuchsia::ui::input::PointerEventPhase::DOWN) {
@@ -134,8 +123,6 @@ bool MediaPlayerView::OnInputEvent(fuchsia::ui::input::InputEvent event) {
           player_->Play();
         }
       }
-
-      handled = true;
     }
   } else if (event.is_keyboard()) {
     auto& keyboard = event.keyboard();
@@ -143,23 +130,59 @@ bool MediaPlayerView::OnInputEvent(fuchsia::ui::input::InputEvent event) {
       switch (keyboard.hid_usage) {
         case HID_USAGE_KEY_SPACE:
           TogglePlayPause();
-          handled = true;
           break;
         case HID_USAGE_KEY_Q:
           loop_->Quit();
-          handled = true;
           break;
         default:
           break;
       }
     }
   }
+}
 
-  return handled;
+void MediaPlayerView::OnScenicEvent(fuchsia::ui::scenic::Event event) {
+  switch (event.Which()) {
+    case fuchsia::ui::scenic::Event::Tag::kGfx:
+      switch (event.gfx().Which()) {
+        case fuchsia::ui::gfx::Event::Tag::kViewConnected: {
+          FXL_DCHECK(video_host_view_holder_ &&
+                     event.gfx().view_connected().view_holder_id ==
+                         video_host_view_holder_->id());
+
+          root_node().AddChild(*video_host_node_);
+          Layout();
+          break;
+        }
+        case fuchsia::ui::gfx::Event::Tag::kViewDisconnected: {
+          FXL_DCHECK(video_host_view_holder_ &&
+                     event.gfx().view_disconnected().view_holder_id ==
+                         video_host_view_holder_->id());
+          FXL_LOG(ERROR) << "Video view died unexpectedly";
+
+          video_host_node_->Detach();
+          video_host_node_.reset();
+          video_host_view_holder_.reset();
+          Layout();
+          break;
+        }
+        default:
+          FXL_LOG(WARNING)
+              << "MediaPlayerView::OnScenicEvent: Got an unhandled GFX "
+                 "event.";
+          break;
+      }
+      break;
+    default:
+      FXL_DCHECK(false)
+          << "MediaPlayerView::OnScenicEvent: Got an unhandled Scenic "
+             "event.";
+      break;
+  }
 }
 
 void MediaPlayerView::OnPropertiesChanged(
-    fuchsia::ui::viewsv1::ViewProperties old_properties) {
+    fuchsia::ui::gfx::ViewProperties old_properties) {
   Layout();
 }
 
@@ -168,19 +191,17 @@ void MediaPlayerView::Layout() {
     return;
 
   // Make the background fill the space.
-  scenic::Rectangle background_shape(session(), logical_size().width,
-                                     logical_size().height);
+  scenic::Rectangle background_shape(session(), logical_size().x,
+                                     logical_size().y);
   background_node_.SetShape(background_shape);
-  background_node_.SetTranslationRH(logical_size().width * .5f,
-                                    logical_size().height * .5f,
-                                    -kBackgroundElevation);
+  background_node_.SetTranslationRH(
+      logical_size().x * .5f, logical_size().y * .5f, -kBackgroundElevation);
 
   // Compute maximum size of video content after reserving space
   // for decorations.
   fuchsia::math::SizeF max_content_size;
-  max_content_size.width = logical_size().width - kMargin * 2;
-  max_content_size.height =
-      logical_size().height - kControlsHeight - kMargin * 3;
+  max_content_size.width = logical_size().x - kMargin * 2;
+  max_content_size.height = logical_size().y - kControlsHeight - kMargin * 3;
 
   // Shrink video to fit if needed.
   uint32_t video_width =
@@ -203,8 +224,8 @@ void MediaPlayerView::Layout() {
   fuchsia::math::RectF ui_rect;
   ui_rect.width = content_rect_.width;
   ui_rect.height = content_rect_.height + kControlsHeight + kMargin;
-  ui_rect.x = (logical_size().width - ui_rect.width) / 2;
-  ui_rect.y = (logical_size().height - ui_rect.height) / 2;
+  ui_rect.x = (logical_size().x - ui_rect.width) / 2;
+  ui_rect.y = (logical_size().y - ui_rect.height) / 2;
 
   // Position the video.
   content_rect_.x = ui_rect.x;
@@ -224,12 +245,39 @@ void MediaPlayerView::Layout() {
   progress_bar_rect_.height = controls_rect_.height;
 
   // Ask the view to fill the space.
-  fuchsia::ui::viewsv1::ViewProperties view_properties;
-  view_properties.view_layout = fuchsia::ui::viewsv1::ViewLayout::New();
-  view_properties.view_layout->size.width = content_rect_.width;
-  view_properties.view_layout->size.height = content_rect_.height;
-  GetViewContainer()->SetChildProperties(
-      kVideoChildKey, fidl::MakeOptional(std::move(view_properties)));
+  if (video_host_view_holder_) {
+    fuchsia::ui::gfx::ViewProperties view_properties{
+        .bounding_box =
+            fuchsia::ui::gfx::BoundingBox{
+                .min =
+                    fuchsia::ui::gfx::vec3{
+                        .x = 0.f,
+                        .y = 0.f,
+                        .z = 0.f,
+                    },
+                .max =
+                    fuchsia::ui::gfx::vec3{
+                        .x = content_rect_.width,
+                        .y = content_rect_.height,
+                        .z = 0.f,
+                    },
+            },
+        .inset_from_min =
+            fuchsia::ui::gfx::vec3{
+                .x = 0.f,
+                .y = 0.f,
+                .z = 0.f,
+            },
+        .inset_from_max =
+            fuchsia::ui::gfx::vec3{
+                .x = 0.f,
+                .y = 0.f,
+                .z = 0.f,
+            },
+        .focus_change = false,
+    };
+    video_host_view_holder_->SetViewProperties(view_properties);
+  }
 
   InvalidateScene();
 }
@@ -271,25 +319,6 @@ void MediaPlayerView::OnSceneInvalidated(
   if (state_ == State::kPlaying) {
     InvalidateScene();
   }
-}
-
-void MediaPlayerView::OnChildAttached(
-    uint32_t child_key, fuchsia::ui::viewsv1::ViewInfo child_view_info) {
-  FXL_DCHECK(child_key == kVideoChildKey);
-
-  parent_node().AddChild(*video_host_node_);
-  Layout();
-}
-
-void MediaPlayerView::OnChildUnavailable(uint32_t child_key) {
-  FXL_DCHECK(child_key == kVideoChildKey);
-  FXL_LOG(ERROR) << "Video view died unexpectedly";
-
-  video_host_node_->Detach();
-  video_host_node_.reset();
-
-  GetViewContainer()->RemoveChild(child_key, nullptr);
-  Layout();
 }
 
 void MediaPlayerView::DrawControls(SkCanvas* canvas, const SkISize& size) {

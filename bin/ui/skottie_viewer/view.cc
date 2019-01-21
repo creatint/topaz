@@ -114,8 +114,8 @@ void View::OnSceneInvalidated(
 void View::Draw(SkCanvas* canvas) {
   FXL_DCHECK(animation_);
 
-  const auto rect = SkRect::MakeSize(
-      SkSize::Make(logical_size().width, logical_size().height));
+  const auto rect =
+      SkRect::MakeSize(SkSize::Make(logical_size().x, logical_size().y));
 
   SkAutoCanvasRestore acr(canvas, true);
   animation_->render(canvas, &rect);
