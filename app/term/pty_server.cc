@@ -5,13 +5,13 @@
 #include "topaz/app/term/pty_server.h"
 
 #include <fcntl.h>
+#include <fuchsia/hardware/pty/c/fidl.h>
 #include <lib/fdio/io.h>
 #include <lib/fdio/private.h>
 #include <lib/fdio/spawn.h>
 #include <lib/async/default.h>
 #include <poll.h>
 #include <unistd.h>
-#include <zircon/device/pty.h>
 #include <zircon/status.h>
 
 #include "lib/fxl/logging.h"
@@ -39,12 +39,15 @@ PTYServer::PTYServer() {
 PTYServer::~PTYServer() = default;
 
 void PTYServer::SetWindowSize(uint32_t width, uint32_t height) {
-  pty_window_size_t window = {
-      .width = width,
-      .height = height,
+  fuchsia_hardware_pty_WindowSize window = {
+    .width = width,
+    .height = height,
   };
 
-  ioctl_pty_set_window_size(pty_.get(), &window);
+  fdio_t* io = fdio_unsafe_fd_to_io(pty_.get());
+  zx_status_t status;
+  fuchsia_hardware_pty_DeviceSetWindowSize(fdio_unsafe_borrow_channel(io), &window, &status);
+  fdio_unsafe_release(io);
 }
 
 zx_status_t PTYServer::Run(std::vector<std::string> command,
