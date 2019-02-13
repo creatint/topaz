@@ -12,3 +12,9 @@ killall root_presenter* || true
 killall scenic* || true
 
 run_integration_tests --test_file=/pkgfs/packages/flutter_screencap_test/0/data/flutter_screencap_test.json "$@"
+
+# Destroy graphical services; other tests may try to start a separate instance
+# of Scenic but then fail if there is already an instance that owns the display.
+killall basemgr* || true
+killall root_presenter* || true
+killall scenic* || true

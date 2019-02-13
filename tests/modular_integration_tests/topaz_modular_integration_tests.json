@@ -11,8 +11,7 @@
         "--session_shell=fuchsia-pkg://fuchsia.com/dev_session_shell#meta/dev_session_shell.cmx",
         "--session_shell_args=--root_module=fuchsia-pkg://fuchsia.com/test_driver_module#meta/test_driver_module.cmx,--module_under_test_url=fuchsia-pkg://fuchsia.com/driver_example_mod#meta/driver_example_mod.cmx,--test_driver_url=fuchsia-pkg://fuchsia.com/driver_example_mod_target_tests#meta/driver_example_mod_target_tests.cmx",
         "--story_shell=fuchsia-pkg://fuchsia.com/dev_story_shell#meta/dev_story_shell.cmx"
-      ],
-      "disabled": true
+      ]
     },
     {
       "name": "slider_mod_tests",
@@ -25,8 +24,7 @@
         "--session_shell=fuchsia-pkg://fuchsia.com/dev_session_shell#meta/dev_session_shell.cmx",
         "--session_shell_args=--root_module=fuchsia-pkg://fuchsia.com/test_driver_module#meta/test_driver_module.cmx,--module_under_test_url=fuchsia-pkg://fuchsia.com/slider_mod#meta/slider_mod.cmx,--test_driver_url=fuchsia-pkg://fuchsia.com/slider_mod_tests#meta/slider_mod_tests.cmx",
         "--story_shell=fuchsia-pkg://fuchsia.com/dev_story_shell#meta/dev_story_shell.cmx"
-      ],
-      "disabled": true
+      ]
     }
   ]
 }

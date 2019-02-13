@@ -5,7 +5,7 @@
     "sandbox": {
         "features": [
             "root-ssl-certificates",
-            "system-temp"
+            "shell"
         ],
         "services": [
             "fuchsia.sys.Environment",

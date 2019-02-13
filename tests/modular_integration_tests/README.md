@@ -55,5 +55,5 @@ the following command (note that this shouldn't be run on Qemu. It _will_ crash.
 The path to this binary is also subject to change.):
 
 ```
-fx shell /pkgfs/packages/topaz_modular_integration_tests/0/bin/run_topaz_modular_integration_tests.sh
+fx shell /pkgfs/packages/topaz_modular_integration_tests/0/test/run_topaz_modular_integration_tests.sh
 ```

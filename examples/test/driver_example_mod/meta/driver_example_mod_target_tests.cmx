@@ -5,13 +5,11 @@
     "sandbox": {
         "features": [
             "root-ssl-certificates",
-            "system-temp"
+            "shell"
         ],
         "services": [
-            "fuchsia.process.Resolver",
-            "fuchsia.sys.Environment"
-        ],
-        "pkgfs": [ "packages" ],
-        "system": [ "bin" ]
+            "fuchsia.sys.Environment",
+            "fuchsia.testing.runner.TestRunner"
+        ]
     }
 }

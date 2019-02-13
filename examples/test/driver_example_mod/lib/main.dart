@@ -19,7 +19,9 @@ void main() {
   ModuleDriver driver = new ModuleDriver();
 
   driver.start().then((_) => log.fine('Mod started'),
-      onError: (Exception err) => log.warning(err));
+      onError: (Object err, StackTrace st) {
+        log.warning('ModuleDriver.start() failed:\n$err\n$st');
+      });
   DriverExampleModel model = new DriverExampleModel();
 
   runApp(

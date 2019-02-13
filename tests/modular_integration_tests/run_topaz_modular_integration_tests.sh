@@ -12,3 +12,9 @@ killall root_presenter* || true
 killall scenic* || true
 
 run_integration_tests --test_file=/pkgfs/packages/topaz_modular_integration_tests/0/data/topaz_modular_integration_tests.json "$@"
+
+# Shut down these components again to ensure ownership by the flutter_runner
+# has been relinquished.
+killall basemgr* || true
+killall root_presenter* || true
+killall scenic* || true

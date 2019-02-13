@@ -11,6 +11,9 @@ package("topaz_modular_integration_tests") {
 
   tests = [
     {
+      # The Flutter driver is only available in debug builds.
+      disabled = !is_debug
+
       name = rebase_path("run_topaz_modular_integration_tests.sh")
       dest = "run_topaz_modular_integration_tests.sh"
       environments = [

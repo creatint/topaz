@@ -239,7 +239,7 @@ template("flutter_dart_jit_component") {
   components += invoker.components
 
   if (defined(invoker.flutter_driver_extendable)) {
-    flutter_driver_extendable = invoker.flutter_driver_extendable
+    flutter_driver_extendable = invoker.flutter_driver_extendable && is_debug
   } else {
     flutter_driver_extendable = false
   }

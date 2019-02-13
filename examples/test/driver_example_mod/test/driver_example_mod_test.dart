@@ -2,25 +2,26 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:async';
-import 'dart:core';
-
+import 'package:fidl_fuchsia_testing_runner/fidl_async.dart';
 import 'package:flutter_driver/flutter_driver.dart';
+import 'package:fuchsia_modular/service_connection.dart';
 import 'package:fuchsia_remote_debug_protocol/logging.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('driver example tests', () {
     FlutterDriver driver;
+    TestRunnerProxy testRunner;
 
     setUpAll(() async {
       // TODO(DX-561): Update logging messages in
       // fuchsia_remote_debug_protocol so that this doesn't need to be set to
       // `all`.
       Logger.globalLevel = LoggingLevel.all;
+      testRunner = new TestRunnerProxy();
+      connectToEnvironmentService(testRunner);
       const Pattern isolatePattern = 'driver_example_mod';
-      // Occasionally this will crash if this delay isn't here.
-      await new Future<Null>.delayed(const Duration(milliseconds: 500));
       driver = await FlutterDriver.connect(
           fuchsiaModuleTarget: isolatePattern,
           printCommunication: true,
@@ -29,6 +30,14 @@ void main() {
 
     tearDownAll(() async {
       await driver?.close();
+      // Must be invoked before closing the connection to this interface;
+      // otherwise the TestRunner service will assume that the connection broke
+      // due to the test crashing.
+      await testRunner.done();
+    });
+
+    test('driver connection', () {
+      expect(driver, isNotNull);
     });
 
     test('add to counter. remove from counter', () async {

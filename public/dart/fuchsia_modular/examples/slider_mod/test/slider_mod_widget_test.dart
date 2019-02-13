@@ -26,8 +26,7 @@ void main() {
     // The mod under test
     const Pattern isolatePattern = 'slider_mod';
     Logger.globalLevel = LoggingLevel.all;
-    // Occasionally this will crash if this delay isn't here.
-    await new Future<Null>.delayed(const Duration(milliseconds: 500));
+
     // Creates an object you can use to search for your mod on the machine
     driver = await FlutterDriver.connect(
         fuchsiaModuleTarget: isolatePattern,
