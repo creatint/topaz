@@ -4,6 +4,7 @@
 
 import("//build/dart/dart_tool.gni")
 import("//third_party/dart/utils/compile_platform.gni")
+import("//topaz/runtime/dart/dart_kernel.gni")
 
 compile_platform("kernel_platform_files") {
   single_root_scheme = "org-dartlang-sdk"
@@ -24,13 +25,33 @@ compile_platform("kernel_platform_files") {
   ]
 }
 
+dart_kernel("framework_shim") {
+  platform_name = "flutter_runner"
+  platform_deps = [ "//topaz/runtime/flutter_runner/kernel:kernel_platform_files" ]
+  platform_path = "$root_out_dir/flutter_runner_patched_sdk"
+  disable_analysis = true
+  gen_bytecode = true
+  args = []
+
+  main_dart = "framework_shim.dart"
+  deps = [
+    "//third_party/dart-pkg/git/flutter/packages/flutter",
+  ]
+  manifest = "$target_gen_dir/framework_shim.dilpmanifest"
+}
+
 template("core_snapshot") {
   assert(defined(invoker.product),
          "core_snapshot requires 'product' to be defined")
+  assert(defined(invoker.framework),
+         "core_snapshot requires 'framework' to be defined")
 
-  product_suffix = ""
+  suffix = ""
   if (invoker.product) {
-    product_suffix = "_product"
+    suffix = "${suffix}_product"
+  }
+  if (invoker.framework) {
+    suffix = "${suffix}_framework"
   }
 
   action(target_name) {
@@ -44,15 +65,15 @@ template("core_snapshot") {
     ]
 
     vm_snapshot_data =
-        "$target_gen_dir/vm_isolate_snapshot${product_suffix}.bin"
+        "$target_gen_dir/vm_isolate_snapshot${suffix}.bin"
     vm_snapshot_instructions =
-        "$target_gen_dir/vm_snapshot_instructions${product_suffix}.bin"
+        "$target_gen_dir/vm_snapshot_instructions${suffix}.bin"
     isolate_snapshot_data =
-        "$target_gen_dir/isolate_snapshot${product_suffix}.bin"
+        "$target_gen_dir/isolate_snapshot${suffix}.bin"
     isolate_snapshot_instructions =
-        "$target_gen_dir/isolate_snapshot_instructions${product_suffix}.bin"
+        "$target_gen_dir/isolate_snapshot_instructions${suffix}.bin"
     snapshot_profile =
-        "$target_gen_dir/snapshot_profile${product_suffix}.json"
+        "$target_gen_dir/snapshot_profile${suffix}.json"
     outputs = [
       vm_snapshot_data,
       vm_snapshot_instructions,
@@ -93,13 +114,31 @@ template("core_snapshot") {
       args += [ "--enable_asserts" ]
     }
     args += [ rebase_path(platform_dill) ]
+
+    if (invoker.framework) {
+      deps += [ ":framework_shim_kernel" ]
+      inputs += [ "$target_gen_dir/framework_shim_kernel.dil" ]
+      args += [ rebase_path("$target_gen_dir/framework_shim_kernel.dil") ]
+    }
   }
 }
 
 core_snapshot("kernel_core_snapshot") {
   product = false
+  framework = false
+}
+
+core_snapshot("kernel_core_snapshot_framework") {
+  product = false
+  framework = true
 }
 
 core_snapshot("kernel_core_snapshot_product") {
   product = true
+  framework = false
+}
+
+core_snapshot("kernel_core_snapshot_product_framework") {
+  product = true
+  framework = true
 }

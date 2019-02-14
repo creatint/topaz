@@ -7,6 +7,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 
+import 'package:crypto/crypto.dart';
+
 import 'package:vm/kernel_front_end.dart'
     show createCompilerArgParser, runCompiler, successExitCode;
 
@@ -63,9 +65,9 @@ Future createManifest(
   packages.add('main');
 
   final IOSink packageManifest = new File(packageManifestFilename).openWrite();
+
   final String kernelListFilename = '$packageManifestFilename.dilplist';
   final IOSink kernelList = new File(kernelListFilename).openWrite();
-
   for (String package in packages) {
     final String filenameInPackage = '$package.dilp';
     final String filenameInBuild = '$output-$package.dilp';
@@ -73,8 +75,22 @@ Future createManifest(
         .write('data/$dataDir/$filenameInPackage=$filenameInBuild\n');
     kernelList.write('$filenameInPackage\n');
   }
+  await kernelList.close();
+
+  final String frameworkVersionFilename = '$packageManifestFilename.frameworkversion';
+  final IOSink frameworkVersion = new File(frameworkVersionFilename).openWrite();
+  for (String package in ['collection', 'flutter', 'meta', 'typed_data', 'vector_math']) {
+    Digest digest;
+    if (packages.contains(package)) {
+      final filenameInBuild = '$output-$package.dilp';
+      final bytes = await new File(filenameInBuild).readAsBytes();
+      digest = sha256.convert(bytes);
+    }
+    frameworkVersion.write('$package=$digest\n');
+  }
+  await frameworkVersion.close();
 
   packageManifest.write('data/$dataDir/app.dilplist=$kernelListFilename\n');
+  packageManifest.write('data/$dataDir/app.frameworkversion=$frameworkVersionFilename\n');
   await packageManifest.close();
-  await kernelList.close();
 }

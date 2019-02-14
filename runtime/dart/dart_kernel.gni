@@ -101,6 +101,7 @@ template("dart_kernel") {
 
         # Implicit output when using --manifest; see createManifest in compiler.dart.
         invoker.manifest + ".dilplist",
+        invoker.manifest + ".frameworkversion",
       ]
     }
 

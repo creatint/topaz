@@ -33,6 +33,7 @@ dart_tool("build_test_bootstrap") {
   deps = [
     "//third_party/dart-pkg/git/flutter/packages/flutter_tools",
     "//third_party/dart-pkg/pub/args",
+    "//third_party/dart-pkg/pub/crypto",
   ]
 }
 

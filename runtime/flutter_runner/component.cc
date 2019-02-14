@@ -21,6 +21,7 @@
 #include "lib/fsl/vmo/file.h"
 #include "lib/fsl/vmo/vector.h"
 #include "lib/fxl/command_line.h"
+#include "src/lib/files/file.h"
 #include "service_provider_dir.h"
 #include "task_observers.h"
 #include "topaz/runtime/dart/utils/handle_exception.h"
@@ -230,6 +231,32 @@ Application::Application(
       "pkg/data/isolate_core_snapshot_data.bin";
   settings_.isolate_snapshot_instr_path =
       "pkg/data/isolate_core_snapshot_instructions.bin";
+
+  {
+    // Check if we can use the snapshot with the framework already loaded.
+    std::string runner_framework;
+    std::string app_framework;
+    if (files::ReadFileToString("pkg/data/runner.frameworkversion",
+                                &runner_framework) &&
+        files::ReadFileToStringAt(application_assets_directory_.get(),
+                                  "app.frameworkversion", &app_framework) &&
+        (runner_framework.compare(app_framework) == 0)) {
+      settings_.vm_snapshot_data_path =
+          "pkg/data/framework_vm_snapshot_data.bin";
+      settings_.vm_snapshot_instr_path =
+          "pkg/data/framework_vm_snapshot_instructions.bin";
+      settings_.isolate_snapshot_data_path =
+          "pkg/data/framework_isolate_core_snapshot_data.bin";
+      settings_.isolate_snapshot_instr_path =
+          "pkg/data/framework_isolate_core_snapshot_instructions.bin";
+
+      FML_LOG(INFO) << "Using snapshot with framework for "
+                    << package.resolved_url;
+    } else {
+      FML_LOG(INFO) << "Using snapshot without framework for "
+                    << package.resolved_url;
+    }
+  }
 
 #if defined(DART_PRODUCT)
   settings_.enable_observatory = false;
