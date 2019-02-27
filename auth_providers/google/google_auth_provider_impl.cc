@@ -158,7 +158,7 @@ void GoogleAuthProviderImpl::GetPersistentCredential(
   }
   chromium::web::NavigationControllerPtr controller;
   chromium_frame_->GetNavigationController(controller.NewRequest());
-  controller->LoadUrl(url, {});
+  controller->LoadUrl2(url, chromium::web::LoadUrlParams2());
   FX_LOGF(INFO, NULL, "Loading URL: %s", url.c_str());
 
   auth_ui_context_ = auth_ui_context.Bind();
@@ -589,16 +589,18 @@ zx::eventpair GoogleAuthProviderImpl::SetupChromium() {
   auto context_provider =
       context_->ConnectToEnvironmentService<chromium::web::ContextProvider>();
 
-  zx_handle_t incoming_service_clone =
-      fdio_service_clone(context_->incoming_services()->directory().get());
-  if (incoming_service_clone == ZX_HANDLE_INVALID) {
+  fidl::InterfaceHandle<fuchsia::io::Directory> incoming_service_clone =
+      fidl::InterfaceHandle<fuchsia::io::Directory>(
+          zx::channel(fdio_service_clone(
+              context_->incoming_services()->directory().get())));
+  if (!incoming_service_clone.is_valid()) {
     FX_LOG(ERROR, NULL, "Failed to clone service directory");
     return zx::eventpair();
   }
 
-  chromium::web::CreateContextParams params;
-  params.service_directory = zx::channel(incoming_service_clone);
-  context_provider->Create(std::move(params), chromium_context_.NewRequest());
+  chromium::web::CreateContextParams2 params;
+  params.set_service_directory(std::move(incoming_service_clone));
+  context_provider->Create2(std::move(params), chromium_context_.NewRequest());
   chromium_context_->CreateFrame(chromium_frame_.NewRequest());
 
   // Bind ourselves as a NavigationEventObserver on this frame.
