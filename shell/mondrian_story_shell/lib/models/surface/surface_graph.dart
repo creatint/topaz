@@ -6,7 +6,7 @@ import 'dart:developer' show Timeline;
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_modular/fidl.dart';
-import 'package:fidl_fuchsia_ui_gfx/fidl.dart' show ImportToken;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_viewsv1token/fidl.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
@@ -217,12 +217,15 @@ class SurfaceGraph extends Model {
   bool isDismissed(String id) => _dismissedSurfaces.contains(id);
 
   void connectView(String id, InterfaceHandle<ViewOwner> viewOwner) {
-    connectViewFromImportToken(id,
-        ImportToken(value: EventPair(viewOwner.passChannel().passHandle())));
+    connectViewFromViewHolderToken(
+        id,
+        ViewHolderToken(
+            value: EventPair(viewOwner.passChannel().passHandle())));
   }
 
   /// Used to update a [Surface] with a live ChildViewConnection
-  void connectViewFromImportToken(String id, ImportToken viewHolderToken) {
+  void connectViewFromViewHolderToken(
+      String id, ViewHolderToken viewHolderToken) {
     final Surface surface = _surfaces[id];
     if (surface != null) {
       if (surface.connection != null) {
@@ -232,8 +235,8 @@ class SurfaceGraph extends Model {
       }
       log.fine('connectView $surface');
       surface
-        ..connection = ChildViewConnection.fromViewHolderToken(
-          viewHolderToken.value,
+        ..connection = ChildViewConnection(
+          viewHolderToken,
           onAvailable: (ChildViewConnection connection) {
             Timeline.instantSync('surface available', arguments: {'id': '$id'});
 

@@ -2,14 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_auth/fidl.dart';
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_viewsv1token/fidl.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fidl/fidl.dart';
 import 'package:zircon/zircon.dart';
 
 /// Called when an authentication overlay needs to be started.
-typedef OnStartOverlay = void Function(EventPair viewHolderToken);
+typedef OnStartOverlay = void Function(ViewHolderToken viewHolderToken);
 
 /// An [AuthenticationUiContext] which calls its callbacks to show an overlay.
 class AuthenticationUiContextImpl extends AuthenticationUiContext {
@@ -33,7 +34,7 @@ class AuthenticationUiContextImpl extends AuthenticationUiContext {
   @override
   // ignore: override_on_non_overriding_method
   void startOverlay2(EventPair viewHolderToken) =>
-      _onStartOverlay?.call(viewHolderToken);
+      _onStartOverlay?.call(ViewHolderToken(value: viewHolderToken));
 
   @override
   void stopOverlay() => _onStopOverlay?.call();

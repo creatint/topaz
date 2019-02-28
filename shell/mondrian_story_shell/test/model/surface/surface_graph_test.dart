@@ -5,7 +5,7 @@
 import 'dart:convert';
 
 import 'package:fidl_fuchsia_modular/fidl.dart';
-import 'package:fidl_fuchsia_ui_gfx/fidl.dart' show ImportToken;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mondrian/models/surface/surface.dart';
 import 'package:mondrian/models/surface/surface_graph.dart';
@@ -24,7 +24,8 @@ void main() {
     );
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromImportToken('value', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.focusStack.length, 1);
     String encoded = json.encode(graph);
@@ -53,8 +54,8 @@ void main() {
     );
     graph
       ..addSurface('parent', properties, '', relation, null, '')
-      ..connectViewFromImportToken(
-          'parent', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'parent', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('parent');
     expect(graph.focusStack.length, 1);
 
@@ -66,7 +67,8 @@ void main() {
     );
     graph
       ..addSurface('child', properties, 'parent', relation, null, '')
-      ..connectViewFromImportToken('child', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('child');
     expect(graph.focusStack.length, 2);
 
@@ -108,8 +110,8 @@ void main() {
     );
     graph
       ..addSurface('parent', properties, '', relation, null, '')
-      ..connectViewFromImportToken(
-          'parent', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'parent', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('parent');
     expect(graph.focusStack.length, 1);
 
@@ -121,7 +123,8 @@ void main() {
     );
     graph
       ..addSurface('child1', properties, 'parent', relation, null, '')
-      ..connectViewFromImportToken('child', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('child1');
     expect(graph.focusStack.length, 2);
 
@@ -133,8 +136,8 @@ void main() {
     );
     graph
       ..addSurface('child2', properties, 'parent', relation, null, '')
-      ..connectViewFromImportToken(
-          'child2', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'child2', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('child2');
     expect(graph.focusStack.length, 3);
 
@@ -183,14 +186,14 @@ void main() {
     graph
       ..addSurface('parent', new SurfaceProperties(), '', new SurfaceRelation(),
           null, '')
-      ..connectViewFromImportToken(
-          'parent', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'parent', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('parent')
       // Now add external surface
       ..addSurface(
           'external', externalProp, 'parent', new SurfaceRelation(), null, '')
-      ..connectViewFromImportToken(
-          'external', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'external', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('external')
       // Now dismiss the external surface
       ..dismissSurface('external');
@@ -209,13 +212,15 @@ void main() {
     );
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromImportToken('value', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.treeSize, 2);
 
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromImportToken('value', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.treeSize, 2);
   });
@@ -231,21 +236,22 @@ void main() {
     );
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromImportToken('value', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.treeSize, 2);
 
     graph
       ..addSurface('value.child', properties, '', relation, null, '')
-      ..connectViewFromImportToken(
-          'value.child', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value.child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value.child');
     expect(graph.treeSize, 3);
 
     graph
       ..addSurface('value.child', properties, '', relation, null, '')
-      ..connectViewFromImportToken(
-          'value.child', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value.child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value.child');
     expect(graph.treeSize, 3);
   });
@@ -261,21 +267,22 @@ void main() {
     );
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromImportToken('value', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.treeSize, 2);
 
     graph
       ..addSurface('value.child', properties, '', relation, null, '')
-      ..connectViewFromImportToken(
-          'value.child', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value.child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value.child');
     expect(graph.treeSize, 3);
 
     graph
       ..addSurface('value.child', properties, '', relation, null, '')
-      ..connectViewFromImportToken(
-          'value.child', ImportToken(value: EventPair(null)))
+      ..connectViewFromViewHolderToken(
+          'value.child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value.child');
     expect(graph.treeSize, 3);
   });

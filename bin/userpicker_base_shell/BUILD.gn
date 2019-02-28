@@ -52,7 +52,7 @@ flutter_app("userpicker_base_shell") {
     "//sdk/fidl/fuchsia.modular.auth",
     "//sdk/fidl/fuchsia.timezone",
     "//sdk/fidl/fuchsia.ui.input",
-    "//sdk/fidl/fuchsia.ui.viewsv1",
+    "//sdk/fidl/fuchsia.ui.views",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/http",
     "//topaz/lib/base_shell:lib.base_shell",
@@ -60,7 +60,7 @@ flutter_app("userpicker_base_shell") {
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia_scenic_flutter",
     "//topaz/public/dart/widgets:lib.widgets",
-    "//topaz/public/lib/device/dart",
     "//topaz/public/lib/app/dart",
+    "//topaz/public/lib/device/dart",
   ]
 }

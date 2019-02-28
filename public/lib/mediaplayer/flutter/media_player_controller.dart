@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:fidl_fuchsia_math/fidl.dart' as geom;
 import 'package:fidl_fuchsia_mediaplayer/fidl.dart';
 import 'package:fidl_fuchsia_sys/fidl.dart';
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
@@ -52,7 +53,7 @@ class MediaPlayerController extends AudioPlayerController
       player.createView2(viewTokens.first);
 
       _videoViewConnection =
-          ChildViewConnection.fromViewHolderToken(viewTokens.second);
+          ChildViewConnection(ViewHolderToken(value: viewTokens.second));
     }
   }
 

@@ -12,6 +12,7 @@ import 'package:fidl_fuchsia_mem/fidl.dart' as fuchsia_mem;
 import 'package:fidl_fuchsia_modular/fidl.dart';
 import 'package:fidl_fuchsia_ui_gfx/fidl.dart' show ImportToken;
 import 'package:fidl_fuchsia_ui_policy/fidl.dart';
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:fuchsia/fuchsia.dart' show exit;
 import 'package:lib.app.dart/logging.dart';
 import 'package:lib.story_shell/common.dart';
@@ -67,30 +68,13 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
     _lifecycleBinding.bind(this, request);
   }
 
-  /// DEPRECATED.  For transition purposes only, please use addSurface2 until
-  /// Views 2 transition is complete.
-  @override
-  void addSurface(
-    ViewConnection viewConnection,
-    SurfaceInfo surfaceInfo,
-  ) {
-    addSurface2(
-        ViewConnection2(
-            surfaceId: viewConnection.surfaceId,
-            viewHolderToken: ImportToken(
-                value: EventPair(
-                    viewConnection.owner.passChannel().passHandle()))),
-        surfaceInfo);
-  }
-
   /// Introduce a new Surface and corresponding [ImportToken] to the current
   /// Story.
   ///
   /// The Surface may have a relationship with its parent surface.
   @override
-  // ignore: override_on_non_overriding_method
-  void addSurface2(
-    ViewConnection2 viewConnection,
+  void addSurface(
+    ViewConnection viewConnection,
     SurfaceInfo surfaceInfo,
   ) {
     trace(
@@ -113,8 +97,11 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
             ? surfaceInfo.moduleManifest.placeholderColor
             : '',
       )
-      ..connectViewFromImportToken(
-          viewConnection.surfaceId, viewConnection.viewHolderToken);
+      ..connectViewFromViewHolderToken(
+          viewConnection.surfaceId,
+          ViewHolderToken(
+              value:
+                  EventPair(viewConnection.owner.passChannel().passHandle())));
   }
 
   /// Focus the surface with this id
@@ -138,7 +125,8 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
     persistStoryState();
   }
 
-  /// DEPRECATED in favor of addContainer2.
+  /// Add a container node to the graph, with associated layout as a property,
+  /// and optionally specify a parent and a relationship to the parent
   @override
   void addContainer(
       String containerName,
@@ -146,19 +134,7 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
       SurfaceRelation relation,
       List<ContainerLayout> layouts,
       List<ContainerRelationEntry> relationships,
-      List<ContainerView> views) {}
-
-  /// Add a container node to the graph, with associated layout as a property,
-  /// and optionally specify a parent and a relationship to the parent
-  @override
-  // ignore: override_on_non_overriding_method
-  void addContainer2(
-      String containerName,
-      String parentId,
-      SurfaceRelation relation,
-      List<ContainerLayout> layouts,
-      List<ContainerRelationEntry> relationships,
-      List<ContainerView2> views) {
+      List<ContainerView> views) {
     // Add a root node for the container
     Timeline.instantSync('adding container', arguments: {
       'containerName': '$containerName',
@@ -175,9 +151,10 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
     Map<String, ContainerRelationEntry> nodeMap =
         <String, ContainerRelationEntry>{};
     Map<String, List<String>> parentChildrenMap = <String, List<String>>{};
-    Map<String, ImportToken> viewMap = <String, ImportToken>{};
-    for (ContainerView2 view in views) {
-      viewMap[view.nodeName] = view.viewHolderToken;
+    Map<String, ViewHolderToken> viewMap = <String, ViewHolderToken>{};
+    for (ContainerView view in views) {
+      viewMap[view.nodeName] = ViewHolderToken(
+          value: EventPair(view.owner.passChannel().passHandle()));
     }
     for (ContainerRelationEntry relatedNode in relationships) {
       nodeMap[relatedNode.nodeName] = relatedNode;
@@ -186,7 +163,7 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
           .add(relatedNode.nodeName);
     }
     List<String> nodeQueue =
-        views.map((ContainerView2 v) => v.nodeName).toList();
+        views.map((ContainerView v) => v.nodeName).toList();
     List<String> addedParents = <String>[containerName];
     int i = 0;
     while (nodeQueue.isNotEmpty) {
@@ -200,7 +177,7 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
           surfaceGraph.addSurface(
               nodeId, prop, parentId, nodeMap[nodeId].relationship, null, '');
           addedParents.add(nodeId);
-          surfaceGraph.connectViewFromImportToken(nodeId, viewMap[nodeId]);
+          surfaceGraph.connectViewFromViewHolderToken(nodeId, viewMap[nodeId]);
           nodeQueue.remove(nodeId);
           surfaceGraph.focusSurface(nodeId);
         }
@@ -224,37 +201,12 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
 
   @override
   void reconnectView(ViewConnection viewConnection) {
-    reconnectView2(ViewConnection2(
-        surfaceId: viewConnection.surfaceId,
-        viewHolderToken: ImportToken(
-            value:
-                EventPair(viewConnection.owner.passChannel().passHandle()))));
-  }
-
-  @override
-  // ignore: override_on_non_overriding_method
-  void reconnectView2(ViewConnection2 viewConnection) {
     // TODO (jphsiao): implement
   }
 
   @override
   void updateSurface(
     ViewConnection viewConnection,
-    SurfaceInfo surfaceInfo,
-  ) {
-    updateSurface2(
-        ViewConnection2(
-            surfaceId: viewConnection.surfaceId,
-            viewHolderToken: ImportToken(
-                value: EventPair(
-                    viewConnection.owner.passChannel().passHandle()))),
-        surfaceInfo);
-  }
-
-  @override
-  // ignore: override_on_non_overriding_method
-  void updateSurface2(
-    ViewConnection2 viewConnection,
     SurfaceInfo surfaceInfo,
   ) {
     // TODO (jphsiao): implement

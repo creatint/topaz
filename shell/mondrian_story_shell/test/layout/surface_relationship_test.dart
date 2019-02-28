@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:fidl_fuchsia_modular/fidl.dart';
-import 'package:fidl_fuchsia_ui_gfx/fidl.dart' show ImportToken;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mondrian/models/layout_model.dart';
@@ -30,8 +30,8 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'root_of_test', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'root_of_test', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -57,8 +57,8 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'root_of_test', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for the copresent surface
     properties = new SurfaceProperties();
@@ -69,8 +69,8 @@ void main() {
     );
     Surface copresentSurface = graph.addSurface('copresentSurface', properties,
         'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'copresentSurface', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'copresentSurface', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -101,8 +101,8 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'root_of_test', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for the sequential surface
     properties = new SurfaceProperties();
@@ -113,8 +113,8 @@ void main() {
     );
     Surface sequentialSurface = graph.addSurface('copresentSurface', properties,
         'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'copresentSurface', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'copresentSurface', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -141,8 +141,8 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'root_of_test', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for the ontop surface
     properties = new SurfaceProperties();
@@ -153,8 +153,8 @@ void main() {
     );
     Surface ontopSurface = graph.addSurface(
         'ontop', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'ontop', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'ontop', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -186,8 +186,8 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'root_of_test', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for root surface
     properties = new SurfaceProperties();
@@ -198,8 +198,8 @@ void main() {
     );
     Surface copresentSurface = graph.addSurface(
         'copresent', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'copresent', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'copresent', ViewHolderToken(value: EventPair(null)));
 
     // properties for the ontop surface
     properties = new SurfaceProperties();
@@ -210,8 +210,8 @@ void main() {
     );
     Surface ontopSurface = graph.addSurface(
         'ontop', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'ontop', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'ontop', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -249,8 +249,8 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'root_of_test', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for root surface
     properties = new SurfaceProperties();
@@ -261,8 +261,8 @@ void main() {
     );
     Surface copresentSurface = graph.addSurface(
         'copresent', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'copresent', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'copresent', ViewHolderToken(value: EventPair(null)));
 
     // properties for the ontop surface
     properties = new SurfaceProperties();
@@ -273,8 +273,8 @@ void main() {
     );
     Surface ontopSurface = graph.addSurface(
         'ontop', properties, 'copresent', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'ontop', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'ontop', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -310,8 +310,8 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'root_of_test', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for root surface
     properties = new SurfaceProperties();
@@ -322,8 +322,8 @@ void main() {
     );
     Surface firstOnTop = graph.addSurface(
         'ontop1', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'ontop1', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'ontop1', ViewHolderToken(value: EventPair(null)));
 
     // properties for the ontop surface
     properties = new SurfaceProperties();
@@ -334,8 +334,8 @@ void main() {
     );
     Surface secondOntop = graph.addSurface(
         'ontop2', properties, 'ontop1', surfaceRelation, '', '');
-    graph.connectViewFromImportToken(
-        'ontop2', ImportToken(value: EventPair(null)));
+    graph.connectViewFromViewHolderToken(
+        'ontop2', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,

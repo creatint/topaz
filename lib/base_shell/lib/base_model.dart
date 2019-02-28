@@ -14,6 +14,7 @@ import 'package:fidl_fuchsia_sys/fidl.dart';
 import 'package:fidl_fuchsia_ui_gfx/fidl.dart';
 import 'package:fidl_fuchsia_ui_input/fidl.dart' as input;
 import 'package:fidl_fuchsia_ui_policy/fidl.dart';
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
 import 'package:lib.app.dart/app.dart' as app;
@@ -103,9 +104,7 @@ class CommonBaseShellModel extends BaseShellModel
   // |ServiceProvider|.
   @override
   void connectToService(String serviceName, Channel channel) {
-    // TODO(SCN-595) mozart.Presentation is being renamed to ui.Presentation.
-    if (serviceName == 'mozart.Presentation' ||
-        serviceName == 'ui.Presentation') {
+    if (serviceName == 'ui.Presentation') {
       _presentationBindings.add(PresentationBinding()
         ..bind(this, InterfaceRequest<Presentation>(channel)));
     } else {
@@ -204,8 +203,9 @@ class CommonBaseShellModel extends BaseShellModel
     final viewOwnerHandle =
         _userManager.login(accountId, serviceProvider.passHandle());
 
-    _childViewConnection = ChildViewConnection.fromViewHolderToken(
-      EventPair(viewOwnerHandle.passChannel().passHandle()),
+    _childViewConnection = ChildViewConnection(
+      ViewHolderToken(
+          value: EventPair(viewOwnerHandle.passChannel().passHandle())),
       onAvailable: (ChildViewConnection connection) {
         trace('session shell available');
         log.info('BaseShell: Child view connection available!');
