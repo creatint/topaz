@@ -58,8 +58,9 @@ OAuthResponse ParseOAuthResponse(http::URLResponse response) {
     case 401:  // Unauthorized, returned with invalid_client.
     case 403:  // Forbidden, user denied access.
     default:
-      std::string oauth_error(out.HasMember("error") ? out["error"].GetString()
-                                                     : "");
+      std::string oauth_error(out.HasMember("error") && out["error"].IsString()
+                                  ? out["error"].GetString()
+                                  : "");
       auto status = (oauth_error == "invalid_grant")
                         ? AuthProviderStatus::REAUTH_REQUIRED
                         : AuthProviderStatus::OAUTH_SERVER_ERROR;

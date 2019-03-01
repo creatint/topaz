@@ -17,12 +17,12 @@ executable("bin") {
 
   deps = [
     ":lib",
-    "//sdk/fidl/fuchsia.auth",
     "//garnet/public/lib/component/cpp",
-    "//sdk/lib/fidl/cpp",
     "//garnet/public/lib/fsl",
     "//garnet/public/lib/fxl",
     "//garnet/public/lib/network_wrapper",
+    "//sdk/fidl/fuchsia.auth",
+    "//sdk/lib/fidl/cpp",
     "//zircon/public/lib/async-loop-cpp",
     "//zircon/public/lib/trace-provider",
   ]
@@ -39,20 +39,21 @@ source_set("lib") {
   ]
 
   deps = [
-    "//sdk/fidl/fuchsia.net.oldhttp",
+    "//garnet/public/lib/rapidjson_utils",
     "//garnet/public/lib/svc/cpp",
     "//peridot/lib/rapidjson",
+    "//sdk/fidl/fuchsia.net.oldhttp",
     "//topaz/auth_providers/oauth",
   ]
 
   public_deps = [
-    "//sdk/fidl/fuchsia.auth",
-    "//sdk/fidl/fuchsia.ui.app",
     "//garnet/public/lib/callback",
     "//garnet/public/lib/component/cpp",
-    "//sdk/lib/fidl/cpp",
     "//garnet/public/lib/fxl",
     "//garnet/public/lib/network_wrapper",
+    "//sdk/fidl/fuchsia.auth",
+    "//sdk/fidl/fuchsia.ui.app",
+    "//sdk/lib/fidl/cpp",
     "//topaz/runtime/chromium:chromium.web",
     "//zircon/public/lib/async-default",
     "//zircon/public/lib/fit",
@@ -71,18 +72,17 @@ source_set("unittests") {
 
   deps = [
     ":lib",
-    "//sdk/fidl/fuchsia.auth",
-    "//sdk/lib/fidl/cpp",
     "//garnet/public/lib/fxl:printers",
     "//garnet/public/lib/gtest:gtest",
     "//garnet/public/lib/network_wrapper:fake",
     "//peridot/lib/rapidjson",
+    "//sdk/fidl/fuchsia.auth",
+    "//sdk/lib/fidl/cpp",
     "//third_party/googletest:gtest_main",
   ]
 }
 
 package("google_auth_provider") {
-
   deps = [
     ":bin",
   ]

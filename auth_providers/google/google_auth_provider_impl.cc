@@ -10,6 +10,7 @@
 #include <lib/fit/function.h>
 #include <lib/syslog/global.h>
 
+#include "garnet/public/lib/rapidjson_utils/rapidjson_validation.h"
 #include "lib/component/cpp/connect.h"
 #include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/interface_request.h"
@@ -17,6 +18,7 @@
 #include "lib/svc/cpp/services.h"
 #include "peridot/lib/rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
+#include "rapidjson/schema.h"
 #include "topaz/auth_providers/google/constants.h"
 #include "topaz/auth_providers/oauth/oauth_request_builder.h"
 #include "topaz/auth_providers/oauth/oauth_response.h"
@@ -44,8 +46,8 @@ std::string GetClientId(const std::string& app_client_id) {
 void LogOauthResponse(const char* operation,
                       const auth_providers::oauth::OAuthResponse& response) {
   FX_LOGF(WARNING, NULL,
-          "OAuthResponse error during %s: %s (Full response: %s)",
-          operation, response.error_description.c_str(),
+          "OAuthResponse error during %s: %s (Full response: %s)", operation,
+          response.error_description.c_str(),
           modular::JsonValueToPrettyString(response.json_response).c_str());
 }
 
@@ -199,6 +201,29 @@ void GoogleAuthProviderImpl::GetAppAccessToken(
               return;
             }
 
+            const char kRootSchema[] = R"({
+              "type": "object",
+              "properties": {
+                "access_token": {
+                  "type": "string"
+                },
+                "expires_in": {
+                  "type": "integer"
+                }
+              },
+              "required": ["access_token", "expires_in"]
+            })";
+            auto root_schema = rapidjson_utils::InitSchema(kRootSchema);
+            if (!root_schema) {
+              callback(AuthProviderStatus::INTERNAL_ERROR, nullptr);
+              return;
+            }
+            if (!rapidjson_utils::ValidateSchema(oauth_response.json_response,
+                                                 *root_schema)) {
+              callback(AuthProviderStatus::OAUTH_SERVER_ERROR, nullptr);
+              return;
+            }
+
             AuthTokenPtr access_token = fuchsia::auth::AuthToken::New();
             access_token->token_type = fuchsia::auth::TokenType::ACCESS_TOKEN;
             access_token->token =
@@ -233,6 +258,29 @@ void GoogleAuthProviderImpl::GetAppIdToken(std::string credential,
             if (oauth_response.status != AuthProviderStatus::OK) {
               LogOauthResponse("GetAppIdToken", oauth_response);
               callback(oauth_response.status, nullptr);
+              return;
+            }
+
+            const char kRootSchema[] = R"({
+              "type": "object",
+              "properties": {
+                "id_token": {
+                  "type": "string"
+                },
+                "expires_in": {
+                  "type": "integer"
+                }
+              },
+              "required": ["id_token", "expires_in"]
+            })";
+            auto root_schema = rapidjson_utils::InitSchema(kRootSchema);
+            if (!root_schema) {
+              callback(AuthProviderStatus::INTERNAL_ERROR, nullptr);
+              return;
+            }
+            if (!rapidjson_utils::ValidateSchema(oauth_response.json_response,
+                                                 *root_schema)) {
+              callback(AuthProviderStatus::OAUTH_SERVER_ERROR, nullptr);
               return;
             }
 
@@ -275,6 +323,35 @@ void GoogleAuthProviderImpl::GetAppFirebaseToken(
     if (oauth_response.status != AuthProviderStatus::OK) {
       LogOauthResponse("GetAppFirebaseToken", oauth_response);
       callback(oauth_response.status, nullptr);
+      return;
+    }
+
+    const char kRootSchema[] = R"({
+      "type": "object",
+      "properties": {
+        "id_token": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "local_id": {
+          "type": "string"
+        },
+        "expires_in": {
+          "type": "integer"
+        }
+      },
+      "required": ["id_token", "email", "local_id", "expires_in"]
+    })";
+    auto root_schema = rapidjson_utils::InitSchema(kRootSchema);
+    if (!root_schema) {
+      callback(AuthProviderStatus::INTERNAL_ERROR, nullptr);
+      return;
+    }
+    if (!rapidjson_utils::ValidateSchema(oauth_response.json_response,
+                                         *root_schema)) {
+      callback(AuthProviderStatus::OAUTH_SERVER_ERROR, nullptr);
       return;
     }
 
@@ -407,13 +484,32 @@ void GoogleAuthProviderImpl::ExchangeAuthCode(std::string auth_code) {
       return;
     }
 
-    if (!oauth_response.json_response.HasMember("refresh_token") ||
-        (!oauth_response.json_response.HasMember("access_token"))) {
+    const char kRootSchema[] = R"({
+      "type": "object",
+      "properties": {
+        "refresh_token": {
+          "type": "string"
+        },
+        "access_token": {
+          "type": "string"
+        }
+      },
+      "required": ["refresh_token", "access_token"]
+    })";
+    auto root_schema = rapidjson_utils::InitSchema(kRootSchema);
+    if (!root_schema) {
+      get_persistent_credential_callback_(AuthProviderStatus::INTERNAL_ERROR,
+                                          nullptr, nullptr);
+      return;
+    }
+    if (!rapidjson_utils::ValidateSchema(oauth_response.json_response,
+                                         *root_schema)) {
       FX_LOGF(WARNING, NULL,
               "Got response without refresh and access tokens: %s",
               JsonValueToPrettyString(oauth_response.json_response).c_str());
       get_persistent_credential_callback_(
           AuthProviderStatus::OAUTH_SERVER_ERROR, nullptr, nullptr);
+      return;
     }
 
     auto refresh_token =
@@ -452,7 +548,8 @@ void GoogleAuthProviderImpl::GetUserProfile(fidl::StringPtr credential,
       return;
     }
 
-    if (oauth_response.json_response.HasMember("sub")) {
+    if (oauth_response.json_response.HasMember("sub") &&
+        oauth_response.json_response["sub"].IsString()) {
       user_profile_info->id = oauth_response.json_response["sub"].GetString();
     } else {
       LogOauthResponse("UserInfo", oauth_response);
@@ -463,17 +560,20 @@ void GoogleAuthProviderImpl::GetUserProfile(fidl::StringPtr credential,
       return;
     }
 
-    if (oauth_response.json_response.HasMember("name")) {
+    if (oauth_response.json_response.HasMember("name") &&
+        oauth_response.json_response["name"].IsString()) {
       user_profile_info->display_name =
           oauth_response.json_response["name"].GetString();
     }
 
-    if (oauth_response.json_response.HasMember("profile")) {
+    if (oauth_response.json_response.HasMember("profile") &&
+        oauth_response.json_response["profile"].IsString()) {
       user_profile_info->url =
           oauth_response.json_response["profile"].GetString();
     }
 
-    if (oauth_response.json_response.HasMember("picture")) {
+    if (oauth_response.json_response.HasMember("picture") &&
+        oauth_response.json_response["picture"].IsString()) {
       user_profile_info->image_url =
           oauth_response.json_response["picture"].GetString();
     }
