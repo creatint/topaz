@@ -494,4 +494,16 @@ void Engine::OfferServiceProvider(
 #endif
 }
 
+#if !defined(DART_PRODUCT)
+void Engine::WriteProfileToTrace() const {
+  Dart_Port main_port = shell_->GetEngine()->GetUIIsolateMainPort();
+  char* error = NULL;
+  bool success = Dart_WriteProfileToTimeline(main_port, &error);
+  if (!success) {
+    FML_LOG(ERROR) << "Failed to write Dart profile to trace: " << error;
+    free(error);
+  }
+}
+#endif  // !defined(DART_PRODUCT)
+
 }  // namespace flutter

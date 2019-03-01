@@ -10,6 +10,8 @@
 
 #include <fuchsia/sys/cpp/fidl.h>
 #include <lib/async-loop/cpp/loop.h>
+#include <trace/observer.h>
+#include <trace-engine/instrumentation.h>
 
 #include "component.h"
 #include "flutter/fml/macros.h"
@@ -50,6 +52,9 @@ class Runner final : public fuchsia::sys::Runner {
 #if !defined(DART_PRODUCT)
   // The connection between the Dart VM service and The Hub.
   std::unique_ptr<fuchsia::dart::VMServiceObject> vmservice_object_;
+
+  std::unique_ptr<trace::TraceObserver> trace_observer_;
+  trace_prolonged_context_t* prolonged_context_;
 #endif  // !defined(DART_PRODUCT)
 
   // |fuchsia::sys::Runner|
@@ -66,6 +71,10 @@ class Runner final : public fuchsia::sys::Runner {
   void OnApplicationTerminate(const Application* application);
 
   void SetupICU();
+
+#if !defined(DART_PRODUCT)
+  void SetupTraceObserver();
+#endif  // !defined(DART_PRODUCT)
 
   FML_DISALLOW_COPY_AND_ASSIGN(Runner);
 };

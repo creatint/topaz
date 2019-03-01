@@ -292,6 +292,15 @@ Application::Application(
   // TODO(FL-208): Remove when field guards work.
   settings_.dart_flags.push_back("--no_use_field_guards");
 
+  // Don't collect CPU samples from Dart VM C++ code.
+  settings_.dart_flags.push_back("--no_profile_vm");
+
+  // Scale back CPU profiler sampling period on ARM64 to avoid overloading
+  // the tracing engine.
+#if defined(__aarch64__)
+  settings_.dart_flags.push_back("--profile_period=10000");
+#endif  // defined(__aarch64__)
+
   auto dispatcher = async_get_default_dispatcher();
   const std::string component_url = package.resolved_url;
   settings_.unhandled_exception_callback =
@@ -502,5 +511,13 @@ void Application::CreateView(
       std::move(directory_request_)  // outgoing request
       ));
 }
+
+#if !defined(DART_PRODUCT)
+void Application::WriteProfileToTrace() const {
+  for (const auto& engine : shell_holders_) {
+    engine->WriteProfileToTrace();
+  }
+}
+#endif  // !defined(DART_PRODUCT)
 
 }  // namespace flutter

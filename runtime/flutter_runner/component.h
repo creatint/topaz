@@ -59,6 +59,10 @@ class Application final : public Engine::Delegate,
 
   const std::string& GetDebugLabel() const;
 
+#if !defined(DART_PRODUCT)
+  void WriteProfileToTrace() const;
+#endif  // !defined(DART_PRODUCT)
+
  private:
   blink::Settings settings_;
   TerminationCallback termination_callback_;

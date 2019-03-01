@@ -41,6 +41,10 @@ class Engine final : public mozart::NativesDelegate {
   // call is thread safe and synchronous. This call must be made infrequently.
   std::pair<bool, uint32_t> GetEngineReturnCode() const;
 
+#if !defined(DART_PRODUCT)
+  void WriteProfileToTrace() const;
+#endif  // !defined(DART_PRODUCT)
+
  private:
   Delegate& delegate_;
   const std::string thread_label_;

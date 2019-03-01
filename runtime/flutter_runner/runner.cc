@@ -4,6 +4,7 @@
 
 #include "runner.h"
 
+#include <trace-engine/instrumentation.h>
 #include <zircon/status.h>
 #include <zircon/types.h>
 
@@ -102,6 +103,8 @@ Runner::Runner(async::Loop* loop)
   host_context_->outgoing().debug_dir()->AddEntry(
       fuchsia::dart::VMServiceObject::kPortDirName,
       fbl::AdoptRef(new fuchsia::dart::VMServiceObject()));
+
+  SetupTraceObserver();
 #endif  // !defined(DART_PRODUCT)
 
   SkGraphics::Init();
@@ -122,6 +125,10 @@ Runner::~Runner() {
   host_context_->outgoing()
       .deprecated_services()
       ->RemoveService<fuchsia::sys::Runner>();
+
+#if !defined(DART_PRODUCT)
+  trace_observer_->Stop();
+#endif  // !defined(DART_PRODUCT)
 }
 
 void Runner::RegisterApplication(
@@ -198,5 +205,33 @@ void Runner::SetupICU() {
     FML_LOG(ERROR) << "Could not initialize ICU data.";
   }
 }
+
+#if !defined(DART_PRODUCT)
+void Runner::SetupTraceObserver() {
+  trace_observer_ = std::make_unique<trace::TraceObserver>();
+  trace_observer_->Start(
+      loop_->dispatcher(),
+      [runner = this] () {
+    if (!trace_is_category_enabled("dart:profiler")) {
+      return;
+    }
+    if (trace_state() == TRACE_STARTED) {
+      runner->prolonged_context_ = trace_acquire_prolonged_context();
+      Dart_StartProfiling();
+    } else if (trace_state() == TRACE_STOPPING) {
+      for (auto& it : runner->active_applications_) {
+        fml::AutoResetWaitableEvent latch;
+        async::PostTask(it.second.loop->dispatcher(), [&]() {
+          it.second.application->WriteProfileToTrace();
+          latch.Signal();
+        });
+        latch.Wait();
+      }
+      Dart_StopProfiling();
+      trace_release_prolonged_context(runner->prolonged_context_);
+    }
+  });
+}
+#endif  // !defined(DART_PRODUCT)
 
 }  // namespace flutter
