@@ -3,7 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/dart/dart_library.gni")
-import("//topaz/runtime/dart/dart_test.gni")
+import("//topaz/runtime/dart/flutter_test.gni")
 
 dart_library("dart") {
   package_name = "lib.mondrian.dart"
@@ -20,7 +20,7 @@ dart_library("dart") {
   ]
 }
 
-dart_test("mondrian_lib_tests") {
+flutter_test("mondrian_lib_tests") {
   sources = [
     "encode_decode_test.dart",
     "layout_test.dart",

@@ -4,7 +4,6 @@
 
 import("//build/dart/dart_library.gni")
 import("//third_party/cobalt_config/metrics_registry.gni")
-import("//topaz/runtime/dart/dart_test.gni")
 
 metrics_registry("modules_metrics_registry") {
   project_id = 104

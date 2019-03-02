@@ -3,7 +3,7 @@
 # found in the LICENSE file.
 
 import("//topaz/bin/dart_fidl_json/dart_fidl_json.gni")
-import("//topaz/runtime/dart/dart_test.gni")
+import("//topaz/runtime/dart/flutter_test.gni")
 
 json_fidl("fuchsia.setui.json") {
   fidl_target = "//sdk/fidl/fuchsia.setui"

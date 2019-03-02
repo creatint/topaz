@@ -5,7 +5,7 @@
 import("//build/dart/dart_fuchsia_test.gni")
 import("//build/dart/dart_library.gni")
 import("//build/testing/environments.gni")
-import("//topaz/runtime/dart/dart_test.gni")
+import("//topaz/runtime/dart/flutter_test.gni")
 
 dart_library("fuchsia_services") {
   package_name = "fuchsia_services"
@@ -33,7 +33,7 @@ dart_library("fuchsia_services") {
   ]
 }
 
-dart_test("fuchsia_services_package_unittests") {
+flutter_test("fuchsia_services_package_unittests") {
   sources = [
     "environment_service_connection_test.dart",
     "service_provider_impl_test.dart",

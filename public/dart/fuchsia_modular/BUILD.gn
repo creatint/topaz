@@ -5,7 +5,7 @@
 import("//build/dart/dart_fuchsia_test.gni")
 import("//build/dart/dart_library.gni")
 import("//build/testing/environments.gni")
-import("//topaz/runtime/dart/dart_test.gni")
+import("//topaz/runtime/dart/flutter_test.gni")
 
 dart_library("fuchsia_modular") {
   package_name = "fuchsia_modular"
@@ -71,7 +71,7 @@ dart_library("fuchsia_modular") {
 
 # Runs these tests using:
 #   fx run-host-tests fuchsia_modular_package_unittests
-dart_test("fuchsia_modular_package_unittests") {
+flutter_test("fuchsia_modular_package_unittests") {
   sources = [
     "agent/agent_test.dart",
     "agent/internal/agent_impl_test.dart",

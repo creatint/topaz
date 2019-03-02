@@ -3,7 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/dart/dart_library.gni")
-import("//topaz/runtime/dart/dart_test.gni")
+import("//topaz/runtime/dart/flutter_test.gni")
 
 dart_library("xi_fuchsia_client") {
   package_name = "xi_fuchsia_client"
@@ -22,7 +22,7 @@ dart_library("xi_fuchsia_client") {
   ]
 }
 
-dart_test("xi_fuchsia_client_tests") {
+flutter_test("xi_fuchsia_client_tests") {
   sources = [
     "xi_fuchsia_client_test.dart",
   ]
