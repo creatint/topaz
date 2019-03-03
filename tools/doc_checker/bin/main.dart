@@ -16,7 +16,6 @@ import 'package:doc_checker/projects.dart';
 const String _optionHelp = 'help';
 const String _optionRootDir = 'root-dir';
 const String _optionDotFile = 'dot-file';
-const String _optionGitProject = 'git-project';
 
 void reportError(Error error) {
   String errorToString(ErrorType type) {
@@ -82,11 +81,6 @@ Future<Null> main(List<String> args) async {
       _optionDotFile,
       help: 'Path to the dotfile to generate',
       defaultsTo: '',
-    )
-    ..addOption(
-      _optionGitProject,
-      help: 'Name of the Git project hosting the documentation directory',
-      defaultsTo: 'fuchsia',
     );
   final ArgResults options = parser.parse(args);
 
@@ -132,7 +126,9 @@ Future<Null> main(List<String> args) async {
           bool shouldTestLink = true;
           if (uri.authority == 'fuchsia.googlesource.com' &&
               uri.pathSegments.isNotEmpty) {
-            if (uri.pathSegments[0] == options[_optionGitProject]) {
+
+            final uriRelPath = uri.pathSegments.sublist(1).join('/');
+            if (path.isWithin(options[_optionRootDir], uriRelPath)) {
               shouldTestLink = false;
               errors.add(new Error(
                   ErrorType.convertHttpToPath, label, uri.toString()));
