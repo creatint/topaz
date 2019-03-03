@@ -2,7 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//topaz/runtime/dart/flutter_test.gni")
+import("//build/dart/test.gni")
 import("//topaz/runtime/flutter_runner/flutter_app.gni")
 
 flutter_app("dashboard") {
@@ -46,7 +46,7 @@ flutter_app("dashboard") {
   ]
 }
 
-flutter_test("dashboard_tests") {
+dart_test("dashboard_tests") {
   sources = [
     "../test/build_bucket_service_test.dart",
     "../test/enums_test.dart",
