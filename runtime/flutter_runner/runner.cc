@@ -13,12 +13,64 @@
 #include "flutter/fml/make_copyable.h"
 #include "flutter/lib/ui/text/font_collection.h"
 #include "fuchsia_font_manager.h"
+#include "lib/fsl/vmo/file.h"
+#include "lib/fsl/vmo/sized_vmo.h"
 #include "lib/icu_data/cpp/icu_data.h"
 #include "third_party/flutter/runtime/dart_vm.h"
+#include "third_party/icu/source/common/unicode/udata.h"
 #include "third_party/skia/include/core/SkGraphics.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
 namespace flutter {
+
+namespace {
+
+static constexpr char kIcuDataPath[] = "/pkg/data/icudtl.dat";
+
+// Map the memory into the process and return a pointer to the memory.
+// |size_out| is required and is set with the size of the mapped memory
+// region.
+uintptr_t GetICUData(const fsl::SizedVmo& icu_data, size_t* size_out) {
+  if (!size_out)
+    return 0u;
+  uint64_t data_size = icu_data.size();
+  if (data_size > std::numeric_limits<size_t>::max())
+    return 0u;
+
+  uintptr_t data = 0u;
+  zx_status_t status = zx::vmar::root_self()->map(
+      0, icu_data.vmo(), 0, static_cast<size_t>(data_size),
+      ZX_VM_PERM_READ, &data);
+  if (status == ZX_OK) {
+    *size_out = static_cast<size_t>(data_size);
+    return data;
+  }
+
+  return 0u;
+}
+
+// Return value indicates if initialization was successful.
+bool InitializeICU() {
+  const char* data_path = kIcuDataPath;
+
+  fsl::SizedVmo icu_data;
+  if (!fsl::VmoFromFilename(data_path, &icu_data)) {
+    return false;
+  }
+
+  size_t data_size = 0;
+  uintptr_t data = GetICUData(icu_data, &data_size);
+  if (!data) {
+    return false;
+  }
+
+  // Pass the data to ICU.
+  UErrorCode err = U_ZERO_ERROR;
+  udata_setCommonData(reinterpret_cast<const char*>(data), &err);
+  return err == U_ZERO_ERROR;
+}
+
+}  // namespace
 
 static void SetProcessName() {
   std::stringstream stream;
@@ -144,7 +196,7 @@ void Runner::OnApplicationTerminate(const Application* application) {
 }
 
 void Runner::SetupICU() {
-  if (!icu_data::Initialize(host_context_.get())) {
+  if (!InitializeICU()) {
     FML_LOG(ERROR) << "Could not initialize ICU data.";
   }
 }
