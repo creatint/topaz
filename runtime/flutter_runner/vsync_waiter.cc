@@ -4,9 +4,9 @@
 
 #include "vsync_waiter.h"
 
+#include <lib/async/default.h>
 #include <trace/event.h>
 
-#include "topaz/lib/deprecated_loop/message_loop.h"
 #include "vsync_recorder.h"
 
 namespace flutter {
@@ -66,8 +66,7 @@ void VsyncWaiter::AwaitVSync() {
 void VsyncWaiter::FireCallbackWhenSessionAvailable() {
   TRACE_DURATION("flutter", "VsyncWaiter::FireCallbackWhenSessionAvailable");
   FML_DCHECK(task_runners_.GetUITaskRunner()->RunsTasksOnCurrentThread());
-  if (session_wait_.Begin(
-          deprecated_loop::MessageLoop::GetCurrent()->dispatcher()) != ZX_OK) {
+  if (session_wait_.Begin(async_get_default_dispatcher()) != ZX_OK) {
     FML_LOG(ERROR) << "Could not begin wait for Vsync.";
   }
 }

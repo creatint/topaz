@@ -4,15 +4,18 @@
 
 #pragma once
 
+#include <lib/async/default.h>
+#include <lib/async/cpp/time.h>
+
 #include "flutter/flow/scene_update_context.h"
 #include "flutter/fml/macros.h"
 #include "flutter/vulkan/vulkan_application.h"
 #include "flutter/vulkan/vulkan_device.h"
 #include "flutter/vulkan/vulkan_proc_table.h"
 #include "flutter/vulkan/vulkan_provider.h"
+#include "lib/fxl/logging.h"
 #include "lib/ui/scenic/cpp/resources.h"
 #include "lib/ui/scenic/cpp/session.h"
-#include "topaz/lib/deprecated_loop/message_loop.h"
 #include "vulkan_surface.h"
 #include "vulkan_surface_pool.h"
 
@@ -85,7 +88,7 @@ class VulkanSurfaceProducer final
 
   // Keep track of the last time we produced a surface.  This is used to
   // determine whether it is safe to shrink |surface_pool_| or not.
-  fxl::TimePoint last_produce_time_ = fxl::TimePoint::Now();
+  zx::time last_produce_time_ = async::Now(async_get_default_dispatcher());
   fml::WeakPtrFactory<VulkanSurfaceProducer> weak_factory_{this};
 
   bool Initialize(scenic::Session* scenic_session);

@@ -9,6 +9,8 @@
 
 namespace flutter {
 
+void ExecuteAfterTaskObservers();
+
 void CurrentMessageLoopAddAfterTaskObserver(intptr_t key,
                                             fit::closure observer);
 

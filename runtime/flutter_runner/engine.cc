@@ -16,7 +16,6 @@
 #include "src/lib/files/file.h"
 #include "platform_view.h"
 #include "task_runner_adapter.h"
-#include "topaz/lib/deprecated_loop/message_loop.h"
 
 namespace flutter {
 
@@ -55,8 +54,9 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
   // Launch the threads that will be used to run the shell. These threads will
   // be joined in the destructor.
-  for (auto& thread : host_threads_) {
-    thread.Run();
+  for (auto& loop : host_loops_) {
+    loop.reset(new async::Loop(&kAsyncLoopConfigNoAttachToThread));
+    loop->StartThread();
   }
 
   // Set up the session connection.
@@ -104,9 +104,9 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   // platform thread when that happens. The Session itself should also be
   // disconnected when this happens, and it will also attempt to terminate.
   fit::closure on_session_listener_error_callback =
-      [runner = deprecated_loop::MessageLoop::GetCurrent()->task_runner(),
+      [dispatcher = async_get_default_dispatcher(),
        weak = weak_factory_.GetWeakPtr()]() {
-        runner->PostTask([weak]() {
+        async::PostTask(dispatcher, [weak]() {
           if (weak) {
             weak->Terminate();
           }
@@ -162,9 +162,9 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   // broken. The SessionListener interface also has an OnError method, which is
   // invoked on the platform thread (in PlatformView).
   fit::closure on_session_error_callback =
-      [runner = deprecated_loop::MessageLoop::GetCurrent()->task_runner(),
+      [dispatcher = async_get_default_dispatcher(),
        weak = weak_factory_.GetWeakPtr()]() {
-        runner->PostTask([weak]() {
+        async::PostTask(dispatcher, [weak]() {
           if (weak) {
             weak->Terminate();
           }
@@ -204,11 +204,10 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   // used as the "platform" thread.
   const blink::TaskRunners task_runners(
       thread_label_,  // Dart thread labels
-      CreateFMLTaskRunner(deprecated_loop::MessageLoop::GetCurrent()
-                              ->task_runner()),            // platform
-      CreateFMLTaskRunner(host_threads_[0].TaskRunner()),  // gpu
-      CreateFMLTaskRunner(host_threads_[1].TaskRunner()),  // ui
-      CreateFMLTaskRunner(host_threads_[2].TaskRunner())   // io
+      CreateFMLTaskRunner(async_get_default_dispatcher()),  // platform
+      CreateFMLTaskRunner(host_loops_[0]->dispatcher()),    // gpu
+      CreateFMLTaskRunner(host_loops_[1]->dispatcher()),    // ui
+      CreateFMLTaskRunner(host_loops_[2]->dispatcher())     // io
   );
 
   UpdateNativeThreadLabelNames(thread_label_, task_runners);
@@ -287,9 +286,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
       settings_, task_runners.GetIOTaskRunner());
 
   auto on_run_failure =
-      [weak = weak_factory_.GetWeakPtr(),                                  //
-       runner = deprecated_loop::MessageLoop::GetCurrent()->task_runner()  //
-  ]() {
+      [weak = weak_factory_.GetWeakPtr()]() {
         // The engine could have been killed by the caller right after the
         // constructor was called but before it could run on the UI thread.
         if (weak) {
@@ -324,9 +321,13 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
 Engine::~Engine() {
   shell_.reset();
-  for (const auto& thread : host_threads_) {
-    thread.TaskRunner()->PostTask(
-        []() { deprecated_loop::MessageLoop::GetCurrent()->PostQuitTask(); });
+  for (const auto& loop : host_loops_) {
+    async::PostTask(loop->dispatcher(), [current_loop = &loop]() {
+      (*current_loop)->Quit();
+    });
+  }
+  for (const auto& loop : host_loops_) {
+    loop->JoinThreads();
   }
 }
 

@@ -92,8 +92,9 @@ static void SetThreadName(const std::string& thread_name) {
                                    thread_name.size());
 }
 
-Runner::Runner()
-    : host_context_(component::StartupContext::CreateFromStartupInfo()) {
+Runner::Runner(async::Loop* loop)
+    : loop_(loop),
+      host_context_(component::StartupContext::CreateFromStartupInfo()) {
 #if !defined(DART_PRODUCT)
   // The VM service isolate uses the process-wide namespace. It writes the
   // vm service protocol port under /tmp. The VMServiceObject exposes that
@@ -140,16 +141,15 @@ void Runner::StartComponent(
   // there being multiple application runner instance in the process at the same
   // time. So it is safe to use the raw pointer.
   Application::TerminationCallback termination_callback =
-      [task_runner =
-           deprecated_loop::MessageLoop::GetCurrent()->task_runner(),  //
+      [task_runner = loop_->dispatcher(),                              //
        application_runner = this                                       //
   ](const Application* application) {
-        task_runner->PostTask([application_runner, application]() {
+        async::PostTask(task_runner, [application_runner, application]() {
           application_runner->OnApplicationTerminate(application);
         });
       };
 
-  auto thread_application_pair = Application::Create(
+  auto loop_application_pair = Application::Create(
       std::move(termination_callback),     // termination callback
       std::move(package),                  // application pacakge
       std::move(startup_info),             // startup info
@@ -157,9 +157,9 @@ void Runner::StartComponent(
       std::move(controller)                // controller request
   );
 
-  auto key = thread_application_pair.second.get();
+  auto key = loop_application_pair.second.get();
 
-  active_applications_[key] = std::move(thread_application_pair);
+  active_applications_[key] = std::move(loop_application_pair);
 }
 
 void Runner::OnApplicationTerminate(const Application* application) {
@@ -176,22 +176,21 @@ void Runner::OnApplicationTerminate(const Application* application) {
   // Grab the items out of the entry because we will have to rethread the
   // destruction.
   auto application_to_destroy = std::move(active_application.application);
-  auto application_destruction_thread = std::move(active_application.thread);
+  auto application_loop = std::move(active_application.loop);
 
   // Delegate the entry.
   active_applications_.erase(application);
 
   // Post the task to destroy the application and quit its message loop.
-  auto runner = application_destruction_thread->TaskRunner();
-  runner->PostTask(fml::MakeCopyable(
-      [instance = std::move(application_to_destroy)]() mutable {
+  async::PostTask(application_loop->dispatcher(), fml::MakeCopyable(
+      [instance = std::move(application_to_destroy),
+       loop = &application_loop]() mutable {
         instance.reset();
-
-        deprecated_loop::MessageLoop::GetCurrent()->PostQuitTask();
+        (*loop)->Quit();
       }));
 
   // This works because just posted the quit task on the hosted thread.
-  application_destruction_thread->Join();
+  application_loop->JoinThreads();
 }
 
 void Runner::SetupICU() {
