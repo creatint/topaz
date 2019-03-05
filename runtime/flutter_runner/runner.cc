@@ -15,7 +15,6 @@
 #include "fuchsia_font_manager.h"
 #include "lib/fsl/vmo/file.h"
 #include "lib/fsl/vmo/sized_vmo.h"
-#include "lib/icu_data/cpp/icu_data.h"
 #include "third_party/flutter/runtime/dart_vm.h"
 #include "third_party/icu/source/common/unicode/udata.h"
 #include "third_party/skia/include/core/SkGraphics.h"
