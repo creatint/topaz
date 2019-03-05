@@ -15,7 +15,6 @@
 #include "third_party/tonic/converter/dart_converter.h"
 #include "third_party/tonic/dart_microtask_queue.h"
 #include "third_party/tonic/logging/dart_error.h"
-#include "topaz/lib/deprecated_loop/message_loop.h"
 
 using tonic::ToDart;
 
@@ -145,7 +144,7 @@ void InitBuiltinLibrariesForIsolate(
     schedule_immediate_closure = Dart_Invoke(
         isolate_lib, ToDart("_getIsolateScheduleImmediateClosure"), 0, nullptr);
   } else {
-    // Running on deprecated_loop::MessageLoop.
+    // Running on async::Loop.
     schedule_immediate_closure = Dart_Invoke(
         builtin_lib, ToDart("_getScheduleMicrotaskClosure"), 0, nullptr);
   }

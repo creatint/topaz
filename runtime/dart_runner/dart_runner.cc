@@ -5,6 +5,8 @@
 #include "topaz/runtime/dart_runner/dart_runner.h"
 
 #include <errno.h>
+#include <lib/async/default.h>
+#include <lib/async-loop/loop.h>
 #include <sys/stat.h>
 #include <trace/event.h>
 #include <zircon/status.h>
@@ -16,7 +18,6 @@
 #include "third_party/dart/runtime/include/bin/dart_io_api.h"
 #include "third_party/tonic/dart_microtask_queue.h"
 #include "third_party/tonic/dart_state.h"
-#include "topaz/lib/deprecated_loop/message_loop.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 #include "topaz/runtime/dart_runner/dart_component_controller.h"
 #include "topaz/runtime/dart_runner/service_isolate.h"
@@ -74,13 +75,12 @@ Dart_Isolate IsolateCreateCallback(const char* uri, const char* main,
 
 void IsolateShutdownCallback(void* callback_data) {
   // The service isolate (and maybe later the kernel isolate) doesn't have an
-  // deprecated_loop::MessageLoop.
-  deprecated_loop::MessageLoop* loop =
-      deprecated_loop::MessageLoop::GetCurrent();
+  // async loop.
+  auto dispatcher = async_get_default_dispatcher();
+  auto loop = async_loop_from_dispatcher(dispatcher);
   if (loop) {
-    loop->SetAfterTaskCallback(nullptr);
     tonic::DartMicrotaskQueue::GetForCurrentThread()->Destroy();
-    loop->QuitNow();
+    async_loop_quit(loop);
   }
 }
 
@@ -94,7 +94,6 @@ void RunApplication(
     std::shared_ptr<component::Services> runner_incoming_services,
     ::fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller) {
   int64_t start = Dart_TimelineGetMicros();
-  deprecated_loop::MessageLoop loop;
   DartComponentController app(std::move(package),
                               std::move(startup_info), runner_incoming_services,
                               std::move(controller));
@@ -103,13 +102,7 @@ void RunApplication(
   Dart_TimelineEvent("DartComponentController::Setup", start, end,
                      Dart_Timeline_Event_Duration, 0, NULL, NULL);
   if (success) {
-    loop.task_runner()->PostTask([&loop, &app] {
-      if (!app.Main())
-        loop.PostQuitTask();
-    });
-
-    loop.Run();
-    app.SendReturnCode();
+    app.Run();
   }
 
   if (Dart_CurrentIsolate()) {
@@ -125,8 +118,7 @@ bool EntropySource(uint8_t* buffer, intptr_t count) {
 }  // namespace
 
 DartRunner::DartRunner()
-    : context_(component::StartupContext::CreateFromStartupInfo()),
-      loop_(deprecated_loop::MessageLoop::GetCurrent()) {
+    : context_(component::StartupContext::CreateFromStartupInfo()) {
   context_->outgoing().AddPublicService<fuchsia::sys::Runner>(
       [this](fidl::InterfaceRequest<fuchsia::sys::Runner> request) {
         bindings_.AddBinding(this, std::move(request));
@@ -189,7 +181,7 @@ void DartRunner::StartComponent(
     fuchsia::sys::Package package, fuchsia::sys::StartupInfo startup_info,
     ::fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller) {
   TRACE_DURATION("dart", "StartComponent", "url", package.resolved_url);
-  std::thread thread(RunApplication, this, 
+  std::thread thread(RunApplication, this,
                      std::move(package), std::move(startup_info),
                      context_->incoming_services(), std::move(controller));
   thread.detach();

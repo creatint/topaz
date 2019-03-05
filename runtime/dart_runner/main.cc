@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include <lib/async-loop/cpp/loop.h>
 #include <trace-provider/provider.h>
 #include <trace/event.h>
 
-#include "topaz/lib/deprecated_loop/message_loop.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
 #include "topaz/runtime/dart_runner/dart_runner.h"
 
 int main(int argc, const char** argv) {
-  deprecated_loop::MessageLoop loop;
+  async::Loop loop(&kAsyncLoopConfigAttachToThread);
   fbl::unique_ptr<trace::TraceProvider> provider;
   {
     TRACE_DURATION("dart", "CreateTraceProvider");

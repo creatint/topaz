@@ -8,6 +8,7 @@
 #include <memory>
 
 #include <lib/async/cpp/wait.h>
+#include <lib/async-loop/cpp/loop.h>
 #include <lib/fdio/namespace.h>
 #include <lib/zx/timer.h>
 
@@ -33,6 +34,7 @@ class DartComponentController : public fuchsia::sys::ComponentController {
   ~DartComponentController() override;
 
   bool Setup();
+  void Run();
   bool Main();
   void SendReturnCode();
 
@@ -58,6 +60,9 @@ class DartComponentController : public fuchsia::sys::ComponentController {
   void OnIdleTimer(async_dispatcher_t* dispatcher, async::WaitBase* wait,
                    zx_status_t status, const zx_packet_signal* signal);
 
+  // The loop must be the first declared member so that it gets destroyed after
+  // binding_ which expects the existence of a loop.
+  std::unique_ptr<async::Loop> loop_;
   std::string label_;
   std::string url_;
   fuchsia::sys::Package package_;

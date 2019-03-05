@@ -5,6 +5,8 @@
 #include "topaz/runtime/dart_runner/dart_component_controller.h"
 
 #include <fcntl.h>
+#include <lib/async/default.h>
+#include <lib/async-loop/loop.h>
 #include <lib/fdio/namespace.h>
 #include <lib/fdio/util.h>
 #include <sys/stat.h>
@@ -27,7 +29,6 @@
 #include "third_party/tonic/dart_microtask_queue.h"
 #include "third_party/tonic/dart_state.h"
 #include "third_party/tonic/logging/dart_error.h"
-#include "topaz/lib/deprecated_loop/message_loop.h"
 #include "topaz/runtime/dart/utils/handle_exception.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
 
@@ -41,11 +42,20 @@ constexpr char kDataKey[] = "data";
 
 namespace {
 
-void AfterTask() {
+void AfterTask(async_loop_t*, void*) {
   tonic::DartMicrotaskQueue* queue =
       tonic::DartMicrotaskQueue::GetForCurrentThread();
-  queue->RunMicrotasks();
+  // Verify that the queue exists, as this method could have been called back as
+  // part of the exit routine, after the destruction of the microtask queue.
+  if (queue) {
+    queue->RunMicrotasks();
+  }
 }
+
+constexpr async_loop_config_t kLoopConfig = {
+  .make_default_for_current_thread = true,
+  .epilogue = &AfterTask,
+};
 
 // Find the last path component.
 // fuchsia-pkg://fuchsia.com/hello_dart#meta/hello_dart.cmx -> hello_dart.cmx
@@ -65,7 +75,8 @@ DartComponentController::DartComponentController(
     fuchsia::sys::StartupInfo startup_info,
     std::shared_ptr<component::Services> runner_incoming_services,
     fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller)
-    : label_(GetLabelFromURL(package.resolved_url)),
+    : loop_(new async::Loop(&kLoopConfig)),
+      label_(GetLabelFromURL(package.resolved_url)),
       url_(std::move(package.resolved_url)),
       package_(std::move(package)),
       startup_info_(std::move(startup_info)),
@@ -311,10 +322,9 @@ bool DartComponentController::CreateIsolate(
 
   state->get()->SetIsolate(isolate_);
 
-  auto task_runner = deprecated_loop::MessageLoop::GetCurrent()->task_runner();
   tonic::DartMessageHandler::TaskDispatcher dispatcher =
-      [task_runner](auto callback) {
-        task_runner->PostTask(std::move(callback));
+      [loop = loop_.get()](auto callback) {
+        async::PostTask(loop->dispatcher(), std::move(callback));
       };
   state->get()->message_handler().Initialize(dispatcher);
 
@@ -324,11 +334,20 @@ bool DartComponentController::CreateIsolate(
   return true;
 }
 
+void DartComponentController::Run() {
+  async::PostTask(loop_->dispatcher(), [loop = loop_.get(), app = this] {
+    if (!app->Main()) {
+      loop->Quit();
+    }
+  });
+  loop_->Run();
+  SendReturnCode();
+}
+
 bool DartComponentController::Main() {
   Dart_EnterScope();
 
   tonic::DartMicrotaskQueue::StartForCurrentThread();
-  deprecated_loop::MessageLoop::GetCurrent()->SetAfterTaskCallback(AfterTask);
 
   std::vector<std::string> arguments =
       std::move(startup_info_.launch_info.arguments);
@@ -399,10 +418,9 @@ bool DartComponentController::Main() {
 
 void DartComponentController::Kill() {
   if (Dart_CurrentIsolate()) {
-    deprecated_loop::MessageLoop::GetCurrent()->SetAfterTaskCallback(nullptr);
     tonic::DartMicrotaskQueue::GetForCurrentThread()->Destroy();
 
-    deprecated_loop::MessageLoop::GetCurrent()->QuitNow();
+    loop_->Quit();
 
     // TODO(rosswang): The docs warn of threading issues if doing this again,
     // but without this, attempting to shut down the isolate finalizes app
