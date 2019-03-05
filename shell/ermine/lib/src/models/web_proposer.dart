@@ -23,14 +23,12 @@ import 'package:fuchsia_services/services.dart'
 
 /// Proposes suggestions for queries matching http(s) prefix or web search.
 class WebProposer extends QueryHandler {
-  final ProposalPublisherProxy _proposalPublisherProxy =
-      ProposalPublisherProxy();
-  final QueryHandlerBinding _queryHandlerBinding = QueryHandlerBinding();
+  final _proposalPublisherProxy = ProposalPublisherProxy();
+  final _queryHandlerBinding = QueryHandlerBinding();
 
   /// Starts the proposal process.
   void start() {
-    IntelligenceServicesProxy intelligenceServicesProxy =
-        IntelligenceServicesProxy();
+    final intelligenceServicesProxy = IntelligenceServicesProxy();
     connectToEnvironmentService(intelligenceServicesProxy);
     intelligenceServicesProxy
       ..getProposalPublisher(_proposalPublisherProxy.ctrl.request())
@@ -38,6 +36,12 @@ class WebProposer extends QueryHandler {
         _queryHandlerBinding.wrap(this),
       );
     intelligenceServicesProxy.ctrl.close();
+  }
+
+  /// Stops the proposal process.
+  void stop() {
+    _proposalPublisherProxy.ctrl.close();
+    _queryHandlerBinding.close();
   }
 
   @override

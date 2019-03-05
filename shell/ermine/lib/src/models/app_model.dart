@@ -111,7 +111,7 @@ class AppModel extends Model {
 
     KeyChordListener(
       onMeta: onMeta,
-      onLogout: _sessionShellContext.logout,
+      onLogout: onLogout,
       onCancel: onCancel,
     ).listen(_presentation);
 
@@ -182,4 +182,27 @@ class AppModel extends Model {
   /// Called when tapped behind Ask bar, quick settings, notifications or the
   /// Escape key was pressed.
   void onCancel() => _ask.hide();
+
+  /// Called when the user initiates logout (using keyboard or UI).
+  void onLogout() {
+    askChildViewConnection.value = null;
+    _sessionShellContext.logout();
+    storyManager.stop();
+    _pointerEventsListener.stop();
+    _packageProposer.stop();
+    _webProposer.stop();
+
+    _storyProviderWatcherBinding.close();
+    _focusRequestWatcherBinding.close();
+
+    _sessionShellContext.ctrl.close();
+    _componentContext.ctrl.close();
+    _presentation.ctrl.close();
+    _storyProvider.ctrl.close();
+    _puppetMaster.ctrl.close();
+    _focusController.ctrl.close();
+    _componentControllerProxy.ctrl.close();
+    _suggestionProvider.ctrl.close();
+    _ask.ctrl.close();
+  }
 }

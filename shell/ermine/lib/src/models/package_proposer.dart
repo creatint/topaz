@@ -37,6 +37,12 @@ class PackageProposer extends QueryHandler {
     intelligenceServicesProxy.ctrl.close();
   }
 
+  /// Stops the proposal process.
+  void stop() {
+    _proposalPublisherProxy.ctrl.close();
+    _queryHandlerBinding.close();
+  }
+
   @override
   Future<QueryResponse> onQuery(UserInput query) async {
     List<Proposal> proposals = <Proposal>[];

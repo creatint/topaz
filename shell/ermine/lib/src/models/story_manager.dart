@@ -66,6 +66,14 @@ class StoryManager extends ChangeNotifier {
       ..getStoryProvider(_storyProvider.ctrl.request());
   }
 
+  /// Disconnects from all service proxies.
+  void stop() {
+    _sessionShellBinding.close();
+    _focusController.ctrl.close();
+    _focusProvider.ctrl.close();
+    _storyProvider.ctrl.close();
+  }
+
   /// Advertises this instance as [SessionShell].
   void advertise(StartupContext startupContext) {
     startupContext.outgoing.addPublicService(
