@@ -329,20 +329,20 @@ void GoogleAuthProviderImpl::GetAppFirebaseToken(
     const char kRootSchema[] = R"({
       "type": "object",
       "properties": {
-        "id_token": {
+        "idToken": {
           "type": "string"
         },
         "email": {
           "type": "string"
         },
-        "local_id": {
+        "localId": {
           "type": "string"
         },
-        "expires_in": {
-          "type": "integer"
+        "expiresIn": {
+          "type": "string"
         }
       },
-      "required": ["id_token", "email", "local_id", "expires_in"]
+      "required": ["idToken", "email", "localId", "expiresIn"]
     })";
     auto root_schema = rapidjson_utils::InitSchema(kRootSchema);
     if (!root_schema) {
@@ -356,11 +356,11 @@ void GoogleAuthProviderImpl::GetAppFirebaseToken(
     }
 
     FirebaseTokenPtr fb_token = fuchsia::auth::FirebaseToken::New();
-    fb_token->id_token = oauth_response.json_response["id_token"].GetString();
+    fb_token->id_token = oauth_response.json_response["idToken"].GetString();
     fb_token->email = oauth_response.json_response["email"].GetString();
-    fb_token->local_id = oauth_response.json_response["local_id"].GetString();
+    fb_token->local_id = oauth_response.json_response["localId"].GetString();
     fb_token->expires_in =
-        oauth_response.json_response["expires_in"].GetUint64();
+        std::atoll(oauth_response.json_response["expiresIn"].GetString());
 
     callback(AuthProviderStatus::OK, std::move(fb_token));
   });

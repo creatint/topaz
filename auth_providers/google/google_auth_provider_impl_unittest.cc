@@ -232,8 +232,8 @@ TEST_F(GoogleAuthProviderImplTest, GetAppFirebaseTokenSuccess) {
 
   rapidjson::Document ok_response;
   ok_response.Parse(
-      "{\"id_token\":\"test_fb_token\", \"local_id\":\"test123\",\
-                      \"email\":\"foo@example.com\", \"expires_in\":3600}");
+      "{\"idToken\":\"test_fb_token\", \"localId\":\"test123\",\
+                      \"email\":\"foo@example.com\", \"expiresIn\":\"3600\"}");
   network_wrapper_.SetStringResponse(
       modular::JsonValueToPrettyString(ok_response), 200);
 
