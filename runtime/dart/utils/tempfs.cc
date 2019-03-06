@@ -7,6 +7,7 @@
 #include <string>
 #include <thread>
 
+#include <lib/async-loop/cpp/loop.h>
 #include <lib/fdio/namespace.h>
 #include <lib/fxl/logging.h>
 #include <lib/memfs/memfs.h>
@@ -14,15 +15,13 @@
 #include <zircon/status.h>
 #include <zircon/syscalls.h>
 
-#include "topaz/lib/deprecated_loop/message_loop.h"
-
 namespace {
 
 constexpr char kTmpPath[] = "/tmp";
 constexpr size_t kMaxTmpPages = 1024;
 
 void DispatchTempMemFS() {
-  deprecated_loop::MessageLoop loop;
+  async::Loop loop(&kAsyncLoopConfigAttachToThread);
   zx_status_t status = memfs_install_at_with_page_limit(
       loop.dispatcher(), kMaxTmpPages, kTmpPath);
   if (status != ZX_OK) {
