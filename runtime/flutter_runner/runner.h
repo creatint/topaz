@@ -28,7 +28,7 @@ class Runner final : public fuchsia::sys::Runner {
   ~Runner();
 
  private:
-  std::unique_ptr<async::Loop> loop_;
+  async::Loop* loop_;
 
   struct ActiveApplication {
     std::unique_ptr<async::Loop> loop;

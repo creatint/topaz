@@ -322,9 +322,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 Engine::~Engine() {
   shell_.reset();
   for (const auto& loop : host_loops_) {
-    async::PostTask(loop->dispatcher(), [current_loop = &loop]() {
-      (*current_loop)->Quit();
-    });
+    loop->Quit();
   }
   for (const auto& loop : host_loops_) {
     loop->JoinThreads();
