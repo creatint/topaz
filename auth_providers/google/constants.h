@@ -27,6 +27,9 @@ constexpr char kWebViewUrl[] = "web_view";
 constexpr auto kScopes = {
     // Used by google_auth_provider for retrieving unique user profile id.
     "openid",
+    // Used by google_auth_provider for retrieving user's verified email
+    // address.
+    "email",
     // Used by google_auth_provider for retrieving user profile attributes,
     // specifically display name, profile url and profile image.
     "profile", "https://www.googleapis.com/auth/assistant",
