@@ -7,7 +7,6 @@
 
 #include <fuchsia/io/cpp/fidl.h>
 #include <fuchsia/ui/viewsv1/cpp/fidl.h>
-#include <lib/async-loop/cpp/loop.h>
 #include <zx/event.h>
 #include <zx/eventpair.h>
 
@@ -17,6 +16,7 @@
 #include "lib/component/cpp/startup_context.h"
 #include "lib/fxl/memory/weak_ptr.h"
 #include "lib/ui/flutter/sdk_ext/src/natives.h"
+#include "topaz/lib/deprecated_loop/thread.h"
 
 namespace flutter {
 
@@ -45,7 +45,7 @@ class Engine final : public mozart::NativesDelegate {
   Delegate& delegate_;
   const std::string thread_label_;
   blink::Settings settings_;
-  std::array<std::unique_ptr<async::Loop>, 3> host_loops_;
+  std::array<deprecated_loop::Thread, 3> host_threads_;
   std::unique_ptr<IsolateConfigurator> isolate_configurator_;
   std::unique_ptr<shell::Shell> shell_;
   zx::event vsync_event_;

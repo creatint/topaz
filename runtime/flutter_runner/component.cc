@@ -7,7 +7,6 @@
 #include <dlfcn.h>
 #include <fs/pseudo-dir.h>
 #include <fs/remote-dir.h>
-#include <lib/async-loop/cpp/loop.h>
 #include <lib/fdio/directory.h>
 #include <lib/fdio/namespace.h>
 #include <sys/stat.h>
@@ -25,6 +24,7 @@
 #include "src/lib/files/file.h"
 #include "service_provider_dir.h"
 #include "task_observers.h"
+#include "topaz/lib/deprecated_loop/message_loop.h"
 #include "topaz/runtime/dart/utils/handle_exception.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
 
@@ -32,37 +32,27 @@ namespace flutter {
 
 constexpr char kDataKey[] = "data";
 
-static void LoopEpilogue(async_loop_t*, void*) {
-  ExecuteAfterTaskObservers();
-}
-
-constexpr async_loop_config_t kLoopConfig = {
-  .make_default_for_current_thread = false,
-  .epilogue = &LoopEpilogue,
-};
-
-std::pair<std::unique_ptr<async::Loop>,
+std::pair<std::unique_ptr<deprecated_loop::Thread>,
           std::unique_ptr<Application>>
 Application::Create(
     TerminationCallback termination_callback, fuchsia::sys::Package package,
     fuchsia::sys::StartupInfo startup_info,
     std::shared_ptr<component::Services> runner_incoming_services,
     fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller) {
-  auto loop = std::make_unique<async::Loop>(&kLoopConfig);
-  loop->StartThread();
+  auto thread = std::make_unique<deprecated_loop::Thread>();
   std::unique_ptr<Application> application;
 
   fml::AutoResetWaitableEvent latch;
-  async::PostTask(loop->dispatcher(), [&]() mutable {
+  thread->TaskRunner()->PostTask([&]() mutable {
     application.reset(
         new Application(std::move(termination_callback), std::move(package),
                         std::move(startup_info), runner_incoming_services,
                         std::move(controller)));
     latch.Signal();
   });
-
+  thread->Run();
   latch.Wait();
-  return {std::move(loop), std::move(application)};
+  return {std::move(thread), std::move(application)};
 }
 
 static std::string DebugLabelForURL(const std::string& url) {
@@ -297,12 +287,12 @@ Application::Application(
   // debugging (that is, with no bytecode), the VM will fall back on ASTs.
   settings_.dart_flags.push_back("--enable_interpreter");
 
-  auto dispatcher = async_get_default_dispatcher();
+  auto task_runner = deprecated_loop::MessageLoop::GetCurrent()->task_runner();
   const std::string component_url = package.resolved_url;
   settings_.unhandled_exception_callback =
-      [dispatcher, runner_incoming_services, component_url](
+      [task_runner, runner_incoming_services, component_url](
           const std::string& error, const std::string& stack_trace) {
-        async::PostTask(dispatcher,
+        task_runner->PostTask(
             [runner_incoming_services, component_url, error, stack_trace]() {
               fuchsia::dart::HandleException(runner_incoming_services,
                                              component_url, error, stack_trace);

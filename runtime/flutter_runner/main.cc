@@ -2,17 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include <lib/async-loop/cpp/loop.h>
 #include <trace-provider/provider.h>
 #include <trace/event.h>
 
 #include <cstdlib>
 
 #include "runner.h"
+#include "topaz/lib/deprecated_loop/message_loop.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
 
 int main(int argc, char const* argv[]) {
-  async::Loop loop(&kAsyncLoopConfigAttachToThread);
+  deprecated_loop::MessageLoop loop;
 
   fbl::unique_ptr<trace::TraceProvider> provider;
   {
@@ -28,7 +28,7 @@ int main(int argc, char const* argv[]) {
 
   FML_DLOG(INFO) << "Flutter application services initialized.";
 
-  flutter::Runner runner(&loop);
+  flutter::Runner runner;
 
   loop.Run();
 
