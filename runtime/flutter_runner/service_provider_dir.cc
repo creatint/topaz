@@ -5,7 +5,7 @@
 #include "topaz/runtime/flutter_runner/service_provider_dir.h"
 
 #include <lib/async/default.h>
-#include <lib/fdio/util.h>
+#include <lib/fdio/directory.h>
 #include <zircon/status.h>
 
 namespace flutter {

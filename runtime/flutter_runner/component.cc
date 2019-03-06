@@ -8,7 +8,8 @@
 #include <fs/pseudo-dir.h>
 #include <fs/remote-dir.h>
 #include <lib/async-loop/cpp/loop.h>
-#include <lib/fdio/util.h>
+#include <lib/fdio/directory.h>
+#include <lib/fdio/namespace.h>
 #include <sys/stat.h>
 #include <zircon/dlfcn.h>
 #include <zircon/status.h>

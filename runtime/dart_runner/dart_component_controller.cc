@@ -7,8 +7,8 @@
 #include <fcntl.h>
 #include <lib/async/default.h>
 #include <lib/async-loop/loop.h>
+#include <lib/fdio/fd.h>
 #include <lib/fdio/namespace.h>
-#include <lib/fdio/util.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <zircon/status.h>

@@ -6,7 +6,7 @@
 
 #include <fuchsia/net/oldhttp/cpp/fidl.h>
 #include <fuchsia/ui/app/cpp/fidl.h>
-#include <lib/fdio/util.h>
+#include <lib/fdio/directory.h>
 #include <lib/fit/function.h>
 #include <lib/syslog/global.h>
 

@@ -10,7 +10,6 @@
 #include <lib/fdio/io.h>
 #include <lib/fdio/limits.h>
 #include <lib/fdio/namespace.h>
-#include <lib/fdio/util.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <zircon/process.h>

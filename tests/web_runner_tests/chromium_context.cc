@@ -5,7 +5,7 @@
 #include "topaz/tests/web_runner_tests/chromium_context.h"
 
 #include <gtest/gtest.h>
-#include <lib/fdio/util.h>
+#include <lib/fdio/directory.h>
 #include <lib/fxl/logging.h>
 #include <zircon/status.h>
 
