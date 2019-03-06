@@ -51,10 +51,8 @@ class BaseShellImpl extends BaseShell implements Lifecycle {
     if (onReady != null) {
       _baseShellContextProxy.ctrl.bind(baseShellContextHandle);
       await _baseShellContextProxy
-          .getUserProvider(_userProviderProxy.ctrl.request());
-      if (baseShellParams.presentation.channel != null) {
-        _presentationProxy.ctrl.bind(baseShellParams.presentation);
-      }
+          ..getUserProvider(_userProviderProxy.ctrl.request())
+          ..getPresentation(_presentationProxy.ctrl.request());
       onReady(_userProviderProxy, _baseShellContextProxy, _presentationProxy);
     }
   }
