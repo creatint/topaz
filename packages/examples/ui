@@ -9,6 +9,7 @@
         "//topaz/examples/ui/jank:package",
         "//topaz/examples/ui/localized_mod",
         "//topaz/examples/ui/paint:package",
-        "//topaz/examples/ui/sketchy_flutter"
+        "//topaz/examples/ui/sketchy_flutter",
+        "//topaz/examples/ui/view_config_demo"
     ]
 }
