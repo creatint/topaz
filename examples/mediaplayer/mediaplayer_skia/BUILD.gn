@@ -37,7 +37,6 @@ executable("mediaplayer_skia_bin") {
 }
 
 package("mediaplayer_skia") {
-  deprecated_global_persistent_storage = "//build"
   binaries = [
     {
       name = "mediaplayer_skia"
