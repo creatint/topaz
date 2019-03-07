@@ -9,12 +9,12 @@
 #include <unordered_map>
 
 #include <fuchsia/sys/cpp/fidl.h>
+#include <lib/async-loop/cpp/loop.h>
 
 #include "component.h"
 #include "flutter/fml/macros.h"
 #include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/binding_set.h"
-#include "topaz/lib/deprecated_loop/message_loop.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
 namespace flutter {
@@ -23,19 +23,21 @@ namespace flutter {
 // their own threads.
 class Runner final : public fuchsia::sys::Runner {
  public:
-  Runner();
+  explicit Runner(async::Loop* loop);
 
   ~Runner();
 
  private:
+  async::Loop* loop_;
+
   struct ActiveApplication {
-    std::unique_ptr<deprecated_loop::Thread> thread;
+    std::unique_ptr<async::Loop> loop;
     std::unique_ptr<Application> application;
 
-    ActiveApplication(std::pair<std::unique_ptr<deprecated_loop::Thread>,
+    ActiveApplication(std::pair<std::unique_ptr<async::Loop>,
                                 std::unique_ptr<Application>>
                           pair)
-        : thread(std::move(pair.first)), application(std::move(pair.second)) {}
+        : loop(std::move(pair.first)), application(std::move(pair.second)) {}
 
     ActiveApplication() = default;
   };

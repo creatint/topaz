@@ -4,6 +4,8 @@
 
 #include "vulkan_surface_producer.h"
 
+#include <lib/async/default.h>
+#include <lib/async/cpp/task.h>
 #include <trace/event.h>
 
 #include <memory>
@@ -146,15 +148,14 @@ void VulkanSurfaceProducer::OnSurfacesPresented(
 
   // If no further surface production has taken place for 10 frames (TODO:
   // Don't hardcode refresh rate here), then shrink our surface pool to fit.
-  constexpr auto kShouldShrinkThreshold =
-      fxl::TimeDelta::FromMilliseconds(10 * 16.67);
-  deprecated_loop::MessageLoop::GetCurrent()->task_runner()->PostDelayedTask(
+  constexpr auto kShouldShrinkThreshold = zx::msec(10 * 16.67);
+  async::PostDelayedTask(async_get_default_dispatcher(),
       [self = weak_factory_.GetWeakPtr(), kShouldShrinkThreshold] {
         if (!self) {
           return;
         }
         auto time_since_last_produce =
-            fxl::TimePoint::Now() - self->last_produce_time_;
+            async::Now(async_get_default_dispatcher()) - self->last_produce_time_;
         if (time_since_last_produce >= kShouldShrinkThreshold) {
           self->surface_pool_->ShrinkToFit();
         }
@@ -225,7 +226,7 @@ VulkanSurfaceProducer::ProduceSurface(
     const flow::LayerRasterCacheKey& layer_key,
     std::unique_ptr<scenic::EntityNode> entity_node) {
   FML_DCHECK(valid_);
-  last_produce_time_ = fxl::TimePoint::Now();
+  last_produce_time_ = async::Now(async_get_default_dispatcher());
   auto surface = surface_pool_->AcquireSurface(size);
   surface->SetRetainedInfo(layer_key, std::move(entity_node));
   return surface;
