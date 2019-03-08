@@ -4,13 +4,21 @@
 
 import 'vmo_holder.dart';
 
+/// With this allocator, all allocated blocks in the VMO will be 32 bytes.
+///
+/// (Block index 0 (the "HEADER" block) and 1 (root node) are not allocated.)
 const int _blockSize = 32;
+
+/// 32 byte blocks means the [orderBits] field value == 1.
+const int defaultBlockOrder = 1;
 
 /// The base class for which log writers will inherit from.
 ///
-/// (The current implementation is a barely-MVP heap: a 32-byte-block slab allocator.)
+/// (The current implementation is a barely-MVP heap: a 32-byte-block slab
+/// allocator.)
 class VmoHeap extends VmoHolder {
-  /// Size in bytes of the touched / visited subset of the VMO incorporated in the data structure.
+  /// Size in bytes of the touched / visited subset of the VMO incorporated in
+  /// the data structure.
   int _currentSize;
 
   /// Max size of the VMO in bytes.

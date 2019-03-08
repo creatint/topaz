@@ -34,6 +34,7 @@ dart_library("fuchsia_inspect") {
 dart_test("fuchsia_inspect_package_unittests") {
   sources = [
     "bitfield64_test.dart",
+    "block_test.dart",
     "vmo_fields_test.dart",
   ]
 

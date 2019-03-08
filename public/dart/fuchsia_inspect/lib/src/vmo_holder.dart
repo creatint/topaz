@@ -20,6 +20,9 @@ class VmoHolder {
     _vmo = Vmo(result.handle);
   }
 
+  /// Size of the VMO in bytes
+  int get size => _size;
+
   /// Writes data to VMO at offset (not index).
   void write(int offset, ByteData data) {
     int status = _vmo.write(data, offset);
@@ -40,6 +43,12 @@ class VmoHolder {
 
   /// Writes int64 to VMO.
   void writeInt64(int offset, int value) {
+    var data = ByteData(8)..setInt64(0, value, Endian.little);
+    write(offset, data);
+  }
+
+  /// Writes int64 directly to VMO for immediate visibility.
+  void writeInt64Direct(int offset, int value) {
     var data = ByteData(8)..setInt64(0, value, Endian.little);
     write(offset, data);
   }

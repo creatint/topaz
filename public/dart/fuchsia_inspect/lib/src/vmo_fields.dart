@@ -12,6 +12,36 @@
 
 import 'bitfield64.dart';
 
+/// Index of the one-and-only header block (16 bytes).
+const int headerIndex = 0;
+
+/// 'INSP' utf8 string for HEADER block magic value.
+const int headerMagicNumber = 0x50534e49;
+
+/// Each increment of [index] is 16 bytes in the VMO.
+const int bytesPerIndex = 16;
+
+/// Version for HEADER block.
+const int headerVersionNumber = 0;
+
+/// Index of the one-and-only root node (16 bytes).
+const int rootNodeIndex = 1;
+
+/// Each Node needs a parent; Root's parent is 0, which is never a real node.
+const int rootParentIndex = 0;
+
+/// Index of the NAME of the one-and-only root node (32 bytes).
+const int rootNameIndex = 2;
+
+/// Name of the root node.
+const String rootName = 'root';
+
+/// First index availalbe for the heap.
+const int heapStartIndex = 4;
+
+/// Size of VMO-block's header bitfield in bytes.
+const int headerSizeBytes = 8;
+
 /// Types of VMO blocks.
 ///
 /// Basically an enum with conversion to/from specified numeric values.
