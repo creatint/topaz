@@ -34,6 +34,7 @@
             "fuchsia.process.Launcher",
             "fuchsia.process.Resolver",
             "fuchsia.sys.Launcher",
+            "fuchsia.tracelink.Registry",
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.input.ImeVisibilityService",
             "fuchsia.ui.input.InputDeviceRegistry",
