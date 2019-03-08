@@ -1,6 +1,5 @@
 {
     "host_tests" : [
-      "//topaz/app/dashboard:dashboard_tests",
       "//topaz/bin/dart_fidl_json/test:dart_fidl_json_test",
       "//topaz/examples/test/flutter_widget_test",
       "//topaz/lib/keyboard/flutter:keyboard_test",
