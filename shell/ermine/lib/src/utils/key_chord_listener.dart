@@ -21,7 +21,7 @@ class KeyChordListener extends KeyboardCaptureListenerHack {
   // Key chords that the session shell listens to and the function to call
   // when the key is pressed.
   final _keyChords = <KeyboardEvent, void Function(KeyChordListener)>{
-    // Cmd/Win/Meta + Space bar.
+    // Left Alt + Space bar.
     KeyboardEvent(
       deviceId: 0,
       eventTime: 0,
