@@ -5,10 +5,11 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_math/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart' show ImportToken;
-import 'package:fidl_fuchsia_ui_views/fidl_async.dart' show ViewHolderToken;
 import 'package:fidl_fuchsia_ui_viewsv1/fidl_async.dart';
+import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:zircon/zircon.dart';
@@ -67,7 +68,7 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
 
   final ChildViewConnectionCallback _onAvailableCallback;
   final ChildViewConnectionCallback _onUnavailableCallback;
-  ViewHolderToken _viewHolderToken;
+  ImportToken _viewHolderToken;
 
   int _viewKey;
   ViewProperties _currentViewProperties;
@@ -78,8 +79,25 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
   SceneHost _sceneHost;
   int _attachments = 0;
 
+  /// Deprecated.
+  ChildViewConnection(InterfaceHandle<ViewOwner> viewOwner,
+      {ChildViewConnectionCallback onAvailable,
+      ChildViewConnectionCallback onUnavailable})
+      : this.fromImportToken(
+            ImportToken(
+                value: EventPair(viewOwner?.passChannel()?.passHandle())),
+            onAvailable: onAvailable,
+            onUnavailable: onUnavailable);
+
   /// Constructs |ChildViewConnection| from a token.
-  ChildViewConnection(ViewHolderToken viewHolderToken,
+  ChildViewConnection.fromViewHolderToken(EventPair viewHolderToken,
+      {ChildViewConnectionCallback onAvailable,
+      ChildViewConnectionCallback onUnavailable})
+      : this.fromImportToken(ImportToken(value: viewHolderToken),
+            onAvailable: onAvailable, onUnavailable: onUnavailable);
+
+  /// Constructs |ChildViewConnection| from a token.
+  ChildViewConnection.fromImportToken(ImportToken viewHolderToken,
       {ChildViewConnectionCallback onAvailable,
       ChildViewConnectionCallback onUnavailable})
       : _onAvailableCallback = onAvailable ?? _emptyConnectionCallback,
@@ -87,20 +105,6 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
         _viewHolderToken = viewHolderToken {
     assert(_viewHolderToken?.value != null);
   }
-
-  /// Deprecated.
-  ChildViewConnection.fromViewHolderToken(EventPair viewHolderToken,
-      {ChildViewConnectionCallback onAvailable,
-      ChildViewConnectionCallback onUnavailable})
-      : this(ViewHolderToken(value: viewHolderToken),
-            onAvailable: onAvailable, onUnavailable: onUnavailable);
-
-  /// Deprecated.
-  ChildViewConnection.fromImportToken(ImportToken viewHolderToken,
-      {ChildViewConnectionCallback onAvailable,
-      ChildViewConnectionCallback onUnavailable})
-      : this(ViewHolderToken(value: viewHolderToken.value),
-            onAvailable: onAvailable, onUnavailable: onUnavailable);
 
   bool get _attached => _attachments > 0;
 
@@ -167,7 +171,7 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
     _viewKey = shared.nextGlobalViewKey();
     shared.globalViewContainer
         .addChild2(_viewKey, _viewHolderToken.value, sceneTokens.second);
-    _viewHolderToken = ViewHolderToken(value: EventPair(null));
+    _viewHolderToken = ImportToken(value: EventPair(null));
     assert(
         !ViewContainerListenerImpl.instance.containsConnectionForKey(_viewKey));
     ViewContainerListenerImpl.instance.addConnectionForKey(_viewKey, this);
@@ -232,7 +236,7 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
     final EventPairPair viewTokens = new EventPairPair();
     assert(viewTokens.status == ZX.OK);
     ViewContainerListenerImpl.instance.removeConnectionForKey(_viewKey);
-    _viewHolderToken = ViewHolderToken(value: viewTokens.first);
+    _viewHolderToken = ImportToken(value: viewTokens.first);
     shared.globalViewContainer.removeChild2(_viewKey, viewTokens.second);
     _viewKey = null;
     _available = false;
