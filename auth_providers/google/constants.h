@@ -34,6 +34,5 @@ constexpr auto kScopes = {
     // specifically display name, profile url and profile image.
     "profile", "https://www.googleapis.com/auth/assistant",
     "https://www.googleapis.com/auth/youtube.readonly",
-    "https://www.googleapis.com/auth/drive",
     "https://www.googleapis.com/auth/devstorage.read_write"};
 }  // namespace google_auth_provider
