@@ -15,6 +15,7 @@ import 'package:fidl_fuchsia_ui_input/fidl_async.dart';
 /// Listens for key chords and triggers its callbacks when they occur.
 class KeyChordListener extends KeyboardCaptureListenerHack {
   final VoidCallback onMeta;
+  final VoidCallback onFullscreen;
   final VoidCallback onCancel;
   final VoidCallback onLogout;
 
@@ -31,6 +32,17 @@ class KeyChordListener extends KeyboardCaptureListenerHack {
       phase: KeyboardEventPhase.pressed,
     ): (listener) {
       listener.onMeta?.call();
+    },
+    // Right Alt + Lower case f.
+    KeyboardEvent(
+      deviceId: 0,
+      eventTime: 0,
+      hidUsage: 0,
+      codePoint: ascii.encode('f')[0],
+      modifiers: kModifierRightAlt,
+      phase: KeyboardEventPhase.pressed,
+    ): (listener) {
+      listener.onFullscreen?.call();
     },
     // Lower case o + Right Alt.
     KeyboardEvent(
@@ -58,7 +70,12 @@ class KeyChordListener extends KeyboardCaptureListenerHack {
 
   final _keyListenerBindings = <KeyboardCaptureListenerHackBinding>[];
 
-  KeyChordListener({this.onMeta, this.onLogout, this.onCancel});
+  KeyChordListener({
+    this.onMeta,
+    this.onFullscreen,
+    this.onLogout,
+    this.onCancel,
+  });
 
   /// Starts listening to key chords.
   void listen(Presentation presentation) {

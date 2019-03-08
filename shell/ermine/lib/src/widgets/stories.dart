@@ -48,8 +48,10 @@ class Stories extends StatelessWidget {
           },
           itemBuilder: (context, index) {
             final story = index == 0 ? null : stories.elementAt(index - 1);
-            return Container(
-              padding: EdgeInsets.all(32),
+            return AnimatedPadding(
+              duration: Duration(milliseconds: 200),
+              curve: Curves.ease,
+              padding: EdgeInsets.all(storyManager.isFullscreen ? 0 : 32),
               child: index == 0
                   ? null
                   : Material(
@@ -89,11 +91,13 @@ class Stories extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Positioned(
-                            top: 18,
-                            left: 2,
-                            right: 2,
-                            bottom: 2,
+                          AnimatedPositioned(
+                            duration: Duration(milliseconds: 200),
+                            curve: Curves.ease,
+                            top: storyManager.isFullscreen ? 0 : 18,
+                            left: storyManager.isFullscreen ? 0 : 2,
+                            right: storyManager.isFullscreen ? 0 : 2,
+                            bottom: storyManager.isFullscreen ? 0 : 2,
                             child: GestureDetector(
                               // Disable listview scrolling on top of story.
                               onHorizontalDragStart: (_) {},

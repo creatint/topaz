@@ -111,6 +111,7 @@ class AppModel extends Model {
 
     KeyChordListener(
       onMeta: onMeta,
+      onFullscreen: storyManager.toggleFullscreen,
       onLogout: onLogout,
       onCancel: onCancel,
     ).listen(_presentation);

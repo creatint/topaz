@@ -51,6 +51,9 @@ class StoryManager extends ChangeNotifier {
   /// Holds the id of the story that has focus.
   String focusedStoryId;
 
+  bool _isFullscreen = false;
+  bool get isFullscreen => _isFullscreen;
+
   final _focusProvider = FocusProviderProxy();
   final _focusController = FocusControllerProxy();
   final _storyProvider = StoryProviderProxy();
@@ -154,6 +157,12 @@ class StoryManager extends ChangeNotifier {
       focusedStoryId = _storyIds[index - 1];
       _focusController.set(focusedStoryId);
     }
+  }
+
+  /// toggles fullscreen mode
+  void toggleFullscreen() {
+    _isFullscreen = !_isFullscreen;
+    notifyListeners();
   }
 
   /// Requests focus to be set on the story.
