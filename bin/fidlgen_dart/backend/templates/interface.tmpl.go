@@ -63,7 +63,9 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
 {{- if not .HasRequest }}
   {{- if .HasResponse }}
       case {{ .OrdinalName }}:
+        final String _name = {{ .TypeSymbol }}.name;
         try {
+          Timeline.startSync(_name);
           final Function $callback = {{ .Name }};
           if ($callback == null) {
             $message.closeHandles();
@@ -78,10 +80,11 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
           );
         // ignore: avoid_catches_without_on_clauses
         } catch(_e) {
-          final String _name = {{ .TypeSymbol }}.name;
           ctrl.proxyError('Exception handling event $_name: $_e');
           ctrl.close();
           rethrow;
+        } finally {
+          Timeline.finishSync();
         }
         break;
   {{- end }}
@@ -111,7 +114,9 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
   {{- if .HasRequest }}
     {{- if .HasResponse }}
       case {{ .OrdinalName }}:
+        final String _name = {{ .TypeSymbol }}.name;
         try {
+          Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
           $decoder.claimMemory({{ .ResponseSize }});
           $callback(
@@ -121,10 +126,11 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
           );
         // ignore: avoid_catches_without_on_clauses
         } catch(_e) {
-          final String _name = {{ .TypeSymbol }}.name;
           ctrl.proxyError('Exception handling method response $_name: $_e');
           ctrl.close();
           rethrow;
+        } finally {
+          Timeline.finishSync();
         }
         break;
     {{- end }}
@@ -251,7 +257,9 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
 {{- range .Methods }}
   {{- if .HasRequest }}
       case {{ .OrdinalName }}:
+        final String _name = {{ .TypeSymbol }}.name;
         try {
+          Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
           $decoder.claimMemory({{ .RequestSize }});
           impl.{{ .Name }}(
@@ -265,9 +273,10 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
         // ignore: avoid_catches_without_on_clauses
         } catch(_e) {
           close();
-          final String _name = {{ .TypeSymbol }}.name;
           print('Exception handling method call $_name: $_e');
           rethrow;
+        } finally {
+          Timeline.finishSync();
         }
         break;
   {{- end }}
@@ -471,7 +480,9 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
 {{- if not .HasRequest }}
   {{- if .HasResponse }}
       case {{ .OrdinalName }}:
+        final String _name = {{ .TypeSymbol }}.name;
         try {
+          Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
           $decoder.claimMemory({{ .ResponseSize }});
           _{{ .Name }}EventStreamController.add(
@@ -479,10 +490,11 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
           );
         // ignore: avoid_catches_without_on_clauses
         } catch(_e) {
-          final String _name = {{ .TypeSymbol }}.name;
           ctrl.proxyError(new $fidl.FidlError('Exception handling event $_name: $_e'));
           ctrl.close();
           rethrow;
+        } finally {
+          Timeline.finishSync();
         }
         break;
   {{- end }}
@@ -512,7 +524,9 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
   {{- if .HasRequest }}
     {{- if .HasResponse }}
       case {{ .OrdinalName }}:
+        final String _name = {{ .TypeSymbol }}.name;
         try {
+          Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
           $decoder.claimMemory({{ .ResponseSize }});
           $completer.complete(
@@ -520,10 +534,11 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
           );
         // ignore: avoid_catches_without_on_clauses
         } catch(_e) {
-          final String _name = {{ .TypeSymbol }}.name;
           ctrl.proxyError(new $fidl.FidlError('Exception handling method response $_name: $_e'));
           ctrl.close();
           rethrow;
+        } finally {
+          Timeline.finishSync();
         }
         break;
     {{- end }}
@@ -617,7 +632,9 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
     {{- range .Methods }}
       {{- if .HasRequest }}
           case {{ .OrdinalName }}:
+            final String _name = {{ .TypeSymbol }}.name;
             try {
+              Timeline.startSync(_name);
               final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
               $decoder.claimMemory({{ .RequestSize }});
               final {{ template "AsyncReturn" . }} $future = impl.{{ .Name }}(
@@ -637,16 +654,16 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
                   $respond($encoder.message);
                 }, onError: (_e) {
                   close();
-                  final String _name = {{ .TypeSymbol }}.name;
                   print('Exception handling method call $_name: $_e');
                 });
               {{- end }}
             // ignore: avoid_catches_without_on_clauses
             } catch(_e) {
               close();
-              final String _name = {{ .TypeSymbol }}.name;
               print('Exception handling method call $_name: $_e');
               rethrow;
+            } finally {
+              Timeline.finishSync();
             }
             break;
       {{- end }}

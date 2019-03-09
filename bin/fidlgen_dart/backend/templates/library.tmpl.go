@@ -16,6 +16,7 @@ const Library = `
 library {{ .LibraryName }};
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
@@ -94,6 +95,7 @@ export 'fidl.dart' show {{ range $index, $item := . }}
 library {{ .LibraryName }}_async;
 
 import 'dart:async';
+import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
