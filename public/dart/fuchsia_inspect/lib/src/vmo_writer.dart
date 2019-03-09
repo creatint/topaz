@@ -4,7 +4,10 @@
 
 import 'dart:typed_data';
 
-import 'vmo_heap.dart';
+import 'vmo_holder.dart';
+
+/// Index 0 will never be allocated, so it's the designated 'invalid' value.
+const int invalidIndex = 0;
 
 /// Opaque information referring to a Value (Property, Metric, Node) stored in the VMO.
 ///
@@ -26,12 +29,12 @@ class InspectHandle {
 /// This holds a VMO, writes Nodes, Metrics, and Properties to
 /// the VMO, modifies them, and deletes them.
 class VmoWriter {
-  final VmoHeap _vmo;
+  final VmoHolder _vmo;
 
   /// Constructor.
   ///
   /// maxSize should be >= 32 bytes and will be rounded up to a multiple of 4K.
-  VmoWriter(int maxSizeBytes) : _vmo = VmoHeap(maxSizeBytes, maxSizeBytes);
+  VmoWriter(this._vmo);
 
   // All the implementations here are trivially wrong placeholders.
   // For now, just look at the method signature.

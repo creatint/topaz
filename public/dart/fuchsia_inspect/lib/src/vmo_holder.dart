@@ -7,21 +7,19 @@ import 'package:zircon/zircon.dart';
 
 /// Holder for a VMO with read/write capability.
 class VmoHolder {
-  int _size;
+  /// Size of the VMO in bytes
+  final int size;
   Vmo _vmo;
 
   /// Creates and holds a VMO of desired size.
-  VmoHolder(this._size) {
-    HandleResult result = System.vmoCreate(_size);
+  VmoHolder(this.size) {
+    HandleResult result = System.vmoCreate(size);
     if (result.status != ZX.OK) {
       throw new ZxStatusException(
           result.status, getStringForStatus(result.status));
     }
     _vmo = Vmo(result.handle);
   }
-
-  /// Size of the VMO in bytes
-  int get size => _size;
 
   /// Writes data to VMO at offset (not index).
   void write(int offset, ByteData data) {

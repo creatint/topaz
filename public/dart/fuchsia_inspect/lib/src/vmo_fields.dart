@@ -15,7 +15,7 @@ import 'bitfield64.dart';
 /// Index of the one-and-only header block (16 bytes).
 const int headerIndex = 0;
 
-/// 'INSP' utf8 string for HEADER block magic value.
+/// 'INSP' utf8 string (little endian) for HEADER block magic value.
 const int headerMagicNumber = 0x50534e49;
 
 /// Each increment of [index] is 16 bytes in the VMO.

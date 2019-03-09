@@ -18,7 +18,7 @@ dart_library("fuchsia_inspect") {
     "src/inspect.dart",
     "src/vmo_writer.dart",
     "src/vmo_fields.dart",
-    "src/vmo_heap.dart",
+    "src/heap.dart",
   ]
 
   deps = [
@@ -35,6 +35,8 @@ dart_test("fuchsia_inspect_package_unittests") {
   sources = [
     "bitfield64_test.dart",
     "block_test.dart",
+    "heap_test.dart",
+    "util.dart",
     "vmo_fields_test.dart",
   ]
 

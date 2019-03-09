@@ -8,8 +8,8 @@ import 'dart:typed_data';
 
 import 'package:fuchsia_inspect/src/block.dart';
 import 'package:fuchsia_inspect/src/vmo_fields.dart';
-import 'package:fuchsia_inspect/src/vmo_holder.dart';
 import 'package:test/test.dart';
+import 'util.dart';
 
 void main() {
   group('Block', () {
@@ -98,10 +98,10 @@ void main() {
         ..setUint8(8, 0x7f) // Length should be 0x7f
         ..setUint8(12, 0x0a) // Extent
         ..setUint8(15, 0xb0); // Flags 0xb
-      _compare(
-          vmo.bytes,
+      compare(
+          vmo,
           0,
-          '${_hexChar(BlockType.propertyValue.value)} 1'
+          '${hexChar(BlockType.propertyValue.value)} 1'
           '14 00 00  20 03 00 00  7f00 0000 0a00 00b0');
       var block = Block.read(vmo, 0);
       expect(block.size, 32);
@@ -120,10 +120,10 @@ void main() {
         ..setUint8(1, 0x02) // Set length to 2
         ..setUint8(8, 0x41) // 'a'
         ..setUint8(9, 0x42); // 'b'
-      _compare(
-          vmo.bytes,
+      compare(
+          vmo,
           0,
-          '${_hexChar(BlockType.nameUtf8.value)} 1'
+          '${hexChar(BlockType.nameUtf8.value)} 1'
           '02 00 00 0000 0000  4142 0000 0000 0000 0000');
       var block = Block.read(vmo, 0);
       expect(block.size, 32);
@@ -137,20 +137,20 @@ void main() {
     test('Creating, locking, and unlocking the VMO header', () {
       var vmo = FakeVmo(32);
       var block = Block.create(vmo, 0)..becomeHeader();
-      _compare(
-          vmo.bytes,
+      compare(
+          vmo,
           0,
           '${_hexChar(BlockType.header.value)} 0'
           '00 0000 49 4E 53 50  0000 0000 0000 0000');
       block.lock();
-      _compare(
-          vmo.bytes,
+      compare(
+          vmo,
           0,
           '${_hexChar(BlockType.header.value)} 0'
           '00 0000 49 4E 53 50  0100 0000 0000 0000');
       block.unlock();
-      _compare(
-          vmo.bytes,
+      compare(
+          vmo,
           0,
           '${_hexChar(BlockType.header.value)} 0'
           '00 0000 49 4E 53 50  0200 0000 0000 0000');
@@ -159,26 +159,26 @@ void main() {
     test('Becoming the special root node', () {
       var vmo = FakeVmo(64);
       Block.create(vmo, 1).becomeRoot();
-      _compare(vmo.bytes, 16,
+      compare(vmo, 16,
           '${_hexChar(BlockType.nodeValue.value)} 0 00 0000 2000 0000 0000');
     });
 
     test('Becoming and modifying an intValue via free, reserved, anyValue', () {
       var vmo = FakeVmo(64);
       var block = Block.create(vmo, 2)..becomeFree(5);
-      _compare(vmo.bytes, 32,
-          '${_hexChar(BlockType.free.value)} 1 05 00 00 0000 0000');
+      compare(
+          vmo, 32, '${_hexChar(BlockType.free.value)} 1 05 00 00 0000 0000');
       expect(block.nextFree, 5);
       block.becomeReserved();
-      _compare(vmo.bytes, 32, '${_hexChar(BlockType.reserved.value)} 1');
+      compare(vmo, 32, '${_hexChar(BlockType.reserved.value)} 1');
       block.becomeValue(parentIndex: 0xbc, nameIndex: 0x7d);
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.anyValue.value)} 1 bc 00 00 d0 07 00 00');
       block.becomeIntMetric(0xbeef);
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.intValue.value)} 1 bc 00 00 d0 07 00 00 efbe');
       block.intValue += 1;
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.intValue.value)} 1 bc 00 00 d0 07 00 00 f0be');
     });
 
@@ -189,13 +189,13 @@ void main() {
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
         ..becomeNode();
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.nodeValue.value)} 1 bc 00 00 d0 07 00 00 0000');
       block.childCount += 1;
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.nodeValue.value)} 1 bc 00 00 d0 07 00 00 0100');
       block.becomeTombstone();
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.tombstone.value)} 1 bc 00 00 d0 07 00 00 0100');
     });
 
@@ -206,7 +206,7 @@ void main() {
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
         ..becomeDoubleMetric(1.0);
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.doubleValue.value)} 1 bc 00 00 d0 07 00 00 ');
       expect(vmo.bytes.getFloat64(40, Endian.little), 1.0);
       block.doubleValue++;
@@ -220,19 +220,19 @@ void main() {
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
         ..becomeProperty();
-      _compare(
-          vmo.bytes,
+      compare(
+          vmo,
           32,
-          '${_hexChar(BlockType.propertyValue.value)} 1 bc 00 00 d0 07 00 00 '
+          '${hexChar(BlockType.propertyValue.value)} 1 bc 00 00 d0 07 00 00 '
           '00 00 00 00  00 00 00 00');
       block
         ..propertyExtentIndex = 0x35
         ..propertyTotalLength = 0x17b
         ..propertyFlags = 0xa;
-      _compare(
-          vmo.bytes,
+      compare(
+          vmo,
           32,
-          '${_hexChar(BlockType.propertyValue.value)} 1 bc 00 00 d0 07 00 00 '
+          '${hexChar(BlockType.propertyValue.value)} 1 bc 00 00 d0 07 00 00 '
           '7b 01 00 00  35 00 00 a0');
       expect(block.propertyTotalLength, 0x17b);
       expect(block.propertyExtentIndex, 0x35);
@@ -242,7 +242,7 @@ void main() {
     test('Becoming a name', () {
       var vmo = FakeVmo(64);
       Block.create(vmo, 2).becomeName('abc');
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.nameUtf8.value)} 1 03 0000 0000 0000 61 62 63');
     });
 
@@ -253,49 +253,12 @@ void main() {
         ..becomeReserved()
         ..becomeExtent(0x42)
         ..setExtentPayload(Block.stringToByteData('abc'));
-      _compare(vmo.bytes, 32,
+      compare(vmo, 32,
           '${_hexChar(BlockType.extent.value)} 1 42 0000 0000 0000 61 62 63');
       expect(block.nextExtent, 0x42);
       expect(block.payloadSpaceBytes, block.size - headerSizeBytes);
     });
   });
-}
-
-class FakeVmo implements VmoHolder {
-  /// The memory contents of this "VMO".
-  final ByteData bytes;
-
-  /// Size of the "VMO".
-  @override
-  final int size;
-
-  /// Creates non-shared (ByteData) memory to simulate VMO operations.
-  FakeVmo(this.size) : bytes = ByteData(size);
-
-  /// Writes to the "VMO".
-  @override
-  void write(int offset, ByteData data) {
-    bytes.buffer.asUint8List().setAll(offset, data.buffer.asUint8List());
-  }
-
-  /// Reads from the "VMO".
-  @override
-  ByteData read(int offset, int size) {
-    return ByteData.view(bytes.buffer, offset, size);
-  }
-
-  /// Writes int64 to VMO.
-  @override
-  void writeInt64(int offset, int value) =>
-      bytes.setInt64(offset, value, Endian.little);
-
-  /// Writes int64 directly to VMO for immediate visibility.
-  @override
-  void writeInt64Direct(int offset, int value) => writeInt64(offset, value);
-
-  /// Reads int64 from VMO.
-  @override
-  int readInt64(int offset) => bytes.getInt64(offset, Endian.little);
 }
 
 /// Verify which block types are accepted by which functions.
@@ -328,48 +291,5 @@ String _hexChar(int value) {
     return String.fromCharCode(value + _ascii('0'));
   } else {
     return String.fromCharCode(value - 10 + _ascii('a'));
-  }
-}
-
-/// Compares contents, starting at [offset], with the hex values in [spec].
-///
-/// Valid chars in [spec] are:
-///   ' ' (ignored completely)
-///   _ x X (skips 4 bits)
-///   0..9 a..f A..F (hex value of 4 bits)
-///
-/// [spec] is little-endian, which makes integer values look weird. If you
-/// write 0x234 into memory, it'll be matched by '34 02' (or by 'x4_2')
-void _compare(ByteData data, int offset, String spec) {
-  int nybble = offset * 2;
-  for (int i = 0; i < spec.length; i++) {
-    int rune = spec.codeUnitAt(i);
-    if (rune == _ascii(' ')) {
-      continue;
-    }
-    if (rune == _ascii('_') || rune == _ascii('x') || rune == _ascii('X')) {
-      nybble++;
-      continue;
-    }
-    int value;
-    if (rune >= _ascii('0') && rune <= _ascii('9')) {
-      value = rune - _ascii('0');
-    } else if (rune >= _ascii('a') && rune <= _ascii('f')) {
-      value = rune - _ascii('a') + 10;
-    } else if (rune >= _ascii('A') && rune <= _ascii('F')) {
-      value = rune - _ascii('A') + 10;
-    } else {
-      throw ArgumentError('Illegal char "${String.fromCharCode(rune)}"');
-    }
-    int byte = nybble ~/ 2;
-    int dataAtByte = data.getUint8(byte);
-    int dataAtNybble = (nybble & 1 == 0) ? dataAtByte >> 4 : dataAtByte & 0xf;
-    if (dataAtNybble != value) {
-      expect(dataAtNybble, value,
-          reason: 'byte[$byte] = ${dataAtByte.toRadixString(16)}. '
-              'Nybble $nybble was ${dataAtNybble.toRadixString(16)} '
-              'but expected ${value.toRadixString(16)}.');
-    }
-    nybble++;
   }
 }

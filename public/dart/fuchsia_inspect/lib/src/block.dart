@@ -9,8 +9,8 @@ import 'dart:typed_data';
 import 'package:meta/meta.dart';
 
 import 'bitfield64.dart';
+import 'heap.dart';
 import 'vmo_fields.dart';
-import 'vmo_heap.dart';
 import 'vmo_holder.dart';
 
 /// Mirrors a single block in the VMO.
