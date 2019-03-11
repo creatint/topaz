@@ -8,8 +8,10 @@ import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:zircon/zircon.dart';
 
-/// Facilitate the ability to connect to services outside of the Modular
-/// Framework, for example via a command-line tool.
+import 'incoming.dart';
+
+/// Deprecated - Facilitate the ability to connect to services outside of the
+/// Modular Framework, for example via a command-line tool.
 ///
 /// The user is responsible to launch a component and wire up a connection
 /// between the new launched component and the request returned from this
@@ -17,8 +19,12 @@ import 'package:zircon/zircon.dart';
 /// [StartupContext#launcher].
 ///
 /// For Module Framework APIs see `package:fuchsia_modular`
+///
+/// Deprecated, instead use
+/// `StartupContext.fromStartupInfo().incoming.connectToService`
+// TODO(MS-2335) remove this class
 class ServicesConnector {
-  DirectoryProxy _dirProxy;
+  Incoming _incoming;
 
   /// Creates a interface request, binds one of the channels to this object, and
   /// returns the other channel.
@@ -26,12 +32,14 @@ class ServicesConnector {
   /// Note: previously returned [Channel] will no longer be associate with this
   /// object.
   Channel request() {
-    _dirProxy = DirectoryProxy();
+    final _dirProxy = DirectoryProxy();
+    _incoming = Incoming(_dirProxy);
     return _dirProxy.ctrl.request().passChannel();
   }
 
   /// Connects the most recently returned [Channel] from [request()] with the
   /// provided services represented by its [controller].
+  // TODO(MS-2335) remove this class
   Future<void> connectToService<T>(AsyncProxyController<T> controller) async {
     final String serviceName = controller.$serviceName;
     if (serviceName == null) {
@@ -39,31 +47,12 @@ class ServicesConnector {
           "${controller.$interfaceName}'s controller.\$serviceName must "
           'not be null. Check the FIDL file for a missing [Discoverable]');
     }
-    await _open(serviceName,
-        InterfaceRequest<Node>(controller.request().passChannel()));
-  }
-
-  /// Connects the most recently returned [Channel] from [request()] with the
-  /// provided services represented by its [serviceName].
-  Future<InterfaceHandle<T>> connectToServiceByName<T>(
-      String serviceName) async {
-    final ChannelPair pair = ChannelPair();
-    await _open(serviceName, InterfaceRequest<Node>(pair.first));
-    return InterfaceHandle<T>(pair.second);
+    _incoming.connectToServiceByNameWithChannel(
+        controller.$serviceName, controller.request().passChannel());
   }
 
   /// Terminates connection and return Zircon status.
   Future<int> close() async {
-    return _dirProxy.close();
-  }
-
-  // Open a new object relative to this directory object
-  Future<void> _open(String serviceName, InterfaceRequest<Node> object) async {
-    // connection flags for service: can read & write from target object.
-    const int _openFlags = openRightReadable | openRightWritable;
-    // 0755
-    const int _openMode = 0x1ED;
-
-    return _dirProxy.open(_openFlags, _openMode, serviceName, object);
+    return _incoming.close();
   }
 }

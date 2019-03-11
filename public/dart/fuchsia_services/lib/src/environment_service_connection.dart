@@ -4,30 +4,16 @@
 
 import 'package:fidl/fidl.dart';
 
-import 'service_connection.dart';
 import 'startup_context.dart';
 
-/// Connects to the environment service specified by [serviceProxy].
+/// Deprecated: Connects to the environment service specified by [serviceProxy].
 ///
 /// Environment services are services that are implemented by the framework
 /// itself.
+///
+/// Deprecated, instead use
+/// `StartupContext.fromStartupInfo().incoming.connectToService`
+// TODO(MS-2335) remove this class
 void connectToEnvironmentService<T>(AsyncProxy<T> serviceProxy) {
-  if (serviceProxy == null) {
-    throw Exception(
-        'serviceProxy must not be null in call to connectToEnvironmentService');
-  }
-  // Creates an interface request and binds one of the channels. Binding this
-  // channel prior to connecting to the agent allows the developer to make
-  // proxy calls without awaiting for the connection to actually establish.
-  final serviceProxyRequest = serviceProxy.ctrl.request();
-
-  connectToService(
-    StartupContext.fromStartupInfo().environmentServices,
-    serviceProxy.ctrl.$serviceName,
-    serviceProxy.ctrl.$interfaceName,
-    serviceProxyRequest,
-  ).catchError((e) {
-    serviceProxyRequest.close();
-    throw e;
-  });
+  StartupContext.fromStartupInfo().incoming.connectToService(serviceProxy);
 }

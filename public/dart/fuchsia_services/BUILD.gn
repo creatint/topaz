@@ -6,6 +6,7 @@ import("//build/dart/dart_fuchsia_test.gni")
 import("//build/dart/dart_library.gni")
 import("//build/testing/environments.gni")
 import("//topaz/runtime/dart/flutter_test.gni")
+import("//build/fidl/fidl.gni")
 
 dart_library("fuchsia_services") {
   package_name = "fuchsia_services"
@@ -16,7 +17,6 @@ dart_library("fuchsia_services") {
     "services.dart",
     "src/environment_service_connection.dart",
     "src/outgoing.dart",
-    "src/service_connection.dart",
     "src/service_provider_impl.dart",
     "src/services_connector.dart",
     "src/startup_context.dart",
@@ -47,6 +47,15 @@ flutter_test("fuchsia_services_package_unittests") {
   ]
 }
 
+fidl("test_foo_fidl") {
+  name = "test.fuchsia.service.foo"
+
+  sources = [
+    "test/fidl/foo.fidl",
+  ]
+}
+
+# fx run-test fuchsia_services_package_integration_tests
 dart_fuchsia_test("fuchsia_services_package_integration_tests") {
   meta = [
     {
@@ -60,11 +69,13 @@ dart_fuchsia_test("fuchsia_services_package_integration_tests") {
   # integration tests when we get a chance. This comment can be removed when
   # sources is no longer empty.
   sources = [
+    "incoming_test.dart",
     "outgoing_test.dart",
   ]
 
   deps = [
     ":fuchsia_services",
+    ":test_foo_fidl",
     "//third_party/dart-pkg/pub/test",
     "//zircon/public/fidl/fuchsia-io",
   ]

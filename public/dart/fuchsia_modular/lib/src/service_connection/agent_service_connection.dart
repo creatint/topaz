@@ -6,7 +6,6 @@ import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as fidl_modular;
 import 'package:fidl_fuchsia_sys/fidl_async.dart' as fidl_sys;
 import 'package:fuchsia_logger/logger.dart';
-import 'package:fuchsia_services/services.dart' as fuchsia_services;
 
 import '../internal/_component_context.dart';
 
@@ -43,14 +42,15 @@ void connectToAgentService<T>(
     agentControllerProxy.ctrl.request(),
   )
       .then((_) {
+    final serviceName = serviceProxy.ctrl.$serviceName;
     // Connect to the service
-    fuchsia_services
-        .connectToService(
-      serviceProviderProxy,
-      serviceProxy.ctrl.$serviceName,
-      serviceProxy.ctrl.$interfaceName,
-      serviceProxyRequest,
-    )
+    if (serviceName == null) {
+      throw Exception("${serviceProxy.ctrl.$interfaceName}'s "
+          'proxyServiceController.\$serviceName must not be null. Check the FIDL '
+          'file for a missing [Discoverable]');
+    }
+    serviceProviderProxy
+        .connectToService(serviceName, serviceProxyRequest.passChannel())
         .then((_) {
       // Close agent controller when the service proxy is closed
       serviceProxy.ctrl.whenClosed.then((_) {

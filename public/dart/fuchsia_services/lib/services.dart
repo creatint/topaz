@@ -5,7 +5,6 @@
 /// The base-level functionality required by any component on Fuchsia.
 export 'src/environment_service_connection.dart';
 export 'src/outgoing.dart';
-export 'src/service_connection.dart';
 export 'src/service_provider_impl.dart';
 export 'src/services_connector.dart';
 export 'src/startup_context.dart';

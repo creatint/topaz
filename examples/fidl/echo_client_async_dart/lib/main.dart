@@ -32,8 +32,7 @@ Future<Null> main(List<String> args) async {
   // Bind. We bind EchoProxy, a generated proxy class, to the remote Echo
   // service.
   final _echo = fidl_echo.EchoProxy();
-  _echo.ctrl.bind(await servicesConnector
-      .connectToServiceByName<fidl_echo.Echo>(fidl_echo.Echo.$serviceName));
+  await servicesConnector.connectToService(_echo.ctrl);
 
   // Invoke echoString with a value and print it's response.
   final response = await _echo.echoString('hello');

@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 void main() {
   group('connectToEnvironmentService', () {
     test('throws if serviceProxy is null', () {
-      expect(() => connectToEnvironmentService(null), throwsException);
+      expect(() => connectToEnvironmentService(null), throwsArgumentError);
     });
   });
 }

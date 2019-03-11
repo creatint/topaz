@@ -73,8 +73,7 @@ Future<void> _run(String thoughtToExpose) async {
   // Now that the component has launched we attempt to connect to the mind
   // reader service which is exposed to us by the child.
   final mindReader = MindReaderProxy();
-  mindReader.ctrl.bind(await connector
-      .connectToServiceByName<MindReader>(MindReader.$serviceName));
+  await connector.connectToService(mindReader.ctrl);
 
   // We ask the service to read our mind and wait for the response.
   final response = await mindReader.readMind();

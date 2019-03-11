@@ -39,7 +39,7 @@ class Outgoing {
   }
 
   /// Serves root dir to request channel and serve [fuchsia.io.Directory]
-  ///  over it.
+  /// over it.
   void serve(InterfaceRequest<Node> request) {
     _ensureNotClosed();
     _root.serve(request);
