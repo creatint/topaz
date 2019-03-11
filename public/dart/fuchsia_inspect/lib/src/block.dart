@@ -343,6 +343,13 @@ class Block {
     _writePayloadBytes(stringBytes);
   }
 
+  /// Gets the utf8 name from a NAME block
+  @visibleForTesting
+  ByteData get nameUtf8 {
+    _checkType(BlockType.nameUtf8);
+    return payloadBytes;
+  }
+
   /// Adds a [BlockType.reserved] block to the head of a [BlockType.extent]
   /// chain.
   ///

@@ -89,7 +89,7 @@ void main() {
     });
 
     test('can read, including payload bits', () {
-      var vmo = FakeVmo(32);
+      final vmo = FakeVmo(32);
       vmo.bytes
         ..setUint8(0, 0x01 | (BlockType.propertyValue.value << 4))
         ..setUint8(1, 0x14) // Parent index should be 0x14
@@ -103,7 +103,7 @@ void main() {
           0,
           '${hexChar(BlockType.propertyValue.value)} 1'
           '14 00 00  20 03 00 00  7f00 0000 0a00 00b0');
-      var block = Block.read(vmo, 0);
+      final block = Block.read(vmo, 0);
       expect(block.size, 32);
       expect(block.type.value, BlockType.propertyValue.value);
       expect(block.parentIndex, 0x14);
@@ -114,7 +114,7 @@ void main() {
     });
 
     test('can read, including payload bytes', () {
-      var vmo = FakeVmo(32);
+      final vmo = FakeVmo(32);
       vmo.bytes
         ..setUint8(0, 0x01 | (BlockType.nameUtf8.value << 4))
         ..setUint8(1, 0x02) // Set length to 2
@@ -125,7 +125,7 @@ void main() {
           0,
           '${hexChar(BlockType.nameUtf8.value)} 1'
           '02 00 00 0000 0000  4142 0000 0000 0000 0000');
-      var block = Block.read(vmo, 0);
+      final block = Block.read(vmo, 0);
       expect(block.size, 32);
       expect(block.type.value, BlockType.nameUtf8.value);
       expect(block.payloadBytes.getUint8(0), 0x41);
@@ -135,87 +135,86 @@ void main() {
 
   group('Block operations write to VMO correctly:', () {
     test('Creating, locking, and unlocking the VMO header', () {
-      var vmo = FakeVmo(32);
-      var block = Block.create(vmo, 0)..becomeHeader();
+      final vmo = FakeVmo(32);
+      final block = Block.create(vmo, 0)..becomeHeader();
       compare(
           vmo,
           0,
-          '${_hexChar(BlockType.header.value)} 0'
+          '${hexChar(BlockType.header.value)} 0'
           '00 0000 49 4E 53 50  0000 0000 0000 0000');
       block.lock();
       compare(
           vmo,
           0,
-          '${_hexChar(BlockType.header.value)} 0'
+          '${hexChar(BlockType.header.value)} 0'
           '00 0000 49 4E 53 50  0100 0000 0000 0000');
       block.unlock();
       compare(
           vmo,
           0,
-          '${_hexChar(BlockType.header.value)} 0'
+          '${hexChar(BlockType.header.value)} 0'
           '00 0000 49 4E 53 50  0200 0000 0000 0000');
     });
 
     test('Becoming the special root node', () {
-      var vmo = FakeVmo(64);
+      final vmo = FakeVmo(64);
       Block.create(vmo, 1).becomeRoot();
       compare(vmo, 16,
-          '${_hexChar(BlockType.nodeValue.value)} 0 00 0000 2000 0000 0000');
+          '${hexChar(BlockType.nodeValue.value)} 0 00 0000 2000 0000 0000');
     });
 
     test('Becoming and modifying an intValue via free, reserved, anyValue', () {
-      var vmo = FakeVmo(64);
-      var block = Block.create(vmo, 2)..becomeFree(5);
-      compare(
-          vmo, 32, '${_hexChar(BlockType.free.value)} 1 05 00 00 0000 0000');
+      final vmo = FakeVmo(64);
+      final block = Block.create(vmo, 2)..becomeFree(5);
+      compare(vmo, 32, '${hexChar(BlockType.free.value)} 1 05 00 00 0000 0000');
       expect(block.nextFree, 5);
       block.becomeReserved();
-      compare(vmo, 32, '${_hexChar(BlockType.reserved.value)} 1');
+      compare(vmo, 32, '${hexChar(BlockType.reserved.value)} 1');
       block.becomeValue(parentIndex: 0xbc, nameIndex: 0x7d);
       compare(vmo, 32,
-          '${_hexChar(BlockType.anyValue.value)} 1 bc 00 00 d0 07 00 00');
+          '${hexChar(BlockType.anyValue.value)} 1 bc 00 00 d0 07 00 00');
       block.becomeIntMetric(0xbeef);
       compare(vmo, 32,
-          '${_hexChar(BlockType.intValue.value)} 1 bc 00 00 d0 07 00 00 efbe');
+          '${hexChar(BlockType.intValue.value)} 1 bc 00 00 d0 07 00 00 efbe');
       block.intValue += 1;
       compare(vmo, 32,
-          '${_hexChar(BlockType.intValue.value)} 1 bc 00 00 d0 07 00 00 f0be');
+          '${hexChar(BlockType.intValue.value)} 1 bc 00 00 d0 07 00 00 f0be');
     });
 
     test('Becoming a nodeValue and then a tombstone', () {
-      var vmo = FakeVmo(64);
-      var block = Block.create(vmo, 2)
+      final vmo = FakeVmo(64);
+      final block = Block.create(vmo, 2)
         ..becomeFree(5)
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
         ..becomeNode();
       compare(vmo, 32,
-          '${_hexChar(BlockType.nodeValue.value)} 1 bc 00 00 d0 07 00 00 0000');
+          '${hexChar(BlockType.nodeValue.value)} 1 bc 00 00 d0 07 00 00 0000');
       block.childCount += 1;
       compare(vmo, 32,
-          '${_hexChar(BlockType.nodeValue.value)} 1 bc 00 00 d0 07 00 00 0100');
+          '${hexChar(BlockType.nodeValue.value)} 1 bc 00 00 d0 07 00 00 0100');
       block.becomeTombstone();
       compare(vmo, 32,
-          '${_hexChar(BlockType.tombstone.value)} 1 bc 00 00 d0 07 00 00 0100');
+          '${hexChar(BlockType.tombstone.value)} 1 bc 00 00 d0 07 00 00 0100');
     });
 
     test('Becoming and modifying doubleValue', () {
-      var vmo = FakeVmo(64);
-      var block = Block.create(vmo, 2)
+      final vmo = FakeVmo(64);
+      final block = Block.create(vmo, 2)
         ..becomeFree(5)
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
         ..becomeDoubleMetric(1.0);
       compare(vmo, 32,
-          '${_hexChar(BlockType.doubleValue.value)} 1 bc 00 00 d0 07 00 00 ');
+          '${hexChar(BlockType.doubleValue.value)} 1 bc 00 00 d0 07 00 00 ');
       expect(vmo.bytes.getFloat64(40, Endian.little), 1.0);
       block.doubleValue++;
       expect(vmo.bytes.getFloat64(40, Endian.little), 2.0);
     });
 
     test('Becoming and modifying a propertyValue', () {
-      var vmo = FakeVmo(64);
-      var block = Block.create(vmo, 2)
+      final vmo = FakeVmo(64);
+      final block = Block.create(vmo, 2)
         ..becomeFree(5)
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
@@ -240,21 +239,21 @@ void main() {
     });
 
     test('Becoming a name', () {
-      var vmo = FakeVmo(64);
+      final vmo = FakeVmo(64);
       Block.create(vmo, 2).becomeName('abc');
       compare(vmo, 32,
-          '${_hexChar(BlockType.nameUtf8.value)} 1 03 0000 0000 0000 61 62 63');
+          '${hexChar(BlockType.nameUtf8.value)} 1 03 0000 0000 0000 61 62 63');
     });
 
     test('Becoming and setting an extent', () {
-      var vmo = FakeVmo(64);
-      var block = Block.create(vmo, 2)
+      final vmo = FakeVmo(64);
+      final block = Block.create(vmo, 2)
         ..becomeFree(4)
         ..becomeReserved()
         ..becomeExtent(0x42)
         ..setExtentPayload(Block.stringToByteData('abc'));
       compare(vmo, 32,
-          '${_hexChar(BlockType.extent.value)} 1 42 0000 0000 0000 61 62 63');
+          '${hexChar(BlockType.extent.value)} 1 42 0000 0000 0000 61 62 63');
       expect(block.nextExtent, 0x42);
       expect(block.payloadSpaceBytes, block.size - headerSizeBytes);
     });
@@ -268,9 +267,9 @@ void main() {
 /// [previousStates] contains the types that should not throw
 /// an error. All others should throw.
 void _accepts(String testName, List<BlockType> previousStates, testFunction) {
-  var vmo = FakeVmo(4096);
+  final vmo = FakeVmo(4096);
   for (BlockType type in BlockType.values) {
-    var block = Block.createWithType(vmo, 0, type);
+    final block = Block.createWithType(vmo, 0, type);
     if (previousStates.contains(type)) {
       expect(() => testFunction(block), returnsNormally,
           reason: '$testName should have accepted type $type');
@@ -278,18 +277,5 @@ void _accepts(String testName, List<BlockType> previousStates, testFunction) {
       expect(() => testFunction(block), throwsA(anything),
           reason: '$testName should not accept type $type');
     }
-  }
-}
-
-int _ascii(String char) => char.codeUnitAt(0);
-
-String _hexChar(int value) {
-  if (value < 0 || value > 15) {
-    throw ArgumentError('Bad value $value');
-  }
-  if (value < 10) {
-    return String.fromCharCode(value + _ascii('0'));
-  } else {
-    return String.fromCharCode(value - 10 + _ascii('a'));
   }
 }

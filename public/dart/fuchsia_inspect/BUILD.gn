@@ -38,6 +38,7 @@ dart_test("fuchsia_inspect_package_unittests") {
     "heap_test.dart",
     "util.dart",
     "vmo_fields_test.dart",
+    "vmo_writer_test.dart",
   ]
 
   deps = [

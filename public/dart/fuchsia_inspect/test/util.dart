@@ -4,6 +4,7 @@
 
 // ignore_for_file: implementation_imports
 
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:fuchsia_inspect/src/vmo_holder.dart';
@@ -20,16 +21,27 @@ class FakeVmo implements VmoHolder {
   /// Creates non-shared (ByteData) memory to simulate VMO operations.
   FakeVmo(this.size) : bytes = ByteData(size);
 
+  @override
+  void beginWork() {}
+
+  @override
+  void commit() {}
+
   /// Writes to the "VMO".
   @override
   void write(int offset, ByteData data) {
-    bytes.buffer.asUint8List().setAll(offset, data.buffer.asUint8List());
+    bytes.buffer.asUint8List().setAll(offset,
+        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
   }
 
   /// Reads from the "VMO".
   @override
   ByteData read(int offset, int size) {
-    return ByteData.view(bytes.buffer, offset, size);
+    var reading = ByteData(size);
+    reading.buffer
+        .asUint8List()
+        .setAll(0, bytes.buffer.asUint8List(offset, size));
+    return reading;
   }
 
   /// Writes int64 to VMO.
@@ -106,5 +118,38 @@ void compare(FakeVmo vmo, int offset, String spec) {
               'but expected ${value.toRadixString(16)}.');
     }
     nybble++;
+  }
+}
+
+/// Writes block contents in hexadecimal, nicely formatted, to stdout.
+///
+/// This is very useful in debugging, so I'll leave it in although it's not
+/// used in testing.
+void dumpBlocks(FakeVmo vmo, {int startIndex = 0, int howMany32 = -1}) {
+  int lastIndex = (howMany32 == -1)
+      ? (vmo.bytes.lengthInBytes >> 4) - 1
+      : startIndex + howMany32 - 1;
+  stdout.writeln('Dumping blocks from $startIndex through $lastIndex');
+  for (int index = startIndex; index <= lastIndex;) {
+    String lowNybble(int offset) => hexChar(vmo.bytes.getUint8(offset) & 15);
+    String highNybble(int offset) => hexChar(vmo.bytes.getUint8(offset) >> 4);
+    stdout.write('${(index * 16).toRadixString(16).padLeft(3, '0')}: ');
+    for (int byte = 0; byte < 8; byte++) {
+      stdout
+        ..write('${lowNybble(index * 16 + byte)} ')
+        ..write('${highNybble(index * 16 + byte)} ');
+    }
+    int order = vmo.bytes.getUint8(index * 16) & 0xf;
+    int numWords = 1 << (order + 1);
+    String byteToHex(int offset) =>
+        vmo.bytes.getUint8(offset).toRadixString(16).padLeft(2, '0');
+    for (int word = 1; word < numWords; word++) {
+      stdout.write('  ');
+      for (int byte = 0; byte < 8; byte++) {
+        stdout.write('${byteToHex(index * 16 + word * 8 + byte)} ');
+      }
+    }
+    index += 1 << order;
+    stdout.writeln('');
   }
 }

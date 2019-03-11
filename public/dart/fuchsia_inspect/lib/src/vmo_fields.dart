@@ -33,9 +33,6 @@ const int rootParentIndex = 0;
 /// Index of the NAME of the one-and-only root node (32 bytes).
 const int rootNameIndex = 2;
 
-/// Name of the root node.
-const String rootName = 'root';
-
 /// First index availalbe for the heap.
 const int heapStartIndex = 4;
 
@@ -96,7 +93,7 @@ class BlockType {
   static const BlockType doubleValue = const BlockType._(6, 'doubleValue');
 
   /// The header of a string or byte-vector Property.
-  static const BlockType propertyValue = const BlockType._(7, 'properytValue');
+  static const BlockType propertyValue = const BlockType._(7, 'propertyValue');
 
   /// The contents of a string Property (in a singly linked list, if necessary).
   static const BlockType extent = const BlockType._(8, 'extent');

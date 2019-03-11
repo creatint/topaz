@@ -2,98 +2,301 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:math' show min;
 import 'dart:typed_data';
 
+import 'block.dart';
+import 'heap.dart';
+import 'vmo_fields.dart';
 import 'vmo_holder.dart';
 
 /// Index 0 will never be allocated, so it's the designated 'invalid' value.
 const int invalidIndex = 0;
 
-/// Opaque information referring to a Value (Property, Metric, Node) stored in the VMO.
-///
-/// The user of this API should not care about what's in InspectHandle - just hold it
-/// and pass it back to VmoWriter for further operations on the Value referred to by the handle.
-class InspectHandle {
-  /// First opaque number.
-  int opaque1;
-
-  /// Second opaque number.
-  int opaque2;
-
-  /// Constructor
-  InspectHandle(this.opaque1, this.opaque2);
-}
+// The rest of these index consts are internal-use-only.
+// TODO(cphoenix): Split this file into API and implementation?
+/// Name of the root node.
+const String rootName = 'root';
 
 /// An Inspect-format VMO with accessors.
 ///
-/// This holds a VMO, writes Nodes, Metrics, and Properties to
-/// the VMO, modifies them, and deletes them.
+/// This writes Values (Nodes, Metrics, and Properties) to
+/// a VMO, modifies them, and deletes them.
+///
+/// Values are referred to by integers, which are returned upon
+/// creation and are passed back to this API to modify or delete the Value.
+/// You can refer to this integer as an "index".
+/// An index of 0 returned from a Value creation operation indicates the
+/// operation failed. Other indexes are opaque and indicate success.
+///
+/// Warning: Names are limited to 24 bytes, and are UTF-8 encoded. In the case
+/// of non-ASCII characters, this may result in a malformed string since the
+/// last multi-byte character may be truncated.
 class VmoWriter {
+  Heap _heap;
+
   final VmoHolder _vmo;
 
+  Block _headerBlock;
+
   /// Constructor.
-  ///
-  /// maxSize should be >= 32 bytes and will be rounded up to a multiple of 4K.
-  VmoWriter(this._vmo);
-
-  // All the implementations here are trivially wrong placeholders.
-  // For now, just look at the method signature.
-
-  /// Gets the top Node of the Inspect tree.
-  InspectHandle get rootNode => InspectHandle(1, 2);
-
-  /// Creates a new Node inside the tree.
-  InspectHandle createNode(InspectHandle parent, String name) {
-    return parent;
+  VmoWriter(this._vmo) {
+    _vmo.beginWork();
+    _headerBlock = Block.create(_vmo, headerIndex)..becomeHeader();
+    Block.create(_vmo, rootNodeIndex).becomeRoot();
+    Block.create(_vmo, rootNameIndex).becomeName(rootName);
+    _heap = Heap(_vmo);
+    _vmo.commit();
   }
 
-  /// Frees the Node.
-  void freeNode(InspectHandle node) {
-    _vmo.writeInt64(node.opaque1, 0);
+  /// Gets the top Node of the Inspect tree (always at index 1).
+  int get rootNode => rootNodeIndex;
+
+  /// Creates and writes a Node block
+  int createNode(int parent, String name) {
+    _beginWork();
+    var node = _createValue(parent, name);
+    if (node == null) {
+      return 0;
+    }
+    node.becomeNode();
+    _commit();
+    return node.index;
   }
 
-  /// Adds a named Property to an node.
-  InspectHandle createProperty(InspectHandle parentNode, ByteData name) {
-    _vmo.write(parentNode.opaque1, name);
-    return parentNode;
+  /// Deletes the Node.
+  void deleteNode(int nodeIndex) {
+    _beginWork();
+    if (nodeIndex < heapStartIndex) {
+      throw Exception('Invalid index {nodeIndex}');
+    }
+    var node = Block.read(_vmo, nodeIndex);
+    _deleteValue(node);
+    _commit();
+  }
+
+  /// Adds a named Property to a Node.
+  int createProperty(int parent, String name) {
+    _beginWork();
+    var property = _createValue(parent, name);
+    if (property == null) {
+      return 0;
+    }
+    property.becomeProperty();
+    _commit();
+    return property.index;
   }
 
   /// Sets a Property's value.
-  void setProperty(InspectHandle property, ByteData value) {
-    _vmo.write(property.opaque1, value);
+  ///
+  /// First frees any existing value, then tries to allocate space for the new
+  /// value. If the new allocation fails, the previous
+  /// value will be cleared and the Property will be empty.
+  void setProperty(int propertyIndex, ByteData value) {
+    _beginWork();
+    var property = Block.read(_vmo, propertyIndex);
+    _freeExtents(property.propertyExtentIndex);
+    if (value == null || value.lengthInBytes == 0) {
+      property.propertyExtentIndex = 0;
+    } else {
+      property.propertyExtentIndex = _allocateExtents(value.lengthInBytes);
+      if (property.propertyExtentIndex == invalidIndex) {
+        property.propertyTotalLength = 0;
+      } else {
+        _copyToExtents(property.propertyExtentIndex, value);
+        property.propertyTotalLength = value.lengthInBytes;
+      }
+    }
+    _commit();
   }
 
   /// Deletes a Property.
-  void freeProperty(InspectHandle property) {
-    _vmo.writeInt64(property.opaque1, 0);
+  void deleteProperty(int propertyIndex) {
+    _beginWork();
+    var property = Block.read(_vmo, propertyIndex);
+    _freeExtents(property.propertyExtentIndex);
+    _deleteValue(property);
+    _commit();
   }
-
-  // TODO(cphoenix): Convert to generic for Int and Double (not Uint).
 
   /// Creates and assigns value.
-  InspectHandle createIntMetric(
-      InspectHandle parentNode, String name, int value) {
-    _vmo.writeInt64(parentNode.opaque1, value);
-    return parentNode;
+  int createMetric<T extends num>(int parent, String name, T value) {
+    _beginWork();
+    Block metric = _createValue(parent, name);
+    if (metric == null) {
+      return 0;
+    }
+    if (value is double) {
+      metric.becomeDoubleMetric(value.toDouble());
+    } else {
+      metric.becomeIntMetric(value.toInt());
+    }
+    _commit();
+    return metric.index;
   }
 
-  /// Sets the metric's value.
-  void setIntMetric(InspectHandle metric, int value) {
-    _vmo.writeInt64(metric.opaque1, value);
+  /// Set the metric's value.
+  void setMetric<T extends num>(int metricIndex, T value) {
+    _beginWork();
+    var metric = Block.read(_vmo, metricIndex);
+    if (T is double) {
+      metric.doubleValue = value.toDouble();
+    } else {
+      metric.intValue = value.toInt();
+    }
+    _commit();
   }
 
   /// Adds to existing value.
-  void addIntMetric(InspectHandle metric, int value) {
-    _vmo.writeInt64(metric.opaque1, value);
+  void addMetric<T extends num>(int metricIndex, T value) {
+    _beginWork();
+    var metric = Block.read(_vmo, metricIndex);
+    if (T is double || metric.type == BlockType.doubleValue) {
+      metric.doubleValue += value;
+    } else {
+      metric.intValue += value;
+    }
+    _commit();
   }
 
   /// Subtracts from existing value.
-  void subtractIntMetric(InspectHandle metric, int value) {
-    _vmo.writeInt64(metric.opaque1, value);
+  void subMetric<T extends num>(int metricIndex, T value) {
+    _beginWork();
+    var metric = Block.read(_vmo, metricIndex);
+    if (T is double || metric.type == BlockType.doubleValue) {
+      metric.doubleValue -= value;
+    } else {
+      metric.intValue -= value;
+    }
+    _commit();
   }
 
   /// Deletes the Metric.
-  void freeIntMetric(InspectHandle metric) {
-    _vmo.writeInt64(metric.opaque1, 0);
+  void deleteMetric(int metricIndex) {
+    _beginWork();
+    _deleteValue(Block.read(_vmo, metricIndex));
+    _commit();
   }
+
+  // Creates a new *_VALUE node inside the tree.
+  Block _createValue(int parent, String name) {
+    var block = _heap.allocateBlock();
+    if (block == null) {
+      return null;
+    }
+    var nameBlock = _heap.allocateBlock();
+    if (nameBlock == null) {
+      _heap.freeBlock(block);
+      return null;
+    }
+    nameBlock.becomeName(name);
+    block.becomeValue(parentIndex: parent, nameIndex: nameBlock.index);
+    Block.read(_vmo, parent).childCount += 1;
+    return block;
+  }
+
+  /// Deletes a *_VALUE block.
+  ///
+  /// This always unparents the block and frees its NAME block.
+  /// The block itself is freed unless it's a Node with children; in that
+  /// case it's converted to a TOMBSTONE and will be deleted later, when its
+  /// last child is deleted and unparented.
+  void _deleteValue(Block value) {
+    _unparent(value);
+    _heap.freeBlock(Block.read(_vmo, value.nameIndex));
+    if (value.type == BlockType.nodeValue && value.childCount != 0) {
+      value.becomeTombstone();
+    } else {
+      _heap.freeBlock(value);
+    }
+  }
+
+  /// Walks a chain of EXTENT blocks, freeing them.
+  ///
+  /// Passing in [invalidIndex] is legal and a NOP.
+  void _freeExtents(int firstExtent) {
+    int nextIndex = firstExtent;
+    while (nextIndex != invalidIndex) {
+      var extent = Block.read(_vmo, nextIndex);
+      nextIndex = extent.nextExtent;
+      _heap.freeBlock(extent);
+    }
+  }
+
+  /// Tries to allocate enough extents to hold [size] bytes.
+  ///
+  /// If it finds enough, it returns the index of first EXTENT block in chain.
+  /// Returns [invalidIndex] (and frees whatever it's grabbed) if it can't
+  /// allocate all it needs.
+  int _allocateExtents(int size) {
+    int nextIndex = invalidIndex;
+    int sizeRemaining = size;
+    while (sizeRemaining > 0) {
+      var extent = _heap.allocateBlock();
+      if (extent == null) {
+        _freeExtents(nextIndex);
+        return 0;
+      }
+      extent.becomeExtent(nextIndex);
+      nextIndex = extent.index;
+      sizeRemaining -= extent.payloadSpaceBytes;
+    }
+    return nextIndex;
+  }
+
+  // Copies bytes from value to list of extents.
+  //
+  // Throws StateError if the extents run out before the data does.
+  void _copyToExtents(int firstExtent, ByteData value) {
+    int valueOffset = 0;
+    int nextExtent = firstExtent;
+    // ignore: literal_only_boolean_expressions
+    while (valueOffset != value.lengthInBytes) {
+      if (nextExtent == 0) {
+        throw StateError('Not enough extents to hold the data');
+      }
+      Block extent = Block.read(_vmo, nextExtent);
+      int amountToWrite =
+          min(value.lengthInBytes - valueOffset, extent.payloadSpaceBytes);
+      _vmo.write(nextExtent * 16 + 8,
+          value.buffer.asByteData(valueOffset, amountToWrite));
+      valueOffset += amountToWrite;
+      nextExtent = extent.nextExtent;
+    }
+  }
+
+  // Decrement the parent's 'childCount' count. Don't change the parent's type.
+  // If the parent is a TOMBSTONE and has no children then free it.
+  // TOMBSTONES have no parent, so there's no recursion.
+  void _unparent(Block value) {
+    var parent = Block.read(_vmo, value.parentIndex);
+    if (--parent.childCount == 0 && parent.type == BlockType.tombstone) {
+      _heap.freeBlock(parent);
+    }
+  }
+
+  // Start manipulating the VMO contents.
+  void _beginWork() {
+    _headerBlock.lock();
+    _vmo.beginWork(); // TODO(CF-603): Maybe remove once VMO is efficient.
+  }
+
+  // Publish the manipulated VMO contents.
+  void _commit() {
+    _vmo.commit();
+    _headerBlock.unlock();
+  }
+}
+
+/// foo
+class Foo {
+  /// value
+  final int value;
+  const Foo._(this.value);
+
+  /// bar
+  const Foo.bar() : this._(0);
+
+  /// baz
+  const Foo.baz() : this._(1);
 }
