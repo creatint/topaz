@@ -11,16 +11,18 @@
 #include <fuchsia/ui/app/cpp/fidl.h>
 #include <fuchsia/ui/policy/cpp/fidl.h>
 #include <fuchsia/ui/scenic/cpp/fidl.h>
+#include <fuchsia/ui/views/cpp/fidl.h>
 #include <gtest/gtest.h>
 #include <lib/component/cpp/startup_context.h>
 #include <lib/fdio/spawn.h>
 #include <lib/fit/function.h>
 #include <lib/fsl/vmo/vector.h>
-#include <src/lib/files/file.h>
 #include <lib/fxl/logging.h>
 #include <lib/fxl/strings/string_printf.h>
 #include <lib/gtest/real_loop_fixture.h>
+#include <lib/ui/scenic/cpp/view_token_pair.h>
 #include <lib/zx/time.h>
+#include <src/lib/files/file.h>
 #include <zircon/status.h>
 
 #include "topaz/tests/web_runner_tests/chromium_context.h"
@@ -124,21 +126,17 @@ class PixelTest : public gtest::RealLoopFixture {
 
   // Gets a view token for presentation by |RootPresenter|. See also
   // garnet/examples/ui/hello_base_view
-  zx::eventpair CreatePresentationViewToken() {
-    zx::eventpair view_holder_token, view_token;
-    zx_status_t status =
-        zx::eventpair::create(0u, &view_holder_token, &view_token);
-    FXL_CHECK(status == ZX_OK)
-        << "zx::eventpair::create: " << zx_status_get_string(status);
+  fuchsia::ui::views::ViewToken CreatePresentationViewToken() {
+    auto [view_token, view_holder_token] = scenic::NewViewTokenPair();
 
     auto presenter =
         context_->ConnectToEnvironmentService<fuchsia::ui::policy::Presenter>();
     presenter.set_error_handler([](zx_status_t status) {
       FAIL() << "presenter: " << zx_status_get_string(status);
     });
-    presenter->Present2(std::move(view_holder_token), nullptr);
+    presenter->PresentView(std::move(view_holder_token), nullptr);
 
-    return view_token;
+    return std::move(view_token);
   }
 
   bool ScreenshotUntil(
@@ -251,7 +249,7 @@ TEST_F(WebRunnerPixelTest, Static) {
 
   // Present the view.
   services.ConnectToService<fuchsia::ui::app::ViewProvider>()->CreateView(
-      CreatePresentationViewToken(), nullptr, nullptr);
+      CreatePresentationViewToken().value, nullptr, nullptr);
 
   ExpectSolidColor(kTargetColor);
 }
@@ -261,7 +259,7 @@ class ChromiumPixelTest : public PixelTest {
  protected:
   ChromiumPixelTest() : chromium_(context()) {
     // And create a view for the frame.
-    chromium_.frame()->CreateView2(CreatePresentationViewToken(), nullptr,
+    chromium_.frame()->CreateView2(CreatePresentationViewToken().value, nullptr,
                                    nullptr);
   }
 
