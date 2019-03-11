@@ -289,6 +289,9 @@ Application::Application(
   // debugging (that is, with no bytecode), the VM will fall back on ASTs.
   settings_.dart_flags.push_back("--enable_interpreter");
 
+  // TODO(FL-208): Remove when field guards work.
+  settings_.dart_flags.push_back("--no_use_field_guards");
+
   auto dispatcher = async_get_default_dispatcher();
   const std::string component_url = package.resolved_url;
   settings_.unhandled_exception_callback =

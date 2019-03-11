@@ -47,6 +47,9 @@ const char* kDartVMArgs[] = {
     // The interpreter is enabled unconditionally. If an app is built for
     // debugging (that is, with no bytecode), the VM will fall back on ASTs.
     "--enable_interpreter",
+
+    // TODO(FL-208): Remove when field guards work.
+    "--no_use_field_guards",
 #endif
 
 #if !defined(NDEBUG) && !defined(DART_PRODUCT)
