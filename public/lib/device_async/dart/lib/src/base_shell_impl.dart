@@ -24,7 +24,7 @@ class BaseShellImpl extends BaseShell implements Lifecycle {
   final UserProviderProxy _userProviderProxy = new UserProviderProxy();
   final PresentationProxy _presentationProxy = new PresentationProxy();
   final Set<AuthenticationUiContextBinding> _authUiContextBindingSet =
-      new Set<AuthenticationUiContextBinding>();
+      <AuthenticationUiContextBinding>{};
 
   /// Called when [initialize] occurs.
   final OnBaseShellReady onReady;
@@ -51,8 +51,9 @@ class BaseShellImpl extends BaseShell implements Lifecycle {
     if (onReady != null) {
       _baseShellContextProxy.ctrl.bind(baseShellContextHandle);
       await _baseShellContextProxy
-          ..getUserProvider(_userProviderProxy.ctrl.request())
-          ..getPresentation(_presentationProxy.ctrl.request());
+          .getUserProvider(_userProviderProxy.ctrl.request());
+      await _baseShellContextProxy
+          .getPresentation(_presentationProxy.ctrl.request());
       onReady(_userProviderProxy, _baseShellContextProxy, _presentationProxy);
     }
   }
