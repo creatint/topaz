@@ -34,6 +34,11 @@ class Vmo extends _HandleWrapper<Vmo> {
     return System.vmoWrite(handle, vmoOffset, data);
   }
 
+  /// Duplicate this [Vmo] with the given rights.
+  Vmo duplicate(int rights) {
+    return Vmo(handle.duplicate(rights));
+  }
+
   ReadResult read(int numBytes, [int vmoOffset = 0]) {
     if (handle == null) {
       return const ReadResult(ZX.ERR_INVALID_ARGS);

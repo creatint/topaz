@@ -58,6 +58,8 @@ class Handle : public fxl::RefCountedThreadSafe<Handle>,
 
   void ReleaseWaiter(HandleWaiter* waiter);
 
+  Dart_Handle Duplicate(uint32_t rights);
+
  private:
   explicit Handle(zx_handle_t handle);
 

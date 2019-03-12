@@ -36,4 +36,6 @@ class Handle extends NativeFieldWrapperClass2 {
   int close() native 'Handle_Close';
   HandleWaiter asyncWait(int signals, AsyncWaitCallback callback)
       native 'Handle_AsyncWait';
+
+  Handle duplicate(int rights) native 'Handle_Duplicate';
 }
