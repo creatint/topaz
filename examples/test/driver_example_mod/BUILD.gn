@@ -23,6 +23,11 @@ flutter_app("driver_example_mod") {
   # testing when run in an environment along with TestRunner.
   flutter_driver_extendable = true
 
+  sources = [
+    "src/driver_example_model.dart",
+    "src/handlers/root_intent_handler.dart",
+  ]
+
   deps = [
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/public/dart/fuchsia_modular",
