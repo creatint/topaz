@@ -5,8 +5,9 @@
 #include "topaz/runtime/dart_runner/dart_component_controller.h"
 
 #include <fcntl.h>
-#include <lib/async/default.h>
 #include <lib/async-loop/loop.h>
+#include <lib/async/default.h>
+#include <lib/fdio/directory.h>
 #include <lib/fdio/fd.h>
 #include <lib/fdio/namespace.h>
 #include <sys/stat.h>
@@ -155,13 +156,19 @@ bool DartComponentController::SetupNamespace() {
   fuchsia::dart::SetupComponentTemp(namespace_);
 
   for (size_t i = 0; i < flat->paths.size(); ++i) {
-    if ((flat->paths.at(i) == kTmpPath) ||
-        (flat->paths.at(i) == kServiceRootPath)) {
+    if (flat->paths.at(i) == kTmpPath) {
       // /tmp is covered by the local memfs.
-      // Ownership of /svc goes to the StartupContext created below.
       continue;
     }
-    zx::channel dir = std::move(flat->directories.at(i));
+
+    zx::channel dir;
+    if (flat->paths.at(i) == kServiceRootPath) {
+      // clone /svc so startup_context can still use it below
+      dir = zx::channel(fdio_service_clone(flat->directories.at(i).get()));
+    } else {
+      dir = std::move(flat->directories.at(i));
+    }
+
     zx_handle_t dir_handle = dir.release();
     const char* path = flat->paths.at(i).data();
     status = fdio_ns_bind(namespace_, path, dir_handle);

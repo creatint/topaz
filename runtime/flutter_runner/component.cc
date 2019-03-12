@@ -32,6 +32,8 @@
 namespace flutter {
 
 constexpr char kDataKey[] = "data";
+constexpr char kTmpPath[] = "/tmp";
+constexpr char kServiceRootPath[] = "/svc";
 
 std::pair<std::unique_ptr<async::Loop>,
           std::unique_ptr<Application>>
@@ -111,11 +113,19 @@ Application::Application(
   // LaunchInfo::flat_namespace optional.
   for (size_t i = 0; i < startup_info.flat_namespace.paths.size(); ++i) {
     const auto& path = startup_info.flat_namespace.paths.at(i);
-    if (path == "/tmp" || path == "/svc") {
+    if (path == kTmpPath) {
       continue;
     }
 
-    zx::channel dir = std::move(startup_info.flat_namespace.directories.at(i));
+    zx::channel dir;
+    if (path == kServiceRootPath) {
+      // clone /svc so startup_context can still use it below
+      dir = zx::channel(fdio_service_clone(
+          startup_info.flat_namespace.directories.at(i).get()));
+    } else {
+      dir = std::move(startup_info.flat_namespace.directories.at(i));
+    }
+
     zx_handle_t dir_handle = dir.release();
     if (fdio_ns_bind(fdio_ns_.get(), path.data(), dir_handle) != ZX_OK) {
       FML_DLOG(ERROR) << "Could not bind path to namespace: " << path;
