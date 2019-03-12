@@ -499,6 +499,7 @@ bool PlatformView::OnHandlePointerEvent(
   TRACE_FLOW_END("input", "dispatch_event_to_client", trace_id);
 
   blink::PointerData pointer_data;
+  pointer_data.Clear();
   pointer_data.time_stamp = pointer.event_time / 1000;
   pointer_data.change = GetChangeFromPointerEventPhase(pointer.phase);
   pointer_data.kind = GetKindFromPointerType(pointer.type);
