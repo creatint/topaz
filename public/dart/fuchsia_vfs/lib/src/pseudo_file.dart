@@ -134,6 +134,12 @@ class PseudoFile extends Vnode {
     return direntTypeFile;
   }
 
+  /// Return the description of this file.
+  /// This function may return null if describing the node fails. In that case, the connection should be closed.
+  NodeInfo describe() {
+    return NodeInfo.withFile(FileObject(event: null));
+  }
+
   ReadFn _getReadFn(ReadFnStr fn) {
     return () => Uint8List.fromList(fn().codeUnits);
   }
@@ -410,7 +416,11 @@ class _FileConnection extends File {
   }
 
   NodeInfo _describe() {
-    return NodeInfo.withFile(FileObject(event: null));
+    NodeInfo ret = file.describe();
+    if (ret == null) {
+      close();
+    }
+    return ret;
   }
 
   File$Read$Response _handleRead(int count, int offset) {

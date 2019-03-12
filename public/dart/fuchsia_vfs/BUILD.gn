@@ -43,6 +43,7 @@ dart_fuchsia_test("fuchsia_vfs_package_unittests") {
     "pseudo_dir_test.dart",
     "pseudo_file_test.dart",
     "service_test.dart",
+    "vmo_file_test.dart",
   ]
 
   deps = [
