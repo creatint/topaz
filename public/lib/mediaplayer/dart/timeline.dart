@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl_fuchsia_mediaplayer/fidl.dart' as mp;
+import 'package:fidl_fuchsia_media/fidl.dart' as media;
 
 /// Immutable rate of a subject timeline with respect to a reference timeline
 /// (subject / reference) expressed as the ratio of two ints.
@@ -102,7 +102,7 @@ class TimelineFunction {
   });
 
   /// Constructs a TimelineFunction from a FIDL TimelineFunction struct.
-  TimelineFunction.fromFidl(mp.TimelineFunction timelineFunction)
+  TimelineFunction.fromFidl(media.TimelineFunction timelineFunction)
       : subjectTime = timelineFunction.subjectTime,
         referenceTime = timelineFunction.referenceTime,
         rate = new TimelineRate(

@@ -290,7 +290,7 @@ class AudioPlayerController {
       tl.TimelineFunction oldTimelineFunction = _timelineFunction;
 
       _timelineFunction =
-          new tl.TimelineFunction.fromFidl(status.timelineFunction);
+          new tl.TimelineFunction.fromFidl(status.timelineFunction2);
 
       prepare = oldTimelineFunction != _timelineFunction;
     }

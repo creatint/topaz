@@ -6,6 +6,7 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:fidl/fidl.dart';
+import 'package:fidl_fuchsia_media/fidl.dart' as media;
 import 'package:fidl_fuchsia_mediaplayer/fidl.dart' as mediaplayer;
 import 'package:fidl_fuchsia_modular/fidl.dart';
 import 'package:flutter/material.dart';
@@ -230,19 +231,19 @@ class _PlaybackScreenState extends State<_PlaybackScreen> {
     Map<String, String> metadata = _controller.metadata;
     if (metadata != null) {
       _addLabel(
-          metadata[mediaplayer.metadataLabelTitle] ??
+          metadata[media.metadataLabelTitle] ??
               _leafAssetToPlay.title ??
               '(untitled)',
           Colors.white,
           20.0,
           columnChildren);
       _addLabel(
-          metadata[mediaplayer.metadataLabelArtist] ?? _leafAssetToPlay.artist,
+          metadata[media.metadataLabelArtist] ?? _leafAssetToPlay.artist,
           Colors.grey[600],
           15.0,
           columnChildren);
       _addLabel(
-          metadata[mediaplayer.metadataLabelAlbum] ?? _leafAssetToPlay.album,
+          metadata[media.metadataLabelAlbum] ?? _leafAssetToPlay.album,
           Colors.grey[800],
           15.0,
           columnChildren);
