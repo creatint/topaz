@@ -3,8 +3,6 @@
       "//topaz/app/dashboard:dashboard_tests",
       "//topaz/bin/dart_fidl_json/test:dart_fidl_json_test",
       "//topaz/examples/test/flutter_widget_test",
-      "//topaz/examples/tictactoe/bin/tictactoe/game_board_mod:tictactoe_game_board_mod_test",
-      "//topaz/examples/tictactoe/lib/tictactoe/common:tictactoe_game_test",
       "//topaz/lib/keyboard/flutter:keyboard_test",
       "//topaz/lib/setui/common:lib_setui_common_test",
       "//topaz/lib/setui/flutter:lib_setui_flutter_test",
