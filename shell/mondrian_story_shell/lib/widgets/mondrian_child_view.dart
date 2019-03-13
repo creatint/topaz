@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import '../models/surface/surface.dart';
 
 import 'breathing_placeholder.dart';

@@ -4,7 +4,7 @@
 
 // import 'dart:convert';
 
-import 'package:fidl_fuchsia_modular/fidl.dart';
+import 'package:fidl_fuchsia_modular/fidl_async.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mondrian/models/surface/surface.dart';
 import 'package:mondrian/models/surface/surface_graph.dart';

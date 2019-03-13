@@ -182,8 +182,8 @@ class _SurfaceInstanceState extends State<_SurfaceInstance>
 
   FluxAnimation<Rect> get _target {
     final SurfaceForm f = widget.form;
-    final _SurfaceInstanceState parentSurfaceState =
-        context.ancestorStateOfType(const TypeMatcher<_SurfaceInstanceState>());
+    final _SurfaceInstanceState parentSurfaceState = context
+        ?.ancestorStateOfType(const TypeMatcher<_SurfaceInstanceState>());
     return parentSurfaceState == null
         ? new ManualAnimation<Rect>(value: f.position, velocity: Rect.zero)
         : new TransformedAnimation<Rect>(

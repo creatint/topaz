@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:developer' show Timeline;
 
-import 'package:lib.app.dart/logging.dart';
 import 'package:lib.widgets/model.dart';
 
 const Duration _kPlaceholderDuration = const Duration(milliseconds: 2700);
@@ -23,7 +23,7 @@ class SurfaceTransitionModel extends SpringModel {
   double get opacity => value;
 
   void _start() {
-    trace('starting placeholder transition');
+    Timeline.instantSync('starting placeholder transition');
     target = 1.0; // start ticking
   }
 }

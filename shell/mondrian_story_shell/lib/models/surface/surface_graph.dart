@@ -5,12 +5,12 @@
 import 'dart:developer' show Timeline;
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_modular/fidl.dart';
+import 'package:fidl_fuchsia_modular/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl.dart';
+import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:lib.widgets/model.dart';
 import 'package:zircon/zircon.dart' show EventPair;
 
@@ -247,7 +247,7 @@ class SurfaceGraph extends Model {
             surface.notifyListeners();
           },
           onUnavailable: (ChildViewConnection connection) {
-            trace('surface $id unavailable');
+            Timeline.instantSync('surface $id unavailable');
             surface.connection = null;
             if (_surfaces.containsValue(surface)) {
               removeSurface(id);

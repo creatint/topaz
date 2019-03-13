@@ -4,7 +4,7 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mondrian/models/layout_model.dart';
 import 'package:mondrian/layout/pattern_layout.dart' as pattern_layout;

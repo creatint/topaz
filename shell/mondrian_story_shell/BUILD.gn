@@ -56,9 +56,9 @@ flutter_app("mondrian") {
     "//topaz/lib/story_shell:lib.story_shell",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia",
+    "//topaz/public/dart/fuchsia_modular",
     "//topaz/public/dart/fuchsia_scenic_flutter",
     "//topaz/public/dart/widgets:lib.widgets",
-    "//topaz/public/lib/app/dart",
   ]
 }
 

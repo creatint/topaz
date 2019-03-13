@@ -5,7 +5,7 @@
 // import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 
 import '../models/layout_model.dart';
 import '../models/surface/positioned_surface.dart';

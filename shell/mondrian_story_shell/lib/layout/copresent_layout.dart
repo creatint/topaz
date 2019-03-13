@@ -4,7 +4,7 @@
 
 import 'dart:math';
 
-import 'package:fidl_fuchsia_modular/fidl.dart';
+import 'package:fidl_fuchsia_modular/fidl_async.dart';
 import 'package:flutter/widgets.dart';
 
 import '../models/layout_model.dart';

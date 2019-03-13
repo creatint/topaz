@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-import 'package:fidl_fuchsia_modular/fidl.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fidl_fuchsia_modular/fidl_async.dart';
+import 'package:fuchsia_logger/logger.dart';
 
 import '../models/layout_model.dart';
 import '../models/surface/positioned_surface.dart';

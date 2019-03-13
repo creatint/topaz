@@ -8,51 +8,55 @@ import 'dart:developer' show Timeline;
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_mem/fidl.dart' as fuchsia_mem;
-import 'package:fidl_fuchsia_modular/fidl.dart';
-import 'package:fidl_fuchsia_ui_gfx/fidl.dart' show ImportToken;
-import 'package:fidl_fuchsia_ui_policy/fidl.dart';
-import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
-import 'package:fuchsia/fuchsia.dart' show exit;
-import 'package:lib.app.dart/logging.dart';
+import 'package:fidl_fuchsia_mem/fidl_async.dart' as fuchsia_mem;
+import 'package:fidl_fuchsia_modular/fidl_async.dart';
+import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart' show ImportToken;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart' show ViewHolderToken;
+import 'package:fuchsia_logger/logger.dart';
+import 'package:fuchsia_modular/lifecycle.dart' as lifecycle;
+import 'package:fuchsia_services/services.dart';
 import 'package:lib.story_shell/common.dart';
-import 'package:lib.widgets/utils_deprecated.dart';
 import 'package:zircon/zircon.dart';
 
 import 'models/surface/surface_graph.dart';
 import 'models/surface/surface_properties.dart';
+import 'visual_state_watcher.dart';
 
 /// An implementation of the [StoryShell] interface.
-class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
-  final StoryShellBinding _storyShellBinding = new StoryShellBinding();
-  final LifecycleBinding _lifecycleBinding = new LifecycleBinding();
-  final StoryShellContextProxy _storyShellContext =
-      new StoryShellContextProxy();
-  final LinkProxy _linkProxy = new LinkProxy();
-  final PointerEventsListener _pointerEventsListener =
-      new PointerEventsListener();
+class StoryShellImpl extends StoryShell {
+  final StoryShellBinding _storyShellBinding = StoryShellBinding();
+  final StoryShellContextProxy _storyShellContext = StoryShellContextProxy();
+  final LinkProxy _linkProxy = LinkProxy();
   final KeyListener keyListener;
   final StoryVisualStateWatcherBinding _visualStateWatcherBinding =
-      new StoryVisualStateWatcherBinding();
+      StoryVisualStateWatcherBinding();
   final SurfaceGraph surfaceGraph;
   final String _storyShellLinkName = 'story_shell_state';
-  StoryVisualState _visualState;
+  final StreamController<String> _focusEventStreamController =
+      StreamController.broadcast();
   String _lastFocusedSurfaceId;
+  lifecycle.Lifecycle _lifecycle;
+  VisualStateWatcher _storyVisualStateWatcher;
 
   StoryShellImpl({this.surfaceGraph, this.keyListener});
 
   /// StoryShell
   @override
-  void initialize(InterfaceHandle<StoryShellContext> contextHandle) async {
+  Future<void> initialize(
+      InterfaceHandle<StoryShellContext> contextHandle) async {
+    _storyVisualStateWatcher = VisualStateWatcher(
+        keyListener: keyListener, storyShellContext: _storyShellContext);
     _storyShellContext.ctrl.bind(contextHandle);
-    _storyShellContext
-      ..watchVisualState(_visualStateWatcherBinding.wrap(this))
-      ..getLink(_linkProxy.ctrl.request());
-    await reloadStoryState().then(onLinkContentsFetched);
+    await _storyShellContext.watchVisualState(
+        _visualStateWatcherBinding.wrap(_storyVisualStateWatcher));
+    await _storyShellContext
+        .getLink(_linkProxy.ctrl.request())
+        .then((v) => reloadStoryState())
+        .then((onLinkContentsFetched));
     surfaceGraph.addListener(() {
       String surfaceId = surfaceGraph.focused?.node?.value;
       if (surfaceId != null && surfaceId != _lastFocusedSurfaceId) {
-        _storyShellBinding.events.onSurfaceFocused(surfaceId);
+        _focusEventStreamController.add(surfaceId);
         _lastFocusedSurfaceId = surfaceId;
       }
     });
@@ -63,21 +67,16 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
     _storyShellBinding.bind(this, request);
   }
 
-  /// Bind an [InterfaceRequest] for a [Lifecycle] interface to this object.
-  void bindLifecycle(InterfaceRequest<Lifecycle> request) {
-    _lifecycleBinding.bind(this, request);
-  }
-
   /// Introduce a new Surface and corresponding [ImportToken] to the current
   /// Story.
   ///
   /// The Surface may have a relationship with its parent surface.
   @override
-  void addSurface(
+  Future<void> addSurface(
     ViewConnection viewConnection,
     SurfaceInfo surfaceInfo,
-  ) {
-    trace(
+  ) async {
+    Timeline.instantSync(
         'connecting surface ${viewConnection.surfaceId} with parent ${surfaceInfo.parentId}');
     log.fine(
         'Connecting surface ${viewConnection.surfaceId} with parent ${surfaceInfo.parentId}');
@@ -87,7 +86,7 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
     surfaceGraph
       ..addSurface(
         viewConnection.surfaceId,
-        new SurfaceProperties(source: surfaceInfo.moduleSource),
+        SurfaceProperties(source: surfaceInfo.moduleSource),
         surfaceInfo.parentId,
         surfaceInfo.surfaceRelation ?? const SurfaceRelation(),
         surfaceInfo.moduleManifest != null
@@ -106,35 +105,32 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
 
   /// Focus the surface with this id
   @override
-  void focusSurface(String surfaceId) {
+  Future<void> focusSurface(String surfaceId) async {
     Timeline.instantSync('focusing view',
         arguments: {'surfaceId': '$surfaceId'});
     surfaceGraph.focusSurface(surfaceId);
-    persistStoryState();
+    return persistStoryState();
   }
 
   /// Defocus the surface with this id
   @override
-  void defocusSurface(String surfaceId, void callback()) {
+  Future<void> defocusSurface(String surfaceId) async {
     Timeline.instantSync('defocusing view',
         arguments: {'surfaceId': '$surfaceId'});
     surfaceGraph.dismissSurface(surfaceId);
-    // TODO(alangardner, djmurphy): Make Mondrian not crash if the process
-    // associated with surfaceId is closed after callback returns.
-    callback();
-    persistStoryState();
+    return persistStoryState();
   }
 
-  /// Add a container node to the graph, with associated layout as a property,
-  /// and optionally specify a parent and a relationship to the parent
+  @Deprecated('Deprecated')
   @override
-  void addContainer(
-      String containerName,
-      String parentId,
-      SurfaceRelation relation,
-      List<ContainerLayout> layouts,
-      List<ContainerRelationEntry> relationships,
-      List<ContainerView> views) {
+  Future<void> addContainer(
+    String containerName,
+    String parentId,
+    SurfaceRelation relation,
+    List<ContainerLayout> layouts,
+    List<ContainerRelationEntry> relationships,
+    List<ContainerView> views,
+  ) async {
     // Add a root node for the container
     Timeline.instantSync('adding container', arguments: {
       'containerName': '$containerName',
@@ -142,12 +138,11 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
     });
     surfaceGraph.addContainer(
       containerName,
-      new SurfaceProperties(),
+      SurfaceProperties(),
       parentId,
       relation,
       layouts,
     );
-
     Map<String, ContainerRelationEntry> nodeMap =
         <String, ContainerRelationEntry>{};
     Map<String, List<String>> parentChildrenMap = <String, List<String>>{};
@@ -171,7 +166,7 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
       String parentId = nodeMap[nodeId].parentNodeName;
       if (addedParents.contains(parentId)) {
         for (nodeId in parentChildrenMap[parentId]) {
-          SurfaceProperties prop = new SurfaceProperties()
+          SurfaceProperties prop = SurfaceProperties()
             ..containerMembership = <String>[containerName]
             ..containerLabel = nodeId;
           surfaceGraph.addSurface(
@@ -195,55 +190,29 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
   }
 
   @override
-  void removeSurface(String surfaceId) {
-    surfaceGraph.removeSurface(surfaceId);
+  Future<void> removeSurface(String surfaceId) async {
+    return surfaceGraph.removeSurface(surfaceId);
   }
 
   @override
-  void reconnectView(ViewConnection viewConnection) {
+  Future<void> reconnectView(ViewConnection viewConnection) async {
     // TODO (jphsiao): implement
   }
 
   @override
-  void updateSurface(
+  Future<void> updateSurface(
     ViewConnection viewConnection,
     SurfaceInfo surfaceInfo,
-  ) {
+  ) async {
     // TODO (jphsiao): implement
   }
 
-  /// Terminate the StoryShell.
-  @override
-  void terminate() => exit(0);
-
-  @override
-  void onVisualStateChange(StoryVisualState visualState) {
-    if (_visualState == visualState) {
-      return;
-    }
-    _visualState = visualState;
-
-    _pointerEventsListener.stop();
-    if (visualState == StoryVisualState.maximized) {
-      PresentationProxy presentationProxy = new PresentationProxy();
-      _storyShellContext.getPresentation(presentationProxy.ctrl.request());
-      // TODO(nzheng): switch story shell to use async fidl
-      _pointerEventsListener.listen(presentationProxy);
-      keyListener?.listen(presentationProxy);
-      presentationProxy.ctrl.close();
-    } else {
-      keyListener.stop();
-    }
-  }
-
-  Future<fuchsia_mem.Buffer> reloadStoryState() {
-    Completer<fuchsia_mem.Buffer> completer = Completer<fuchsia_mem.Buffer>();
-    _linkProxy.get([_storyShellLinkName], completer.complete);
-    return completer.future;
+  Future<fuchsia_mem.Buffer> reloadStoryState() async {
+    return _linkProxy.get([_storyShellLinkName]);
   }
 
   void onLinkContentsFetched(fuchsia_mem.Buffer buffer) {
-    var dataVmo = new SizedVmo(buffer.vmo.handle, buffer.size);
+    var dataVmo = SizedVmo(buffer.vmo.handle, buffer.size);
     var data = dataVmo.read(buffer.size);
     dataVmo.close();
     dynamic decoded = jsonDecode(utf8.decode(data.bytesAsUint8List()));
@@ -252,13 +221,30 @@ class StoryShellImpl implements StoryShell, StoryVisualStateWatcher, Lifecycle {
     }
   }
 
-  void persistStoryState() async {
+  Future<void> persistStoryState() async {
     String encoded = json.encode(surfaceGraph);
     var jsonList = Uint8List.fromList(utf8.encode(encoded));
     var data = fuchsia_mem.Buffer(
-      vmo: new SizedVmo.fromUint8List(jsonList),
+      vmo: SizedVmo.fromUint8List(jsonList),
       size: jsonList.length,
     );
-    _linkProxy.set([_storyShellLinkName], data);
+    await _linkProxy.set([_storyShellLinkName], data);
+  }
+
+  @override
+  Stream<String> get onSurfaceFocused => _focusEventStreamController.stream;
+
+  /// Start advertising the StoryShell service, and bind lifecycle to
+  /// termination
+  void advertise() {
+    StartupContext.fromStartupInfo().outgoing.addPublicService(
+      (InterfaceRequest<StoryShell> request) {
+        Timeline.instantSync('story shell request');
+        log.fine('Received binding request for StoryShell');
+        bindStoryShell(request);
+      },
+      StoryShell.$serviceName,
+    );
+    _lifecycle ??= lifecycle.Lifecycle();
   }
 }
