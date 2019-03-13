@@ -64,7 +64,7 @@ def extract_defines(header, guard):
       defines.append((match.groupdict()['symbol'], match.groupdict()['value']))
     else:
       # ignore the header guard
-      if line.startswith('#define %s' % guard):
+      if line.startswith('#define %s' % guard) or line.startswith('#define SYSROOT_%s' % guard):
         continue
       # ignore function-like macros
       if not re.match(r'#define\s+[A-Za-z0-9_]+\(', line):
@@ -123,9 +123,9 @@ class DartWriter(object):
 def write_constants():
   path = os.path.join(source_dir, 'lib/src/constants.dart')
   error_defines = extract_defines(os.path.join(zircon_include_dir, 'errors.h'),
-                                  'ZIRCON_ERRORS_')
+                                  'ZIRCON_ERRORS_H_')
   type_defines = extract_defines(os.path.join(zircon_include_dir, 'types.h'),
-                                 'ZIRCON_TYPES_')
+                                 'ZIRCON_TYPES_H_')
   with DartWriter(path) as f:
     f.write(file_header)
     f.write('abstract class ZX {\n')
