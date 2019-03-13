@@ -99,6 +99,10 @@ class Stories extends StatelessWidget {
                             right: storyManager.isFullscreen ? 0 : 2,
                             bottom: storyManager.isFullscreen ? 0 : 2,
                             child: GestureDetector(
+                              // Pass gestures down to page.
+                              behavior: HitTestBehavior.translucent,
+                              // Disable long press on top of story.
+                              onLongPress: () {},
                               // Disable listview scrolling on top of story.
                               onHorizontalDragStart: (_) {},
                               child: ChildView(
