@@ -417,6 +417,10 @@ void PlatformView::OnScenicEvent(
                 << "Flutter PlatformView::OnScenicEvent: Got an invalid GFX "
                    "event.";
             break;
+          default:
+            FML_LOG(WARNING)
+                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event";
+            break;
         }
         break;
       case fuchsia::ui::scenic::Event::Tag::kInput:
