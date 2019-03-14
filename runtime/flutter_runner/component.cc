@@ -276,13 +276,13 @@ Application::Application(
 
   settings_.log_tag = debug_label_ + std::string{"(flutter)"};
 
-#ifndef NDEBUG
+#if !defined(DART_PRODUCT)
   // Debug mode
   settings_.disable_dart_asserts = false;
-#else   // NDEBUG
+#else
   // Release mode
   settings_.disable_dart_asserts = true;
-#endif  // NDEBUG
+#endif
 
   settings_.task_observer_add =
       std::bind(&CurrentMessageLoopAddAfterTaskObserver, std::placeholders::_1,
