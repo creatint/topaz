@@ -27,3 +27,9 @@ shas are provided for reference only. Code can be checked out with:
 * topaz/tools/dartfmt_extras: acc1f05718af2bcfbba3317a456f82b67eec4e42
 * topaz/tools/mod: acc1f05718af2bcfbba3317a456f82b67eec4e42
 * topaz/tools/widget_explorer: acc1f05718af2bcfbba3317a456f82b67eec4e42
+* topaz/examples/bluetooth: f4287c5ae0e9b099983121b41be66e1994b83a02
+* topaz/bin/repl: fc25fb9b825f4100b316c4d5135156ef05e0dc4b
+* topaz/examples/tictactoe: 07fd955f4
+* topaz/examples/ui/hello_mod: 07fd955f4
+* topaz/examples/ui/sketchy_flutter: 07fd955f4
+* topaz/examples/ui/text_flutter: 07fd955f4
