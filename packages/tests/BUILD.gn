@@ -12,9 +12,9 @@ group("auth_provider_tests") {
 group("scenic") {
   testonly = true
   public_deps = [
+    "//garnet/examples/ui:tile_view",
     "//garnet/packages/tests:scenic",
     "//topaz/bin/ui/benchmarks/image_grid_flutter",
-    "//garnet/examples/ui:tile_view",
   ]
 }
 
@@ -33,8 +33,8 @@ group("dart_unittests") {
     "//topaz/public/dart/fuchsia_inspect:fuchsia_inspect_package_unittests($host_toolchain)",
     "//topaz/public/dart/fuchsia_logger:fuchsia_logger_package_unittests($host_toolchain)",
     "//topaz/public/dart/fuchsia_modular:fuchsia_modular_package_unittests($host_toolchain)",
-    "//topaz/public/dart/fuchsia_services:fuchsia_services_package_unittests($host_toolchain)",
     "//topaz/public/dart/fuchsia_scenic_flutter:fuchsia_scenic_flutter_unittests($host_toolchain)",
+    "//topaz/public/dart/fuchsia_services:fuchsia_services_package_unittests($host_toolchain)",
     "//topaz/public/dart/sledge:dart_sledge_tests($host_toolchain)",
     "//topaz/public/dart/widgets:dart_widget_tests($host_toolchain)",
     "//topaz/public/lib/app/dart:dart_app_tests($host_toolchain)",
@@ -49,18 +49,18 @@ group("dart_unittests") {
 group("bindings_tests") {
   testonly = true
   public_deps = [
-    "//topaz/bin/fidl_bindings_test/test:fidl_bindings_test",
     "//topaz/bin/fidl_bindings_test/server:fidl_bindings_test_server",
+    "//topaz/bin/fidl_bindings_test/test:fidl_bindings_test",
   ]
 }
 
 group("dart") {
   testonly = true
   public_deps = [
+    "//topaz/public/dart/zircon:test_extract_zircon_constants($host_toolchain)",
     "//topaz/runtime/dart_runner/examples/goodbye_dart:goodbye_dart_test",
     "//topaz/runtime/dart_runner/integration:dart_aot_runner_test",
     "//topaz/runtime/dart_runner/integration:dart_jit_runner_test",
-    "//topaz/public/dart/zircon:test_extract_zircon_constants($host_toolchain)",
   ]
 }
 
@@ -74,8 +74,8 @@ group("all") {
     "//topaz/packages/tests:crasher_dart",
     "//topaz/packages/tests:crasher_flutter",
     "//topaz/packages/tests:dart",
-    "//topaz/packages/tests:dart_target_unittests",
     "//topaz/packages/tests:dart_target_integration_tests",
+    "//topaz/packages/tests:dart_target_unittests",
     "//topaz/packages/tests:dart_unittests",
     "//topaz/packages/tests:fidl_changes",
     "//topaz/packages/tests:fidl_compatibility_test",
@@ -137,8 +137,8 @@ group("fidl_compatibility_test") {
     "//garnet/packages/tests:fidl_compatibility_test_server_cpp",
     "//garnet/packages/tests:fidl_compatibility_test_server_go",
     "//garnet/packages/tests:fidl_compatibility_test_server_rust",
-    "//topaz/packages/tests:fidl_compatibility_test_server_dart",
     "//topaz/bin/fidl_compatibility_test:package",
+    "//topaz/packages/tests:fidl_compatibility_test_server_dart",
   ]
 }
 
@@ -160,8 +160,8 @@ group("flutter_screencap_test") {
   testonly = true
   public_deps = [
     "//peridot/packages/prod:integration_testing",
-    "//topaz/packages/tests:flutter_screencap_test_app",
     "//topaz/bin/flutter_screencap_test",
+    "//topaz/packages/tests:flutter_screencap_test_app",
   ]
 }
 
@@ -169,6 +169,8 @@ group("dart_target_integration_tests") {
   testonly = true
   public_deps = [
     "//topaz/packages/examples:fidl",
+    "//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test",
+    "//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test_writer",
     "//topaz/tests/dart_app_service_tests:dart_app_service_tests",
   ]
 }

@@ -9,10 +9,14 @@ import 'dart:typed_data';
 
 import 'package:fuchsia_inspect/src/vmo_holder.dart';
 import 'package:test/test.dart';
+import 'package:zircon/zircon.dart';
 
 class FakeVmo implements VmoHolder {
   /// The memory contents of this "VMO".
   final ByteData bytes;
+
+  @override
+  Vmo get vmo => null;
 
   /// Size of the "VMO".
   @override

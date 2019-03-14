@@ -21,6 +21,9 @@ class VmoHolder {
     _vmo = Vmo(result.handle);
   }
 
+  /// The raw VMO
+  Vmo get vmo => _vmo;
+
   /// Starts an update.
   void beginWork() {}
 
@@ -63,7 +66,7 @@ class VmoHolder {
 
   /// Reads int64 from VMO.
   int readInt64(int offset) {
-    ByteData data = read(8, offset);
+    ByteData data = read(offset, 8);
     return data.getInt64(0, Endian.little);
   }
 }

@@ -2,14 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:convert' show utf8;
-import 'dart:math' show min;
 import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
 
 import 'bitfield64.dart';
 import 'heap.dart';
+import 'util.dart';
 import 'vmo_fields.dart';
 import 'vmo_holder.dart';
 
@@ -335,7 +334,7 @@ class Block {
   /// Throws [StateError] if block wasn't a [BlockType.reserved] block.
   void becomeName(String name) {
     _checkType(BlockType.reserved);
-    var stringBytes = stringToByteData(name, maxBytes: payloadSpaceBytes);
+    var stringBytes = toByteData(name, maxBytes: payloadSpaceBytes);
     _header
       ..write(typeBits, BlockType.nameUtf8.value)
       ..write(nameLengthBits, stringBytes.lengthInBytes);
@@ -427,24 +426,6 @@ class Block {
     if ((_payloadBits.value & 1 == 1) != locked) {
       throw StateError('Lock state error; expected locked = $locked.');
     }
-  }
-
-  /// Converts a [string] to byte data containing utf8.
-  ///
-  /// If [maxBytes] is specified, this function may truncate (malform) the last
-  /// character if it's multibyte in utf8.
-  @visibleForTesting
-  static ByteData stringToByteData(String string, {int maxBytes = -1}) {
-    var bytes = utf8.encode(string);
-    var length = bytes.length;
-    if (maxBytes >= 0) {
-      length = min(length, maxBytes);
-    }
-    var byteData = ByteData(length);
-    for (int i = 0; i < length; i++) {
-      byteData.setUint8(i, bytes[i]);
-    }
-    return byteData;
   }
 
   /// Converts 64 [bits] (supplied as int) to the [double] they really are.

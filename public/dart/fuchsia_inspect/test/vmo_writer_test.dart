@@ -9,6 +9,7 @@ import 'dart:typed_data';
 
 import 'package:fuchsia_inspect/src/bitfield64.dart';
 import 'package:fuchsia_inspect/src/block.dart';
+import 'package:fuchsia_inspect/src/util.dart';
 import 'package:fuchsia_inspect/src/vmo_fields.dart';
 import 'package:fuchsia_inspect/src/vmo_holder.dart';
 import 'package:fuchsia_inspect/src/vmo_writer.dart';
@@ -46,7 +47,7 @@ void main() {
       checker.check(0, []);
       final child = writer.createNode(writer.rootNode, 'child');
       checker.check(2, [
-        Test(_nameFor(vmo, child), Block.stringToByteData('child')),
+        Test(_nameFor(vmo, child), toByteData('child')),
         Test(writer.rootNode, 1)
       ]);
       writer.deleteNode(child);
@@ -62,7 +63,7 @@ void main() {
       checker.check(0, []);
       final intMetric = writer.createMetric(writer.rootNode, 'intMetric', 1);
       checker.check(2, [
-        Test(_nameFor(vmo, intMetric), Block.stringToByteData('intMetric')),
+        Test(_nameFor(vmo, intMetric), toByteData('intMetric')),
         Test(intMetric, 1, reason: 'int value wrong'),
         Test(writer.rootNode, 1, reason: 'childCount wrong')
       ]);
@@ -82,8 +83,7 @@ void main() {
       final doubleMetric =
           writer.createMetric(writer.rootNode, 'doubleMetric', 1.5);
       checker.check(2, [
-        Test(_nameFor(vmo, doubleMetric),
-            Block.stringToByteData('doubleMetric')),
+        Test(_nameFor(vmo, doubleMetric), toByteData('doubleMetric')),
         Test(doubleMetric, 1.5, reason: 'double value wrong'),
         Test(writer.rootNode, 1, reason: 'childCount wrong')
       ]);
@@ -103,7 +103,7 @@ void main() {
 
       final property = writer.createProperty(writer.rootNode, 'prop');
       checker.check(2, [
-        Test(_nameFor(vmo, property), Block.stringToByteData('prop')),
+        Test(_nameFor(vmo, property), toByteData('prop')),
         Test(writer.rootNode, 1)
       ]);
       final bytes = ByteData(8)..setFloat64(0, 1.23);
@@ -139,10 +139,34 @@ void main() {
       final newMetric =
           writer.createMetric(writer.rootNode, 'newIntMetric', 42);
       checker.check(2, [
-        Test(_nameFor(vmo, newMetric), Block.stringToByteData('newIntMetric')),
+        Test(_nameFor(vmo, newMetric), toByteData('newIntMetric')),
         Test(newMetric, 42),
         Test(writer.rootNode, 1)
       ]);
+    });
+
+    test('String property has string flag bits', () {
+      final vmo = FakeVmo(512);
+      final writer = VmoWriter(vmo);
+      final property = writer.createProperty(writer.rootNode, 'property');
+      writer.setProperty(property, 'abc');
+      expect(Block.read(vmo, property).propertyFlags, propertyUtf8Flag);
+    });
+
+    test('Binary property has binary flag bits', () {
+      final vmo = FakeVmo(512);
+      final writer = VmoWriter(vmo);
+      final property = writer.createProperty(writer.rootNode, 'property');
+      writer.setProperty(property, ByteData(3));
+      expect(Block.read(vmo, property).propertyFlags, propertyBinaryFlag);
+    });
+
+    test('Invalid property-set value type throws ArgumentError', () {
+      final vmo = FakeVmo(512);
+      final writer = VmoWriter(vmo);
+      final property = writer.createProperty(writer.rootNode, 'property');
+      expect(() => writer.setProperty(property, 3),
+          throwsA(const TypeMatcher<ArgumentError>()));
     });
 
     test('Large properties', () {

@@ -7,6 +7,7 @@
 import 'dart:typed_data';
 
 import 'package:fuchsia_inspect/src/block.dart';
+import 'package:fuchsia_inspect/src/util.dart';
 import 'package:fuchsia_inspect/src/vmo_fields.dart';
 import 'package:test/test.dart';
 import 'util.dart';
@@ -251,7 +252,7 @@ void main() {
         ..becomeFree(4)
         ..becomeReserved()
         ..becomeExtent(0x42)
-        ..setExtentPayload(Block.stringToByteData('abc'));
+        ..setExtentPayload(toByteData('abc'));
       compare(vmo, 32,
           '${hexChar(BlockType.extent.value)} 1 42 0000 0000 0000 61 62 63');
       expect(block.nextExtent, 0x42);

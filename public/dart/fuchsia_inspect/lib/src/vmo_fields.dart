@@ -39,6 +39,12 @@ const int heapStartIndex = 4;
 /// Size of VMO-block's header bitfield in bytes.
 const int headerSizeBytes = 8;
 
+/// Flag for utf8 Property.
+const int propertyUtf8Flag = 0;
+
+/// Flag for binary Property.
+const int propertyBinaryFlag = 1;
+
 /// Types of VMO blocks.
 ///
 /// Basically an enum with conversion to/from specified numeric values.

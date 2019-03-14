@@ -7,14 +7,13 @@ import 'dart:typed_data';
 
 import 'block.dart';
 import 'heap.dart';
+import 'util.dart';
 import 'vmo_fields.dart';
 import 'vmo_holder.dart';
 
 /// Index 0 will never be allocated, so it's the designated 'invalid' value.
 const int invalidIndex = 0;
 
-// The rest of these index consts are internal-use-only.
-// TODO(cphoenix): Split this file into API and implementation?
 /// Name of the root node.
 const String rootName = 'root';
 
@@ -90,24 +89,40 @@ class VmoWriter {
     return property.index;
   }
 
-  /// Sets a Property's value.
+  /// Sets a Property's value from [String] or [ByteData].
   ///
   /// First frees any existing value, then tries to allocate space for the new
   /// value. If the new allocation fails, the previous
   /// value will be cleared and the Property will be empty.
-  void setProperty(int propertyIndex, ByteData value) {
+  ///
+  /// Throws ArgumentError if [value] is not [String] or [ByteData].
+  void setProperty(int propertyIndex, dynamic value) {
     _beginWork();
+    if (!(value is String || value is ByteData)) {
+      throw ArgumentError('Property value must be String or ByteData.');
+    }
+
     var property = Block.read(_vmo, propertyIndex);
     _freeExtents(property.propertyExtentIndex);
-    if (value == null || value.lengthInBytes == 0) {
+    ByteData valueToWrite;
+    if (value is String) {
+      valueToWrite = toByteData(value);
+      property.propertyFlags = propertyUtf8Flag;
+    } else if (value is ByteData) {
+      valueToWrite = value;
+      property.propertyFlags = propertyBinaryFlag;
+    }
+
+    if (valueToWrite == null || valueToWrite.lengthInBytes == 0) {
       property.propertyExtentIndex = 0;
     } else {
-      property.propertyExtentIndex = _allocateExtents(value.lengthInBytes);
+      property.propertyExtentIndex =
+          _allocateExtents(valueToWrite.lengthInBytes);
       if (property.propertyExtentIndex == invalidIndex) {
         property.propertyTotalLength = 0;
       } else {
-        _copyToExtents(property.propertyExtentIndex, value);
-        property.propertyTotalLength = value.lengthInBytes;
+        _copyToExtents(property.propertyExtentIndex, valueToWrite);
+        property.propertyTotalLength = valueToWrite.lengthInBytes;
       }
     }
     _commit();
@@ -289,17 +304,4 @@ class VmoWriter {
     _vmo.commit();
     _headerBlock.unlock();
   }
-}
-
-/// foo
-class Foo {
-  /// value
-  final int value;
-  const Foo._(this.value);
-
-  /// bar
-  const Foo.bar() : this._(0);
-
-  /// baz
-  const Foo.baz() : this._(1);
 }
