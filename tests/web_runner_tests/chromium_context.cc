@@ -20,11 +20,11 @@ ChromiumContext::ChromiumContext(component::StartupContext* startup_context) {
   zx_handle_t incoming_service_clone = fdio_service_clone(
       startup_context->incoming_services()->directory().get());
   FXL_CHECK(incoming_service_clone != ZX_HANDLE_INVALID);
-  chromium::web::CreateContextParams2 params;
+  chromium::web::CreateContextParams params;
   params.set_service_directory(fidl::InterfaceHandle<fuchsia::io::Directory>(
       zx::channel(incoming_service_clone)));
 
-  chromium_context_provider->Create2(std::move(params),
+  chromium_context_provider->Create(std::move(params),
                                      chromium_context_.NewRequest());
   chromium_context_.set_error_handler([](zx_status_t status) {
     FAIL() << "chromium_context_: " << zx_status_get_string(status);
@@ -44,5 +44,5 @@ void ChromiumContext::Navigate(const std::string& url) {
   // guaranteed.
   chromium::web::NavigationControllerPtr navigation;
   chromium_frame_->GetNavigationController(navigation.NewRequest());
-  navigation->LoadUrl2(url, chromium::web::LoadUrlParams2());
+  navigation->LoadUrl(url, chromium::web::LoadUrlParams());
 }

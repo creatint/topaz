@@ -158,7 +158,7 @@ void GoogleAuthProviderImpl::GetPersistentCredential(
   }
   chromium::web::NavigationControllerPtr controller;
   chromium_frame_->GetNavigationController(controller.NewRequest());
-  controller->LoadUrl2(url, chromium::web::LoadUrlParams2());
+  controller->LoadUrl(url, chromium::web::LoadUrlParams());
   FX_LOGF(INFO, NULL, "Loading URL: %s", url.c_str());
 
   auth_ui_context_ = auth_ui_context.Bind();
@@ -598,9 +598,9 @@ zx::eventpair GoogleAuthProviderImpl::SetupChromium() {
     return zx::eventpair();
   }
 
-  chromium::web::CreateContextParams2 params;
+  chromium::web::CreateContextParams params;
   params.set_service_directory(std::move(incoming_service_clone));
-  context_provider->Create2(std::move(params), chromium_context_.NewRequest());
+  context_provider->Create(std::move(params), chromium_context_.NewRequest());
   chromium_context_->CreateFrame(chromium_frame_.NewRequest());
 
   // Bind ourselves as a NavigationEventObserver on this frame.
