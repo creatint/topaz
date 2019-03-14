@@ -185,7 +185,7 @@ class AskModel extends ChangeNotifier {
   }
 
   void advertise() {
-    startupContext.outgoing.addPublicService(
+    startupContext.outgoing.addServiceForName(
       (InterfaceRequest<AskBar> request) => _askBinding.bind(_ask, request),
       AskBar.$serviceName,
     );
