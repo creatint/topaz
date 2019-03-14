@@ -12,8 +12,7 @@ package("topaz_modular_integration_tests") {
 
   tests = [
     {
-      # The Flutter driver is only available in debug builds.
-      disabled = !is_debug
+      disabled = true # Flaky: FLK-91
 
       name = rebase_path("run_topaz_modular_integration_tests.sh")
       dest = "run_topaz_modular_integration_tests.sh"
