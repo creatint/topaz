@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl_fuchsia_cobalt/fidl.dart' as cobalt;
-import 'package:fidl_fuchsia_mem/fidl.dart';
-import 'package:fidl_fuchsia_netstack/fidl.dart';
+import 'package:fidl_fuchsia_cobalt/fidl_async.dart' as cobalt;
+import 'package:fidl_fuchsia_mem/fidl_async.dart';
+import 'package:fidl_fuchsia_netstack/fidl_async.dart';
 import 'package:flutter/material.dart';
-import 'package:lib.app.dart/app.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:lib.base_shell/base_shell_widget.dart';
 import 'package:lib.base_shell/netstack_model.dart';
-import 'package:lib.widgets/application_deprecated.dart';
+import 'package:lib.widgets/application.dart';
 import 'package:lib.widgets/model.dart';
 import 'package:meta/meta.dart';
 import 'package:zircon/zircon.dart';
@@ -31,20 +31,21 @@ BaseShellWidget<UserPickerBaseShellModel> _baseShellWidget;
 
 void main() {
   setupLogger(name: 'userpicker_base_shell');
-  trace('starting');
   StartupContext startupContext = new StartupContext.fromStartupInfo();
 
   // Connect to Cobalt
   cobalt.LoggerProxy logger = new cobalt.LoggerProxy();
 
   cobalt.LoggerFactoryProxy loggerFactory = new cobalt.LoggerFactoryProxy();
-  connectToService(startupContext.environmentServices, loggerFactory.ctrl);
+  connectToEnvironmentService(loggerFactory);
 
   SizedVmo configVmo = SizedVmo.fromFile(_kCobaltConfigBinProtoPath);
   cobalt.ProjectProfile profile = cobalt.ProjectProfile(
       config: Buffer(vmo: configVmo, size: configVmo.size),
       releaseStage: cobalt.ReleaseStage.ga);
-  loggerFactory.createLogger(profile, logger.ctrl.request(), (cobalt.Status s) {
+  loggerFactory
+      .createLogger(profile, logger.ctrl.request())
+      .then((cobalt.Status s) {
     if (s != cobalt.Status.ok) {
       print('Failed to obtain Logger. Cobalt config is invalid.');
     }
@@ -52,7 +53,7 @@ void main() {
   loggerFactory.ctrl.close();
 
   NetstackProxy netstackProxy = new NetstackProxy();
-  connectToService(startupContext.environmentServices, netstackProxy.ctrl);
+  connectToEnvironmentService(netstackProxy);
 
   NetstackModel netstackModel = new NetstackModel(netstack: netstackProxy)
     ..start();
@@ -136,7 +137,6 @@ void main() {
   runApp(_baseShellWidget);
 
   _baseShellWidget.advertise();
-  trace('started');
 }
 
 class _WifiInfo extends StatelessWidget {

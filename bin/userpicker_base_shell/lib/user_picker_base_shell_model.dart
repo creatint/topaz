@@ -5,10 +5,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:fidl_fuchsia_cobalt/fidl.dart' as cobalt;
-import 'package:fidl_fuchsia_modular_auth/fidl.dart';
-import 'package:fidl_fuchsia_sys/fidl.dart';
-import 'package:fidl_fuchsia_ui_policy/fidl.dart';
+import 'package:fidl_fuchsia_cobalt/fidl_async.dart' as cobalt;
+import 'package:fidl_fuchsia_modular_auth/fidl_async.dart';
+import 'package:fidl_fuchsia_sys/fidl_async.dart';
+import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';

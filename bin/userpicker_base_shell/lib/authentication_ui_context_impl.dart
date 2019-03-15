@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_auth/fidl.dart';
+import 'package:fidl_fuchsia_auth/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl.dart';
+import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:zircon/zircon.dart';
 
@@ -28,14 +28,19 @@ class AuthenticationUiContextImpl extends AuthenticationUiContext {
         _onStopOverlay = onStopOverlay;
 
   @override
-  void startOverlay(InterfaceHandle<ViewOwner> viewOwner) =>
+  Future<void> startOverlay(InterfaceHandle<ViewOwner> viewOwner) =>
       startOverlay2(new EventPair(viewOwner?.passChannel()?.passHandle()));
 
   @override
   // ignore: override_on_non_overriding_method
-  void startOverlay2(EventPair viewHolderToken) =>
-      _onStartOverlay?.call(ViewHolderToken(value: viewHolderToken));
+  Future<void> startOverlay2(EventPair viewHolderToken) {
+    _onStartOverlay?.call(ViewHolderToken(value: viewHolderToken));
+    return null;
+  }
 
   @override
-  void stopOverlay() => _onStopOverlay?.call();
+  Future<void> stopOverlay() {
+    _onStopOverlay?.call();
+    return null;
+  }
 }

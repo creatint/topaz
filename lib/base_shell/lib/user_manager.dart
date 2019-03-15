@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_modular/fidl.dart';
-import 'package:fidl_fuchsia_modular_auth/fidl.dart';
-import 'package:fidl_fuchsia_sys/fidl.dart';
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fidl_fuchsia_modular/fidl_async.dart';
+import 'package:fidl_fuchsia_modular_auth/fidl_async.dart';
+import 'package:fidl_fuchsia_sys/fidl_async.dart';
+import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart';
+import 'package:fuchsia_logger/logger.dart';
 
 /// Handles adding, removing, and logging, and controlling users.
 class BaseShellUserManager {
@@ -25,17 +25,15 @@ class BaseShellUserManager {
   Future<String> addUser() {
     final completer = Completer<String>();
 
-    _userProvider.addUser(
-      IdentityProvider.google,
-      (Account account, String errorCode) {
-        if (errorCode == null || errorCode == '') {
-          completer.complete(account.id);
-        } else {
-          log.warning('ERROR adding user!  $errorCode');
-          completer.completeError(UserLoginException('addUser', errorCode));
-        }
-      },
-    );
+    _userProvider.addUser(IdentityProvider.google).then((response) {
+      if (response.errorCode == null || response.errorCode == '') {
+        completer.complete(response.account.id);
+      } else {
+        log.warning('ERROR adding user!  ${response.errorCode}');
+        completer
+            .completeError(UserLoginException('addUser', response.errorCode));
+      }
+    });
 
     return completer.future;
   }
@@ -62,7 +60,7 @@ class BaseShellUserManager {
   Future<void> removeUser(String userId) {
     final completer = Completer<void>();
 
-    _userProvider.removeUser(userId, (String errorCode) {
+    _userProvider.removeUser(userId).then((errorCode) {
       if (errorCode != null && errorCode != '') {
         completer
             .completeError(UserLoginException('removing $userId', errorCode));
@@ -77,7 +75,7 @@ class BaseShellUserManager {
   Future<Iterable<Account>> getPreviousUsers() {
     final completer = Completer<Iterable<Account>>();
 
-    _userProvider.previousUsers(completer.complete);
+    _userProvider.previousUsers().then(completer.complete);
 
     return completer.future;
   }

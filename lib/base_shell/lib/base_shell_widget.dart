@@ -2,13 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:lib.app.dart/app.dart';
-import 'package:fidl_fuchsia_auth/fidl.dart';
-import 'package:fidl_fuchsia_modular/fidl.dart';
+import 'package:fidl/fidl.dart';
+import 'package:fidl_fuchsia_auth/fidl_async.dart';
+import 'package:fidl_fuchsia_modular/fidl_async.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fidl/fidl.dart';
-import 'package:lib.app.dart/app.dart' show StartupContext;
+import 'package:fuchsia_services/services.dart' show StartupContext;
 import 'package:lib.device.dart/device.dart';
 import 'package:lib.widgets/widgets.dart' show WindowMediaQuery;
 import 'package:meta/meta.dart';
@@ -71,7 +70,7 @@ class BaseShellWidget<T extends BaseShellModel> extends StatelessWidget {
   /// Advertises [_baseShell] as a [BaseShell] to the rest of the system via
   /// the [StartupContext].
   void advertise() {
-    startupContext.outgoingServices
+    startupContext.outgoing
       ..addServiceForName((InterfaceRequest<BaseShell> request) {
         BaseShellBinding binding = new BaseShellBinding()
           ..bind(_baseShell, request);

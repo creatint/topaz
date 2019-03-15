@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
-import 'package:lib.app.dart/logging.dart';
 import 'package:lib.widgets/model.dart';
 
 /// Manages the connection and animation of the authentication window.

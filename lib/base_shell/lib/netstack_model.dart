@@ -2,11 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl_fuchsia_net/fidl.dart' as net;
-import 'package:fidl_fuchsia_netstack/fidl.dart' as ns;
+import 'dart:async';
+
+import 'package:fidl_fuchsia_net/fidl_async.dart' as net;
+import 'package:fidl_fuchsia_netstack/fidl_async.dart' as ns;
+import 'package:fidl_fuchsia_netstack/fidl_async.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
-import 'package:lib.app.dart/app.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:lib.widgets/model.dart';
 
 const String _kLoopbackInterfaceName = 'en1';
@@ -102,6 +105,9 @@ class InterfaceInfo {
 class NetstackModel extends Model with TickerProviderModelMixin {
   /// The netstack containing networking information for the device.
   final ns.NetstackProxy netstack;
+
+  StreamSubscription<bool> _reachabilitySubscription;
+  StreamSubscription<List<NetInterface>> _interfaceSubscription;
   final net.ConnectivityProxy connectivity = net.ConnectivityProxy();
 
   final ValueNotifier<bool> networkReachable = ValueNotifier<bool>(false);
@@ -110,12 +116,12 @@ class NetstackModel extends Model with TickerProviderModelMixin {
 
   /// Constructor.
   NetstackModel({this.netstack}) {
-    connectToService(StartupContext.fromStartupInfo().environmentServices,
-        connectivity.ctrl);
+    connectToEnvironmentService(connectivity);
     networkReachable.addListener(notifyListeners);
-    connectivity.onNetworkReachable = (reachable) {
+    _reachabilitySubscription =
+        connectivity.onNetworkReachable.listen((reachable) {
       networkReachable.value = reachable;
-    };
+    });
   }
 
   /// The current interfaces on the device.
@@ -137,8 +143,7 @@ class NetstackModel extends Model with TickerProviderModelMixin {
         .forEach(_interfaces.remove);
 
     for (ns.NetInterface interface in filteredInterfaces) {
-      netstack.getStats(
-        interface.id,
+      netstack.getStats(interface.id).then(
         (ns.NetInterfaceStats stats) {
           if (_interfaces[interface.id] == null) {
             _interfaces[interface.id] = new InterfaceInfo(
@@ -157,11 +162,20 @@ class NetstackModel extends Model with TickerProviderModelMixin {
 
   /// Starts listening for netstack interfaces.
   void start() {
-    netstack.onInterfacesChanged = interfacesChanged;
+    _interfaceSubscription =
+        netstack.onInterfacesChanged.listen(interfacesChanged);
   }
 
   /// Stops listening for netstack interfaces.
   void stop() {
-    netstack.onInterfacesChanged = null;
+    if (_interfaceSubscription != null) {
+      _interfaceSubscription.cancel();
+      _interfaceSubscription = null;
+    }
+
+    if (_reachabilitySubscription != null) {
+      _reachabilitySubscription.cancel();
+      _reachabilitySubscription = null;
+    }
   }
 }
