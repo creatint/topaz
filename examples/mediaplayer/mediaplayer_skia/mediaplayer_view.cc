@@ -194,7 +194,7 @@ void MediaPlayerView::Layout() {
   scenic::Rectangle background_shape(session(), logical_size().x,
                                      logical_size().y);
   background_node_.SetShape(background_shape);
-  background_node_.SetTranslationRH(
+  background_node_.SetTranslation(
       logical_size().x * .5f, logical_size().y * .5f, -kBackgroundElevation);
 
   // Compute maximum size of video content after reserving space
@@ -299,8 +299,8 @@ void MediaPlayerView::OnSceneInvalidated(
 
   // Position the video.
   if (video_host_node_) {
-    video_host_node_->SetTranslationRH(content_rect_.x, content_rect_.y,
-                                       -kVideoElevation);
+    video_host_node_->SetTranslation(content_rect_.x, content_rect_.y,
+                                     -kVideoElevation);
   }
 
   // Draw the progress bar.
@@ -311,7 +311,7 @@ void MediaPlayerView::OnSceneInvalidated(
       metrics().scale_y);
   DrawControls(controls_canvas, controls_size);
   controls_widget_.ReleaseAndSwapCanvas();
-  controls_widget_.SetTranslationRH(
+  controls_widget_.SetTranslation(
       controls_rect_.x + controls_rect_.width * .5f,
       controls_rect_.y + controls_rect_.height * .5f, -kControlsElevation);
 

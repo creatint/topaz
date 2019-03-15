@@ -20,8 +20,8 @@ SkCanvas* SkiaView::AcquireCanvas() {
   if (!canvas)
     return canvas;
 
-  canvas_cycler_.SetTranslationRH(logical_size().x * .5f,
-                                  logical_size().y * .5f, 0.f);
+  canvas_cycler_.SetTranslation(logical_size().x * .5f, logical_size().y * .5f,
+                                0.f);
   return canvas;
 }
 
