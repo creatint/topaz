@@ -12,3 +12,12 @@ class FidlError implements Exception {
   @override
   String toString() => 'FidlError: $message';
 }
+
+class MethodError<T> implements Exception {
+  MethodError(this.value);
+
+  final T value;
+
+  @override
+  String toString() => 'MethodError: $value';
+}

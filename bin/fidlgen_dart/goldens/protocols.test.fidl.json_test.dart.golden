@@ -67,6 +67,18 @@ class WithAndWithoutRequestResponse$TestBase
   }
 }
 
+class WithErrorSyntax$TestBase extends WithErrorSyntax {
+  @override
+  Future<void> errorAsPrimitive() {
+    return Future.error(UnimplementedError());
+  }
+
+  @override
+  Future<void> errorAsEnum() {
+    return Future.error(UnimplementedError());
+  }
+}
+
 class OvernetInternalProtocol$TestBase extends OvernetInternalProtocol {
   @override
   Future<void> methodA(int a, int b) {

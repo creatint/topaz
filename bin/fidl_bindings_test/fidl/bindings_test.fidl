@@ -63,6 +63,14 @@ protocol TestServer {
 
     ReplySlowly(string value, float64 delaySeconds) -> (string value);
 
+    ReplyWithErrorZero(bool with_error) -> () error uint32;
+    ReplyWithErrorOne(bool with_error, string value) -> (string value) error uint32;
+    ReplyWithErrorMore(bool with_error, string value, bool other_value) -> (string value, bool other_value) error uint32;
+
+    ReplyWithErrorEnumZero(bool with_error) -> () error EnumOne;
+    ReplyWithErrorEnumOne(bool with_error, string value) -> (string value) error EnumOne;
+    ReplyWithErrorEnumMore(bool with_error, string value, bool other_value) -> (string value, bool other_value) error EnumOne;
+
     CloseConnection(float64 delaySeconds);
 
     -> NeverEvent();

@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:fidl/fidl.dart' show MethodError;
 import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 
@@ -147,6 +148,58 @@ class TestServerImpl extends TestServer {
   @override
   Future<String> replySlowly(String value, double delaySeconds) {
     return Future.delayed(durationFromSeconds(delaySeconds), () => value);
+  }
+
+  @override
+  Future<void> replyWithErrorZero(bool withError) async {
+    if (withError) {
+      throw MethodError(23);
+    }
+  }
+
+  @override
+  Future<String> replyWithErrorOne(bool withError, String value) async {
+    if (withError) {
+      throw MethodError(42);
+    } else {
+      return value;
+    }
+  }
+
+  @override
+  Future<TestServer$ReplyWithErrorMore$Response> replyWithErrorMore(
+      bool withError, String value, bool otherValue) async {
+    if (withError) {
+      throw MethodError(666);
+    } else {
+      return TestServer$ReplyWithErrorMore$Response(value, otherValue);
+    }
+  }
+
+  @override
+  Future<void> replyWithErrorEnumZero(bool withError) async {
+    if (withError) {
+      throw MethodError(EnumOne.one);
+    }
+  }
+
+  @override
+  Future<String> replyWithErrorEnumOne(bool withError, String value) async {
+    if (withError) {
+      throw MethodError(EnumOne.two);
+    } else {
+      return value;
+    }
+  }
+
+  @override
+  Future<TestServer$ReplyWithErrorEnumMore$Response> replyWithErrorEnumMore(
+      bool withError, String value, bool otherValue) async {
+    if (withError) {
+      throw MethodError(EnumOne.three);
+    } else {
+      return TestServer$ReplyWithErrorEnumMore$Response(value, otherValue);
+    }
   }
 
   @override
