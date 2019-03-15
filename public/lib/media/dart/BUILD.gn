@@ -9,7 +9,6 @@ dart_library("dart") {
 
   sources = [
     "audio.dart",
-    "audio_legacy.dart",
   ]
 
   source_dir = "."
