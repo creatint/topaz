@@ -10,16 +10,16 @@ chromium/fuchsia/fidl 4YcvneWblGgSeJaxNCIkGib4VhYwNRwixr-GRScxFSkC
 
 # Chromium and web_runner amd64 / x64 implementation
 @Subdir third_party/chromium/arch/x64
-chromium/fuchsia/webrunner-amd64 TjVO7uiiIlb6mKY5pobDYitI0tixmkn73-Hm6_c5h0UC
+chromium/fuchsia/webrunner-amd64 lA3PGpnA5FbYCjsZ5wKEMnSfxibUSD-OXQSyevyDXIMC
 
 # Chromium and web_runner arm64 / aarch64 implementation
 @Subdir third_party/chromium/arch/arm64
-chromium/fuchsia/webrunner-arm64 yK5v92e_I12otKKy3N9xM49hl9mZPBcVoXh8N1dUABcC
+chromium/fuchsia/webrunner-arm64 pz_yqQGWK8uLZfJzD_dhETjpHYLj3Mx7V-W9gv-rLDgC
 
 # cast_runner amd64 / x64 implementation
 @Subdir third_party/cast_runner/arch/x64
-chromium/fuchsia/castrunner-amd64 tt81aIFopms4gYS3Vn1d466K7gHL3ZPn96x3KAnRN-sC
+chromium/fuchsia/castrunner-amd64 JGsVhPv9_ZVpNKAb29untzC7jQ57sNggkdBIcXNHC9IC
 
 # cast_runner arm64 / aarch64 implementation
 @Subdir third_party/cast_runner/arch/arm64
-chromium/fuchsia/castrunner-arm64 vWFWCXiEMQ9pwM2_W54IVfDQh1RldjC-z774x93DthIC
+chromium/fuchsia/castrunner-arm64 pOchYHiPR6PKu4uGesaoYce1M30EBOQkotEFb6RJmjMC
