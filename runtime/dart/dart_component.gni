@@ -440,13 +440,7 @@ template("flutter_dart_jit_component") {
       }
 
       if (flutter_driver_extendable) {
-        deps += [
-          "//sdk/fidl/fuchsia.modular",
-          "//sdk/fidl/fuchsia.testing.runner",
-          "//third_party/dart-pkg/git/flutter/packages/flutter_driver",
-          "//topaz/public/lib/app/dart",
-          "//topaz/public/lib/module/dart",
-        ]
+        deps += [ "//third_party/dart-pkg/git/flutter/packages/flutter_driver" ]
 
         non_dart_deps +=
             [ ":${kernel_name}_extensions_wrapper($target_toolchain)" ]

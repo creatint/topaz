@@ -1,7 +1,8 @@
 {
   "packages": [
-    "//topaz/examples/test/driver_example_mod:driver_example_mod",
-    "//topaz/examples/test/driver_example_mod:driver_example_mod_target_tests",
+    "//topaz/examples/test/driver_example_mod",
+    "//topaz/examples/test/driver_example_mod:driver_example_mod_tests",
+    "//topaz/public/dart/fuchsia_modular/examples/slider_mod",
     "//topaz/public/dart/fuchsia_modular/examples/slider_mod:slider_mod_tests"
   ]
 }

@@ -17,7 +17,7 @@
         }
     },
     "program": {
-        "data": "data/slider_mod_tests"
+        "data": "data/driver_example_mod_tests"
     },
     "sandbox": {
         "features": [

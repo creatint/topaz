@@ -2,38 +2,56 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl_fuchsia_testing_runner/fidl_async.dart';
+import 'package:fidl/fidl.dart';
+import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:flutter_driver/flutter_driver.dart';
-import 'package:fuchsia_modular/service_connection.dart';
 import 'package:fuchsia_remote_debug_protocol/logging.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
 
+const Pattern _isolatePattern = 'driver_example_mod';
+const _testAppUrl =
+    'fuchsia-pkg://fuchsia.com/driver_example_mod#meta/driver_example_mod.cmx';
+const _basemgrUrl = 'fuchsia-pkg://fuchsia.com/basemgr#meta/basemgr.cmx';
+
+// Starts basemgr with dev shells. This should be called from within a
+// try/finally or similar construct that closes the component controller.
+Future<void> _startBasemgr(
+    InterfaceRequest<ComponentController> controllerRequest,
+    String rootModUrl) async {
+  final context = StartupContext.fromStartupInfo();
+
+  final launchInfo = LaunchInfo(url: _basemgrUrl, arguments: [
+    '--base_shell=fuchsia-pkg://fuchsia.com/dev_base_shell#meta/dev_base_shell.cmx',
+    '--session_shell=fuchsia-pkg://fuchsia.com/dev_session_shell#meta/dev_session_shell.cmx',
+    '--session_shell_args=--root_module=$rootModUrl',
+    '--story_shell=fuchsia-pkg://fuchsia.com/dev_story_shell#meta/dev_story_shell.cmx'
+  ]);
+  await context.launcher.createComponent(launchInfo, controllerRequest);
+}
+
 void main() {
   group('driver example tests', () {
+    final controller = ComponentControllerProxy();
     FlutterDriver driver;
-    TestRunnerProxy testRunner;
 
     setUpAll(() async {
       // TODO(DX-561): Update logging messages in
       // fuchsia_remote_debug_protocol so that this doesn't need to be set to
       // `all`.
       Logger.globalLevel = LoggingLevel.all;
-      testRunner = new TestRunnerProxy();
-      connectToEnvironmentService(testRunner);
-      const Pattern isolatePattern = 'driver_example_mod';
+
+      await _startBasemgr(controller.ctrl.request(), _testAppUrl);
+
       driver = await FlutterDriver.connect(
-          fuchsiaModuleTarget: isolatePattern,
+          fuchsiaModuleTarget: _isolatePattern,
           printCommunication: true,
           logCommunicationToFile: false);
     });
 
     tearDownAll(() async {
       await driver?.close();
-      // Must be invoked before closing the connection to this interface;
-      // otherwise the TestRunner service will assume that the connection broke
-      // due to the test crashing.
-      await testRunner.done();
+      controller.ctrl.close();
     });
 
     test('driver connection', () {

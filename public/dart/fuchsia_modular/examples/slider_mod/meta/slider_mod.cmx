@@ -1,4 +1,11 @@
 {
+    "facets": {
+        "fuchsia.module": {
+            "@version": 2,
+            "intent_filters": [],
+            "suggestion_headline": "Show a slider"
+        }
+    },
     "program": {
         "data": "data/slider_mod"
     },
@@ -11,18 +18,10 @@
             "fuchsia.modular.ContextWriter",
             "fuchsia.modular.ModuleContext",
             "fuchsia.sys.Environment",
-            "fuchsia.testing.runner.TestRunner",
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.policy.Presenter",
             "fuchsia.ui.scenic.Scenic",
             "fuchsia.ui.viewsv1.ViewManager"
         ]
-    },
-    "facets": {
-        "fuchsia.module": {
-            "@version": 2,
-            "suggestion_headline": "Show a slider",
-            "intent_filters": []
-        }
     }
 }
