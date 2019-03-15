@@ -14,7 +14,6 @@
 #include "flutter/fml/macros.h"
 #include "lib/fidl/cpp/interface_handle.h"
 #include "lib/fidl/cpp/optional.h"
-#include "lib/fxl/functional/closure.h"
 #include "lib/ui/scenic/cpp/resources.h"
 #include "lib/ui/scenic/cpp/session.h"
 #include "vulkan_surface_producer.h"
