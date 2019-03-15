@@ -278,8 +278,8 @@ template("jit_runner") {
     deps = [
       ":jit${product_suffix}",
       "//topaz/runtime/flutter_runner/kernel:framework_shim_kernel",
-      snapshot_label,
       snapshot_framework_label,
+      snapshot_label,
     ]
 
     if (!product) {
@@ -386,13 +386,15 @@ executable("flutter_runner_unittests") {
   ]
 
   deps = [
-    "//garnet/public/lib/component/cpp",
-    "//garnet/public/lib/component/cpp/testing",
     "//garnet/public/lib/fsl",
+    "//garnet/public/lib/gtest",
     "//sdk/fidl/fuchsia.fonts",
+    "//sdk/fidl/fuchsia.sys",
+    "//sdk/lib/sys/cpp",
     "//third_party/googletest:gtest_main",
     "//third_party/icu",
     "//third_party/skia",
+    "//zircon/public/lib/trace",
   ]
 }
 
