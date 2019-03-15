@@ -105,7 +105,8 @@ dart_product_app = "flutter_dart_jit_component"
 #       component_resources (required)
 #         Resources of this component.
 template("_flutter_dart_jit_package") {
-  package(target_name) {
+  _package_target_name = "${target_name}_pkg"
+  package(_package_target_name) {
     forward_variables_from(invoker,
                            [
                              "deprecated_global_persistent_storage",
@@ -141,6 +142,14 @@ template("_flutter_dart_jit_package") {
     }
 
     meta = invoker.cmx_filtered_meta
+  }
+
+  group(target_name) {
+    deps = [
+      ":${_package_target_name}",
+    ]
+    data_deps = invoker.runner_package_deps
+    forward_variables_from(invoker, [ "testonly" ])
   }
 }
 
@@ -253,6 +262,9 @@ template("flutter_dart_jit_component") {
   cmx_filtered_meta = []
   cmx_deps = []
 
+  # This is the set of runner packages required by components in this package.
+  runner_package_deps = []
+
   # Build the kernel for each of the components, and bundle them in the same
   # scope for later packaging.
   components_with_kernel = []
@@ -283,6 +295,9 @@ template("flutter_dart_jit_component") {
 
       runtime_meta =
           "//topaz/runtime/flutter_runner/meta/jit${product_suffix}_runtime"
+      runner_package_deps += [
+        "//topaz/runtime/flutter_runner:flutter_jit${product_suffix}_runner",
+      ]
     } else if (component.component_type == "dart") {
       product = !is_debug
       if (defined(invoker.product)) {
@@ -305,7 +320,10 @@ template("flutter_dart_jit_component") {
         gen_bytecode = true
         interpreter = true
       }
-      runtime_meta = "//topaz/runtime/dart_runner/meta/jit${product_suffix}_runtime"
+      runtime_meta =
+          "//topaz/runtime/dart_runner/meta/jit${product_suffix}_runtime"
+      runner_package_deps +=
+          [ "//topaz/runtime/dart_runner:dart_jit${product_suffix}_runner" ]
     }
 
     # Look through the package meta for cmx file for this component, and merge
@@ -332,7 +350,9 @@ template("flutter_dart_jit_component") {
         found_cmx = true
       }
     }
-    assert(found_cmx, "could not find ${component.component_name}.cmx for component ${component.component_name}!")
+    assert(
+        found_cmx,
+        "could not find ${component.component_name}.cmx for component ${component.component_name}!")
 
     component_name = component.component_name
 
@@ -421,8 +441,8 @@ template("flutter_dart_jit_component") {
 
       if (flutter_driver_extendable) {
         deps += [
-          "//sdk/fidl/fuchsia.testing.runner",
           "//sdk/fidl/fuchsia.modular",
+          "//sdk/fidl/fuchsia.testing.runner",
           "//third_party/dart-pkg/git/flutter/packages/flutter_driver",
           "//topaz/public/lib/app/dart",
           "//topaz/public/lib/module/dart",
@@ -526,7 +546,8 @@ template("flutter_dart_jit_component") {
 #       component_resources (required)
 #         Resources of this component.
 template("_flutter_dart_aot_package") {
-  package(target_name) {
+  _package_target_name = "${target_name}_pkg"
+  package(_package_target_name) {
     forward_variables_from(invoker,
                            [
                              "deprecated_global_persistent_storage",
@@ -596,6 +617,14 @@ template("_flutter_dart_aot_package") {
 
     meta = invoker.cmx_filtered_meta
   }
+
+  group(target_name) {
+    deps = [
+      ":${_package_target_name}",
+    ]
+    data_deps = invoker.runner_package_deps
+    forward_variables_from(invoker, [ "testonly" ])
+  }
 }
 
 # Defines AOT runtime components to be further distributed in one package.
@@ -662,6 +691,9 @@ template("flutter_dart_aot_component") {
   cmx_filtered_meta = []
   cmx_deps = []
 
+  # This is the set of runner packages required by components in this package.
+  runner_package_deps = []
+
   # Build the kernel for each of the components, and bundle them in the same
   # scope for later packaging.
   components_with_kernel = []
@@ -688,9 +720,14 @@ template("flutter_dart_aot_component") {
     if (component.component_type == "flutter") {
       runtime_meta =
           "//topaz/runtime/flutter_runner/meta/aot${product_suffix}_runtime"
+      runner_package_deps += [
+        "//topaz/runtime/flutter_runner:flutter_aot${product_suffix}_runner",
+      ]
     } else if (component.component_type == "dart") {
       runtime_meta =
           "//topaz/runtime/dart_runner/meta/aot${product_suffix}_runtime"
+      runner_package_deps +=
+          [ "//topaz/runtime/dart_runner:dart_aot${product_suffix}_runner" ]
     }
 
     # Look through the package meta for cmx file for this component, and merge
@@ -717,7 +754,9 @@ template("flutter_dart_aot_component") {
         found_cmx = true
       }
     }
-    assert(found_cmx, "could not find ${component.component_name}.cmx for component ${component.component_name}!")
+    assert(
+        found_cmx,
+        "could not find ${component.component_name}.cmx for component ${component.component_name}!")
 
     component_name = component.component_name
 
