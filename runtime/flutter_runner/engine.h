@@ -8,8 +8,8 @@
 #include <fuchsia/io/cpp/fidl.h>
 #include <fuchsia/ui/viewsv1/cpp/fidl.h>
 #include <lib/async-loop/cpp/loop.h>
-#include <zx/event.h>
-#include <zx/eventpair.h>
+#include <lib/zx/event.h>
+#include <lib/zx/eventpair.h>
 
 #include "flutter/fml/macros.h"
 #include "flutter/shell/common/shell.h"

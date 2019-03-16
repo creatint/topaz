@@ -7,7 +7,7 @@
 
 #include <lib/fit/function.h>
 #include <trace/event.h>
-#include <zx/eventpair.h>
+#include <lib/zx/eventpair.h>
 
 #include "flutter/flow/compositor_context.h"
 #include "flutter/flow/scene_update_context.h"

@@ -13,8 +13,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <zircon/status.h>
-#include <zx/thread.h>
-#include <zx/time.h>
+#include <lib/zx/thread.h>
+#include <lib/zx/time.h>
 #include <regex>
 #include <utility>
 

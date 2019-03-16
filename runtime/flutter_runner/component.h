@@ -19,7 +19,7 @@
 #include <lib/async/default.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/fit/function.h>
-#include <zx/eventpair.h>
+#include <lib/zx/eventpair.h>
 
 #include "engine.h"
 #include "flutter/common/settings.h"

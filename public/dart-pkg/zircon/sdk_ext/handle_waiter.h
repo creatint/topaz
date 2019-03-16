@@ -6,7 +6,7 @@
 #define DART_PKG_ZIRCON_SDK_EXT_HANDLE_WAITER_H_
 
 #include <lib/async/cpp/wait.h>
-#include <zx/handle.h>
+#include <lib/zx/handle.h>
 
 #include "lib/fxl/memory/ref_counted.h"
 #include "third_party/tonic/dart_wrappable.h"

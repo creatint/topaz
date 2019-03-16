@@ -7,7 +7,7 @@
 #include <atomic>
 
 #include <trace/event.h>
-#include <zx/vmar.h>
+#include <lib/zx/vmar.h>
 
 #include "lib/fxl/logging.h"
 

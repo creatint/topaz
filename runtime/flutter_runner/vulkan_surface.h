@@ -5,8 +5,8 @@
 #pragma once
 
 #include <lib/async/cpp/wait.h>
-#include <zx/event.h>
-#include <zx/vmo.h>
+#include <lib/zx/event.h>
+#include <lib/zx/vmo.h>
 
 #include <array>
 #include <memory>

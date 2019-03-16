@@ -18,7 +18,7 @@
 
 #include <lib/fit/function.h>
 #include <trace/event.h>
-#include <zx/vmar.h>
+#include <lib/zx/vmar.h>
 
 #include <unordered_map>
 

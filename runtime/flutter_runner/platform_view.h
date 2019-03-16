@@ -15,7 +15,7 @@
 #include <fuchsia/ui/viewsv1/cpp/fidl.h>
 #endif
 #include <lib/fit/function.h>
-#include <zx/eventpair.h>
+#include <lib/zx/eventpair.h>
 
 #include "context_writer_bridge.h"
 #include "flutter/fml/macros.h"
