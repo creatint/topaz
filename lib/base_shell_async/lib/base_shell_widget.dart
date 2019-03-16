@@ -71,12 +71,12 @@ class BaseShellWidget<T extends BaseShellModel> extends StatelessWidget {
   /// the [StartupContext].
   void advertise() {
     startupContext.outgoing
-      ..addServiceForName((InterfaceRequest<BaseShell> request) {
+      ..addPublicService((InterfaceRequest<BaseShell> request) {
         BaseShellBinding binding = new BaseShellBinding()
           ..bind(_baseShell, request);
         _baseShellBindingSet.add(binding);
       }, BaseShell.$serviceName)
-      ..addServiceForName((InterfaceRequest<Lifecycle> request) {
+      ..addPublicService((InterfaceRequest<Lifecycle> request) {
         LifecycleBinding binding = new LifecycleBinding()
           ..bind(_baseShell, request);
         _lifecycleBindingSet.add(binding);
