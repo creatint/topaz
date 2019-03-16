@@ -81,12 +81,13 @@ if (current_toolchain == dart_toolchain) {
     foreach(_source_file, invoker.sources) {
       _source_path = "$_sources_dir/$_source_file"
 
-      _test_target = exec_script("//topaz/runtime/dart/gen_flutter_test_target_name.py",
-                                 [
-                                   "--file",
-                                   _source_file,
-                                 ],
-                                 "trim string")
+      _test_target =
+          exec_script("//topaz/runtime/dart/gen_flutter_test_target_name.py",
+                      [
+                        "--file",
+                        _source_file,
+                      ],
+                      "trim string")
 
       if (_test_target != "") {
         _test_target_name = "${_main_target_name}_${_test_target}"
@@ -240,6 +241,20 @@ if (current_toolchain == dart_toolchain) {
       deps = [
         ":$_main_target_name($dart_toolchain)",
       ]
+      if (is_linux || is_mac) {
+        # TODO(IN-819): Temporary measure to support the fx workflow, which is to
+        # take a dependency on tests.json, to which this metadata will be
+        # supplementary. Once flutter tests are contributing test spec metadata,
+        # all relevant information will be in the former and this is to be
+        # deleted.
+        metadata = {
+          pseudo_test_spec = [
+            {
+              location = _invocation_file
+            },
+          ]
+        }
+      }
     }
   }
 }
