@@ -3,20 +3,46 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import argparse
 import glob
 import os
 import re
-import subprocess
 import sys
+import subprocess
 
-dry_run = (len(sys.argv) == 2 and sys.argv[1] == '-n')
+parser = argparse.ArgumentParser(
+  description="Generates dart constants from a parsing of corresponding values in zircon")
+parser.add_argument('--dry-run',
+                    help='Whether to run in dry-run mode; if true, no file will be generated',
+                    action='store_true')
+parser.add_argument('--errors',
+                    help='Path to the zircon error header file')
+parser.add_argument('--types',
+                    help='Path to the zircon type header file')
+parser.add_argument('--dartfmt',
+                    help='Path to the dartfmt tool')
+parser.add_argument('--dart-constants',
+                    help='Where to generate the dart constants file')
+parser.set_defaults(dry_run=False)
+args = parser.parse_args()
 
+# If args are unset, assume the script is being run out of the checkout.
 source_dir = os.path.dirname(__file__)
-zircon_include_dir = os.path.join(source_dir,
-                                  '../../../../zircon/system/public/zircon')
-dartfmt = glob.glob(
-    os.path.join(source_dir,
-                 '../../../tools/prebuilt-dart-sdk/*/bin/dartfmt'))[0]
+zircon_errors = args.errors
+zircon_types = args.types
+if not zircon_errors or not zircon_types:
+  zircon_include_dir = os.path.join(
+      source_dir, '../../../../zircon/system/public/zircon')
+  zircon_errors = zircon_errors or os.path.join(zircon_include_dir, 'errors.h')
+  zircon_types = zircon_types or os.path.join(zircon_include_dir, 'types.h')
+
+dartfmt = args.dartfmt
+if not dartfmt:
+  dartfmt_globs = glob.glob(os.path.join(
+    source_dir, '../../../../prebuilt/third_party/dart/*/bin/dartfmt'))
+  dartfmt = dartfmt_globs[0]
+
+dart_constants = args.dart_constants or os.path.join(source_dir, 'lib/src/constants.dart')
 
 file_header = """// Copyright 2018 The Fuchsia Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
@@ -103,7 +129,7 @@ def c_to_dart_value(value, defines):
 class DartWriter(object):
 
   def __init__(self, path):
-    if dry_run:
+    if args.dry_run:
       path = '/dev/null'
     dest = open(path, 'w')
     self.popen = subprocess.Popen([dartfmt], stdin=subprocess.PIPE, stdout=dest)
@@ -121,12 +147,9 @@ class DartWriter(object):
 
 
 def write_constants():
-  path = os.path.join(source_dir, 'lib/src/constants.dart')
-  error_defines = extract_defines(os.path.join(zircon_include_dir, 'errors.h'),
-                                  'ZIRCON_ERRORS_H_')
-  type_defines = extract_defines(os.path.join(zircon_include_dir, 'types.h'),
-                                 'ZIRCON_TYPES_H_')
-  with DartWriter(path) as f:
+  error_defines = extract_defines(zircon_errors, 'ZIRCON_ERRORS_H_')
+  type_defines = extract_defines(zircon_types, 'ZIRCON_TYPES_H_')
+  with DartWriter(dart_constants) as f:
     f.write(file_header)
     f.write('abstract class ZX {\n')
     f.write('  ZX._();')
