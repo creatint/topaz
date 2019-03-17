@@ -250,7 +250,10 @@ if (current_toolchain == dart_toolchain) {
         metadata = {
           pseudo_test_spec = [
             {
-              location = _invocation_file
+              test = {
+                location = rebase_path(_invocation_file, root_build_dir)
+                os = current_os
+              }
             },
           ]
         }
