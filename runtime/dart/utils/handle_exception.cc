@@ -18,7 +18,7 @@
 namespace fuchsia {
 namespace dart {
 
-zx_status_t HandleIfException(std::shared_ptr<component::Services> services,
+zx_status_t HandleIfException(std::shared_ptr<::sys::ServiceDirectory> services,
                               const std::string& component_url,
                               Dart_Handle result) {
   if (!Dart_IsError(result) || !Dart_ErrorHasException(result)) {
@@ -33,7 +33,7 @@ zx_status_t HandleIfException(std::shared_ptr<component::Services> services,
   return HandleException(services, component_url, error, stack_trace);
 }
 
-zx_status_t HandleException(std::shared_ptr<component::Services> services,
+zx_status_t HandleException(std::shared_ptr<::sys::ServiceDirectory> services,
                             const std::string& component_url,
                             const std::string& error,
                             const std::string& stack_trace) {
@@ -44,7 +44,7 @@ zx_status_t HandleException(std::shared_ptr<component::Services> services,
   }
 
   fuchsia::crash::AnalyzerSyncPtr analyzer;
-  services->ConnectToService(analyzer.NewRequest());
+  services->Connect(analyzer.NewRequest());
   FXL_DCHECK(analyzer);
 
   zx_status_t out_status;

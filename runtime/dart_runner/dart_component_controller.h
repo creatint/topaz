@@ -10,15 +10,14 @@
 #include <lib/async/cpp/wait.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/fdio/namespace.h>
+#include <lib/sys/cpp/service_directory.h>
+#include <lib/sys/cpp/component_context.h>
 #include <lib/zx/timer.h>
 
 #include <fuchsia/sys/cpp/fidl.h>
-#include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/binding.h"
 #include "lib/fsl/vmo/sized_vmo.h"
 #include "lib/fxl/macros.h"
-#include "lib/svc/cpp/service_provider_bridge.h"
-#include "lib/svc/cpp/services.h"
 #include "third_party/dart/runtime/include/dart_api.h"
 #include "topaz/runtime/dart_runner/mapped_resource.h"
 
@@ -29,7 +28,7 @@ class DartComponentController : public fuchsia::sys::ComponentController {
   DartComponentController(
       fuchsia::sys::Package package,
       fuchsia::sys::StartupInfo startup_info,
-      std::shared_ptr<component::Services> runner_incoming_services,
+      std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
       fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller);
   ~DartComponentController() override;
 
@@ -67,10 +66,10 @@ class DartComponentController : public fuchsia::sys::ComponentController {
   std::string url_;
   fuchsia::sys::Package package_;
   fuchsia::sys::StartupInfo startup_info_;
-  std::shared_ptr<component::Services> runner_incoming_services_;
+  std::shared_ptr<sys::ServiceDirectory> runner_incoming_services_;
   std::string data_path_;
   fidl::Binding<fuchsia::sys::ComponentController> binding_;
-  std::unique_ptr<component::StartupContext> context_;
+  std::unique_ptr<sys::ComponentContext> context_;
 
   fdio_ns_t* namespace_ = nullptr;
   int stdoutfd_ = -1;

@@ -6,10 +6,9 @@
 #define TOPAZ_RUNTIME_DART_RUNNER_DART_RUNNER_H_
 
 #include <fuchsia/sys/cpp/fidl.h>
+#include <lib/fidl/cpp/binding_set.h>
+#include <lib/sys/cpp/component_context.h>
 
-#include "lib/component/cpp/connect.h"
-#include "lib/component/cpp/startup_context.h"
-#include "lib/fidl/cpp/binding.h"
 #include "lib/fxl/macros.h"
 #include "topaz/runtime/dart_runner/mapped_resource.h"
 
@@ -27,7 +26,7 @@ class DartRunner : public fuchsia::sys::Runner {
       ::fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller)
       override;
 
-  std::unique_ptr<component::StartupContext> context_;
+  std::unique_ptr<sys::ComponentContext> context_;
   fidl::BindingSet<fuchsia::sys::Runner> bindings_;
 
 #if !defined(AOT_RUNTIME)

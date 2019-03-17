@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <lib/async/default.h>
 #include <lib/async-loop/loop.h>
+#include <memory>
 #include <sys/stat.h>
 #include <trace/event.h>
 #include <zircon/status.h>
@@ -15,6 +16,7 @@
 #include <utility>
 
 #include "lib/fxl/arraysize.h"
+#include "lib/fxl/logging.h"
 #include "third_party/dart/runtime/include/bin/dart_io_api.h"
 #include "third_party/tonic/dart_microtask_queue.h"
 #include "third_party/tonic/dart_state.h"
@@ -94,7 +96,7 @@ void IsolateCleanupCallback(void* callback_data) {
 void RunApplication(
     DartRunner* runner, fuchsia::sys::Package package,
     fuchsia::sys::StartupInfo startup_info,
-    std::shared_ptr<component::Services> runner_incoming_services,
+    std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
     ::fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller) {
   int64_t start = Dart_TimelineGetMicros();
   DartComponentController app(std::move(package),
@@ -121,7 +123,7 @@ bool EntropySource(uint8_t* buffer, intptr_t count) {
 }  // namespace
 
 DartRunner::DartRunner()
-    : context_(component::StartupContext::CreateFromStartupInfo()) {
+    : context_(sys::ComponentContext::CreateFromStartupInfo()) {
   context_->outgoing().AddPublicService<fuchsia::sys::Runner>(
       [this](fidl::InterfaceRequest<fuchsia::sys::Runner> request) {
         bindings_.AddBinding(this, std::move(request));
@@ -133,7 +135,7 @@ DartRunner::DartRunner()
   // port number to The Hub.
   context_->outgoing().debug_dir()->AddEntry(
       fuchsia::dart::VMServiceObject::kPortDirName,
-      fbl::AdoptRef(new fuchsia::dart::VMServiceObject()));
+      std::make_unique<fuchsia::dart::VMServiceObject>());
 
 #endif  // !defined(DART_PRODUCT)
 
@@ -186,7 +188,7 @@ void DartRunner::StartComponent(
   TRACE_DURATION("dart", "StartComponent", "url", package.resolved_url);
   std::thread thread(RunApplication, this,
                      std::move(package), std::move(startup_info),
-                     context_->incoming_services(), std::move(controller));
+                     context_->svc(), std::move(controller));
   thread.detach();
 }
 

@@ -6,6 +6,7 @@
 
 #include <fcntl.h>
 #include <lib/async-loop/loop.h>
+#include <lib/async/cpp/task.h>
 #include <lib/async/default.h>
 #include <lib/fdio/directory.h>
 #include <lib/fdio/fd.h>
@@ -16,9 +17,9 @@
 #include <lib/zx/thread.h>
 #include <lib/zx/time.h>
 #include <regex>
+#include <unistd.h>
 #include <utility>
 
-#include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/optional.h"
 #include "lib/fidl/cpp/string.h"
 #include "lib/fsl/vmo/file.h"
@@ -74,7 +75,7 @@ std::string GetLabelFromURL(const std::string& url) {
 DartComponentController::DartComponentController(
     fuchsia::sys::Package package,
     fuchsia::sys::StartupInfo startup_info,
-    std::shared_ptr<component::Services> runner_incoming_services,
+    std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
     fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller)
     : loop_(new async::Loop(&kLoopConfig)),
       label_(GetLabelFromURL(package.resolved_url)),
@@ -163,7 +164,7 @@ bool DartComponentController::SetupNamespace() {
 
     zx::channel dir;
     if (flat->paths.at(i) == kServiceRootPath) {
-      // clone /svc so startup_context can still use it below
+      // clone /svc so component_context can still use it below
       dir = zx::channel(fdio_service_clone(flat->directories.at(i).get()));
     } else {
       dir = std::move(flat->directories.at(i));
@@ -363,10 +364,10 @@ bool DartComponentController::Main() {
   stderrfd_ = SetupFileDescriptor(std::move(startup_info_.launch_info.err));
   auto directory_request = std::move(
       startup_info_.launch_info
-          .directory_request);  // capture before moving startup_context
-  context_ = component::StartupContext::CreateFrom(std::move(startup_info_));
+          .directory_request);  // capture before moving component_context
+  context_ = sys::ComponentContext::CreateFrom(std::move(startup_info_));
   fidl::InterfaceHandle<fuchsia::sys::Environment> environment;
-  context_->ConnectToEnvironmentService(environment.NewRequest());
+  context_->svc()->Connect(environment.NewRequest());
 
   InitBuiltinLibrariesForIsolate(
       url_, namespace_, stdoutfd_, stderrfd_, std::move(environment),

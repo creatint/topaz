@@ -4,6 +4,7 @@
 
 #include "engine.h"
 
+#include <lib/async/cpp/task.h>
 #include <sstream>
 
 #include "flutter/common/task_runners.h"
@@ -39,7 +40,7 @@ static void UpdateNativeThreadLabelNames(const std::string& label,
 }
 
 Engine::Engine(Delegate& delegate, std::string thread_label,
-               component::StartupContext& startup_context,
+               sys::ComponentContext& component_context,
                blink::Settings settings,
                fml::RefPtr<blink::DartSnapshot> isolate_snapshot,
                fml::RefPtr<blink::DartSnapshot> shared_snapshot,
@@ -62,8 +63,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   }
 
   // Set up the session connection.
-  auto scenic = startup_context
-                    .ConnectToEnvironmentService<fuchsia::ui::scenic::Scenic>();
+  auto scenic = component_context.svc()->Connect<fuchsia::ui::scenic::Scenic>();
   fidl::InterfaceHandle<fuchsia::ui::scenic::Session> session;
   fidl::InterfaceHandle<fuchsia::ui::scenic::SessionListener> session_listener;
   auto session_listener_request = session_listener.NewRequest();
@@ -71,7 +71,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
 #ifndef SCENIC_VIEWS2
   fuchsia::ui::viewsv1::ViewManagerPtr view_manager;
-  startup_context.ConnectToEnvironmentService(view_manager.NewRequest());
+  component_context.svc()->Connect(view_manager.NewRequest());
 
   zx::eventpair import_token, export_token;
   if (zx::eventpair::create(0u, &import_token, &export_token) != ZX_OK) {
@@ -80,19 +80,20 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   }
 #endif
 
-  // Grab the parent environent services. The platform view may want to access
+  // Grab the parent environment services. The platform view may want to access
   // some of these services.
+  fuchsia::sys::EnvironmentPtr environment;
+  component_context.svc()->Connect(environment.NewRequest());
   fidl::InterfaceHandle<fuchsia::sys::ServiceProvider>
       parent_environment_service_provider;
-  startup_context.environment()->GetServices(
-      parent_environment_service_provider.NewRequest());
+  environment->GetServices(parent_environment_service_provider.NewRequest());
+  environment.Unbind();
 
   // Grab the accessibilty context writer that can understand the semantics tree
   // on the platform view.
   fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
       accessibility_context_writer;
-  startup_context.ConnectToEnvironmentService(
-      accessibility_context_writer.NewRequest());
+  component_context.svc()->Connect(accessibility_context_writer.NewRequest());
 
   // We need to manually schedule a frame when the session metrics change.
   OnMetricsUpdate on_session_metrics_change_callback = std::bind(
@@ -267,7 +268,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 #endif
 
     fuchsia::sys::EnvironmentPtr environment;
-    startup_context.ConnectToEnvironmentService(environment.NewRequest());
+    component_context.svc()->Connect(environment.NewRequest());
 
     isolate_configurator_ = std::make_unique<IsolateConfigurator>(
         std::move(fdio_ns),  //
@@ -298,7 +299,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
   // Connect to the system font provider.
   fuchsia::fonts::ProviderSyncPtr sync_font_provider;
-  startup_context.ConnectToEnvironmentService(sync_font_provider.NewRequest());
+  component_context.svc()->Connect(sync_font_provider.NewRequest());
 
   shell_->GetTaskRunners().GetUITaskRunner()->PostTask(
       fml::MakeCopyable([engine = shell_->GetEngine(),                        //

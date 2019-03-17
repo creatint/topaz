@@ -86,8 +86,9 @@ void SemanticsBridge::SetupEnvironment(
     fuchsia::sys::ServiceProvider* environment_service_provider) {
   view_id_ = view_id;
   environment_service_provider_ = environment_service_provider;
-  component::ConnectToService(environment_service_provider_,
-                              a11y_toggle_.NewRequest());
+  environment_service_provider->ConnectToService(
+      fuchsia::accessibility::ToggleBroadcaster::Name_,
+      a11y_toggle_.NewRequest().TakeChannel());
   environment_set_ = true;
   // Starts up accessibility support if accessibility was toggled before
   // the environment was set.
@@ -150,8 +151,9 @@ void SemanticsBridge::OnAccessibilityToggle(bool enabled) {
   if (enabled && environment_set_) {
     // Reconnect if the a11y manager connection is not bound.
     if (!root_.is_bound()) {
-      component::ConnectToService(environment_service_provider_,
-                                  root_.NewRequest());
+      environment_service_provider_->ConnectToService(
+          fuchsia::accessibility::SemanticsRoot::Name_,
+          root_.NewRequest().TakeChannel());
     }
     // TODO(MI4-1539): re-enable after changes to semantics root API
     /*

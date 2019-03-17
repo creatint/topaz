@@ -4,6 +4,8 @@
 
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
+#include <fuchsia/io/cpp/fidl.h>
+
 #include <errno.h>
 #include <zircon/status.h>
 
@@ -15,7 +17,7 @@
 namespace fuchsia {
 namespace dart {
 
-void VMServiceObject::GetContents(LazyEntryVector* out_vector) {
+void VMServiceObject::GetContents(LazyEntryVector* out_vector) const {
   // List /tmp/dart.services if it exists, and push its contents as
   // as the conrtents of this directory.
   std::vector<std::string> files;
@@ -28,12 +30,13 @@ void VMServiceObject::GetContents(LazyEntryVector* out_vector) {
     if ((file == ".") || (file == "..")) {
       continue;
     }
-    out_vector->push_back({std::stoul(file), file, V_TYPE_FILE});
+    out_vector->push_back({std::stoul(file), file,
+                           fuchsia::io::MODE_TYPE_FILE});
   }
 }
 
-zx_status_t VMServiceObject::GetFile(fbl::RefPtr<fs::Vnode>* out, uint64_t id,
-                                     fbl::String name) {
+zx_status_t VMServiceObject::GetFile(Node** out_node, uint64_t id,
+                                     std::string name) const {
   return ZX_ERR_NOT_FOUND;
 }
 

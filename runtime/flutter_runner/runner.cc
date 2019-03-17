@@ -95,14 +95,14 @@ static void SetThreadName(const std::string& thread_name) {
 
 Runner::Runner(async::Loop* loop)
     : loop_(loop),
-      host_context_(component::StartupContext::CreateFromStartupInfo()) {
+      host_context_(sys::ComponentContext::CreateFromStartupInfo()) {
 #if !defined(DART_PRODUCT)
   // The VM service isolate uses the process-wide namespace. It writes the
   // vm service protocol port under /tmp. The VMServiceObject exposes that
   // port number to The Hub.
   host_context_->outgoing().debug_dir()->AddEntry(
       fuchsia::dart::VMServiceObject::kPortDirName,
-      fbl::AdoptRef(new fuchsia::dart::VMServiceObject()));
+      std::make_unique<fuchsia::dart::VMServiceObject>());
 
   SetupTraceObserver();
 #endif  // !defined(DART_PRODUCT)
@@ -115,16 +115,12 @@ Runner::Runner(async::Loop* loop)
 
   SetThreadName("io.flutter.runner.main");
 
-  host_context_->outgoing()
-      .deprecated_services()
-      ->AddService<fuchsia::sys::Runner>(
-          std::bind(&Runner::RegisterApplication, this, std::placeholders::_1));
+  host_context_->outgoing().AddPublicService<fuchsia::sys::Runner>(
+      std::bind(&Runner::RegisterApplication, this, std::placeholders::_1));
 }
 
 Runner::~Runner() {
-  host_context_->outgoing()
-      .deprecated_services()
-      ->RemoveService<fuchsia::sys::Runner>();
+  host_context_->outgoing().RemovePublicService<fuchsia::sys::Runner>();
 
 #if !defined(DART_PRODUCT)
   trace_observer_->Stop();
@@ -160,7 +156,7 @@ void Runner::StartComponent(
       std::move(termination_callback),     // termination callback
       std::move(package),                  // application pacakge
       std::move(startup_info),             // startup info
-      host_context_->incoming_services(),  // runner incoming services
+      host_context_->svc(),                // runner incoming services
       std::move(controller)                // controller request
   );
 

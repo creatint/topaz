@@ -9,7 +9,6 @@
 #include <sstream>
 
 #include "flutter/lib/ui/window/pointer_data.h"
-#include "lib/component/cpp/connect.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
@@ -138,11 +137,13 @@ PlatformView::PlatformView(
   // Access the clipboard.
   parent_environment_service_provider_ =
       parent_environment_service_provider_handle.Bind();
-  component::ConnectToService(parent_environment_service_provider_.get(),
-                              clipboard_.NewRequest());
+  parent_environment_service_provider_.get()->ConnectToService(
+      fuchsia::modular::Clipboard::Name_,
+      clipboard_.NewRequest().TakeChannel());
 
-  component::ConnectToService(parent_environment_service_provider_.get(),
-                              text_sync_service_.NewRequest());
+  parent_environment_service_provider_.get()->ConnectToService(
+      fuchsia::ui::input::ImeService::Name_,
+      text_sync_service_.NewRequest().TakeChannel());
 
   // Finally! Register the native platform message handlers.
   RegisterPlatformMessageHandlers();

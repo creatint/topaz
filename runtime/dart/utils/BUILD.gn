@@ -16,8 +16,8 @@ source_set("utils") {
   ]
 
   public_deps = [
-    "//garnet/public/lib/svc/cpp",
-    "//zircon/public/lib/fs",
+    "//sdk/lib/sys/cpp",
+    "//sdk/lib/vfs/cpp",
     "//zircon/public/lib/zx",
   ]
 
@@ -26,6 +26,7 @@ source_set("utils") {
     "//garnet/public/lib/fxl",
     "//third_party/tonic",
     "//zircon/public/fidl/fuchsia-crash",
+    "//zircon/public/fidl/fuchsia-io",
     "//zircon/public/fidl/fuchsia-mem",
     "//zircon/public/lib/async-loop-cpp",
     "//zircon/public/lib/memfs",

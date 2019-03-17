@@ -40,7 +40,7 @@ std::pair<std::unique_ptr<async::Loop>,
 Application::Create(
     TerminationCallback termination_callback, fuchsia::sys::Package package,
     fuchsia::sys::StartupInfo startup_info,
-    std::shared_ptr<component::Services> runner_incoming_services,
+    std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
     fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller) {
   std::unique_ptr<async::Loop> loop(MakeObservableLoop(false));
   loop->StartThread();
@@ -71,7 +71,7 @@ static std::string DebugLabelForURL(const std::string& url) {
 Application::Application(
     TerminationCallback termination_callback, fuchsia::sys::Package package,
     fuchsia::sys::StartupInfo startup_info,
-    std::shared_ptr<component::Services> runner_incoming_services,
+    std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
     fidl::InterfaceRequest<fuchsia::sys::ComponentController>
         application_controller_request)
     : termination_callback_(std::move(termination_callback)),
@@ -119,7 +119,7 @@ Application::Application(
 
     zx::channel dir;
     if (path == kServiceRootPath) {
-      // clone /svc so startup_context can still use it below
+      // clone /svc so component_context can still use it below
       dir = zx::channel(fdio_service_clone(
           startup_info.flat_namespace.directories.at(i).get()));
     } else {
@@ -224,8 +224,8 @@ Application::Application(
     application_controller_.Bind(std::move(application_controller_request));
   }
 
-  startup_context_ =
-      component::StartupContext::CreateFrom(std::move(startup_info));
+  component_context_ =
+      sys::ComponentContext::CreateFrom(std::move(startup_info));
 
   // Compare flutter_jit_runner in BUILD.gn.
   settings_.vm_snapshot_data_path = "pkg/data/vm_snapshot_data.bin";
@@ -503,7 +503,7 @@ void Application::CreateView(
     zx::eventpair view_token,
     fidl::InterfaceRequest<fuchsia::sys::ServiceProvider> incoming_services,
     fidl::InterfaceHandle<fuchsia::sys::ServiceProvider> outgoing_services) {
-  if (!startup_context_) {
+  if (!component_context_) {
     FML_DLOG(ERROR) << "Application context was invalid when attempting to "
                        "create a shell for a view provider request.";
     return;
@@ -512,7 +512,7 @@ void Application::CreateView(
   shell_holders_.emplace(std::make_unique<Engine>(
       *this,                         // delegate
       debug_label_,                  // thread label
-      *startup_context_,             // application context
+      *component_context_,             // application context
       settings_,                     // settings
       std::move(isolate_snapshot_),  // isolate snapshot
       std::move(shared_snapshot_),   // shared snapshot

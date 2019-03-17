@@ -10,12 +10,12 @@
 
 #include <fuchsia/sys/cpp/fidl.h>
 #include <lib/async-loop/cpp/loop.h>
+#include <lib/sys/cpp/component_context.h>
 #include <trace/observer.h>
 #include <trace-engine/instrumentation.h>
 
 #include "component.h"
 #include "flutter/fml/macros.h"
-#include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/binding_set.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
@@ -44,7 +44,7 @@ class Runner final : public fuchsia::sys::Runner {
     ActiveApplication() = default;
   };
 
-  std::unique_ptr<component::StartupContext> host_context_;
+  std::unique_ptr<sys::ComponentContext> host_context_;
   fidl::BindingSet<fuchsia::sys::Runner> active_applications_bindings_;
   std::unordered_map<const Application*, ActiveApplication>
       active_applications_;

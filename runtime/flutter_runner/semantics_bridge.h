@@ -14,7 +14,6 @@
 
 #include "flutter/lib/ui/semantics/semantics_node.h"
 #include "flutter/lib/ui/window/viewport_metrics.h"
-#include "lib/component/cpp/connect.h"
 #include "lib/fidl/cpp/binding_set.h"
 #include "lib/fxl/logging.h"
 #include "lib/fxl/macros.h"

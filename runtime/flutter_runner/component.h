@@ -19,17 +19,16 @@
 #include <lib/async/default.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/fit/function.h>
+#include <lib/sys/cpp/service_directory.h>
+#include <lib/sys/cpp/component_context.h>
 #include <lib/zx/eventpair.h>
 
 #include "engine.h"
 #include "flutter/common/settings.h"
 #include "flutter/fml/macros.h"
-#include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/binding_set.h"
 #include "lib/fidl/cpp/interface_request.h"
 #include "src/lib/files/unique_fd.h"
-#include "lib/svc/cpp/service_provider_bridge.h"
-#include "lib/svc/cpp/services.h"
 #include "unique_fdio_ns.h"
 
 namespace flutter {
@@ -50,7 +49,7 @@ class Application final : public Engine::Delegate,
                    std::unique_ptr<Application>>
   Create(TerminationCallback termination_callback,
          fuchsia::sys::Package package, fuchsia::sys::StartupInfo startup_info,
-         std::shared_ptr<component::Services> runner_incoming_services,
+         std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
          fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller);
 
   // Must be called on the same thread returned from the create call. The thread
@@ -77,8 +76,8 @@ class Application final : public Engine::Delegate,
   fidl::InterfaceRequest<fuchsia::io::Directory> directory_request_;
   fbl::RefPtr<fs::PseudoDir> outgoing_dir_;
   fs::SynchronousVfs outgoing_vfs_;
-  std::unique_ptr<component::StartupContext> startup_context_;
-  std::shared_ptr<component::Services> runner_incoming_services_;
+  std::unique_ptr<sys::ComponentContext> component_context_;
+  std::shared_ptr<sys::ServiceDirectory> runner_incoming_services_;
   fidl::BindingSet<fuchsia::ui::app::ViewProvider> shells_bindings_;
   fidl::BindingSet<fuchsia::ui::viewsv1::ViewProvider> v1_shells_bindings_;
 
@@ -90,7 +89,7 @@ class Application final : public Engine::Delegate,
   Application(
       TerminationCallback termination_callback, fuchsia::sys::Package package,
       fuchsia::sys::StartupInfo startup_info,
-      std::shared_ptr<component::Services> runner_incoming_services,
+      std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
       fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller);
 
   // |fuchsia::sys::ComponentController|
