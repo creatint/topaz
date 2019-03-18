@@ -9,6 +9,7 @@
 
 #include <chromium/web/cpp/fidl.h>
 #include <fuchsia/auth/cpp/fidl.h>
+#include <fuchsia/auth/testing/cpp/fidl.h>
 #include <lib/fit/function.h>
 #include <lib/zx/eventpair.h>
 
@@ -27,8 +28,10 @@ using fuchsia::auth::AttestationJWTParams;
 using fuchsia::auth::AttestationSigner;
 using fuchsia::auth::AuthenticationUIContext;
 
-class GoogleAuthProviderImpl : chromium::web::NavigationEventObserver,
-                               fuchsia::auth::AuthProvider {
+class GoogleAuthProviderImpl
+    : chromium::web::NavigationEventObserver,
+      fuchsia::auth::AuthProvider,
+      fuchsia::auth::testing::LegacyAuthCredentialInjector {
  public:
   GoogleAuthProviderImpl(
       async_dispatcher_t* main_dispatcher, component::StartupContext* context,
@@ -85,6 +88,13 @@ class GoogleAuthProviderImpl : chromium::web::NavigationEventObserver,
       NavigationEvent change,
       OnNavigationStateChangedCallback callback) override;
 
+  // |fuchsia::auth::testing::LegacyAuthCredentialInjector|
+  // This is a short-term solution to enable end-to-end testing.  It should not
+  // be carried over during any refactoring efforts.
+  void InjectPersistentCredential(
+      fuchsia::auth::UserProfileInfoPtr user_profile_info,
+      std::string credential) override;
+
   // Returns the URL to be used for the authentication call, respecting any
   // settings that influence the URL.
   std::string GetAuthorizeUrl(fidl::StringPtr user_profile_id);
@@ -103,6 +113,23 @@ class GoogleAuthProviderImpl : chromium::web::NavigationEventObserver,
   // |NavigationEventObserver| to process any changes in the URL, and returning
   // a |zx::eventpair| token for the view's ViewHolder.
   zx::eventpair SetupChromium();
+
+  // Calls the GetPersistentCredential callback if one is available, or logs
+  // and returns immediately otherwise.  This enables interactive signin or
+  // InjectPersistentCredential to terminate gracefully even after the other
+  // has sent a response to the pending callback.
+  void SafelyCallbackGetPersistentCredential(
+      fuchsia::auth::AuthProviderStatus auth_provider_status,
+      fidl::StringPtr credential,
+      fuchsia::auth::UserProfileInfoPtr user_profile_info);
+
+  // Exposes a |fuchsia::auth::testing::LegacyAuthCredentialInjector| handle on
+  // the output debug directory.
+  void ExposeCredentialInjectorInterface();
+
+  // Removes the |fuchsia::auth::testing::LegacyAuthCredentialInjector| handle
+  // on the output debug directory.
+  void RemoveCredentialInjectorInterface();
 
   // Safely releases any resources associated with an open Webkit or Chromium
   // instance, including the associated view.
@@ -125,6 +152,8 @@ class GoogleAuthProviderImpl : chromium::web::NavigationEventObserver,
 
   fidl::BindingSet<chromium::web::NavigationEventObserver>
       navigation_event_observer_bindings_;
+  fidl::BindingSet<fuchsia::auth::testing::LegacyAuthCredentialInjector>
+      injector_bindings_;
   fidl::Binding<fuchsia::auth::AuthProvider> binding_;
   callback::CancellableContainer requests_;
 

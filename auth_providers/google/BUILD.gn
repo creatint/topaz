@@ -52,6 +52,7 @@ source_set("lib") {
     "//garnet/public/lib/fxl",
     "//garnet/public/lib/network_wrapper",
     "//sdk/fidl/fuchsia.auth",
+    "//sdk/fidl/fuchsia.auth.testing",
     "//sdk/fidl/fuchsia.ui.app",
     "//sdk/lib/fidl/cpp",
     "//topaz/runtime/chromium:chromium.web",

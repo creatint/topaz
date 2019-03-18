@@ -29,6 +29,8 @@ namespace http = ::fuchsia::net::oldhttp;
 
 namespace {
 
+constexpr char kInjectionEntry[] = "LegacyAuthCredentialInjector";
+
 std::string GetClientId(const std::string& app_client_id) {
   // By default, use the client_id of the invoking application.
   std::string client_id = app_client_id;
@@ -165,12 +167,14 @@ void GoogleAuthProviderImpl::GetPersistentCredential(
   auth_ui_context_.set_error_handler([this](zx_status_t status) {
     FX_LOG(INFO, NULL, "Overlay cancelled by the caller");
     ReleaseResources();
-    get_persistent_credential_callback_(AuthProviderStatus::UNKNOWN_ERROR,
-                                        nullptr, nullptr);
+    RemoveCredentialInjectorInterface();
+    SafelyCallbackGetPersistentCredential(AuthProviderStatus::UNKNOWN_ERROR,
+                                          nullptr, nullptr);
     return;
   });
 
   auth_ui_context_->StartOverlay2(std::move(view_holder_token));
+  ExposeCredentialInjectorInterface();
 }
 
 void GoogleAuthProviderImpl::GetAppAccessToken(
@@ -415,8 +419,6 @@ void GoogleAuthProviderImpl::GetAppAccessTokenFromAssertionJWT(
 
 void GoogleAuthProviderImpl::OnNavigationStateChanged(
     NavigationEvent change, OnNavigationStateChangedCallback callback) {
-  FXL_CHECK(get_persistent_credential_callback_);
-
   // Not all events change the URL, those that don't can be ignored.
   if (change.url.is_null()) {
     callback();
@@ -430,9 +432,12 @@ void GoogleAuthProviderImpl::OnNavigationStateChanged(
   // we need to close the browser instance.
   if (status != AuthProviderStatus::OK || !auth_code.empty()) {
     ReleaseResources();
+    // InjectPersistentCredential will still be reachable even after removing
+    // the interface from output, but any requests to it will be discarded.
+    RemoveCredentialInjectorInterface();
     if (status != AuthProviderStatus::OK) {
       FX_LOGF(INFO, NULL, "Failed to capture auth code: Status %d", status);
-      get_persistent_credential_callback_(status, nullptr, nullptr);
+      SafelyCallbackGetPersistentCredential(status, nullptr, nullptr);
     } else if (!auth_code.empty()) {
       FX_LOGF(INFO, NULL, "Captured auth code of length %d", auth_code.size());
       ExchangeAuthCode(auth_code);
@@ -440,6 +445,18 @@ void GoogleAuthProviderImpl::OnNavigationStateChanged(
   }
 
   callback();
+}
+
+void GoogleAuthProviderImpl::InjectPersistentCredential(
+    fuchsia::auth::UserProfileInfoPtr user_profile_info,
+    std::string credential) {
+  ReleaseResources();
+  RemoveCredentialInjectorInterface();
+  FX_LOGF(INFO, NULL, "Received injection request with credential of length %d",
+          credential.size());
+  SafelyCallbackGetPersistentCredential(AuthProviderStatus::OK,
+                                        std::move(credential),
+                                        std::move(user_profile_info));
 }
 
 std::string GoogleAuthProviderImpl::GetAuthorizeUrl(
@@ -479,8 +496,8 @@ void GoogleAuthProviderImpl::ExchangeAuthCode(std::string auth_code) {
     auto oauth_response = ParseOAuthResponse(std::move(response));
     if (oauth_response.status != AuthProviderStatus::OK) {
       LogOauthResponse("ExchangeAuthCode", oauth_response);
-      get_persistent_credential_callback_(oauth_response.status, nullptr,
-                                          nullptr);
+      SafelyCallbackGetPersistentCredential(oauth_response.status, nullptr,
+                                            nullptr);
       return;
     }
 
@@ -498,8 +515,8 @@ void GoogleAuthProviderImpl::ExchangeAuthCode(std::string auth_code) {
     })";
     auto root_schema = rapidjson_utils::InitSchema(kRootSchema);
     if (!root_schema) {
-      get_persistent_credential_callback_(AuthProviderStatus::INTERNAL_ERROR,
-                                          nullptr, nullptr);
+      SafelyCallbackGetPersistentCredential(AuthProviderStatus::INTERNAL_ERROR,
+                                            nullptr, nullptr);
       return;
     }
     if (!rapidjson_utils::ValidateSchema(oauth_response.json_response,
@@ -507,7 +524,7 @@ void GoogleAuthProviderImpl::ExchangeAuthCode(std::string auth_code) {
       FX_LOGF(WARNING, NULL,
               "Got response without refresh and access tokens: %s",
               JsonValueToPrettyString(oauth_response.json_response).c_str());
-      get_persistent_credential_callback_(
+      SafelyCallbackGetPersistentCredential(
           AuthProviderStatus::OAUTH_SERVER_ERROR, nullptr, nullptr);
       return;
     }
@@ -543,8 +560,8 @@ void GoogleAuthProviderImpl::GetUserProfile(fidl::StringPtr credential,
     auto oauth_response = ParseOAuthResponse(std::move(response));
     if (oauth_response.status != AuthProviderStatus::OK) {
       LogOauthResponse("UserInfo", oauth_response);
-      get_persistent_credential_callback_(oauth_response.status, credential,
-                                          std::move(user_profile_info));
+      SafelyCallbackGetPersistentCredential(oauth_response.status, credential,
+                                            std::move(user_profile_info));
       return;
     }
 
@@ -554,7 +571,7 @@ void GoogleAuthProviderImpl::GetUserProfile(fidl::StringPtr credential,
     } else {
       LogOauthResponse("UserInfo", oauth_response);
       FX_LOG(INFO, NULL, "Missing unique identifier in UserInfo response");
-      get_persistent_credential_callback_(
+      SafelyCallbackGetPersistentCredential(
           AuthProviderStatus::OAUTH_SERVER_ERROR, nullptr,
           std::move(user_profile_info));
       return;
@@ -579,8 +596,8 @@ void GoogleAuthProviderImpl::GetUserProfile(fidl::StringPtr credential,
     }
 
     FX_LOG(INFO, NULL, "Received valid UserInfo response");
-    get_persistent_credential_callback_(oauth_response.status, credential,
-                                        std::move(user_profile_info));
+    SafelyCallbackGetPersistentCredential(oauth_response.status, credential,
+                                          std::move(user_profile_info));
   });
 }
 
@@ -621,6 +638,20 @@ zx::eventpair GoogleAuthProviderImpl::SetupChromium() {
   return view_holder_token;
 }
 
+void GoogleAuthProviderImpl::SafelyCallbackGetPersistentCredential(
+    AuthProviderStatus auth_provider_status, fidl::StringPtr credential,
+    fuchsia::auth::UserProfileInfoPtr user_profile_info) {
+  if (get_persistent_credential_callback_) {
+    get_persistent_credential_callback_(auth_provider_status,
+                                        std::move(credential),
+                                        std::move(user_profile_info));
+    get_persistent_credential_callback_ = nullptr;
+  } else {
+    FX_LOG(WARNING, NULL,
+           "Attempted to call GetPersistentCredential callback twice.");
+  }
+}
+
 void GoogleAuthProviderImpl::ReleaseResources() {
   // Close any open view
   if (auth_ui_context_) {
@@ -632,6 +663,27 @@ void GoogleAuthProviderImpl::ReleaseResources() {
   // Release all smart pointers for Chromium resources.
   chromium_frame_ = nullptr;
   chromium_context_ = nullptr;
+}
+
+void GoogleAuthProviderImpl::ExposeCredentialInjectorInterface() {
+  context_->outgoing().debug_dir()->AddEntry(
+      kInjectionEntry,
+      fbl::AdoptRef(new fs::Service([this](zx::channel channel) {
+        fidl::InterfaceRequest<
+            fuchsia::auth::testing::LegacyAuthCredentialInjector>
+            request(std::move(channel));
+        injector_bindings_.AddBinding(this, std::move(request));
+        return ZX_OK;
+      })));
+}
+
+void GoogleAuthProviderImpl::RemoveCredentialInjectorInterface() {
+  if (context_->outgoing().debug_dir()->RemoveEntry(kInjectionEntry) ==
+      ZX_ERR_NOT_FOUND) {
+    FX_LOGF(WARNING, NULL,
+            "Attempted to remove nonexistent '%s' from debug directory",
+            kInjectionEntry);
+  }
 }
 
 void GoogleAuthProviderImpl::Request(
