@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'package:flutter/material.dart';
 
+import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_modular/fidl_async.dart'
     show
         SessionShellContextProxy,
@@ -29,10 +29,10 @@ import 'package:fidl_fuchsia_ui_app/fidl_async.dart' show ViewProviderProxy;
 import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart'
     show ExportToken, ImportToken;
 import 'package:fidl_fuchsia_ui_policy/fidl_async.dart' show PresentationProxy;
-import 'package:fuchsia_services/services.dart'
-    show connectToEnvironmentService, ServicesConnector, StartupContext;
+import 'package:flutter/material.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
+import 'package:fuchsia_services/services.dart';
 import 'package:lib.widgets/model.dart' show Model;
 import 'package:lib.widgets/utils.dart' show PointerEventsListener;
 import 'package:zircon/zircon.dart';
@@ -119,7 +119,6 @@ class AppModel extends Model {
     // Load the ask bar.
     _loadAskBar();
   }
-
   /// Called after runApp which initializes flutter's gesture system.
   void onStarted() {
     _pointerEventsListener.listen(_presentation);
@@ -128,12 +127,12 @@ class AppModel extends Model {
   }
 
   void _loadAskBar() {
-    final serviceConnector = ServicesConnector();
+    final dirProxy = DirectoryProxy();
 
     startupContext.launcher.createComponent(
       LaunchInfo(
         url: _kErmineAskModuleUrl,
-        directoryRequest: serviceConnector.request(),
+        directoryRequest: dirProxy.ctrl.request().passChannel(),
         additionalServices: ServiceList(
           names: <String>[
             PuppetMaster.$serviceName,
@@ -153,9 +152,9 @@ class AppModel extends Model {
     );
 
     final viewProvider = ViewProviderProxy();
-    serviceConnector
-      ..connectToService(viewProvider.ctrl)
-      ..connectToService(_ask.ctrl)
+    Incoming(dirProxy)
+      ..connectToService(viewProvider)
+      ..connectToService(_ask)
       ..close();
 
     // Create a token pair for the newly-created View.

@@ -4,6 +4,7 @@
 
 import 'dart:async';
 
+import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_services_examples/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia/fuchsia.dart' show exit;
@@ -12,7 +13,7 @@ import 'package:fuchsia_services/services.dart';
 
 import 'src/_thought_leaker_impl.dart';
 
-/// The URL which will be used to launch the mind reader server componet.
+/// The URL which will be used to launch the mind reader server component.
 const _mindReaderServerUrl =
     'fuchsia-pkg://fuchsia.com/mind_reader_dart#meta/mind_reader_server.cmx';
 
@@ -45,9 +46,13 @@ Future<void> _run(String thoughtToExpose) async {
     log.info('Exposing ThoughtLeakerImpl with the thought "$thoughtToExpose"');
   }
 
-  /// A [ServicesConnector] object is used to connect to a service which is
-  /// exposed in the launched components out/public directory.
-  final connector = ServicesConnector();
+  
+  /// A [DirectoryProxy] who's channels will facilitate the connection between
+  /// this client component and the launched server component we're about to
+  /// launch. This client component is looking for service under /in/svc/
+  /// directory to connect to while the server exposes services others can
+  /// connect to under /out/public directory.
+  final dirProxy = DirectoryProxy();
 
   /// The [LaunchInfo] struct is used to construct the component we want to
   /// launch.
@@ -55,7 +60,7 @@ Future<void> _run(String thoughtToExpose) async {
     url: _mindReaderServerUrl,
     // The directoryRequest is the handle to the /out directory of the launched
     // component.
-    directoryRequest: connector.request(),
+    directoryRequest: dirProxy.ctrl.request().passChannel(),
 
     // The service list is a list of services which are exposed to the child.
     // If a service is not included in this list the child will fail to connect.
@@ -73,7 +78,7 @@ Future<void> _run(String thoughtToExpose) async {
   // Now that the component has launched we attempt to connect to the mind
   // reader service which is exposed to us by the child.
   final mindReader = MindReaderProxy();
-  await connector.connectToService(mindReader.ctrl);
+  Incoming(dirProxy).connectToService(mindReader);
 
   // We ask the service to read our mind and wait for the response.
   final response = await mindReader.readMind();
