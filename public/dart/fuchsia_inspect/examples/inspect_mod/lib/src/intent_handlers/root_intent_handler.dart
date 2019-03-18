@@ -3,13 +3,15 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:fuchsia_inspect/inspect.dart';
 import 'package:fuchsia_modular/module.dart';
-import 'package:fuchsia_logger/logger.dart';
 
 class RootIntentHandler extends IntentHandler {
   @override
   void handleIntent(Intent intent) {
+    // TODO(CF-602): Actually use this.
+    Inspect();
+
     runApp(Container(color: Colors.blue));
-    log.info('hello inspect');
   }
 }

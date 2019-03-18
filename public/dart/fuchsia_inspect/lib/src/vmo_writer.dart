@@ -49,6 +49,9 @@ class VmoWriter {
     _vmo.commit();
   }
 
+  /// Creates a [VmoWriter] with a VMO of size [size].
+  factory VmoWriter.withSize(int size) => VmoWriter(VmoHolder(size));
+
   /// Gets the top Node of the Inspect tree (always at index 1).
   int get rootNode => rootNodeIndex;
 

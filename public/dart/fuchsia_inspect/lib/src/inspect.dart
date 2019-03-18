@@ -11,7 +11,11 @@ class Inspect {
   final VmoWriter _vmo;
 
   /// Initialize the VMO with given or default size.
-  Inspect([vmoSize = _defaultVmoSizeBytes]) : _vmo = VmoWriter(vmoSize);
+  Inspect([int vmoSize = _defaultVmoSizeBytes])
+      : _vmo = VmoWriter.withSize(vmoSize) {
+    // TODO(CF-602): Remove this placeholder.
+    print('hello inspect!');
+  }
 
   /// Placeholder for the upper-level API.
   bool get valid => _vmo != null;
