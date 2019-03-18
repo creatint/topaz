@@ -25,7 +25,10 @@ Future<void> _startBasemgr(
     '--base_shell=fuchsia-pkg://fuchsia.com/dev_base_shell#meta/dev_base_shell.cmx',
     '--session_shell=fuchsia-pkg://fuchsia.com/dev_session_shell#meta/dev_session_shell.cmx',
     '--session_shell_args=--root_module=$rootModUrl',
-    '--story_shell=fuchsia-pkg://fuchsia.com/dev_story_shell#meta/dev_story_shell.cmx'
+    '--story_shell=fuchsia-pkg://fuchsia.com/dev_story_shell#meta/dev_story_shell.cmx',
+    '--test',
+    '--enable_presenter',
+    '--run_base_shell_with_test_runner=false'
   ]);
   await context.launcher.createComponent(launchInfo, controllerRequest);
 }

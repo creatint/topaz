@@ -59,6 +59,7 @@ dart_fuchsia_test("driver_example_mod_tests") {
   environments = []
 
   # Flutter driver is only available in debug builds.
+  # DX-710
   # if (is_debug) {
   #   environments += [
   #     nuc_env,
