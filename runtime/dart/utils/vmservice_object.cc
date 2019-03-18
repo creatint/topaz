@@ -30,7 +30,7 @@ void VMServiceObject::GetContents(LazyEntryVector* out_vector) const {
     if ((file == ".") || (file == "..")) {
       continue;
     }
-    out_vector->push_back({std::stoul(file), file,
+    out_vector->push_back({std::stoul(file) + GetStartingId(), file,
                            fuchsia::io::MODE_TYPE_FILE});
   }
 }
