@@ -56,6 +56,7 @@ if (current_toolchain == dart_toolchain) {
                              ])
 
       infer_package_name = true
+      sources_required = false
 
       source_dir = _sources_dir
       sources = invoker.sources
@@ -135,6 +136,7 @@ if (current_toolchain == dart_toolchain) {
           sources = [
             _bootstrap_file_name,
           ]
+          sources_required = false
           non_dart_deps = [ ":$_bootstrap_target_name" ]
           deps = [
             ":$_library_target_name",

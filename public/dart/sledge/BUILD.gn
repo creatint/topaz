@@ -10,6 +10,9 @@ import("//topaz/runtime/dart/flutter_test.gni")
 dart_library("sledge") {
   package_name = "sledge"
 
+  # Several source files have analysis errors
+  sources_required = false
+
   sources = [
     "sledge.dart",
     "src/document/change.dart",
@@ -49,6 +52,17 @@ dart_library("sledge") {
     "src/subscription/subscription.dart",
     "src/transaction.dart",
     "src/uint8list_ops.dart",
+    # analyzer errors triggered by including these files
+    # "src/version.dart",
+    # "src/conflict_resolver/conflict_resolver_factory.dart",
+    # "src/conflict_resolver/schemas_obtainer.dart",
+    # "src/conflict_resolver/conflict_resolver.dart",
+    # "src/conflict_resolver/document_conflict_resolver.dart",
+    # "src/storage/kv_encoding.dart",
+    # "src/storage/schema_storage.dart",
+    # "src/storage/document_storage.dart",
+    # "src/query/query_builder.dart",
+    # "src/query/query_field_comparison.dart",
   ]
 
   deps = [

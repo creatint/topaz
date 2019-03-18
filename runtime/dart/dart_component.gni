@@ -416,6 +416,7 @@ template("flutter_dart_jit_component") {
                              ])
       deps = component.deps
       sources = component.sources
+      sources_required = false
       if (defined(component.dart_package_name)) {
         package_name = component.dart_package_name
       } else if (defined(invoker.package_name)) {
@@ -781,6 +782,7 @@ template("flutter_dart_aot_component") {
             [ "//topaz/runtime/dart_runner/kernel:kernel_platform_files" ]
         platform_path = "$root_out_dir/dart_runner_patched_sdk"
       }
+      sources_required = false
 
       # TODO(CP-140): These variables should be from the component
       forward_variables_from(invoker,

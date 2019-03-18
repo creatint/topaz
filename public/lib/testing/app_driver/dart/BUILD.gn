@@ -10,6 +10,7 @@ dart_library("dart") {
 
   sources = [
     "fake_module_driver.dart",
+    "src/fake_module_driver.dart",
   ]
 
   deps = [

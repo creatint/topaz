@@ -13,6 +13,10 @@ dart_library("xi_widgets") {
     "src/line_cache.dart",
     "src/text_line.dart",
     "widgets.dart",
+    "src/embedded_editor.dart",
+    "src/document.dart",
+    "src/key_info.dart",
+    "src/editor_tabs.dart",
   ]
 
   deps = [

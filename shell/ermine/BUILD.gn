@@ -30,6 +30,21 @@ dart_library("ermine_library") {
 
   sources = [
     "main.dart",
+    "src/modules/ask_model.dart",
+    "src/modules/ask_text_field.dart",
+    "src/modules/ask_suggestion_list.dart",
+    "src/modules/ask_module.dart",
+    "src/utils/elevations.dart",
+    "src/utils/session_shell_services.dart",
+    "src/utils/key_chord_listener.dart",
+    "src/models/web_proposer.dart",
+    "src/models/app_model.dart",
+    "src/models/story_model.dart",
+    "src/models/story_manager.dart",
+    "src/models/ermine_service_provider.dart",
+    "src/models/package_proposer.dart",
+    "src/widgets/app.dart",
+    "src/widgets/stories.dart",
   ]
 
   deps = [

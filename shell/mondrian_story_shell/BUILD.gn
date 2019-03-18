@@ -41,6 +41,12 @@ flutter_app("mondrian") {
     "widgets/surface_director.dart",
     "widgets/surface_frame.dart",
     "widgets/surface_stage.dart",
+    "models/depth_model.dart",
+    "models/surface/surface_relation_util.dart",
+    "models/surface/surface_transition.dart",
+    "widgets/surface_relationships.dart",
+    "widgets/breathing_placeholder.dart",
+    "widgets/surface_resize.dart",
   ]
 
   deps = [

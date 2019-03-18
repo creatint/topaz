@@ -9,9 +9,15 @@ dart_library("dart") {
   package_name = "lib.mondrian.dart"
 
   sdk_category = "partner"
-
   sources = [
     "mondrian.dart",
+    "src/composer.dart",
+    "src/layout/layout_context.dart",
+    "src/layout/layout_types.dart",
+    "src/tree/surface_node.dart",
+    "src/tree/surface_tree.dart",
+    "src/surface/surface_relation.dart",
+    "src/surface/surface.dart",
   ]
 
   deps = [

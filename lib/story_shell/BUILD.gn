@@ -9,6 +9,7 @@ dart_library("lib.story_shell") {
   package_name = "lib.story_shell"
 
   sources = [
+    "key_listener.dart",
     "common.dart",
   ]
 

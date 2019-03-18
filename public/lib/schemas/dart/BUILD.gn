@@ -9,6 +9,7 @@ dart_library("dart") {
   package_name = "lib.schemas.dart"
 
   sdk_category = "partner"
+  sources_required = false
 
   sources = [
     "com.fuchsia.color.dart",
@@ -47,6 +48,13 @@ dart_library("dart") {
     "src/entity_codec.dart",
     "src/parse_int.dart",
     "src/string_list_entity_codec.dart",
+    # Including these sources triggers analysis errors
+    # "com.fuchsia.location.dart",
+    # "com/google/youtube/json_entity_codec.dart",
+    # "src/com.fuchsia.location/geolocation_entity_data.dart",
+    # "src/com.fuchsia.location/street_location_entity_data.dart",
+    # "src/com.fuchsia.location/street_location_entity_codec.dart",
+    # "src/com.fuchsia.location/geolocation_entity_codec.dart",
   ]
 
   deps = [
@@ -57,7 +65,7 @@ dart_library("dart") {
 
 dart_test("dart_schema_tests") {
   sources = [
-    "../test/entity_codec_test.dart",
+    "entity_codec_test.dart",
   ]
 
   deps = [

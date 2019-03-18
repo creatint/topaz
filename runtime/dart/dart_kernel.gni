@@ -17,6 +17,11 @@ _compiler_path = get_label_info(_compiler_label, "root_out_dir") +
 #    Dependent targets that populate `platform_path` with the platform dill
 #    files.
 #
+#  sources_required (optional)
+#    Whether complete source files are required by the rule. If true, all
+#    files under the source_dir must be included in sources.
+#    Defaults to false.
+#
 #  platform_path (required)
 #    Path to the build output directory containing the platform dill files.
 #
@@ -66,6 +71,9 @@ template("dart_kernel") {
       package_name = invoker.package_name
     } else {
       infer_package_name = true
+    }
+    if (defined(invoker.sources_required)) {
+      sources_required = invoker.sources_required
     }
 
     sources = []

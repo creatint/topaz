@@ -10,6 +10,8 @@ dart_library("flutter") {
 
   sources = [
     "keyboard.dart",
+    "src/keyboard_container.dart",
+    "src/keyboard_model.dart",
   ]
 
   deps = [

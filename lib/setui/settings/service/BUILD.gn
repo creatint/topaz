@@ -10,6 +10,13 @@ dart_library("service") {
 
   sources = [
     "service.dart",
+    "src/setui_setting_controller.dart",
+    "src/network_controller.dart",
+    "src/intl_controller.dart",
+    "src/connectivity_controller.dart",
+    "src/local_service.dart",
+    "src/timezone_controller.dart",
+    "src/intl/intl_settings_util.dart",
   ]
 
   deps = [

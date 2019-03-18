@@ -11,6 +11,8 @@ dart_library("dart") {
   sdk_category = "partner"
 
   source_dir = "."
+  # Unclear non-standard directory structure
+  sources_required = false
 
   sources = [
     "app.dart",
@@ -40,6 +42,8 @@ dart_library("testing") {
   package_name = "lib.app.dart.testing"
 
   sdk_category = "partner"
+  # Unclear non-standard directory structure
+  sources_required = false
 
   source_dir = "testing"
 

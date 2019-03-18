@@ -8,6 +8,8 @@ dart_library("flutter") {
   infer_package_name = true
 
   source_dir = "."
+  # Unclear non-standard directory structure
+  sources_required = false
 
   sources = [
     "media_player.dart",

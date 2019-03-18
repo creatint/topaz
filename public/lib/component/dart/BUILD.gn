@@ -12,6 +12,10 @@ dart_library("dart") {
   sources = [
     "component.dart",
     "src/component_context_client.dart",
+    "component_async.dart",
+    "src/message_sender_client.dart",
+    "src/message_sender_client_async.dart",
+    "src/message_queue_client.dart",
   ]
 
   deps = [

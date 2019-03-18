@@ -6,11 +6,15 @@ import("//build/dart/dart_library.gni")
 
 dart_library("lib.base_shell") {
   package_name = "lib.base_shell"
+  sources_required = false
 
   sources = [
     "base_model.dart",
     "netstack_model.dart",
     "user_manager.dart",
+    # Including these sources triggers analysis errors.
+    # "base_shell_model.dart",
+    # "base_shell_widget.dart",
   ]
 
   deps = [

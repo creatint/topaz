@@ -19,6 +19,8 @@ dart_library("fuchsia_inspect") {
     "src/vmo_writer.dart",
     "src/vmo_fields.dart",
     "src/heap.dart",
+    "src/block.dart",
+    "src/vmo_holder.dart",
   ]
 
   deps = [

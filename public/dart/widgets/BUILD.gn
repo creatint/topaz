@@ -9,6 +9,7 @@ dart_library("lib.widgets") {
   package_name = "lib.widgets"
 
   sdk_category = "partner"
+  sources_required = false
 
   sources = [
     "application.dart",
@@ -27,6 +28,19 @@ dart_library("lib.widgets") {
     "src/widgets/ticking_state.dart",
     "src/widgets/window_media_query.dart",
     "widgets.dart",
+    # Including these files causes analysis errors
+    # "utils.dart",
+    # "utils_deprecated.dart",
+    # "src/application/application_widget_deprecated.dart",
+    # "src/utils/frame_rate_tracer.dart",
+    # "src/utils/deprecate.dart",
+    # "src/utils/pointer_events_listener.dart",
+    # "src/utils/change_notifiers.dart",
+    # "src/utils/pointer_events_listener_deprecated.dart",
+    # "src/model/provider.dart",
+    # "src/widgets/lottie_player.dart",
+    # "src/widgets/screen_container.dart",
+    # "src/widgets/settings_item.dart",
   ]
 
   deps = [
