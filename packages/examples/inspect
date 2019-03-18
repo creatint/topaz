@@ -1,5 +1,0 @@
-{
-    "packages": [
-        "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod"
-    ]
-}

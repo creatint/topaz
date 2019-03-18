@@ -1,0 +1,13 @@
+# Copyright 2019 The Fuchsia Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+group("term") {
+  testonly = true
+  public_deps = [
+    "//garnet/packages/products:graphical",
+    "//garnet/packages/tools:scenic",
+    "//topaz/packages/config:term",
+    "//topaz/packages/prod:term",
+  ]
+}
