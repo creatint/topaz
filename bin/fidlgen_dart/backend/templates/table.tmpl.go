@@ -11,19 +11,19 @@ const Table = `
 ///{{ . -}}
 {{- end }}
 class {{ .Name }} extends $fidl.Table {
-  const {{ .Name }}({
+  const {{ .Name }}({{- if len .Members }}{
 {{- range .Members }}
     this.{{ .Name }}{{ if .DefaultValue }}: {{ .DefaultValue }}{{ end }},
 {{- end }}
-  });
+  }{{ end -}});
 
   {{ .Name }}._(Map<int, dynamic> argv)
-    :
+    {{- if len .Members }}:
 {{- range $index, $member := .Members -}}
   {{- if $index }},
       {{ else }} {{ end -}}
     {{ .Name }} = argv[{{ .Ordinal }}]
-{{- end }};
+{{- end }}{{- end }};
 
 {{- range .Members }}
   {{- range .Doc }}
