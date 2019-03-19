@@ -2,18 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl_fuchsia_ui_input/fidl.dart';
+import 'package:fidl_fuchsia_ui_input/fidl_async.dart';
 import 'package:flutter/material.dart';
 import 'package:keyboard/keyboard.dart';
-import 'package:lib.app.dart/app.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
+import 'package:fuchsia_services/services.dart';
 
 class ImeKeyboard extends StatelessWidget {
+  final ImeServiceProxy _imeService;
+
   const ImeKeyboard({ImeServiceProxy imeService})
       : _imeService = imeService,
         super();
-
-  final ImeServiceProxy _imeService;
 
   void _onText(String text) {
     final kbEvent = KeyboardEvent(
@@ -66,11 +66,10 @@ class ImeKeyboard extends StatelessWidget {
 }
 
 void main() {
-  final context = StartupContext.fromStartupInfo();
-  var imeService = ImeServiceProxy();
-  connectToService<ImeService>(context.environmentServices, imeService.ctrl);
+  setupLogger(name: 'latin_ime');
 
-  setupLogger();
+  final imeService = ImeServiceProxy();
+  StartupContext.fromStartupInfo().incoming.connectToService(imeService);
 
   runApp(Theme(
     data: ThemeData.light(),
