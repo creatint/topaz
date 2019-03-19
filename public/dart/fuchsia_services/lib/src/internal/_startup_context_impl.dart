@@ -70,7 +70,6 @@ class StartupContextImpl implements StartupContext {
   /// of instantiating one on their own as it will bind and connect to all the
   /// underlying services for them.
   factory StartupContextImpl.fromStartupInfo() {
-    // final environmentProxy = fidl_sys.EnvironmentProxy();
     final directoryProxy = fidl_io.DirectoryProxy();
 
     if (Directory(_serviceRootPath).existsSync()) {
