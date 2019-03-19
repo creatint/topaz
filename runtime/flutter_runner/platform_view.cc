@@ -393,6 +393,11 @@ void PlatformView::OnScenicEvent(
                 << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
                    "(fuchsia.ui.gfx.ViewDisconnectedEvent).";
             break;
+          case fuchsia::ui::gfx::Event::Tag::kViewHolderConnected:
+            FML_LOG(WARNING)
+                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
+                   "(fuchsia.ui.gfx.kViewHolderConnected).";
+            break;
           case fuchsia::ui::gfx::Event::Tag::kViewHolderDisconnected:
             FML_LOG(WARNING)
                 << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
