@@ -42,7 +42,7 @@ class TodoListModel extends Model {
   }
 
   Future<void> _readInitialData() async {
-    await _ledger.getRootPageNew(_page.ctrl.request());
+    await _ledger.getRootPage(_page.ctrl.request());
 
     final snapshot = ledger.PageSnapshotProxy();
     final status = await _page.getSnapshot(

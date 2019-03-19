@@ -83,7 +83,7 @@ class Sledge {
 
     _ledgerProxy.ctrl.bind(ledgerHandle);
 
-    _ledgerProxy.getPageNew(pageId.id, _pageProxy.ctrl.request());
+    _ledgerProxy.getPage(pageId.id, _pageProxy.ctrl.request());
     _modificationQueue =
         new ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
     _subscribe(initializationCompleter);
