@@ -54,9 +54,9 @@ const char* kDartVMArgs[] = {
     "--no_use_field_guards",
 #endif
 
-#if !defined(NDEBUG) && !defined(DART_PRODUCT)
+#if !defined(DART_PRODUCT)
     "--enable_asserts",
-#endif  // !defined(NDEBUG)
+#endif  // !defined(DART_PRODUCT)
     // clang-format on
 };
 

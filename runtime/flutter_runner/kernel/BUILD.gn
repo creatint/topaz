@@ -110,7 +110,7 @@ template("core_snapshot") {
       "--write_v8_snapshot_profile_to=" +
           rebase_path(snapshot_profile, root_build_dir),
     ]
-    if (is_debug && !invoker.product) {
+    if (!invoker.product) {
       args += [ "--enable_asserts" ]
     }
     args += [ rebase_path(platform_dill) ]

@@ -896,7 +896,7 @@ template("flutter_dart_aot_component") {
             rebase_path(shared_snapshot_instructions_path),
         "--print-instructions-sizes-to=" + rebase_path(stats_json_path),
       ]
-      if (is_debug && !product) {
+      if (!product) {
         args += [ "--enable_asserts" ]
       }
       args += [ rebase_path(kernel_path) ]

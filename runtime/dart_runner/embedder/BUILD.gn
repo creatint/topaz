@@ -52,7 +52,7 @@ template("create_aot_snapshot") {
       "--snapshot_kind=vm-aot-assembly",
       "--assembly=" + rebase_path(snapshot_assembly),
     ]
-    if (is_debug && !invoker.product) {
+    if (!invoker.product) {
       args += [ "--enable_asserts" ]
     }
     args += [ rebase_path(shim_kernel) ]
