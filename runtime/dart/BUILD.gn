@@ -76,6 +76,14 @@ sdk_atom("kernel_compiler_sdk") {
       dest = "tools/dart"
     },
     {
+      source = prebuilt_gen_snapshot
+      dest = "tools/dart_prebuilts/gen_snapshot.snapshot"
+    },
+    {
+      source = prebuilt_gen_snapshot_product
+      dest = "tools/dart_prebuilts/gen_snapshot_product.snapshot"
+    },
+    {
       source = "$root_out_dir/dart_runner_patched_sdk/platform_strong.dill"
       dest = "tools/dart_prebuilts/dart_runner/platform_strong.dill"
     },
