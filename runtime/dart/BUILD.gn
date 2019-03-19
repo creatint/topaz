@@ -77,11 +77,11 @@ sdk_atom("kernel_compiler_sdk") {
     },
     {
       source = prebuilt_gen_snapshot
-      dest = "tools/dart_prebuilts/gen_snapshot.snapshot"
+      dest = "tools/dart_prebuilts/gen_snapshot.${current_cpu}"
     },
     {
       source = prebuilt_gen_snapshot_product
-      dest = "tools/dart_prebuilts/gen_snapshot_product.snapshot"
+      dest = "tools/dart_prebuilts/gen_snapshot_product.${current_cpu}"
     },
     {
       source = "$root_out_dir/dart_runner_patched_sdk/platform_strong.dill"
