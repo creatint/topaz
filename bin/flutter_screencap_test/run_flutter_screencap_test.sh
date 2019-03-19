@@ -7,7 +7,7 @@ set -o errexit
 
 # The test starts its own basemgr.
 killall basemgr* || true
-# The test uses set_root_view which won't work if these are already running.
+# The test uses present_view which won't work if these are already running.
 killall root_presenter* || true
 killall scenic* || true
 
