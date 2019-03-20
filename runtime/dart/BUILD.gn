@@ -55,6 +55,8 @@ sdk_atom("kernel_compiler_sdk") {
         "tools/dart_prebuilts/flutter_runner/platform_strong.dill",
         "tools/dart_prebuilts/kernel_compiler.snapshot",
         "tools/dart_prebuilts/frontend_server_tool.snapshot",
+        "tools/dart_prebuilts/gen_snapshot.${current_cpu}",
+        "tools/dart_prebuilts/gen_snapshot_product.${current_cpu}",
       ]
     }
   }
