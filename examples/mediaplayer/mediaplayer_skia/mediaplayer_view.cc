@@ -17,7 +17,7 @@
 #include "lib/media/timeline/timeline.h"
 #include "lib/media/timeline/type_converters.h"
 #include "lib/ui/scenic/cpp/view_token_pair.h"
-#include "lib/url/gurl.h"
+#include "src/lib/url/gurl.h"
 #include "third_party/skia/include/core/SkColor.h"
 #include "third_party/skia/include/core/SkPath.h"
 
