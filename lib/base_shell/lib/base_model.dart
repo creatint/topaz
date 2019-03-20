@@ -35,17 +35,108 @@ typedef GetPresentationModeCallback = void Function(PresentationMode mode);
 const Duration _kCobaltTimerTimeout = const Duration(seconds: 20);
 const int _kSessionShellLoginTimeMetricId = 14;
 
+// This class is extends the Presentation protocol and implements and PresentationModeListener.
+// It delegates the methods to the Presentation received by the CommonBaseShellModel that owns it.
+class CommonBaseShellPresentationImpl extends Presentation
+    implements PresentationModeListener {
+  final CommonBaseShellModel _model;
+
+  CommonBaseShellPresentationImpl(this._model);
+
+  /// |Presentation|.
+  @override
+  // ignore: avoid_positional_boolean_parameters
+  Future<void> enableClipping(bool enabled) async {
+    await _model.presentation.enableClipping(enabled);
+  }
+
+  @override
+  Future<void> useOrthographicView() async {
+    await _model.presentation.useOrthographicView();
+  }
+
+  @override
+  Future<void> usePerspectiveView() async {
+    await _model.presentation.usePerspectiveView();
+  }
+
+  @override
+  Future<void> setRendererParams(List<RendererParam> params) async {
+    await _model.presentation.setRendererParams(params);
+  }
+
+  @override
+  Future<void> setDisplayUsage(DisplayUsage usage) async {
+    await _model.presentation.setDisplayUsage(usage);
+  }
+
+  @override
+  // ignore: avoid_positional_boolean_parameters
+  Future<void> setDisplayRotation(
+      double displayRotationDegrees, bool animate) async {
+    await _model.presentation
+        .setDisplayRotation(displayRotationDegrees, animate);
+  }
+
+  @override
+  Future<void> setDisplaySizeInMm(num widthInMm, num heightInMm) async {
+    await _model.presentation.setDisplaySizeInMm(widthInMm, heightInMm);
+  }
+
+  @override
+  Future<void> captureKeyboardEventHack(input.KeyboardEvent eventToCapture,
+      InterfaceHandle<KeyboardCaptureListenerHack> listener) async {
+    await _model.presentation
+        .captureKeyboardEventHack(eventToCapture, listener);
+  }
+
+  @override
+  Future<void> capturePointerEventsHack(
+      InterfaceHandle<PointerCaptureListenerHack> listener) async {
+    await _model.presentation.capturePointerEventsHack(listener);
+  }
+
+  @override
+  Future<PresentationMode> getPresentationMode() async {
+    return await _model.presentation.getPresentationMode();
+  }
+
+  @override
+  Future<void> setPresentationModeListener(
+      InterfaceHandle<PresentationModeListener> listener) async {
+    await _model.presentation.setPresentationModeListener(listener);
+  }
+
+  /// |PresentationModeListener|.
+  @override
+  Future<void> onModeChanged() async {
+    PresentationMode mode = await getPresentationMode();
+    log.info('Presentation mode changed to: $mode');
+    switch (mode) {
+      case PresentationMode.tent:
+        await setDisplayRotation(180.0, true);
+        break;
+      case PresentationMode.tablet:
+        // TODO(sanjayc): Figure out up/down orientation.
+        await setDisplayRotation(90.0, true);
+        break;
+      case PresentationMode.laptop:
+      default:
+        await setDisplayRotation(0.0, true);
+        break;
+    }
+  }
+}
+
 /// Provides common features needed by all base shells.
 ///
 /// This includes user management, presentation handling,
 /// and keyboard shortcuts.
 class CommonBaseShellModel extends BaseShellModel
     implements
-        Presentation,
         ServiceProvider,
         KeyboardCaptureListenerHack,
-        PointerCaptureListenerHack,
-        PresentationModeListener {
+        PointerCaptureListenerHack {
   /// Handles login, logout, and adding/removing users.
   ///
   /// Shouldn't be used before onReady.
@@ -78,8 +169,12 @@ class CommonBaseShellModel extends BaseShellModel
   final List<PresentationBinding> _presentationBindings =
       <PresentationBinding>[];
 
+  CommonBaseShellPresentationImpl _presentationImpl;
+
   /// Constructor
-  CommonBaseShellModel(this.logger) : super();
+  CommonBaseShellModel(this.logger) : super() {
+    _presentationImpl = CommonBaseShellPresentationImpl(this);
+  }
 
   List<Account> get accounts => _accounts;
 
@@ -89,25 +184,13 @@ class CommonBaseShellModel extends BaseShellModel
 
   set shouldCreateNewChildView(bool should) {}
 
-  @override
-  Future<void> captureKeyboardEventHack(input.KeyboardEvent eventToCapture,
-      InterfaceHandle<KeyboardCaptureListenerHack> listener) async {
-    await presentation.captureKeyboardEventHack(eventToCapture, listener);
-  }
-
-  @override
-  Future<void> capturePointerEventsHack(
-      InterfaceHandle<PointerCaptureListenerHack> listener) async {
-    await presentation.capturePointerEventsHack(listener);
-  }
-
   // |ServiceProvider|.
   @override
   Future<void> connectToService(String serviceName, Channel channel) {
     // TODO(SCN-595) mozart.Presentation is being renamed to ui.Presentation.
     if (serviceName == 'ui.Presentation') {
       _presentationBindings.add(PresentationBinding()
-        ..bind(this, InterfaceRequest<Presentation>(channel)));
+        ..bind(_presentationImpl, InterfaceRequest<Presentation>(channel)));
     } else {
       log.warning(
           'UserPickerBaseShell: received request for unknown service: $serviceName !');
@@ -127,18 +210,6 @@ class CommonBaseShellModel extends BaseShellModel
     } finally {
       notifyListeners();
     }
-  }
-
-  @override
-  // ignore: avoid_positional_boolean_parameters
-  Future<void> enableClipping(bool enabled) async {
-    await presentation.enableClipping(enabled);
-  }
-
-  /// |Presentation|.
-  @override
-  Future<PresentationMode> getPresentationMode() async {
-    return await presentation.getPresentationMode();
   }
 
   /// Whether or not the device has an internet connection.
@@ -234,26 +305,6 @@ class CommonBaseShellModel extends BaseShellModel
     notifyListeners();
   }
 
-  /// |PresentationModeListener|.
-  @override
-  Future<void> onModeChanged() async {
-    PresentationMode mode = await getPresentationMode();
-    log.info('Presentation mode changed to: $mode');
-    switch (mode) {
-      case PresentationMode.tent:
-        await setDisplayRotation(180.0, true);
-        break;
-      case PresentationMode.tablet:
-        // TODO(sanjayc): Figure out up/down orientation.
-        await setDisplayRotation(90.0, true);
-        break;
-      case PresentationMode.laptop:
-      default:
-        await setDisplayRotation(0.0, true);
-        break;
-    }
-  }
-
   /// |KeyboardCaptureListener|.
   @override
   Future<void> onEvent(input.KeyboardEvent ev) async {}
@@ -262,8 +313,7 @@ class CommonBaseShellModel extends BaseShellModel
   @override
   Future<void> onPointerEvent(input.PointerEvent event) async {}
 
-  // |Presentation|.
-  // Delegate to the Presentation received by BaseShell.Initialize().
+  // |BaseShellModel|.
   // TODO: revert to default state when client logs out.
   @mustCallSuper
   @override
@@ -281,7 +331,7 @@ class CommonBaseShellModel extends BaseShellModel
     await presentation
         .capturePointerEventsHack(_pointerCaptureListenerBinding.wrap(this));
     await presentation.setPresentationModeListener(
-        _presentationModeListenerBinding.wrap(this));
+        _presentationModeListenerBinding.wrap(_presentationImpl));
 
     _userManager = BaseShellUserManager(userProvider);
 
@@ -307,8 +357,7 @@ class CommonBaseShellModel extends BaseShellModel
     await refreshUsers();
   }
 
-  // |Presentation|.
-  // Delegate to the Presentation received by BaseShell.Initialize().
+  // |BaseShellModel|
   // TODO: revert to default state when client logs out.
   @override
   void onStop() {
@@ -320,8 +369,6 @@ class CommonBaseShellModel extends BaseShellModel
     super.onStop();
   }
 
-  // |Presentation|.
-  // Delegate to the Presentation received by BaseShell.Initialize().
   // TODO: revert to default state when client logs out.
   /// Refreshes the list of users.
   Future<void> refreshUsers() async {
@@ -329,8 +376,6 @@ class CommonBaseShellModel extends BaseShellModel
     notifyListeners();
   }
 
-  // |Presentation|.
-  // Delegate to the Presentation received by BaseShell.Initialize().
   // TODO: revert to default state when client logs out.
   /// Permanently removes the user.
   Future removeUser(Account account) async {
@@ -341,50 +386,6 @@ class CommonBaseShellModel extends BaseShellModel
     } finally {
       await refreshUsers();
     }
-  }
-
-  // |Presentation|.
-  @override
-  // ignore: avoid_positional_boolean_parameters
-  Future<void> setDisplayRotation(
-      double displayRotationDegrees, bool animate) async {
-    await presentation.setDisplayRotation(displayRotationDegrees, animate);
-  }
-
-  // |Presentation|.
-  @override
-  Future<void> setDisplaySizeInMm(num widthInMm, num heightInMm) async {
-    await presentation.setDisplaySizeInMm(widthInMm, heightInMm);
-  }
-
-  // |Presentation|.
-  @override
-  Future<void> setDisplayUsage(DisplayUsage usage) async {
-    await presentation.setDisplayUsage(usage);
-  }
-
-  // |Presentation|.
-  /// |Presentation|.
-  @override
-  Future<void> setPresentationModeListener(
-      InterfaceHandle<PresentationModeListener> listener) async {
-    await presentation.setPresentationModeListener(listener);
-  }
-
-  // |Presentation|.
-  @override
-  Future<void> setRendererParams(List<RendererParam> params) async {
-    await presentation.setRendererParams(params);
-  }
-
-  @override
-  Future<void> useOrthographicView() async {
-    await presentation.useOrthographicView();
-  }
-
-  @override
-  Future<void> usePerspectiveView() async {
-    await presentation.usePerspectiveView();
   }
 
   @override
