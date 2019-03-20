@@ -55,8 +55,6 @@ sdk_atom("kernel_compiler_sdk") {
         "tools/dart_prebuilts/flutter_runner/platform_strong.dill",
         "tools/dart_prebuilts/kernel_compiler.snapshot",
         "tools/dart_prebuilts/frontend_server_tool.snapshot",
-        "tools/dart_prebuilts/gen_snapshot.${current_cpu}",
-        "tools/dart_prebuilts/gen_snapshot_product.${current_cpu}",
       ]
     }
   }
@@ -78,14 +76,6 @@ sdk_atom("kernel_compiler_sdk") {
       dest = "tools/dart"
     },
     {
-      source = prebuilt_gen_snapshot
-      dest = "tools/dart_prebuilts/gen_snapshot.${current_cpu}"
-    },
-    {
-      source = prebuilt_gen_snapshot_product
-      dest = "tools/dart_prebuilts/gen_snapshot_product.${current_cpu}"
-    },
-    {
       source = "$root_out_dir/dart_runner_patched_sdk/platform_strong.dill"
       dest = "tools/dart_prebuilts/dart_runner/platform_strong.dill"
     },
@@ -104,6 +94,36 @@ sdk_atom("kernel_compiler_sdk") {
     "//third_party/flutter/frontend_server:frontend_server_tool_snapshot($host_toolchain)",
     "//topaz/runtime/dart_runner/kernel:kernel_platform_files",
     "//topaz/runtime/flutter_runner/kernel:kernel_platform_files",
+  ]
+}
+
+sdk_atom("gen_snapshot_sdk") {
+  id = "sdk://tools/gen_snapshot_${current_cpu}"
+  category = "partner"
+
+  meta = {
+    schema = "host_tool"
+    dest = "tools/gen_snapshot_${current_cpu}-meta.json"
+    value = {
+      type = "host_tool"
+      name = "gen_snapshot_${current_cpu}"
+      root = "tools"
+      files = [
+        "tools/gen_snapshot.${current_cpu}",
+        "tools/gen_snapshot_product.${current_cpu}",
+      ]
+    }
+  }
+
+  files = [
+    {
+      source = prebuilt_gen_snapshot
+      dest = "tools/gen_snapshot.${current_cpu}"
+    },
+    {
+      source = prebuilt_gen_snapshot_product
+      dest = "tools/gen_snapshot_product.${current_cpu}"
+    },
   ]
 }
 
