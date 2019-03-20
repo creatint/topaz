@@ -16,9 +16,11 @@ parser.add_argument('--dry-run',
                     help='Whether to run in dry-run mode; if true, no file will be generated',
                     action='store_true')
 parser.add_argument('--errors',
-                    help='Path to the zircon error header file')
+                    help='Path to the zircon errors.h header file')
 parser.add_argument('--types',
-                    help='Path to the zircon type header file')
+                    help='Path to the zircon types.h header file')
+parser.add_argument('--rights',
+                    help='Path to the zircon rights.h header file')
 parser.add_argument('--dartfmt',
                     help='Path to the dartfmt tool')
 parser.add_argument('--dart-constants',
@@ -30,11 +32,13 @@ args = parser.parse_args()
 source_dir = os.path.dirname(__file__)
 zircon_errors = args.errors
 zircon_types = args.types
-if not zircon_errors or not zircon_types:
+zircon_rights = args.rights
+if not zircon_errors or not zircon_types or not zircon_rights:
   zircon_include_dir = os.path.join(
       source_dir, '../../../../zircon/system/public/zircon')
   zircon_errors = zircon_errors or os.path.join(zircon_include_dir, 'errors.h')
   zircon_types = zircon_types or os.path.join(zircon_include_dir, 'types.h')
+  zircon_rights = zircon_rights or os.path.join(zircon_include_dir, 'rights.h')
 
 dartfmt = args.dartfmt
 if not dartfmt:
@@ -67,9 +71,9 @@ def read_header(header):
   for line in open(header):
     line = line.rstrip()
     if continuation:
-      line = continuation + ' ' + line
+      line = continuation + ' ' + line.lstrip()
     if line.endswith('\\'):
-      continuation = line[:-1]
+      continuation = (line[:-1]).rstrip()
       continue
     else:
       continuation = ''
@@ -90,7 +94,8 @@ def extract_defines(header, guard):
       defines.append((match.groupdict()['symbol'], match.groupdict()['value']))
     else:
       # ignore the header guard
-      if line.startswith('#define %s' % guard) or line.startswith('#define SYSROOT_%s' % guard):
+      if line.startswith('#define %s' % guard) or \
+          line.startswith('#define SYSROOT_%s' % guard):
         continue
       # ignore function-like macros
       if not re.match(r'#define\s+[A-Za-z0-9_]+\(', line):
@@ -98,17 +103,17 @@ def extract_defines(header, guard):
         sys.exit(1)
 
   # quadratic time is best time
-  return [(k[prefix_len:], c_to_dart_value(v, defines))
+  public_constants = [(k[prefix_len:], c_to_dart_value(v, defines))
           for k, v in defines
           if k.startswith(prefix)]
+  private_constants = [(k, c_to_dart_value(v, defines))
+                       for k, v in defines
+                       if not k.startswith(prefix)]
+  return public_constants + private_constants
 
 
 def c_to_dart_value(value, defines):
   """Convert a C macro value to something that can be a Dart constant."""
-  # expand macro references
-  for k, v in defines:
-    value = value.replace(k, v)
-
   # strip type casts
   value = re.sub(r'\([a-z0-9_]+_t\)', '', value)
 
@@ -123,6 +128,10 @@ def c_to_dart_value(value, defines):
 
   # strip outer parens
   value = re.sub(r'^\((.*)\)$', r'\1', value)
+
+  # strip prefix from references to other constants
+  value = re.sub(r'\b'+prefix+r'(\w*)\b', r'\1', value)
+
   return value
 
 
@@ -149,11 +158,15 @@ class DartWriter(object):
 def write_constants():
   error_defines = extract_defines(zircon_errors, 'ZIRCON_ERRORS_H_')
   type_defines = extract_defines(zircon_types, 'ZIRCON_TYPES_H_')
+  right_defines = extract_defines(zircon_rights, 'ZIRCON_RIGHTS_H_')
   with DartWriter(dart_constants) as f:
     f.write(file_header)
     f.write('abstract class ZX {\n')
     f.write('  ZX._();')
-    for symbol, value in error_defines + type_defines:
+    for symbol, value in error_defines + type_defines + right_defines:
+      if symbol.startswith('_'):
+        # private constant, it's okay if it's unused.
+        f.write('  // ignore: unused_field\n')
       f.write('  static const int %s = %s;\n' % (symbol, value))
     f.write('}\n')
 
