@@ -6,7 +6,10 @@
 
 #include <array>
 
+#include <ddk/device.h>
 #include <fcntl.h>
+#include <fuchsia/device/manager/cpp/fidl.h>
+#include <lib/fdio/directory.h>
 #include <lib/fdio/io.h>
 #include <lib/fdio/limits.h>
 #include <lib/fdio/namespace.h>
@@ -168,6 +171,31 @@ Dart_Handle System::ChannelCreate(uint32_t options) {
                                ToDart(Handle::Create(out0)),
                                ToDart(Handle::Create(out1)));
   }
+}
+
+zx_status_t System::Reboot() {
+  zx::channel local, remote;
+  auto status = zx::channel::create(0, &local, &remote);
+  if (status != ZX_OK) {
+    return status;
+  }
+
+  const std::string service = std::string{"/svc/"} +
+      fuchsia::device::manager::Administrator::Name_;
+  status = fdio_service_connect(service.c_str(), remote.get());
+  if (status != ZX_OK) {
+    printf("failed to connect to service %s: %d\n", service.c_str(), status);
+    return status;
+  }
+
+  zx_status_t call_status;
+  fuchsia::device::manager::Administrator_SyncProxy administrator(std::move(local));
+  status = administrator.Suspend(DEVICE_SUSPEND_FLAG_REBOOT, &call_status);
+  if (status != ZX_OK || call_status != ZX_OK) {
+    printf("Call to %s failed: ret: %d  remote: %d\n", service.c_str(), status, call_status);
+  }
+
+  return status != ZX_OK ? status : call_status;
 }
 
 Dart_Handle System::ChannelFromFile(std::string path) {
@@ -442,6 +470,7 @@ uint64_t System::ClockGet(uint32_t clock_id) {
   V(System, ChannelWrite)          \
   V(System, ChannelQueryAndRead)   \
   V(System, EventpairCreate)       \
+  V(System, Reboot)                \
   V(System, SocketCreate)          \
   V(System, SocketWrite)           \
   V(System, SocketRead)            \

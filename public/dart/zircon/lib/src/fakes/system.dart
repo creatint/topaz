@@ -186,4 +186,10 @@ class System {
     throw new UnimplementedError(
         'System.timeGet() is not implemented on this platform.');
   }
+
+  // System operations.
+  static int reboot() {
+    throw new UnimplementedError(
+        'System.reboot() is not implemented on this platform.');
+  }
 }

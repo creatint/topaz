@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:io';
 
 import 'package:fidl_fuchsia_amber/fidl.dart' as amber;
 import 'package:flutter/foundation.dart';
@@ -130,14 +129,12 @@ class DeviceSettingsModel extends Model {
 
   void factoryReset() async {
     if (showResetConfirmation) {
-      // Reset has been confirmed, perform reset.
-      var dm = File('/dev/misc/dmctl');
-      if (dm.existsSync()) {
-        final flagSet = await DeviceInfo.setFactoryResetFlag(shouldReset: true);
-        log.severe('Factory Reset flag set successfully: $flagSet');
-        dm.writeAsStringSync('reboot', flush: true);
-      } else {
-        log.severe('dmctl unable to be found.');
+      final flagSet = await DeviceInfo.setFactoryResetFlag(shouldReset: true);
+      log.severe('Factory Reset flag set successfully: $flagSet');
+
+      int status = System.reboot();
+      if (status != 0 ) {
+        log.severe('Unable to reboot system: $status');
       }
     } else {
       _showResetConfirmation = true;
