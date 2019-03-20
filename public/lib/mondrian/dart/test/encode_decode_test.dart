@@ -6,13 +6,13 @@ import 'package:lib.mondrian.dart/mondrian.dart';
 import 'package:test/test.dart';
 
 void main() {
-  SurfaceLayout layout =
-      SurfaceLayout(x: 1, y: 2, w: 3, h: 1000000000000, surfaceId: 'first');
+  SurfaceLayout layout = SurfaceLayout(
+      x: 1.0, y: 2.0, w: 3.0, h: 1000000000000.0, surfaceId: 'first');
   Map<String, dynamic> jsonEncodedLayout = {
-    'x': 1,
-    'y': 2,
-    'w': 3,
-    'h': 1000000000000,
+    'x': 1.0,
+    'y': 2.0,
+    'w': 3.0,
+    'h': 1000000000000.0,
     'surfaceId': 'first'
   };
   group('test encoding of types to JSON', () {

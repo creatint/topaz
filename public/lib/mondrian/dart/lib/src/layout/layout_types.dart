@@ -9,7 +9,7 @@ import 'package:quiver/core.dart';
 /// viewport position and the element to place at that position.
 abstract class LayoutElement<T> {
   /// Box layout for this Element
-  final int x, y, w, h;
+  final double x, y, w, h;
 
   /// The element positioned at this location
   final T element;
@@ -32,7 +32,7 @@ abstract class LayoutElement<T> {
   @override
   int get hashCode {
     return hash4(
-        (w - x).hashCode, (h - y).hashCode, (x ^ y).hashCode, element.hashCode);
+        (w - x).hashCode, (h - y).hashCode, (x * y).hashCode, element.hashCode);
   }
 }
 
@@ -44,10 +44,12 @@ class Layer<LayoutElement> extends ListBase<LayoutElement> {
 
   /// Constructor for adding a single element to a Layer
   Layer({LayoutElement element}) {
-    _innerList.add(element);
+    if (element != null) {
+      _innerList.add(element);
+    }
   }
 
-  /// Constructor for adding a list of [LayoutElement] to a layer
+  /// Constructor for adding a list of [LayoutElement]s to a layer
   Layer.fromList({List<LayoutElement> elements}) {
     _innerList.addAll(elements);
   }
@@ -110,7 +112,8 @@ class SurfaceLayout extends LayoutElement {
 /// dimensions.
 class StackLayout extends LayoutElement {
   /// Constructor
-  StackLayout({int x, int y, int w, int h, List<String> surfaceStack})
+  StackLayout(
+      {double x, double y, double w, double h, List<String> surfaceStack})
       : super(x: x, y: y, w: w, h: h, element: surfaceStack);
 
   /// Export to JSON

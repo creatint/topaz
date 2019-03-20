@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:collection';
 import 'package:meta/meta.dart';
 
 import 'layout/layout_context.dart';
@@ -21,7 +22,7 @@ class Composer {
   /// The focus order of surfaces being laid out in the experience. Hiding
   /// removes a surface from the _focusedSurfaces Set and adds it to the
   /// _hiddenSurfaces Set.
-  final Set<String> _focusedSurfaces;
+  final LinkedHashSet<String> _focusedSurfaces = LinkedHashSet<String>();
 
   /// The context of the layout
   LayoutContext layoutContext;
@@ -39,7 +40,6 @@ class Composer {
   Composer({
     this.layoutContext = defaultContext,
   })  : _hiddenSurfaces = <String>{},
-        _focusedSurfaces = <String>{},
         _surfaceTree = new SurfaceTree();
 
   /// Add a Surface to the tree. [parentId] is an optional paramater used when
@@ -134,23 +134,55 @@ class Composer {
   ///     {"x":640","y":0,"w":640,"h":800,"surfaceId":"B"} // SurfaceLayout
   ///   ] // Layer
   /// ] // List<Layer>'
-
   List<Layer> getLayout({List<Layer> previousLayout}) {
     // TODO(djmurphy): complete logic - this is placeholder to unblock work
-    List<Layer> layout = <Layer>[];
-    for (String id in _focusedSurfaces.toList()) {
-      layout.add(
-        Layer(
-          element: SurfaceLayout(
-            x: 0,
-            y: 0,
-            w: layoutContext.size.width,
-            h: layoutContext.size.height,
-            surfaceId: id,
-          ),
-        ),
-      );
+    if (_surfaceTree.isEmpty) {
+      return <Layer>[];
     }
+    List<Layer> layout = <Layer>[];
+    SurfaceTree spanningTree = _surfaceTree.spanningTree(
+      startNodeId: _focusedSurfaces.last,
+      condition: (node) => true,
+    );
+    int spanningTreeSize = spanningTree.length;
+    if (spanningTreeSize > 1) {
+      _splitEvenly(layout, spanningTree, spanningTreeSize);
+    } else {
+      // Relies purely on the focused surfaces rather than what's in the graph.
+      // TODO(jphsiao/djmurphy) expand this to take into account the surface graph.
+      for (String id in _focusedSurfaces.toList()) {
+        layout.add(
+          Layer(
+            element: SurfaceLayout(
+              x: 0.0,
+              y: 0.0,
+              w: layoutContext.size.width,
+              h: layoutContext.size.height,
+              surfaceId: id,
+            ),
+          ),
+        );
+      }
+    }
+    return layout;
+  }
+
+  List<Layer> _splitEvenly(
+      List<Layer> layout, SurfaceTree spanningTree, int spanningTreeSize) {
+    Layer layer = new Layer();
+    int surfaceIndex = 0;
+    double splitSize = layoutContext.size.width / spanningTreeSize;
+    for (Surface surface in spanningTree) {
+      layer.add(SurfaceLayout(
+        x: surfaceIndex * splitSize,
+        y: 0.0,
+        w: splitSize,
+        h: layoutContext.size.height,
+        surfaceId: surface.surfaceId,
+      ));
+      surfaceIndex += 1;
+    }
+    layout.add(layer);
     return layout;
   }
 }

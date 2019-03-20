@@ -14,10 +14,10 @@ class LayoutContext {
 /// Simple class for capturing 2D size of boxes in layout.
 class Size {
   /// height
-  final int height;
+  final double height;
 
   /// width
-  final int width;
+  final double width;
 
   /// constructor
   const Size(this.width, this.height);
