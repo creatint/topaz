@@ -10,7 +10,7 @@
 
 namespace examples {
 
-using fuchsia::ui::app::ViewConfig;
+using fuchsia::ui::views::ViewConfig;
 
 namespace {
 constexpr SkScalar kTextSize = 40;
@@ -63,16 +63,17 @@ void ViewConfigDemoView::OnSceneInvalidated(
 // Return the first locale ID in the given view config, or "[none]" if the
 // config is invalid.
 const std::string GetFirstLocale(const ViewConfig& view_config) {
-  if (!view_config.intl_profile.locales.empty()) {
-    return view_config.intl_profile.locales[0].id;
+  if (view_config.has_intl_profile() &&
+      !view_config.intl_profile().locales.empty()) {
+    return view_config.intl_profile().locales[0].id;
   }
   return "[none]";
 }
 
 void ViewConfigDemoView::OnConfigChanged(
-    fuchsia::ui::app::ViewConfig old_config) {
+    const fuchsia::ui::views::ViewConfig& old_config) {
   FXL_LOG(INFO) << "OnConfigChanged: locale was " << GetFirstLocale(old_config)
-                << "; now \"" << GetFirstLocale(view_config()) << "\".";
+                << "; now \"" << GetFirstLocale(view_config2()) << "\".";
   InvalidateScene();
 }
 
@@ -88,7 +89,7 @@ void ViewConfigDemoView::Draw(SkCanvas* canvas) {
   font.setSize(kTextSize);
   font.setTypeface(typeface_);
 
-  std::string text = std::string("Locale: " + GetFirstLocale(view_config()));
+  std::string text = std::string("Locale: " + GetFirstLocale(view_config2()));
 
   SkRect text_bounds{};
   font.measureText(text.c_str(), text.size(), SkTextEncoding::kUTF8,
