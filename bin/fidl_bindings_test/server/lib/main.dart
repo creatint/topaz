@@ -5,10 +5,10 @@
 import 'dart:async';
 
 import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
-import 'package:lib.app.dart/app_async.dart';
+import 'package:fuchsia_services/services.dart';
 
-Duration durationFromSeconds(double seconds) => new Duration(
-    microseconds: (seconds * Duration.microsecondsPerSecond).round());
+Duration durationFromSeconds(double seconds) =>
+    Duration(microseconds: (seconds * Duration.microsecondsPerSecond).round());
 
 class TestServerImpl extends TestServer {
   bool _receivedOneWayNoArgs = false;
@@ -49,7 +49,7 @@ class TestServerImpl extends TestServer {
   @override
   Future<TestServer$ReceivedOneWayThreeArgs$Response>
       receivedOneWayThreeArgs() async {
-    return new TestServer$ReceivedOneWayThreeArgs$Response(
+    return TestServer$ReceivedOneWayThreeArgs$Response(
         _oneWayThreeArgX, _oneWayThreeArgY, _oneWayThreeArgZ);
   }
 
@@ -88,11 +88,11 @@ class TestServerImpl extends TestServer {
   @override
   Future<TestServer$TwoWayThreeArgs$Response> twoWayThreeArgs(
       int x, int y, NoHandleStruct z) async {
-    return new TestServer$TwoWayThreeArgs$Response(x, y, z);
+    return TestServer$TwoWayThreeArgs$Response(x, y, z);
   }
 
   final StreamController<void> _emptyEventController =
-      new StreamController.broadcast();
+      StreamController.broadcast();
   @override
   Future<void> sendEmptyEvent() async {
     _emptyEventController.add(null);
@@ -102,7 +102,7 @@ class TestServerImpl extends TestServer {
   Stream<void> get emptyEvent => _emptyEventController.stream;
 
   final StreamController<String> _stringEventController =
-      new StreamController.broadcast();
+      StreamController.broadcast();
   @override
   Future<void> sendStringEvent(String value) async {
     _stringEventController.add(value);
@@ -112,12 +112,11 @@ class TestServerImpl extends TestServer {
   Stream<String> get stringEvent => _stringEventController.stream;
 
   final StreamController<TestServer$ThreeArgEvent$Response>
-      _threeArgEventController = new StreamController.broadcast();
+      _threeArgEventController = StreamController.broadcast();
 
   @override
   Future<void> sendThreeArgEvent(int x, int y, NoHandleStruct z) async {
-    _threeArgEventController
-        .add(new TestServer$ThreeArgEvent$Response(x, y, z));
+    _threeArgEventController.add(TestServer$ThreeArgEvent$Response(x, y, z));
   }
 
   @override
@@ -125,14 +124,14 @@ class TestServerImpl extends TestServer {
       _threeArgEventController.stream;
 
   final StreamController<int> _multipleEventController =
-      new StreamController.broadcast();
+      StreamController.broadcast();
   @override
   Future<void> sendMultipleEvents(int count, double intervalSeconds) async {
     if (intervalSeconds == 0.0) {
       _binding.close();
     } else {
       int index = 0;
-      new Timer.periodic(durationFromSeconds(intervalSeconds), (timer) {
+      Timer.periodic(durationFromSeconds(intervalSeconds), (timer) {
         index++;
         _multipleEventController.add(index);
         if (index >= count) {
@@ -147,7 +146,7 @@ class TestServerImpl extends TestServer {
 
   @override
   Future<String> replySlowly(String value, double delaySeconds) {
-    return new Future.delayed(durationFromSeconds(delaySeconds), () => value);
+    return Future.delayed(durationFromSeconds(delaySeconds), () => value);
   }
 
   @override
@@ -155,7 +154,7 @@ class TestServerImpl extends TestServer {
     if (delaySeconds == 0.0) {
       _binding.close();
     } else {
-      new Timer(durationFromSeconds(delaySeconds), _binding.close);
+      Timer(durationFromSeconds(delaySeconds), _binding.close);
     }
   }
 
@@ -168,11 +167,11 @@ TestServerImpl _server;
 TestServerBinding _binding;
 
 void main(List<String> args) {
-  _context = new StartupContext.fromStartupInfo();
+  _context = StartupContext.fromStartupInfo();
 
-  _server = new TestServerImpl();
-  _binding = new TestServerBinding();
+  _server = TestServerImpl();
+  _binding = TestServerBinding();
 
-  _context.outgoingServices.addServiceForName<TestServer>(
+  _context.outgoing.addPublicService<TestServer>(
       (request) => _binding.bind(_server, request), TestServer.$serviceName);
 }
