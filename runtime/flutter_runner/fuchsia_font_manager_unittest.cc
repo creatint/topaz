@@ -40,7 +40,7 @@ class FuchsiaFontManagerTest : public gtest::RealLoopFixture {
 
     zx::channel out_services_request;
     auto font_services =
-        sys::ServiceDirectory::CreateWithRequest(&out_services_request);
+        sys::ServiceDirectory::CreateWithRequest2(&out_services_request);
     auto launch_info_font_service = GetLaunchInfoForFontService();
     launch_info_font_service.directory_request =
         std::move(out_services_request);
@@ -51,7 +51,7 @@ class FuchsiaFontManagerTest : public gtest::RealLoopFixture {
     // Connect to the font provider service and then wrap it inside the font
     // manager we will be testing.
     fuchsia::fonts::ProviderSyncPtr provider_ptr;
-    font_services.Connect(provider_ptr.NewRequest());
+    font_services->Connect(provider_ptr.NewRequest());
 
     font_manager_ = sk_make_sp<FuchsiaFontManager>(std::move(provider_ptr));
   }
