@@ -4,7 +4,7 @@
 
 #include "examples/ui/lib/type_converters.h"
 
-namespace fxl {
+namespace fidl {
 
 SkIPoint TypeConverter<SkIPoint, fuchsia::math::Point>::Convert(
     const fuchsia::math::Point& input) {
@@ -142,4 +142,4 @@ fuchsia::math::Transform TypeConverter<fuchsia::math::Transform, SkMatrix44>::Co
   return output;
 }
 
-}  // namespace fxl
+}  // namespace fidl

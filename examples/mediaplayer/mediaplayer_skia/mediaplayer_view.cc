@@ -368,7 +368,7 @@ void MediaPlayerView::HandleStatusChanged(
   // Process status received from the player.
   if (status.timeline_function) {
     timeline_function_ =
-        fxl::To<media::TimelineFunction>(*status.timeline_function);
+        fidl::To<media::TimelineFunction>(*status.timeline_function);
   }
 
   previous_state_ = state_;
