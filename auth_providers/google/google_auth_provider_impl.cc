@@ -165,7 +165,7 @@ void GoogleAuthProviderImpl::GetPersistentCredential(
   auth_ui_context_.set_error_handler([this](zx_status_t status) {
     FX_LOG(INFO, NULL, "Overlay cancelled by the caller");
     ReleaseResources();
-    get_persistent_credential_callback_(AuthProviderStatus::INTERNAL_ERROR,
+    get_persistent_credential_callback_(AuthProviderStatus::UNKNOWN_ERROR,
                                         nullptr, nullptr);
     return;
   });
