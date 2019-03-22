@@ -20,8 +20,8 @@ class AuthenticationUiContextImpl extends AuthenticationUiContext {
   /// Called when an aunthentication overlay needs to be stopped.
   final VoidCallback _onStopOverlay;
 
-  /// Builds an AuthenticationUiContext that takes |ImportToken| callbacks to
-  /// start and stop an authentication display overlay.
+  /// Builds an AuthenticationUiContext that takes |ViewHolderToken| callbacks
+  /// to start and stop an authentication display overlay.
   AuthenticationUiContextImpl(
       {OnStartOverlay onStartOverlay, VoidCallback onStopOverlay})
       : _onStartOverlay = onStartOverlay,

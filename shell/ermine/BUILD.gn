@@ -30,31 +30,31 @@ dart_library("ermine_library") {
 
   sources = [
     "main.dart",
-    "src/modules/ask_model.dart",
-    "src/modules/ask_text_field.dart",
-    "src/modules/ask_suggestion_list.dart",
-    "src/modules/ask_module.dart",
-    "src/utils/elevations.dart",
-    "src/utils/session_shell_services.dart",
-    "src/utils/key_chord_listener.dart",
-    "src/models/web_proposer.dart",
     "src/models/app_model.dart",
-    "src/models/story_model.dart",
-    "src/models/story_manager.dart",
     "src/models/ermine_service_provider.dart",
     "src/models/package_proposer.dart",
+    "src/models/story_manager.dart",
+    "src/models/story_model.dart",
+    "src/models/web_proposer.dart",
+    "src/modules/ask_model.dart",
+    "src/modules/ask_module.dart",
+    "src/modules/ask_suggestion_list.dart",
+    "src/modules/ask_text_field.dart",
+    "src/utils/elevations.dart",
+    "src/utils/key_chord_listener.dart",
+    "src/utils/session_shell_services.dart",
     "src/widgets/app.dart",
     "src/widgets/stories.dart",
   ]
 
   deps = [
     ":shell.ermine",
+    "//sdk/fidl/fuchsia.modular",
     "//sdk/fidl/fuchsia.ui.app",
-    "//sdk/fidl/fuchsia.ui.gfx",
     "//sdk/fidl/fuchsia.ui.input",
     "//sdk/fidl/fuchsia.ui.policy",
+    "//sdk/fidl/fuchsia.ui.views",
     "//sdk/fidl/fuchsia.ui.viewsv1token",
-    "//sdk/fidl/fuchsia.modular",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/flutter_svg",
     "//third_party/dart-pkg/pub/uuid",
@@ -69,7 +69,6 @@ dart_library("ermine_library") {
 }
 
 flutter_app("ermine_ask_module") {
-
   main_dart = "lib/src/modules/ask_module.dart"
 
   package_name = "ermine_ask_module"
@@ -132,15 +131,18 @@ package("ermine_fonts") {
       dest = "vendor/fonts/manifest.json"
     },
     {
-      path = rebase_path("//garnet/bin/fonts/third_party/robotomono/RobotoMono-Regular.ttf")
+      path = rebase_path(
+              "//garnet/bin/fonts/third_party/robotomono/RobotoMono-Regular.ttf")
       dest = "vendor/fonts/RobotoMono-Regular.ttf"
     },
     {
-      path = rebase_path("//garnet/bin/fonts/third_party/robotomono/RobotoMono-Medium.ttf")
+      path = rebase_path(
+              "//garnet/bin/fonts/third_party/robotomono/RobotoMono-Medium.ttf")
       dest = "vendor/fonts/RobotoMono-Medium.ttf"
     },
     {
-      path = rebase_path("//garnet/bin/fonts/third_party/robotomono/RobotoMono-Light.ttf")
+      path = rebase_path(
+              "//garnet/bin/fonts/third_party/robotomono/RobotoMono-Light.ttf")
       dest = "vendor/fonts/RobotoMono-Light.ttf"
     },
   ]

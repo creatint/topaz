@@ -6,7 +6,7 @@ import 'dart:async';
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_modular/fidl.dart';
-import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart';
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_viewsv1token/fidl.dart';
 import 'package:fidl_fuchsia_xi_session/fidl_async.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
@@ -110,7 +110,7 @@ class DemoModel extends Model {
         intentBuilder.intent,
         editorController.proxy.ctrl.request(),
         viewOwner.passRequest(), (StartModuleStatus status) {
-      editorConn = ChildViewConnection.fromImportToken(ImportToken(
+      editorConn = ChildViewConnection(ViewHolderToken(
         value: EventPair(viewOwner.passHandle().passChannel().passHandle()),
       ));
       log.info('Start embeddable intent status = $status');

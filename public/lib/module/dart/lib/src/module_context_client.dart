@@ -6,7 +6,7 @@ import 'dart:async';
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_modular/fidl.dart' as fidl;
-import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart';
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart' show ViewHolderToken;
 import 'package:fidl_fuchsia_ui_viewsv1token/fidl.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
@@ -253,8 +253,7 @@ class ModuleContextClient {
           log.fine('configuring view for "$name"');
 
           // TODO(MS-1437): viewOwner error handling.
-          ChildViewConnection connection =
-              ChildViewConnection.fromImportToken(ImportToken(
+          ChildViewConnection connection = ChildViewConnection(ViewHolderToken(
             value: EventPair(viewOwner.passHandle().passChannel().passHandle()),
           ));
 

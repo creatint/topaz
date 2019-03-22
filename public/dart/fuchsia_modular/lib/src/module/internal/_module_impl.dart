@@ -8,8 +8,8 @@ import 'dart:typed_data';
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_mem/fidl_async.dart' as mem;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as modular;
-import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart' as gfx;
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart' as views;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart' as views;
+import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart' as deprecated;
 import 'package:fuchsia_modular/lifecycle.dart';
 import 'package:meta/meta.dart';
 import 'package:zircon/zircon.dart' as zx;
@@ -139,7 +139,7 @@ class ModuleImpl implements Module {
     }
 
     final moduleController = modular.ModuleControllerProxy();
-    final viewOwner = new InterfacePair<views.ViewOwner>();
+    final viewOwner = new InterfacePair<deprecated.ViewOwner>();
     final status = await _getContext().embedModule(
         name, intent, moduleController.ctrl.request(), viewOwner.passRequest());
 
@@ -147,7 +147,7 @@ class ModuleImpl implements Module {
 
     return EmbeddedModule(
         moduleController: moduleController,
-        viewHolderToken: gfx.ImportToken(
+        viewHolderToken: views.ViewHolderToken(
             value: zx.EventPair(
                 viewOwner.passHandle().passChannel().passHandle())));
   }

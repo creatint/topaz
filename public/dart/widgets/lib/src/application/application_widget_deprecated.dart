@@ -4,8 +4,8 @@
 
 import 'package:fidl_fuchsia_sys/fidl.dart';
 import 'package:fidl_fuchsia_ui_app/fidl.dart' show ViewProviderProxy;
-import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart'
-    show ExportToken, ImportToken;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart'
+    show ViewToken, ViewHolderToken;
 import 'package:flutter/widgets.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
@@ -94,7 +94,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
       _applicationController.ctrl.request(),
     );
 
-    _connection = ChildViewConnection.fromImportToken(
+    _connection = ChildViewConnection(
       _consumeViewProvider(
         _consumeServices(incomingServices),
       ),
@@ -113,15 +113,15 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
     return viewProvider;
   }
 
-  /// Creates a handle to a [ImportToken] from a [ViewProviderProxy], closing it
-  /// in the process.
-  ImportToken _consumeViewProvider(
+  /// Creates a handle to a [ViewHolderToken] from a [ViewProviderProxy],
+  /// closing it in the process.
+  ViewHolderToken _consumeViewProvider(
     ViewProviderProxy viewProvider,
   ) {
     final viewTokens = EventPairPair();
     assert(viewTokens.status == ZX.OK);
-    final viewHolderToken = ImportToken(value: viewTokens.first);
-    final viewToken = ExportToken(value: viewTokens.second);
+    final viewHolderToken = ViewHolderToken(value: viewTokens.first);
+    final viewToken = ViewToken(value: viewTokens.second);
 
     viewProvider.createView(viewToken.value, null, null);
     viewProvider.ctrl.close();

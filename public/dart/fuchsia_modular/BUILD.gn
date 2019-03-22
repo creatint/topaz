@@ -54,7 +54,7 @@ dart_library("fuchsia_modular") {
     "//sdk/fidl/fuchsia.auth",
     "//sdk/fidl/fuchsia.modular",
     "//sdk/fidl/fuchsia.sys",
-    "//sdk/fidl/fuchsia.ui.gfx",
+    "//sdk/fidl/fuchsia.ui.views",
     "//sdk/fidl/fuchsia.ui.viewsv1token",
     "//third_party/dart-pkg/pub/async",
     "//third_party/dart-pkg/pub/meta",

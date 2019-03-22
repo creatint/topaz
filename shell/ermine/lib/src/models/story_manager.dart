@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:fidl/fidl.dart' show InterfaceHandle, InterfaceRequest;
-import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart';
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart' show ViewHolderToken;
 import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart' show ViewOwner;
 import 'package:fidl_fuchsia_modular/fidl_async.dart'
     show
@@ -182,7 +182,7 @@ class StoryManager extends ChangeNotifier {
   }
 
   Future<void> attachView(
-      ViewIdentifier viewId, ImportToken viewHolderToken) async {
+      ViewIdentifier viewId, ViewHolderToken viewHolderToken) async {
     if (_storyMap.containsKey(viewId.storyId)) {
       _storyMap[viewId.storyId].attachView(viewHolderToken);
     }
@@ -231,14 +231,16 @@ class _SessionShellImpl extends SessionShell {
   @override
   Future<void> attachView(
       ViewIdentifier viewId, InterfaceHandle<ViewOwner> viewOwner) async {
-    return attachView2(viewId,
-        ImportToken(value: EventPair(viewOwner.passChannel().passHandle())));
+    return attachView2(
+        viewId,
+        ViewHolderToken(
+            value: EventPair(viewOwner.passChannel().passHandle())));
   }
 
   @override
   // ignore: override_on_non_overriding_method
   Future<void> attachView2(
-      ViewIdentifier viewId, ImportToken viewHolderToken) async {
+      ViewIdentifier viewId, ViewHolderToken viewHolderToken) async {
     return _storyManager.attachView(viewId, viewHolderToken);
   }
 

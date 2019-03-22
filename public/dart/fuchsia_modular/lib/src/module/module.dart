@@ -99,7 +99,7 @@ abstract class Module {
   /// display the view from the new module.
   ///
   /// The method will complete with an [EmbeddedModule] which contains the
-  /// [modular.ModuleController] and the [gfx.ImportToken].
+  /// [modular.ModuleController] and the [views.ViewHolderToken].
   /// The token can be used to embed the child module's view to display in your
   /// module's view hierarchy. This is commonly done in Flutter modules with
   /// the ChildView widget.

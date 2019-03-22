@@ -28,6 +28,7 @@ dart_library("lib.widgets") {
     "src/widgets/ticking_state.dart",
     "src/widgets/window_media_query.dart",
     "widgets.dart",
+
     # Including these files causes analysis errors
     # "utils.dart",
     # "utils_deprecated.dart",
@@ -46,8 +47,8 @@ dart_library("lib.widgets") {
   deps = [
     "//sdk/fidl/fuchsia.modular",
     "//sdk/fidl/fuchsia.ui.app",
-    "//sdk/fidl/fuchsia.ui.gfx",
     "//sdk/fidl/fuchsia.ui.policy",
+    "//sdk/fidl/fuchsia.ui.views",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/flutter_image",
     "//topaz/bin/ui/skottie_viewer:skottie_loader",

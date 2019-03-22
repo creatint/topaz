@@ -10,7 +10,6 @@ import 'dart:typed_data';
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_mem/fidl_async.dart' as fuchsia_mem;
 import 'package:fidl_fuchsia_modular/fidl_async.dart';
-import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart' show ImportToken;
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart' show ViewHolderToken;
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular/lifecycle.dart' as lifecycle;
@@ -67,7 +66,7 @@ class StoryShellImpl extends StoryShell {
     _storyShellBinding.bind(this, request);
   }
 
-  /// Introduce a new Surface and corresponding [ImportToken] to the current
+  /// Introduce a new Surface and corresponding [ViewHolderToken] to the current
   /// Story.
   ///
   /// The Surface may have a relationship with its parent surface.

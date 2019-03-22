@@ -26,8 +26,8 @@ import 'package:fidl_fuchsia_sys/fidl_async.dart'
         ServiceList,
         ServiceProviderBinding;
 import 'package:fidl_fuchsia_ui_app/fidl_async.dart' show ViewProviderProxy;
-import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart'
-    show ExportToken, ImportToken;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart'
+    show ViewToken, ViewHolderToken;
 import 'package:fidl_fuchsia_ui_policy/fidl_async.dart' show PresentationProxy;
 import 'package:flutter/material.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
@@ -119,6 +119,7 @@ class AppModel extends Model {
     // Load the ask bar.
     _loadAskBar();
   }
+
   /// Called after runApp which initializes flutter's gesture system.
   void onStarted() {
     _pointerEventsListener.listen(_presentation);
@@ -160,8 +161,8 @@ class AppModel extends Model {
     // Create a token pair for the newly-created View.
     final tokenPair = EventPairPair();
     assert(tokenPair.status == ZX.OK);
-    final viewHolderToken = ImportToken(value: tokenPair.first);
-    final viewToken = ExportToken(value: tokenPair.second);
+    final viewHolderToken = ViewHolderToken(value: tokenPair.first);
+    final viewToken = ViewToken(value: tokenPair.second);
 
     viewProvider.createView(viewToken.value, null, null);
     viewProvider.ctrl.close();
@@ -172,8 +173,7 @@ class AppModel extends Model {
       ..onVisible.forEach((_) => askVisibility.value = true)
       ..load(elevations.systemOverlayElevation);
 
-    askChildViewConnection.value =
-        ChildViewConnection.fromImportToken(viewHolderToken);
+    askChildViewConnection.value = ChildViewConnection(viewHolderToken);
   }
 
   /// Shows the Ask bar and sets the focus on it.

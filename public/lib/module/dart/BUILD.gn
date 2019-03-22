@@ -17,8 +17,7 @@ dart_library("dart") {
 
   deps = [
     "//sdk/fidl/fuchsia.modular",
-    "//sdk/fidl/fuchsia.ui.gfx",
-    "//sdk/fidl/fuchsia.ui.viewsv1",
+    "//sdk/fidl/fuchsia.ui.views",
     "//sdk/fidl/fuchsia.ui.viewsv1token",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia",

@@ -9,8 +9,8 @@ import 'package:fidl_fuchsia_mem/fidl.dart' show Buffer;
 import 'package:fidl_fuchsia_skia_skottie/fidl.dart' as skottie;
 import 'package:fidl_fuchsia_sys/fidl.dart';
 import 'package:fidl_fuchsia_ui_app/fidl.dart' show ViewProviderProxy;
-import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart'
-    show ExportToken, ImportToken;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart'
+    show ViewToken, ViewHolderToken;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
@@ -113,8 +113,8 @@ class _LottiePlayerState extends State<LottiePlayer> {
 
     final viewTokens = EventPairPair();
     assert(viewTokens.status == ZX.OK);
-    final viewHolderToken = ImportToken(value: viewTokens.first);
-    final viewToken = ExportToken(value: viewTokens.second);
+    final viewHolderToken = ViewHolderToken(value: viewTokens.first);
+    final viewToken = ViewToken(value: viewTokens.second);
 
     final viewProvider = ViewProviderProxy();
     incomingServices.connectToService(viewProvider.ctrl);
@@ -125,7 +125,7 @@ class _LottiePlayerState extends State<LottiePlayer> {
       ..connectToService(_loader.ctrl)
       ..close();
 
-    _connection = ChildViewConnection.fromImportToken(viewHolderToken);
+    _connection = ChildViewConnection(viewHolderToken);
   }
 
   void _loadViewer() {
