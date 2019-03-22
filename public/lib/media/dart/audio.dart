@@ -16,6 +16,8 @@ class Audio {
   static const double _unityGainDb = 0.0;
   static const double _initialGainDb = -12.0;
 
+  static const double _mutedGainDb = -160.0;
+
   // These values determine what counts as a 'significant' change when deciding
   // whether to call |updateCallback|.
   static const double _minDbDiff = 0.006;
@@ -60,7 +62,7 @@ class Audio {
   /// implicitly set to true. When gain is changed from -160db to a higher
   /// value, |systemAudioMuted| is implicitly set to false.
   Future<void> setSystemAudioGainDb(double value) async {
-    double clampedValue = value.clamp(mutedGainDb, _unityGainDb);
+    double clampedValue = value.clamp(_mutedGainDb, _unityGainDb);
     if (_systemAudioGainDb == clampedValue) {
       return;
     }
@@ -68,7 +70,7 @@ class Audio {
     _systemAudioGainDb = clampedValue;
     _systemAudioPerceivedLevel = gainToLevel(clampedValue);
 
-    if (_systemAudioGainDb == mutedGainDb) {
+    if (_systemAudioGainDb == _mutedGainDb) {
       _systemAudioMuted = true;
     }
 
@@ -85,7 +87,7 @@ class Audio {
   /// |systemAudioGainDb| is -160db has no effect.
   // ignore: avoid_positional_boolean_parameters
   Future<void> setSystemAudioMuted(bool value) async {
-    bool muted = value || _systemAudioGainDb == mutedGainDb;
+    bool muted = value || _systemAudioGainDb == _mutedGainDb;
     if (_systemAudioMuted == muted) {
       return;
     }
@@ -150,7 +152,7 @@ class Audio {
   /// db.
   static double levelToGain(double level) {
     if (level <= 0.0) {
-      return mutedGainDb;
+      return _mutedGainDb;
     }
 
     if (level >= 1.0) {
