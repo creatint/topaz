@@ -9,8 +9,6 @@
 #include <memory>
 #include <set>
 
-#include <fs/pseudo-dir.h>
-#include <fs/synchronous-vfs.h>
 #include <fuchsia/io/cpp/fidl.h>
 #include <fuchsia/sys/cpp/fidl.h>
 #include <fuchsia/ui/app/cpp/fidl.h>
@@ -21,6 +19,7 @@
 #include <lib/fit/function.h>
 #include <lib/sys/cpp/service_directory.h>
 #include <lib/sys/cpp/component_context.h>
+#include <lib/vfs/cpp/pseudo_dir.h>
 #include <lib/zx/eventpair.h>
 
 #include "engine.h"
@@ -74,8 +73,7 @@ class Application final : public Engine::Delegate,
   fuchsia::io::DirectoryPtr directory_ptr_;
   fuchsia::io::NodePtr cloned_directory_ptr_;
   fidl::InterfaceRequest<fuchsia::io::Directory> directory_request_;
-  fbl::RefPtr<fs::PseudoDir> outgoing_dir_;
-  fs::SynchronousVfs outgoing_vfs_;
+  std::unique_ptr<vfs::PseudoDir> outgoing_dir_;
   std::unique_ptr<sys::ComponentContext> component_context_;
   std::shared_ptr<sys::ServiceDirectory> runner_incoming_services_;
   fidl::BindingSet<fuchsia::ui::app::ViewProvider> shells_bindings_;

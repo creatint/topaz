@@ -10,8 +10,7 @@
 
 namespace flutter {
 
-ServiceProviderDir::ServiceProviderDir()
-    : root_(fbl::AdoptRef(new fs::PseudoDir)), weak_factory_(this) {}
+ServiceProviderDir::ServiceProviderDir() : root_(new vfs::PseudoDir()) {}
 
 ServiceProviderDir::~ServiceProviderDir() {}
 
@@ -21,38 +20,43 @@ void ServiceProviderDir::set_fallback(
 }
 
 void ServiceProviderDir::AddService(const std::string& service_name,
-                                    fbl::RefPtr<fs::Service> service) {
+                                    std::unique_ptr<vfs::Service> service) {
   root_->AddEntry(service_name, std::move(service));
 }
 
-zx_status_t ServiceProviderDir::Getattr(vnattr_t* a) {
-  return root_->Getattr(a);
+zx_status_t ServiceProviderDir::GetAttr(
+    fuchsia::io::NodeAttributes* out_attributes) const {
+  return root_->GetAttr(out_attributes);
 }
 
-zx_status_t ServiceProviderDir::Readdir(fs::vdircookie_t* cookie, void* dirents,
-                                        size_t len, size_t* out_actual) {
+zx_status_t ServiceProviderDir::Readdir(uint64_t offset, void* data,
+                                        uint64_t len, uint64_t* out_offset,
+                                        uint64_t* out_actual) {
   // TODO(anmittal): enumerate fallback_dir_ in future once we have simple
   // implementation of fuchsia.io.Directory.
-  return root_->Readdir(cookie, dirents, len, out_actual);
+  return root_->Readdir(offset, data, len, out_offset, out_actual);
 }
 
-zx_status_t ServiceProviderDir::Lookup(fbl::RefPtr<fs::Vnode>* out,
-                                       fbl::StringPiece name) {
-  zx_status_t status = root_->Lookup(out, name);
+zx_status_t ServiceProviderDir::Lookup(const std::string& name,
+                                       vfs::Node** out) const {
+  zx_status_t status = root_->Lookup(name, out);
   if (status == ZX_OK) {
     return status;
   }
   if (fallback_dir_) {
-    *out = fbl::AdoptRef(new fs::Service(
-        [name = std::string(name.data(), name.length()),
-         ptr = weak_factory_.GetWeakPtr()](zx::channel request) {
-          if (ptr) {
-            fdio_service_connect_at(ptr->fallback_dir_.get(), name.c_str(),
-                                    request.release());
-            return ZX_OK;
-          }
-          return ZX_ERR_NOT_FOUND;
-        }));
+    auto entry = fallback_services_.find(name);
+    if (entry != fallback_services_.end()) {
+      *out = entry->second.get();
+    } else {
+      auto service = std::make_unique<vfs::Service>(
+          [name = std::string(name.data(), name.length()),
+           dir = &fallback_dir_](zx::channel request,
+                                 async_dispatcher_t* dispatcher) {
+        fdio_service_connect_at(dir->get(), name.c_str(), request.release());
+      });
+      *out = service.get();
+      fallback_services_[name] = std::move(service);
+    }
   } else {
     return ZX_ERR_NOT_FOUND;
   }

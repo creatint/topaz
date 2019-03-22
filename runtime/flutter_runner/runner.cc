@@ -4,6 +4,7 @@
 
 #include "runner.h"
 
+#include <lib/async/cpp/task.h>
 #include <trace-engine/instrumentation.h>
 #include <zircon/status.h>
 #include <zircon/types.h>

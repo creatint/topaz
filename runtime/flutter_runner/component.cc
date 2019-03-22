@@ -5,11 +5,12 @@
 #include "component.h"
 
 #include <dlfcn.h>
-#include <fs/pseudo-dir.h>
-#include <fs/remote-dir.h>
+#include <lib/async/cpp/task.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/fdio/directory.h>
 #include <lib/fdio/namespace.h>
+#include <lib/vfs/cpp/remote_dir.h>
+#include <lib/vfs/cpp/service.h>
 #include <sys/stat.h>
 #include <zircon/dlfcn.h>
 #include <zircon/status.h>
@@ -77,8 +78,7 @@ Application::Application(
     : termination_callback_(std::move(termination_callback)),
       debug_label_(DebugLabelForURL(startup_info.launch_info.url)),
       application_controller_(this),
-      outgoing_dir_(fbl::AdoptRef(new fs::PseudoDir())),
-      outgoing_vfs_(async_get_default_dispatcher()),
+      outgoing_dir_(new vfs::PseudoDir()),
       runner_incoming_services_(runner_incoming_services) {
   application_controller_.set_error_handler(
       [this](zx_status_t status) { Kill(); });
@@ -145,24 +145,21 @@ Application::Application(
 
   // LaunchInfo::service_request optional.
   if (launch_info.directory_request) {
-    outgoing_vfs_.ServeDirectory(outgoing_dir_,
-                                 std::move(launch_info.directory_request));
+    outgoing_dir_->Serve(fuchsia::io::OPEN_FLAG_DIRECTORY,
+                         std::move(launch_info.directory_request));
   }
 
   directory_request_ = directory_ptr_.NewRequest();
 
-  fbl::RefPtr<ServiceProviderDir> service_provider_dir =
-      fbl::AdoptRef(new ServiceProviderDir);
-  outgoing_dir_->AddEntry("public", service_provider_dir);
-
   fidl::InterfaceHandle<fuchsia::io::Directory> flutter_public_dir;
-
   // TODO(anmittal): when fixing enumeration using new c++ vfs, make sure that
   // flutter_public_dir is only accessed once we recieve OnOpen Event.
   // That will prevent FL-175 for public directory
   auto request = flutter_public_dir.NewRequest().TakeChannel();
   fdio_service_connect_at(directory_ptr_.channel().get(), "public",
                           request.release());
+
+  auto service_provider_dir = std::make_unique<ServiceProviderDir>();
   service_provider_dir->set_fallback(std::move(flutter_public_dir));
 
   // Clone and check if client is servicing the directory.
@@ -188,7 +185,7 @@ Application::Application(
           fdio_service_connect_at(directory_ptr_.channel().get(), dir_str,
                                   request.release());
           outgoing_dir_->AddEntry(
-              dir_str, fbl::AdoptRef(new fs::RemoteDir(dir.TakeChannel())));
+              dir_str, std::make_unique<vfs::RemoteDir>(dir.TakeChannel()));
         }
       };
 
@@ -203,21 +200,23 @@ Application::Application(
 
   service_provider_dir->AddService(
       fuchsia::ui::viewsv1::ViewProvider::Name_,
-      fbl::AdoptRef(new fs::Service([this](zx::channel channel) {
+      std::make_unique<vfs::Service>([this](zx::channel channel,
+                                            async_dispatcher_t* dispatcher) {
         v1_shells_bindings_.AddBinding(
             this, fidl::InterfaceRequest<fuchsia::ui::viewsv1::ViewProvider>(
                       std::move(channel)));
-        return ZX_OK;
-      })));
+      }));
 
   service_provider_dir->AddService(
       fuchsia::ui::app::ViewProvider::Name_,
-      fbl::AdoptRef(new fs::Service([this](zx::channel channel) {
+      std::make_unique<vfs::Service>([this](zx::channel channel,
+                                            async_dispatcher_t* dispatcher) {
         shells_bindings_.AddBinding(
             this, fidl::InterfaceRequest<fuchsia::ui::app::ViewProvider>(
                       std::move(channel)));
-        return ZX_OK;
-      })));
+      }));
+
+  outgoing_dir_->AddEntry("public", std::move(service_provider_dir));
 
   // Setup the application controller binding.
   if (application_controller_request) {
