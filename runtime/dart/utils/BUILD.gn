@@ -22,7 +22,6 @@ source_set("utils") {
   ]
 
   deps = [
-    "//garnet/public/lib/fsl",
     "//garnet/public/lib/fxl",
     "//third_party/tonic",
     "//zircon/public/fidl/fuchsia-crash",

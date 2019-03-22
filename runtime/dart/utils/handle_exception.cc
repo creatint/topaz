@@ -8,12 +8,34 @@
 
 #include <fuchsia/crash/cpp/fidl.h>
 #include <fuchsia/mem/cpp/fidl.h>
-#include <lib/fsl/vmo/strings.h>
 #include <lib/fxl/logging.h>
+#include <lib/zx/vmo.h>
 #include <sys/types.h>
 #include <third_party/tonic/converter/dart_converter.h>
 #include <zircon/errors.h>
 #include <zircon/status.h>
+
+namespace {
+static bool FillBuffer(const std::string& data, fuchsia::mem::Buffer* buffer) {
+  uint64_t num_bytes = data.size();
+  zx::vmo vmo;
+
+  if (zx::vmo::create(num_bytes, 0u, &vmo) < 0) {
+    return false;
+  }
+
+  if (num_bytes > 0) {
+    if (vmo.write(data.data(), 0, num_bytes) < 0) {
+      return false;
+    }
+  }
+
+  buffer->vmo = std::move(vmo);
+  buffer->size = num_bytes;
+
+  return true;
+}
+}  // namespace
 
 namespace fuchsia {
 namespace dart {
@@ -38,7 +60,7 @@ zx_status_t HandleException(std::shared_ptr<::sys::ServiceDirectory> services,
                             const std::string& error,
                             const std::string& stack_trace) {
   fuchsia::mem::Buffer stack_trace_vmo;
-  if (!fsl::VmoFromString(stack_trace, &stack_trace_vmo)) {
+  if (!FillBuffer(stack_trace, &stack_trace_vmo)) {
     FXL_LOG(ERROR) << "failed to convert Dart stack trace to VMO";
     return ZX_ERR_INTERNAL;
   }
