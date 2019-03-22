@@ -27,12 +27,15 @@ constexpr char kWebViewUrl[] = "web_view";
 constexpr auto kScopes = {
     // Used by google_auth_provider for retrieving unique user profile id.
     "openid",
-    // Used by google_auth_provider for retrieving user's verified email
-    // address.
+    // Used by a variety of client components.
     "email",
     // Used by google_auth_provider for retrieving user profile attributes,
-    // specifically display name, profile url and profile image.
-    "profile", "https://www.googleapis.com/auth/assistant",
+    // specifically display name, profile url, and profile image.
+    "profile",
+    // Used by components outside this repository.
+    "https://www.googleapis.com/auth/assistant",
+    // Used by components outside this repository.
     "https://www.googleapis.com/auth/youtube.readonly",
+    // Used by software update
     "https://www.googleapis.com/auth/devstorage.read_write"};
 }  // namespace google_auth_provider
