@@ -4,11 +4,11 @@
 
 import 'dart:async';
 
-import 'package:fidl_fuchsia_netstack/fidl.dart' as net;
-import 'package:fidl_fuchsia_wlan_service/fidl.dart' as wlan;
+import 'package:fidl_fuchsia_netstack/fidl_async.dart' as net;
+import 'package:fidl_fuchsia_wlan_service/fidl_async.dart' as wlan;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lib.app.dart/app.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:lib.settings/debug.dart';
 import 'package:lib.widgets/model.dart';
 
@@ -55,16 +55,17 @@ class WifiSettingsModel extends Model {
   Timer _updateTimer;
   Timer _scanTimer;
 
+  StreamSubscription _interfacesChangedSubscription;
+
   /// Constructor.
   WifiSettingsModel()
       : _loading = true,
         _connecting = false {
-    StartupContext startupContext = StartupContext.fromStartupInfo();
+    StartupContext.fromStartupInfo().incoming.connectToService(_wlanProxy);
+    StartupContext.fromStartupInfo().incoming.connectToService(_netstackProxy);
 
-    connectToService(startupContext.environmentServices, _wlanProxy.ctrl);
-    connectToService(startupContext.environmentServices, _netstackProxy.ctrl);
-
-    _netstackProxy.onInterfacesChanged = interfacesChanged;
+    _interfacesChangedSubscription =
+        _netstackProxy.onInterfacesChanged.listen(interfacesChanged);
 
     _scan();
     _updateTimer = Timer.periodic(_updatePeriod, (_) => _update());
@@ -155,18 +156,19 @@ class WifiSettingsModel extends Model {
   DebugStatus get debugStatus => _debugInfo;
 
   /// Disconnects from the current network.
-  void disconnect() {
-    _wlanProxy.disconnect((wlan.Error error) {
-      _selectedAccessPoint = null;
-      _loading = true;
-      _update();
-    });
+  Future<void> disconnect() async {
+    await _wlanProxy.disconnect();
+
+    _selectedAccessPoint = null;
+    _loading = true;
+    await _update();
   }
 
   /// Cleans up the model state.
   void dispose() {
     _updateTimer.cancel();
     _scanTimer.cancel();
+    _interfacesChangedSubscription.cancel();
   }
 
   /// Listens for any changes to network interfaces.
@@ -191,7 +193,7 @@ class WifiSettingsModel extends Model {
     _connect(_selectedAccessPoint, password);
   }
 
-  void _connect(AccessPoint accessPoint, [String password]) {
+  Future<void> _connect(AccessPoint accessPoint, [String password]) async {
     _connecting = true;
     _scannedAps = null;
 
@@ -201,24 +203,22 @@ class WifiSettingsModel extends Model {
         scanInterval: _kConnectionScanInterval,
         bssid: '');
 
-    _wlanProxy.connect(
-      config,
-      (wlan.Error error) {
-        if (error.code == wlan.ErrCode.ok) {
-          _connectionResultMessage = null;
-          _failedAccessPoint = null;
-        } else {
-          _connectionResultMessage = error.description;
-          _failedAccessPoint = selectedAccessPoint;
-          _selectedAccessPoint = null;
-          _connecting = false;
-        }
-        _debugInfo.connectComplete(error);
-        _update();
-      },
-    );
     notifyListeners();
     _debugInfo.connectStart(config);
+
+    final error = await _wlanProxy.connect(config);
+
+    if (error.code == wlan.ErrCode.ok) {
+      _connectionResultMessage = null;
+      _failedAccessPoint = null;
+    } else {
+      _connectionResultMessage = error.description;
+      _failedAccessPoint = selectedAccessPoint;
+      _selectedAccessPoint = null;
+      _connecting = false;
+    }
+    _debugInfo.connectComplete(error);
+    await _update();
   }
 
   /// Remove duplicate and incompatible networks
@@ -242,33 +242,34 @@ class WifiSettingsModel extends Model {
     return aps;
   }
 
-  void _scan() {
+  Future<void> _scan() async {
     if (!_connecting) {
-      _wlanProxy.scan(const wlan.ScanRequest(timeout: 25),
-          (wlan.ScanResult scanResult) {
-        _scannedAps = _dedupeAndRemoveIncompatible(scanResult);
-        notifyListeners();
-        _debugInfo.scanComplete(scanResult);
-      });
       _debugInfo.scanStart();
+
+      final scanResult =
+          await _wlanProxy.scan(const wlan.ScanRequest(timeout: 25));
+      _scannedAps = _dedupeAndRemoveIncompatible(scanResult);
+      notifyListeners();
+      _debugInfo.scanComplete(scanResult);
     }
   }
 
-  void _update() {
-    _wlanProxy.status((wlan.WlanStatus status) {
-      _status = status;
-      _loading = false;
-
-      if (status.state == wlan.State.associated ||
-          status.error.code != wlan.ErrCode.ok) {
-        _selectedAccessPoint = null;
-        _connecting = false;
-      }
-
-      notifyListeners();
-      _debugInfo.updateComplete(status);
-    });
+  Future<void> _update() async {
     _debugInfo.updateStart();
+
+    final status = await _wlanProxy.status();
+
+    _status = status;
+    _loading = false;
+
+    if (status.state == wlan.State.associated ||
+        status.error.code != wlan.ErrCode.ok) {
+      _selectedAccessPoint = null;
+      _connecting = false;
+    }
+
+    notifyListeners();
+    _debugInfo.updateComplete(status);
   }
 }
 

@@ -19,7 +19,6 @@ dart_library("flutter") {
     "//third_party/dart-pkg/pub/yaml",
     "//topaz/lib/setui/common:common",
     "//topaz/public/dart/widgets:lib.widgets",
-    "//topaz/public/lib/app/dart",
   ]
 }
 
