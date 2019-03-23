@@ -197,16 +197,6 @@ Application::Application(
   // All launch arguments have been read. Perform service binding and
   // final settings configuration. The next call will be to create a view
   // for this application.
-
-  service_provider_dir->AddService(
-      fuchsia::ui::viewsv1::ViewProvider::Name_,
-      std::make_unique<vfs::Service>([this](zx::channel channel,
-                                            async_dispatcher_t* dispatcher) {
-        v1_shells_bindings_.AddBinding(
-            this, fidl::InterfaceRequest<fuchsia::ui::viewsv1::ViewProvider>(
-                      std::move(channel)));
-      }));
-
   service_provider_dir->AddService(
       fuchsia::ui::app::ViewProvider::Name_,
       std::make_unique<vfs::Service>([this](zx::channel channel,
@@ -487,14 +477,6 @@ void Application::OnEngineTerminate(const Engine* shell_holder) {
     // WARNING: Don't do anything past this point because the delegate may have
     // collected this instance via the termination callback.
   }
-}
-
-// |fuchsia::ui::viewsv1::ViewProvider|
-void Application::CreateView(
-    fidl::InterfaceRequest<fuchsia::ui::viewsv1token::ViewOwner> view_owner,
-    fidl::InterfaceRequest<fuchsia::sys::ServiceProvider> services) {
-  CreateView(zx::eventpair(view_owner.TakeChannel().release()),
-             std::move(services), nullptr);
 }
 
 // |fuchsia::ui::app::ViewProvider|

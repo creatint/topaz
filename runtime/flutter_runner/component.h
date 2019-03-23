@@ -12,8 +12,6 @@
 #include <fuchsia/io/cpp/fidl.h>
 #include <fuchsia/sys/cpp/fidl.h>
 #include <fuchsia/ui/app/cpp/fidl.h>
-#include <fuchsia/ui/viewsv1/cpp/fidl.h>
-#include <fuchsia/ui/viewsv1token/cpp/fidl.h>
 #include <lib/async/default.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/fit/function.h>
@@ -36,7 +34,6 @@ namespace flutter {
 // Flutter engine instances.
 class Application final : public Engine::Delegate,
                           public fuchsia::sys::ComponentController,
-                          public fuchsia::ui::viewsv1::ViewProvider,
                           public fuchsia::ui::app::ViewProvider {
  public:
   using TerminationCallback = fit::function<void(const Application*)>;
@@ -77,7 +74,6 @@ class Application final : public Engine::Delegate,
   std::unique_ptr<sys::ComponentContext> component_context_;
   std::shared_ptr<sys::ServiceDirectory> runner_incoming_services_;
   fidl::BindingSet<fuchsia::ui::app::ViewProvider> shells_bindings_;
-  fidl::BindingSet<fuchsia::ui::viewsv1::ViewProvider> v1_shells_bindings_;
 
   fml::RefPtr<blink::DartSnapshot> isolate_snapshot_;
   fml::RefPtr<blink::DartSnapshot> shared_snapshot_;
@@ -95,11 +91,6 @@ class Application final : public Engine::Delegate,
 
   // |fuchsia::sys::ComponentController|
   void Detach() override;
-
-  // |fuchsia::ui::viewsv1::ViewProvider|
-  void CreateView(
-      fidl::InterfaceRequest<fuchsia::ui::viewsv1token::ViewOwner> view_owner,
-      fidl::InterfaceRequest<fuchsia::sys::ServiceProvider> services) override;
 
   // |fuchsia::ui::app::ViewProvider|
   void CreateView(
