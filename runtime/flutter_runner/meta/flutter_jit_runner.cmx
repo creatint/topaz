@@ -9,6 +9,7 @@
         ],
         "services": [
             "fuchsia.crash.Analyzer",
+            "fuchsia.device.manager.Administrator",
             "fuchsia.fonts.Provider",
             "fuchsia.net.SocketProvider",
             "fuchsia.sysmem.Allocator",
