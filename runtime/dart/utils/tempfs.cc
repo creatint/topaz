@@ -18,12 +18,18 @@
 namespace {
 
 constexpr char kTmpPath[] = "/tmp";
-constexpr size_t kMaxTmpPages = 1024;
+[[maybe_unused]] constexpr size_t kMaxTmpPages = 1024;
 
 void DispatchTempMemFS() {
   async::Loop loop(&kAsyncLoopConfigAttachToThread);
+#if defined(DART_PRODUCT)
   zx_status_t status = memfs_install_at_with_page_limit(
       loop.dispatcher(), kMaxTmpPages, kTmpPath);
+#else
+  // Hot reload uses /tmp to hold the updated dills and assets so do not
+  // impose any size limitation in non product runners.
+  zx_status_t status = memfs_install_at(loop.dispatcher(), kTmpPath);
+#endif
   if (status != ZX_OK) {
     FXL_LOG(ERROR) << "Failed to install a /tmp memfs: "
                    << zx_status_get_string(status);
