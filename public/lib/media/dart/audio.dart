@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:fidl_fuchsia_media/fidl_async.dart';
+import 'package:fidl_fuchsia_media_audio/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:fuchsia_logger/logger.dart';
 
@@ -15,8 +16,6 @@ class Audio {
   static const double _minLevelGainDb = -60.0;
   static const double _unityGainDb = 0.0;
   static const double _initialGainDb = -12.0;
-
-  static const double _mutedGainDb = -160.0;
 
   // These values determine what counts as a 'significant' change when deciding
   // whether to call |updateCallback|.
@@ -62,7 +61,7 @@ class Audio {
   /// implicitly set to true. When gain is changed from -160db to a higher
   /// value, |systemAudioMuted| is implicitly set to false.
   Future<void> setSystemAudioGainDb(double value) async {
-    double clampedValue = value.clamp(_mutedGainDb, _unityGainDb);
+    double clampedValue = value.clamp(mutedGainDb, _unityGainDb);
     if (_systemAudioGainDb == clampedValue) {
       return;
     }
@@ -70,7 +69,7 @@ class Audio {
     _systemAudioGainDb = clampedValue;
     _systemAudioPerceivedLevel = gainToLevel(clampedValue);
 
-    if (_systemAudioGainDb == _mutedGainDb) {
+    if (_systemAudioGainDb == mutedGainDb) {
       _systemAudioMuted = true;
     }
 
@@ -87,7 +86,7 @@ class Audio {
   /// |systemAudioGainDb| is -160db has no effect.
   // ignore: avoid_positional_boolean_parameters
   Future<void> setSystemAudioMuted(bool value) async {
-    bool muted = value || _systemAudioGainDb == _mutedGainDb;
+    bool muted = value || _systemAudioGainDb == mutedGainDb;
     if (_systemAudioMuted == muted) {
       return;
     }
@@ -152,7 +151,7 @@ class Audio {
   /// db.
   static double levelToGain(double level) {
     if (level <= 0.0) {
-      return _mutedGainDb;
+      return mutedGainDb;
     }
 
     if (level >= 1.0) {
