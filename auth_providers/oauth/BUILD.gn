@@ -12,8 +12,11 @@ source_set("oauth") {
     "oauth_response.h",
   ]
 
-  deps = [
+  public_deps = [
     "//sdk/fidl/fuchsia.auth",
+    "//sdk/fidl/fuchsia.net.oldhttp",
+  ]
+  deps = [
     "//garnet/public/lib/fsl",
     "//garnet/public/lib/fxl",
     "//garnet/public/lib/network_wrapper",
