@@ -49,10 +49,17 @@ class TilerModel extends ChangeNotifier {
   TileModel root;
 
   /// Initializes the [TilerModel] to start layout in supplied [direction].
-  TilerModel({Axis direction = Axis.horizontal}) {
-    root = TileModel(
-      type: direction == Axis.horizontal ? TileType.column : TileType.row,
-    );
+  TilerModel({
+    Axis direction = Axis.horizontal,
+    this.root,
+  }) {
+    if (root == null) {
+      root = TileModel(
+        type: direction == Axis.horizontal ? TileType.column : TileType.row,
+      );
+    } else {
+      _initialize(root);
+    }
   }
 
   /// Returns the tile next to [tile] in the given [direction].
@@ -137,6 +144,14 @@ class TilerModel extends ChangeNotifier {
     _remove(tile);
 
     notifyListeners();
+  }
+
+  void _initialize(TileModel tile, [TileModel parent]) {
+    assert(tile != null);
+    tile.parent = parent;
+    for (final child in tile.tiles) {
+      _initialize(child, tile);
+    }
   }
 
   void _remove(TileModel tile) {
