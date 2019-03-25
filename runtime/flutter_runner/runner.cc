@@ -96,7 +96,7 @@ static void SetThreadName(const std::string& thread_name) {
 
 Runner::Runner(async::Loop* loop)
     : loop_(loop),
-      host_context_(sys::ComponentContext::CreateFromStartupInfo()) {
+      host_context_(sys::ComponentContext::Create()) {
 #if !defined(DART_PRODUCT)
   // The VM service isolate uses the process-wide namespace. It writes the
   // vm service protocol port under /tmp. The VMServiceObject exposes that
