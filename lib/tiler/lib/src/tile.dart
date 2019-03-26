@@ -24,7 +24,7 @@ class Tile extends StatelessWidget {
     @required this.model,
     @required this.chromeBuilder,
     this.sizerBuilder,
-    this.sizerThickness,
+    this.sizerThickness = 0.0,
   });
 
   @override
