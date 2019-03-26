@@ -38,8 +38,8 @@ class Tile extends StatelessWidget {
         builder: (context, constraints) {
           /// Compute individual tile width and height.
           final type = model.type;
-          final width = constraints.minWidth;
-          final height = constraints.minHeight;
+          final width = constraints.maxWidth;
+          final height = constraints.maxHeight;
 
           final numTiles = model.tiles.length;
           final numSizers = numTiles - 1;

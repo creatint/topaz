@@ -5,7 +5,7 @@
 import("//build/dart/dart_library.gni")
 
 dart_library("tiler") {
-  infer_package_name = true
+  package_name = "tiler"
 
   sources = [
     "tiler.dart",

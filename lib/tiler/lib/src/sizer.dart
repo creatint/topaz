@@ -3,9 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
 
-// import 'hover.dart';
 import 'tile.dart';
 
 typedef TileSizerBuilder = Widget Function(
@@ -31,15 +29,13 @@ class Sizer extends StatelessWidget {
     if (sizer == null) {
       return SizedBox.shrink();
     } else {
-      final hoverNotifier = ValueNotifier<bool>(true);
-      return /*Hover(
-        notifier: hoverNotifier,
-        child: */
-          GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        dragStartBehavior: DragStartBehavior.down,
-        onHorizontalDragUpdate: _onDragUpdate,
-        onVerticalDragUpdate: _onDragUpdate,
+      final hoverNotifier = ValueNotifier<bool>(false);
+      return Listener(
+        onPointerEnter: (_) => hoverNotifier.value = true,
+        onPointerExit: (_) => hoverNotifier.value = false,
+        onPointerCancel: (_) => hoverNotifier.value = false,
+        onPointerDown: (_) => hoverNotifier.value = true,
+        onPointerMove: _onPointerMove,
         child: AnimatedBuilder(
           animation: hoverNotifier,
           builder: (context, child) => AnimatedOpacity(
@@ -48,15 +44,19 @@ class Sizer extends StatelessWidget {
                 curve: Curves.easeInOut,
                 child: child,
               ),
-          child: sizerBuilder(context, direction),
+          child: Container(
+            color: Colors.transparent,
+            child: sizerBuilder(context, direction),
+          ),
         ),
-        //),
       );
     }
   }
 
-  void _onDragUpdate(DragUpdateDetails details) {
-    tileBefore.offset = details.primaryDelta;
-    tileAfter.offset = -details.primaryDelta;
+  void _onPointerMove(PointerMoveEvent event) {
+    double delta =
+        direction == Axis.horizontal ? event.delta.dy : event.delta.dx;
+    tileBefore.offset = delta;
+    tileAfter.offset = -delta;
   }
 }
