@@ -12,17 +12,15 @@ import("//sdk/config.gni")
 # other targets in this file are attached to the build graph.
 group("sdk") {}
 
-# Tools and libraries required to generate and use FIDL bindings in Dart.
-sdk_molecule("fidl_dart") {
+# Tools and libraries to develop for Fuchsia with Dart.
+sdk("fuchsia_dart") {
+  category = "partner"
+
+  api = "fuchsia_dart.api"
+
   deps = [
     "//topaz/bin/fidlgen_dart:fidlgen_dart_sdk($host_toolchain)",
     "//topaz/public/dart/fidl:fidl_sdk($dart_toolchain)",
-    "//zircon/public/tool/fidlc:fidlc_sdk($host_toolchain)",
-  ]
-}
-
-sdk_molecule("dart_support") {
-  deps = [
     "//topaz/public/dart/fuchsia:fuchsia_sdk($dart_toolchain)",
     "//topaz/public/dart/fuchsia_logger:fuchsia_logger_sdk($dart_toolchain)",
     "//topaz/public/dart/fuchsia_media:fuchsia_media_sdk($dart_toolchain)",
@@ -43,8 +41,7 @@ sdk("topaz") {
   testonly = true
 
   deps = [
-    ":dart_support",
-    ":fidl_dart",
+    ":fuchsia_dart_molecule",
     "//sdk:core_molecule",
   ]
 }
