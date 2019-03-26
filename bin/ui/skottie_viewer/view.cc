@@ -57,14 +57,14 @@ void View::Load(fuchsia::mem::Buffer payload,
   status.error = logger->has_errors();
   status.message = logger->log();
 
-  fuchsia::skia::skottie::PlayerPtr player;
+  fidl::InterfaceHandle<fuchsia::skia::skottie::Player> player;
   if (animation_) {
     duration_ = animation_->duration();
     status.duration = animation_->duration();
     player_binding_.Bind(player.NewRequest());
   }
 
-  callback(std::move(status), player);
+  callback(std::move(status), std::move(player));
 }
 
 void View::Seek(float t) {
