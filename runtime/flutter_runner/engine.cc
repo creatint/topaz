@@ -359,16 +359,17 @@ static void CreateCompilationTrace(Dart_Isolate isolate) {
     intptr_t trace_length = 0;
     Dart_Handle result = Dart_SaveCompilationTrace(&trace, &trace_length);
     tonic::LogIfError(result);
-    const std::string kCompilationTraceFile = "/data/dart_compilation_trace.txt";
-    if (files::WriteFile(kCompilationTraceFile,
-                         reinterpret_cast<const char*>(trace),
-                         trace_length)) {
-      FML_LOG(INFO) << "Dart compilation trace written to "
-                     << kCompilationTraceFile;
-    } else {
-      FML_LOG(ERROR) << "Could not write Dart compilation trace to "
-                     << kCompilationTraceFile;
+
+    for (intptr_t start = 0; start < trace_length;) {
+      intptr_t end = start;
+      while ((end < trace_length) && trace[end] != '\n') end++;
+
+      std::string line(reinterpret_cast<char*>(&trace[start]), end - start);
+      FML_LOG(INFO) << "compilation-trace: " << line;
+
+      start = end + 1;
     }
+
     Dart_ExitScope();
   }
 
