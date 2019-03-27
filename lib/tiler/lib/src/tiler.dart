@@ -29,12 +29,14 @@ class Tiler extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedBuilder(
       animation: model,
-      builder: (_, __) => Tile(
-            model: model.root,
-            chromeBuilder: chromeBuilder,
-            sizerBuilder: sizerBuilder,
-            sizerThickness: sizerThickness,
-          ),
+      builder: (_, __) => model.root != null
+          ? Tile(
+              model: model.root,
+              chromeBuilder: chromeBuilder,
+              sizerBuilder: sizerBuilder,
+              sizerThickness: sizerThickness,
+            )
+          : Offstage(),
     );
   }
 }
@@ -50,11 +52,7 @@ class TilerModel extends ChangeNotifier {
     Axis direction = Axis.horizontal,
     this.root,
   }) {
-    if (root == null) {
-      root = TileModel(
-        type: direction == Axis.horizontal ? TileType.column : TileType.row,
-      );
-    } else {
+    if (root != null) {
       _initialize(root);
     }
   }
@@ -81,31 +79,46 @@ class TilerModel extends ChangeNotifier {
   TileModel split({
     @required TileModel tile,
     Object content,
-    Axis direction,
+    AxisDirection direction,
   }) {
     assert(tile != null);
 
-    TileModel src = tile;
-    final parent = src.parent;
-    int index = parent.tiles.indexOf(src);
-    parent.tiles.remove(src);
-
-    TileModel dst = TileModel(
+    var parent = tile.parent;
+    final newTile = TileModel(
+      type: TileType.content,
       content: content,
-      parent: parent,
-      type: direction == Axis.horizontal ? TileType.column : TileType.row,
-      tiles: [src, TileModel(type: TileType.content, content: content)],
-    )..copy(src);
-    src.reset();
+    );
 
-    dst.tiles.first.parent = dst;
-    dst.tiles.last.parent = dst;
+    final newParent = TileModel(
+      type: _isHorizontal(direction) ? TileType.column : TileType.row,
+      tiles: axisDirectionIsReversed(direction)
+          ? [newTile, tile]
+          : [tile, newTile],
+    );
 
-    parent.tiles.insert(index, dst);
+    // If parent is null, tile should be the root tile.
+    if (parent == null) {
+      assert(tile == root);
+
+      parent = newParent;
+      root = parent;
+    } else {
+      int index = parent?.tiles?.indexOf(tile) ?? 0;
+      parent?.tiles?.remove(tile);
+
+      // Copy existing flex and resize offsets from tile.
+      newParent.copy(tile);
+      tile.reset();
+
+      newParent.parent = parent;
+      parent.tiles.insert(index, newParent);
+    }
+    newTile.parent = newParent;
+    tile.parent = newParent;
 
     notifyListeners();
 
-    return dst.tiles.last;
+    return newTile;
   }
 
   /// Adds a new tile with [content] next to currently focused tile in the
@@ -122,7 +135,9 @@ class TilerModel extends ChangeNotifier {
       content: content,
     );
 
-    if (nearTile == null) {
+    if (root == null) {
+      root = tile;
+    } else if (nearTile == null) {
       tile.parent = root;
       root.tiles.add(tile);
     } else {
@@ -153,12 +168,25 @@ class TilerModel extends ChangeNotifier {
 
   void _remove(TileModel tile) {
     if (tile == root) {
-      return;
+      root = null;
     } else {
-      // If this tile is NOT the only tile, just remove it from it's parent.
-      tile.parent.tiles.remove(tile);
-      if (tile.parent.tiles.isEmpty) {
-        _remove(tile.parent);
+      assert(tile.parent != null);
+      final parent = tile.parent;
+      parent.tiles.remove(tile);
+      if (parent.tiles.isEmpty) {
+        // Remove empty parent.
+        _remove(parent);
+      } else if (parent.tiles.length == 1 && parent.parent != null) {
+        // For parent with only one child, move the child to it's grand parent.
+        // and remove the parent.
+        final grandParent = parent.parent;
+        final index = grandParent.tiles.indexOf(parent);
+        var child = parent.tiles.first;
+        parent.tiles.remove(child);
+        grandParent.tiles.remove(parent);
+
+        child.parent = grandParent;
+        grandParent.tiles.insert(index, child);
       }
       tile.parent = null;
     }
