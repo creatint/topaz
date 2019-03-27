@@ -40,8 +40,8 @@ uintptr_t GetICUData(const fsl::SizedVmo& icu_data, size_t* size_out) {
 
   uintptr_t data = 0u;
   zx_status_t status = zx::vmar::root_self()->map(
-      0, icu_data.vmo(), 0, static_cast<size_t>(data_size),
-      ZX_VM_PERM_READ, &data);
+      0, icu_data.vmo(), 0, static_cast<size_t>(data_size), ZX_VM_PERM_READ,
+      &data);
   if (status == ZX_OK) {
     *size_out = static_cast<size_t>(data_size);
     return data;
@@ -95,13 +95,12 @@ static void SetThreadName(const std::string& thread_name) {
 }
 
 Runner::Runner(async::Loop* loop)
-    : loop_(loop),
-      host_context_(sys::ComponentContext::Create()) {
+    : loop_(loop), host_context_(sys::ComponentContext::Create()) {
 #if !defined(DART_PRODUCT)
   // The VM service isolate uses the process-wide namespace. It writes the
   // vm service protocol port under /tmp. The VMServiceObject exposes that
   // port number to The Hub.
-  host_context_->outgoing().debug_dir()->AddEntry(
+  host_context_->outgoing2()->debug_dir()->AddEntry(
       fuchsia::dart::VMServiceObject::kPortDirName,
       std::make_unique<fuchsia::dart::VMServiceObject>());
 
@@ -116,12 +115,12 @@ Runner::Runner(async::Loop* loop)
 
   SetThreadName("io.flutter.runner.main");
 
-  host_context_->outgoing().AddPublicService<fuchsia::sys::Runner>(
+  host_context_->outgoing2()->AddPublicService<fuchsia::sys::Runner>(
       std::bind(&Runner::RegisterApplication, this, std::placeholders::_1));
 }
 
 Runner::~Runner() {
-  host_context_->outgoing().RemovePublicService<fuchsia::sys::Runner>();
+  host_context_->outgoing2()->RemovePublicService<fuchsia::sys::Runner>();
 
 #if !defined(DART_PRODUCT)
   trace_observer_->Stop();
@@ -145,8 +144,8 @@ void Runner::StartComponent(
   // there being multiple application runner instance in the process at the same
   // time. So it is safe to use the raw pointer.
   Application::TerminationCallback termination_callback =
-      [task_runner = loop_->dispatcher(),                              //
-       application_runner = this                                       //
+      [task_runner = loop_->dispatcher(),  //
+       application_runner = this           //
   ](const Application* application) {
         async::PostTask(task_runner, [application_runner, application]() {
           application_runner->OnApplicationTerminate(application);
@@ -154,11 +153,11 @@ void Runner::StartComponent(
       };
 
   auto loop_application_pair = Application::Create(
-      std::move(termination_callback),     // termination callback
-      std::move(package),                  // application pacakge
-      std::move(startup_info),             // startup info
-      host_context_->svc(),                // runner incoming services
-      std::move(controller)                // controller request
+      std::move(termination_callback),  // termination callback
+      std::move(package),               // application pacakge
+      std::move(startup_info),          // startup info
+      host_context_->svc(),             // runner incoming services
+      std::move(controller)             // controller request
   );
 
   auto key = loop_application_pair.second.get();
@@ -186,9 +185,10 @@ void Runner::OnApplicationTerminate(const Application* application) {
   active_applications_.erase(application);
 
   // Post the task to destroy the application and quit its message loop.
-  async::PostTask(application_loop->dispatcher(), fml::MakeCopyable(
-      [instance = std::move(application_to_destroy),
-       loop = application_loop.get()]() mutable {
+  async::PostTask(
+      application_loop->dispatcher(),
+      fml::MakeCopyable([instance = std::move(application_to_destroy),
+                         loop = application_loop.get()]() mutable {
         instance.reset();
         loop->Quit();
       }));
@@ -206,9 +206,7 @@ void Runner::SetupICU() {
 #if !defined(DART_PRODUCT)
 void Runner::SetupTraceObserver() {
   trace_observer_ = std::make_unique<trace::TraceObserver>();
-  trace_observer_->Start(
-      loop_->dispatcher(),
-      [runner = this] () {
+  trace_observer_->Start(loop_->dispatcher(), [runner = this]() {
     if (!trace_is_category_enabled("dart:profiler")) {
       return;
     }

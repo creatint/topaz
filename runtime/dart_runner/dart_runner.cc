@@ -5,13 +5,13 @@
 #include "topaz/runtime/dart_runner/dart_runner.h"
 
 #include <errno.h>
-#include <lib/async/default.h>
 #include <lib/async-loop/loop.h>
-#include <memory>
+#include <lib/async/default.h>
 #include <sys/stat.h>
 #include <trace/event.h>
 #include <zircon/status.h>
 #include <zircon/syscalls.h>
+#include <memory>
 #include <thread>
 #include <utility>
 
@@ -99,9 +99,8 @@ void RunApplication(
     std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
     ::fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller) {
   int64_t start = Dart_TimelineGetMicros();
-  DartComponentController app(std::move(package),
-                              std::move(startup_info), runner_incoming_services,
-                              std::move(controller));
+  DartComponentController app(std::move(package), std::move(startup_info),
+                              runner_incoming_services, std::move(controller));
   bool success = app.Setup();
   int64_t end = Dart_TimelineGetMicros();
   Dart_TimelineEvent("DartComponentController::Setup", start, end,
@@ -122,9 +121,8 @@ bool EntropySource(uint8_t* buffer, intptr_t count) {
 
 }  // namespace
 
-DartRunner::DartRunner()
-    : context_(sys::ComponentContext::Create()) {
-  context_->outgoing().AddPublicService<fuchsia::sys::Runner>(
+DartRunner::DartRunner() : context_(sys::ComponentContext::Create()) {
+  context_->outgoing2()->AddPublicService<fuchsia::sys::Runner>(
       [this](fidl::InterfaceRequest<fuchsia::sys::Runner> request) {
         bindings_.AddBinding(this, std::move(request));
       });
@@ -133,7 +131,7 @@ DartRunner::DartRunner()
   // The VM service isolate uses the process-wide namespace. It writes the
   // vm service protocol port under /tmp. The VMServiceObject exposes that
   // port number to The Hub.
-  context_->outgoing().debug_dir()->AddEntry(
+  context_->outgoing2()->debug_dir()->AddEntry(
       fuchsia::dart::VMServiceObject::kPortDirName,
       std::make_unique<fuchsia::dart::VMServiceObject>());
 
@@ -186,9 +184,9 @@ void DartRunner::StartComponent(
     fuchsia::sys::Package package, fuchsia::sys::StartupInfo startup_info,
     ::fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller) {
   TRACE_DURATION("dart", "StartComponent", "url", package.resolved_url);
-  std::thread thread(RunApplication, this,
-                     std::move(package), std::move(startup_info),
-                     context_->svc(), std::move(controller));
+  std::thread thread(RunApplication, this, std::move(package),
+                     std::move(startup_info), context_->svc(),
+                     std::move(controller));
   thread.detach();
 }
 
