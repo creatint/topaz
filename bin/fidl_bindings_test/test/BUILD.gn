@@ -20,7 +20,7 @@ dart_fuchsia_test("fidl_bindings_test") {
     "//third_party/dart-pkg/pub/collection",
     "//topaz/bin/fidl_bindings_test/fidl:bindings_test",
     "//topaz/public/dart/fidl",
-    "//topaz/public/lib/app/dart",
+    "//topaz/public/dart/fuchsia_services",
   ]
   environments = basic_envs
 }

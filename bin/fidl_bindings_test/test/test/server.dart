@@ -5,26 +5,28 @@
 import 'dart:async';
 
 import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
-import 'package:lib.app.dart/app_async.dart';
+import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart'
     show ComponentControllerProxy, LaunchInfo;
+import 'package:fuchsia_services/services.dart';
 
-const _kServerName = 'fuchsia-pkg://fuchsia.com/fidl_bindings_test_server#meta/fidl_bindings_test_server.cmx';
+const _kServerName =
+    'fuchsia-pkg://fuchsia.com/fidl_bindings_test_server#meta/fidl_bindings_test_server.cmx';
 
-StartupContext _context = new StartupContext.fromStartupInfo();
+StartupContext _context = StartupContext.fromStartupInfo();
 
 class TestServerInstance {
-  final TestServerProxy proxy = new TestServerProxy();
-  final ComponentControllerProxy controller = new ComponentControllerProxy();
-  final Services services = new Services();
+  final TestServerProxy proxy = TestServerProxy();
+  final ComponentControllerProxy controller = ComponentControllerProxy();
 
   Future<void> start() async {
-    final LaunchInfo launchInfo =
-        new LaunchInfo(url: _kServerName, directoryRequest: services.request());
+    final dirProxy = DirectoryProxy();
+    final launchInfo = LaunchInfo(
+        url: _kServerName,
+        directoryRequest: dirProxy.ctrl.request().passChannel());
     await _context.launcher
         .createComponent(launchInfo, controller.ctrl.request());
-    proxy.ctrl.bind(await services
-        .connectToServiceByName<TestServer>(TestServer.$serviceName));
+    Incoming(dirProxy).connectToService(proxy);
   }
 
   Future<void> stop() async {
