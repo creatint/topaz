@@ -100,7 +100,7 @@ Runner::Runner(async::Loop* loop)
   // The VM service isolate uses the process-wide namespace. It writes the
   // vm service protocol port under /tmp. The VMServiceObject exposes that
   // port number to The Hub.
-  host_context_->outgoing2()->debug_dir()->AddEntry(
+  host_context_->outgoing()->debug_dir()->AddEntry(
       fuchsia::dart::VMServiceObject::kPortDirName,
       std::make_unique<fuchsia::dart::VMServiceObject>());
 
@@ -115,12 +115,12 @@ Runner::Runner(async::Loop* loop)
 
   SetThreadName("io.flutter.runner.main");
 
-  host_context_->outgoing2()->AddPublicService<fuchsia::sys::Runner>(
+  host_context_->outgoing()->AddPublicService<fuchsia::sys::Runner>(
       std::bind(&Runner::RegisterApplication, this, std::placeholders::_1));
 }
 
 Runner::~Runner() {
-  host_context_->outgoing2()->RemovePublicService<fuchsia::sys::Runner>();
+  host_context_->outgoing()->RemovePublicService<fuchsia::sys::Runner>();
 
 #if !defined(DART_PRODUCT)
   trace_observer_->Stop();

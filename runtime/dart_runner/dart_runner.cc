@@ -122,7 +122,7 @@ bool EntropySource(uint8_t* buffer, intptr_t count) {
 }  // namespace
 
 DartRunner::DartRunner() : context_(sys::ComponentContext::Create()) {
-  context_->outgoing2()->AddPublicService<fuchsia::sys::Runner>(
+  context_->outgoing()->AddPublicService<fuchsia::sys::Runner>(
       [this](fidl::InterfaceRequest<fuchsia::sys::Runner> request) {
         bindings_.AddBinding(this, std::move(request));
       });
@@ -131,7 +131,7 @@ DartRunner::DartRunner() : context_(sys::ComponentContext::Create()) {
   // The VM service isolate uses the process-wide namespace. It writes the
   // vm service protocol port under /tmp. The VMServiceObject exposes that
   // port number to The Hub.
-  context_->outgoing2()->debug_dir()->AddEntry(
+  context_->outgoing()->debug_dir()->AddEntry(
       fuchsia::dart::VMServiceObject::kPortDirName,
       std::make_unique<fuchsia::dart::VMServiceObject>());
 
