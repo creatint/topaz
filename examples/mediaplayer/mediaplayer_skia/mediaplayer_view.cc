@@ -29,8 +29,8 @@ constexpr int32_t kDefaultWidth = 640;
 constexpr int32_t kDefaultHeight = 100;
 
 constexpr float kBackgroundElevation = 0.f;
-constexpr float kVideoElevation = 1.f;
-constexpr float kControlsElevation = 1.f;
+constexpr float kVideoElevation = -1.f;
+constexpr float kControlsElevation = -1.f;
 
 constexpr float kMargin = 4.0f;
 constexpr float kControlsHeight = 36.0f;
@@ -253,26 +253,26 @@ void MediaPlayerView::Layout() {
                     fuchsia::ui::gfx::vec3{
                         .x = 0.f,
                         .y = 0.f,
-                        .z = 0.f,
+                        .z = kVideoElevation,
                     },
                 .max =
                     fuchsia::ui::gfx::vec3{
                         .x = content_rect_.width,
                         .y = content_rect_.height,
-                        .z = 0.f,
+                        .z = kVideoElevation,
                     },
             },
         .inset_from_min =
             fuchsia::ui::gfx::vec3{
                 .x = 0.f,
                 .y = 0.f,
-                .z = 0.f,
+                .z = kVideoElevation,
             },
         .inset_from_max =
             fuchsia::ui::gfx::vec3{
                 .x = 0.f,
                 .y = 0.f,
-                .z = 0.f,
+                .z = kVideoElevation,
             },
         .focus_change = false,
     };
@@ -300,7 +300,7 @@ void MediaPlayerView::OnSceneInvalidated(
   // Position the video.
   if (video_host_node_) {
     video_host_node_->SetTranslation(content_rect_.x, content_rect_.y,
-                                     -kVideoElevation);
+                                     kVideoElevation);
   }
 
   // Draw the progress bar.
@@ -313,7 +313,7 @@ void MediaPlayerView::OnSceneInvalidated(
   controls_widget_.ReleaseAndSwapCanvas();
   controls_widget_.SetTranslation(
       controls_rect_.x + controls_rect_.width * .5f,
-      controls_rect_.y + controls_rect_.height * .5f, -kControlsElevation);
+      controls_rect_.y + controls_rect_.height * .5f, kControlsElevation);
 
   // Animate the progress bar.
   if (state_ == State::kPlaying) {
