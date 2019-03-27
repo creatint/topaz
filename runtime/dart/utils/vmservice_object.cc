@@ -4,15 +4,34 @@
 
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
-#include <fuchsia/io/cpp/fidl.h>
-
+#include <dirent.h>
 #include <errno.h>
+#include <string>
+
+#include <fuchsia/io/cpp/fidl.h>
+#include <lib/syslog/global.h>
 #include <zircon/status.h>
 
-#include "src/lib/files/directory.h"
-#include "src/lib/files/file.h"
+#include "topaz/runtime/dart/utils/logging.h"
 
-#include <string>
+namespace {
+
+bool ReadDirContents(const std::string& path, std::vector<std::string>* out) {
+  out->clear();
+  DIR* dir = opendir(path.c_str());
+  if (!dir) {
+    return false;
+  }
+  struct dirent* de;
+  errno = 0;
+  while ((de = readdir(dir)) != nullptr) {
+    out->push_back(de->d_name);
+  }
+  closedir(dir);
+  return !errno;
+}
+
+}
 
 namespace fuchsia {
 namespace dart {
@@ -21,9 +40,10 @@ void VMServiceObject::GetContents(LazyEntryVector* out_vector) const {
   // List /tmp/dart.services if it exists, and push its contents as
   // as the conrtents of this directory.
   std::vector<std::string> files;
-  if (!files::ReadDirContents(kPortDir, &files)) {
-    FXL_LOG(ERROR) << "Failed to read Dart VM Service port directory '"
-                   << kPortDir << "':" << strerror(errno);
+  if (!ReadDirContents(kPortDir, &files)) {
+    FX_LOGF(ERROR, LOG_TAG,
+            "Failed to read Dart VM Service port directory '%s': %s",
+            kPortDir, strerror(errno));
     return;
   }
   for (const auto& file : files) {
