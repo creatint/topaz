@@ -5,7 +5,7 @@ import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:meta/meta.dart';
 
-const String _lastUpdateFilePath = '/config/build-info/last-update';
+const String _lastUpdateFilePath = '/config/build-info/latest-commit-date';
 const String _factoryResetKey = 'FactoryReset';
 
 /// Class to provide device-specific details, such as build information.
