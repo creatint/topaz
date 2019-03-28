@@ -17,8 +17,6 @@
 #include <lib/vfs/cpp/service.h>
 
 #include "lib/fidl/cpp/binding_set.h"
-#include "lib/fxl/logging.h"
-#include "lib/fxl/macros.h"
 
 namespace flutter {
 
@@ -62,7 +60,9 @@ class ServiceProviderDir : public vfs::Directory {
   mutable std::map<std::string,
                    std::unique_ptr<vfs::Service>> fallback_services_;
 
-  FXL_DISALLOW_COPY_AND_ASSIGN(ServiceProviderDir);
+   // Disallow copy and assignment.
+   ServiceProviderDir(const ServiceProviderDir&) = delete;
+   ServiceProviderDir& operator=(const ServiceProviderDir&) = delete;
 };
 
 }  // namespace flutter

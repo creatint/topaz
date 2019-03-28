@@ -8,13 +8,14 @@
 #include <lib/zx/channel.h>
 
 #include "dart-pkg/fuchsia/sdk_ext/fuchsia.h"
-#include "lib/fxl/arraysize.h"
-#include "lib/fxl/logging.h"
 #include "third_party/dart/runtime/bin/io_natives.h"
 #include "third_party/dart/runtime/include/dart_api.h"
 #include "third_party/tonic/converter/dart_converter.h"
 #include "third_party/tonic/dart_microtask_queue.h"
 #include "third_party/tonic/logging/dart_error.h"
+#include "topaz/runtime/dart/utils/inlines.h"
+
+#include "topaz/runtime/dart_runner/logging.h"
 
 using tonic::ToDart;
 
@@ -41,10 +42,10 @@ Dart_NativeFunction BuiltinNativeLookup(Dart_Handle name, int argument_count,
                                         bool* auto_setup_scope) {
   const char* function_name = nullptr;
   DART_CHECK_VALID(Dart_StringToCString(name, &function_name));
-  FXL_DCHECK(function_name != nullptr);
-  FXL_DCHECK(auto_setup_scope != nullptr);
+  DEBUG_CHECK(function_name != nullptr, LOG_TAG, "");
+  DEBUG_CHECK(auto_setup_scope != nullptr, LOG_TAG, "");
   *auto_setup_scope = true;
-  size_t num_entries = arraysize(kBuiltinEntries);
+  size_t num_entries = dart_utils::ArraySize(kBuiltinEntries);
   for (size_t i = 0; i < num_entries; i++) {
     const NativeEntry& entry = kBuiltinEntries[i];
     if (!strcmp(function_name, entry.name) &&
@@ -56,7 +57,7 @@ Dart_NativeFunction BuiltinNativeLookup(Dart_Handle name, int argument_count,
 }
 
 const uint8_t* BuiltinNativeSymbol(Dart_NativeFunction native_function) {
-  size_t num_entries = arraysize(kBuiltinEntries);
+  size_t num_entries = dart_utils::ArraySize(kBuiltinEntries);
   for (size_t i = 0; i < num_entries; i++) {
     const NativeEntry& entry = kBuiltinEntries[i];
     if (entry.function == native_function)

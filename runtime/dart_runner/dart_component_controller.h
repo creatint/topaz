@@ -16,7 +16,6 @@
 #include <lib/zx/timer.h>
 
 #include "lib/fidl/cpp/binding.h"
-#include "lib/fxl/macros.h"
 #include "third_party/dart/runtime/include/dart_api.h"
 #include "topaz/runtime/dart_runner/mapped_resource.h"
 
@@ -88,7 +87,9 @@ class DartComponentController : public fuchsia::sys::ComponentController {
                     &DartComponentController::OnIdleTimer>
       idle_wait_{this};
 
-  FXL_DISALLOW_COPY_AND_ASSIGN(DartComponentController);
+  // Disallow copy and assignment.
+  DartComponentController(const DartComponentController&) = delete;
+  DartComponentController& operator=(const DartComponentController&) = delete;
 };
 
 }  // namespace dart_runner

@@ -9,7 +9,6 @@
 #include <lib/fidl/cpp/binding_set.h>
 #include <lib/sys/cpp/component_context.h>
 
-#include "lib/fxl/macros.h"
 #include "topaz/runtime/dart_runner/mapped_resource.h"
 
 namespace dart_runner {
@@ -34,7 +33,9 @@ class DartRunner : public fuchsia::sys::Runner {
   MappedResource vm_snapshot_instructions_;
 #endif
 
-  FXL_DISALLOW_COPY_AND_ASSIGN(DartRunner);
+  // Disallow copy and assignment.
+  DartRunner(const DartRunner&) = delete;
+  DartRunner& operator=(const DartRunner&) = delete;
 };
 
 }  // namespace dart_runner

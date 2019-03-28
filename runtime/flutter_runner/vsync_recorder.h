@@ -9,7 +9,6 @@
 
 #include "flutter/fml/time/time_delta.h"
 #include "flutter/fml/time/time_point.h"
-#include "lib/fxl/macros.h"
 #include "lib/ui/scenic/cpp/session.h"
 
 namespace flutter {
@@ -40,7 +39,9 @@ class VsyncRecorder {
 
   std::optional<fuchsia::images::PresentationInfo> last_presentation_info_;
 
-  FXL_DISALLOW_COPY_ASSIGN_AND_MOVE(VsyncRecorder);
+  // Disallow copy and assignment.
+  VsyncRecorder(const VsyncRecorder&) = delete;
+  VsyncRecorder& operator=(const VsyncRecorder&) = delete;
 };
 
 }  // namespace flutter

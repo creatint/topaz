@@ -15,8 +15,6 @@
 #include "flutter/lib/ui/semantics/semantics_node.h"
 #include "flutter/lib/ui/window/viewport_metrics.h"
 #include "lib/fidl/cpp/binding_set.h"
-#include "lib/fxl/logging.h"
-#include "lib/fxl/macros.h"
 
 #include "flutter/shell/common/platform_view.h"
 
@@ -87,7 +85,9 @@ class SemanticsBridge final : public fuchsia::accessibility::SemanticsProvider {
   // transform matrix when sent to the manager.
   blink::LogicalMetrics* metrics_;
 
-  FXL_DISALLOW_COPY_AND_ASSIGN(SemanticsBridge);
+  // Disallow copy and assignment.
+  SemanticsBridge(const SemanticsBridge&) = delete;
+  SemanticsBridge& operator=(const SemanticsBridge&) = delete;
 };
 
 }  // namespace flutter

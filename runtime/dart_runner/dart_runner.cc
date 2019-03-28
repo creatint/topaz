@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <lib/async-loop/loop.h>
 #include <lib/async/default.h>
+#include <lib/syslog/global.h>
 #include <sys/stat.h>
 #include <trace/event.h>
 #include <zircon/status.h>
@@ -15,13 +16,13 @@
 #include <thread>
 #include <utility>
 
-#include "lib/fxl/arraysize.h"
-#include "lib/fxl/logging.h"
 #include "third_party/dart/runtime/include/bin/dart_io_api.h"
 #include "third_party/tonic/dart_microtask_queue.h"
 #include "third_party/tonic/dart_state.h"
+#include "topaz/runtime/dart/utils/inlines.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 #include "topaz/runtime/dart_runner/dart_component_controller.h"
+#include "topaz/runtime/dart_runner/logging.h"
 #include "topaz/runtime/dart_runner/service_isolate.h"
 
 #if defined(AOT_RUNTIME)
@@ -139,9 +140,10 @@ DartRunner::DartRunner() : context_(sys::ComponentContext::Create()) {
 
   dart::bin::BootstrapDartIo();
 
-  char* error = Dart_SetVMFlags(arraysize(kDartVMArgs), kDartVMArgs);
+  char* error = Dart_SetVMFlags(dart_utils::ArraySize(kDartVMArgs),
+                                kDartVMArgs);
   if (error) {
-    FXL_LOG(FATAL) << "Dart_SetVMFlags failed: " << error;
+    FX_LOGF(FATAL, LOG_TAG, "Dart_SetVMFlags failed: %s", error);
   }
 
   Dart_InitializeParams params = {};
@@ -152,12 +154,12 @@ DartRunner::DartRunner() : context_(sys::ComponentContext::Create()) {
 #else
   if (!MappedResource::LoadFromNamespace(
           nullptr, "pkg/data/vm_snapshot_data.bin", vm_snapshot_data_)) {
-    FXL_LOG(FATAL) << "Failed to load vm snapshot data";
+    FX_LOG(FATAL, LOG_TAG, "Failed to load vm snapshot data");
   }
   if (!MappedResource::LoadFromNamespace(
           nullptr, "pkg/data/vm_snapshot_instructions.bin",
           vm_snapshot_instructions_, true /* executable */)) {
-    FXL_LOG(FATAL) << "Failed to load vm snapshot instructions";
+    FX_LOG(FATAL, LOG_TAG, "Failed to load vm snapshot instructions");
   }
   params.vm_snapshot_data = vm_snapshot_data_.address();
   params.vm_snapshot_instructions = vm_snapshot_instructions_.address();
@@ -171,13 +173,13 @@ DartRunner::DartRunner() : context_(sys::ComponentContext::Create()) {
 #endif
   error = Dart_Initialize(&params);
   if (error)
-    FXL_LOG(FATAL) << "Dart_Initialize failed: " << error;
+    FX_LOGF(FATAL, LOG_TAG, "Dart_Initialize failed: %s", error);
 }
 
 DartRunner::~DartRunner() {
   char* error = Dart_Cleanup();
   if (error)
-    FXL_LOG(FATAL) << "Dart_Cleanup failed: " << error;
+    FX_LOGF(FATAL, LOG_TAG, "Dart_Cleanup failed: %s", error);
 }
 
 void DartRunner::StartComponent(

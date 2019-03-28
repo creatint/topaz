@@ -11,6 +11,7 @@
 #include <lib/fdio/directory.h>
 #include <lib/fdio/fd.h>
 #include <lib/fdio/namespace.h>
+#include <lib/syslog/global.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <zircon/status.h>
@@ -22,8 +23,6 @@
 
 #include "lib/fidl/cpp/optional.h"
 #include "lib/fidl/cpp/string.h"
-#include "lib/fxl/arraysize.h"
-#include "lib/fxl/logging.h"
 #include "third_party/dart/runtime/include/dart_tools_api.h"
 #include "third_party/tonic/converter/dart_converter.h"
 #include "third_party/tonic/dart_message_handler.h"
@@ -31,9 +30,11 @@
 #include "third_party/tonic/dart_state.h"
 #include "third_party/tonic/logging/dart_error.h"
 #include "topaz/runtime/dart/utils/handle_exception.h"
+#include "topaz/runtime/dart/utils/inlines.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
 
-#include "builtin_libraries.h"
+#include "topaz/runtime/dart_runner/builtin_libraries.h"
+#include "topaz/runtime/dart_runner/logging.h"
 
 using tonic::ToDart;
 
@@ -90,7 +91,8 @@ DartComponentController::DartComponentController(
     }
   }
   if (data_path_.empty()) {
-    FXL_LOG(ERROR) << "Could not find a /pkg/data directory for " << url_;
+    FX_LOGF(ERROR, LOG_TAG, "Could not find a /pkg/data directory for %s",
+            url_.c_str());
     return;
   }
   if (controller.is_valid()) {
@@ -101,8 +103,8 @@ DartComponentController::DartComponentController(
   zx_status_t status =
       zx::timer::create(ZX_TIMER_SLACK_LATE, ZX_CLOCK_MONOTONIC, &idle_timer_);
   if (status != ZX_OK) {
-    FXL_LOG(INFO) << "Idle timer creation failed: "
-                  << zx_status_get_string(status);
+    FX_LOGF(INFO, LOG_TAG, "Idle timer creation failed: %s",
+            zx_status_get_string(status));
   } else {
     idle_wait_.set_object(idle_timer_.get());
     idle_wait_.set_trigger(ZX_TIMER_SIGNALED);
@@ -129,13 +131,12 @@ bool DartComponentController::Setup() {
   }
 
   if (SetupFromAppSnapshot()) {
-    FXL_LOG(INFO) << url_ << " is running from an app snapshot";
+    FX_LOGF(INFO, LOG_TAG, "%s is running from an app snapshot", url_.c_str());
   } else if (SetupFromKernel()) {
-    FXL_LOG(INFO) << url_ << " is running from kernel";
+    FX_LOGF(INFO, LOG_TAG, "%s is running from kernel", url_.c_str());
   } else {
-    FXL_LOG(ERROR)
-        << "Could not find a program in " << url_
-        << ". Was data specified correctly in the component manifest?";
+    FX_LOGF(ERROR, LOG_TAG, "Could not find a program in %s. Was data specified"
+            " correctly in the component manifest?", url_.c_str());
     return false;
   }
 
@@ -149,7 +150,7 @@ bool DartComponentController::SetupNamespace() {
   fuchsia::sys::FlatNamespace* flat = &startup_info_.flat_namespace;
   zx_status_t status = fdio_ns_create(&namespace_);
   if (status != ZX_OK) {
-    FXL_LOG(ERROR) << "Failed to create namespace";
+    FX_LOG(ERROR, LOG_TAG, "Failed to create namespace");
     return false;
   }
 
@@ -173,8 +174,8 @@ bool DartComponentController::SetupNamespace() {
     const char* path = flat->paths.at(i).data();
     status = fdio_ns_bind(namespace_, path, dir_handle);
     if (status != ZX_OK) {
-      FXL_LOG(ERROR) << "Failed to bind " << flat->paths.at(i)
-                     << " to namespace: " << zx_status_get_string(status);
+      FX_LOGF(ERROR, LOG_TAG, "Failed to bind %s to namespace: %s",
+              flat->paths.at(i).c_str(), zx_status_get_string(status));
       zx_handle_close(dir_handle);
       return false;
     }
@@ -215,7 +216,7 @@ bool DartComponentController::SetupFromKernel() {
   for (size_t start = 0; start < manifest.size();) {
     size_t end = str.find("\n", start);
     if (end == std::string::npos) {
-      FXL_LOG(ERROR) << "Malformed manifest";
+      FX_LOG(ERROR, LOG_TAG, "Malformed manifest");
       Dart_ExitScope();
       return false;
     }
@@ -225,13 +226,14 @@ bool DartComponentController::SetupFromKernel() {
 
     MappedResource kernel;
     if (!MappedResource::LoadFromNamespace(namespace_, path, kernel)) {
-      FXL_LOG(ERROR) << "Failed to find kernel: " << path;
+      FX_LOGF(ERROR, LOG_TAG, "Failed to find kernel: %s", path.c_str());
       Dart_ExitScope();
       return false;
     }
     library = Dart_LoadLibraryFromKernel(kernel.address(), kernel.size());
     if (Dart_IsError(library)) {
-      FXL_LOG(ERROR) << "Failed to load kernel: " << Dart_GetError(library);
+      FX_LOGF(ERROR, LOG_TAG, "Failed to load kernel: %s",
+              Dart_GetError(library));
       Dart_ExitScope();
       return false;
     }
@@ -242,7 +244,8 @@ bool DartComponentController::SetupFromKernel() {
 
   Dart_Handle result = Dart_FinalizeLoading(false);
   if (Dart_IsError(result)) {
-    FXL_LOG(ERROR) << "Failed to FinalizeLoading: " << Dart_GetError(result);
+    FX_LOGF(ERROR, LOG_TAG, "Failed to FinalizeLoading: %s",
+            Dart_GetError(result));
     Dart_ExitScope();
     return false;
   }
@@ -297,8 +300,8 @@ int DartComponentController::SetupFileDescriptor(
   int outfd = -1;
   zx_status_t status = fdio_fd_create(fd->handle0.release(), &outfd);
   if (status != ZX_OK) {
-    FXL_LOG(ERROR) << "Failed to extract output fd: "
-                   << zx_status_get_string(status);
+    FX_LOGF(ERROR, LOG_TAG, "Failed to extract output fd: %s",
+            zx_status_get_string(status));
     return -1;
   }
   return outfd;
@@ -323,7 +326,7 @@ bool DartComponentController::CreateIsolate(
       isolate_snapshot_instructions, shared_snapshot_data,
       shared_snapshot_instructions, nullptr /* flags */, state, &error);
   if (!isolate_) {
-    FXL_LOG(ERROR) << "Dart_CreateIsolate failed: " << error;
+    FX_LOGF(ERROR, LOG_TAG, "Dart_CreateIsolate failed: %s", error);
     return false;
   }
 
@@ -379,7 +382,7 @@ bool DartComponentController::Main() {
   if (error != nullptr) {
     Dart_EnterIsolate(isolate_);
     Dart_ShutdownIsolate();
-    FXL_LOG(ERROR) << "Unable to make isolate runnable: " << error;
+    FX_LOGF(ERROR, LOG_TAG, "Unable to make isolate runnable: %s", error);
     free(error);
     return false;
   }
@@ -389,8 +392,8 @@ bool DartComponentController::Main() {
   Dart_Handle dart_arguments =
       Dart_NewListOf(Dart_CoreType_String, arguments.size());
   if (Dart_IsError(dart_arguments)) {
-    FXL_LOG(ERROR) << "Failed to allocate Dart arguments list: "
-                   << Dart_GetError(dart_arguments);
+    FX_LOGF(ERROR, LOG_TAG, "Failed to allocate Dart arguments list: %s",
+            Dart_GetError(dart_arguments));
     Dart_ExitScope();
     return false;
   }
@@ -404,12 +407,13 @@ bool DartComponentController::Main() {
   };
 
   Dart_Handle main_result =
-      Dart_Invoke(Dart_RootLibrary(), ToDart("main"), arraysize(argv), argv);
+      Dart_Invoke(Dart_RootLibrary(), ToDart("main"),
+                  dart_utils::ArraySize(argv), argv);
   if (Dart_IsError(main_result)) {
     auto dart_state = tonic::DartState::Current();
     if (!dart_state->has_set_return_code()) {
       // The program hasn't set a return code meaning this exit is unexpected.
-      FXL_LOG(ERROR) << Dart_GetError(main_result);
+      FX_LOG(ERROR, LOG_TAG, Dart_GetError(main_result));
       return_code_ = tonic::GetErrorExitCode(main_result);
 
       dart_utils::HandleIfException(runner_incoming_services_, url_,
@@ -474,7 +478,8 @@ void DartComponentController::MessageEpilogue(Dart_Handle result) {
   zx_status_t status =
       idle_timer_.set(idle_start_ + kIdleWaitDuration, kIdleSlack);
   if (status != ZX_OK) {
-    FXL_LOG(INFO) << "Idle timer set failed: " << zx_status_get_string(status);
+    FX_LOGF(INFO, LOG_TAG, "Idle timer set failed: %s",
+            zx_status_get_string(status));
   }
 }
 
@@ -500,8 +505,8 @@ void DartComponentController::OnIdleTimer(async_dispatcher_t* dispatcher,
     // Early wakeup or message pushed idle time forward: reschedule.
     zx_status_t status = idle_timer_.set(deadline, kIdleSlack);
     if (status != ZX_OK) {
-      FXL_LOG(INFO) << "Idle timer set failed: "
-                    << zx_status_get_string(status);
+      FX_LOGF(INFO, LOG_TAG, "Idle timer set failed: %s",
+              zx_status_get_string(status));
     }
   }
   wait->Begin(dispatcher);  // ignore errors

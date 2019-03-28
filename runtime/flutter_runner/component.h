@@ -25,7 +25,6 @@
 #include "flutter/fml/macros.h"
 #include "lib/fidl/cpp/binding_set.h"
 #include "lib/fidl/cpp/interface_request.h"
-#include "src/lib/files/unique_fd.h"
 #include "unique_fdio_ns.h"
 
 namespace flutter {

@@ -8,12 +8,16 @@
 
 #include <sstream>
 
+#include <trace/event.h>
+
 #include "flutter/lib/ui/window/pointer_data.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
-#include "vsync_waiter.h"
-#include "trace/event.h"
+#include "topaz/runtime/dart/utils/inlines.h"
+
+#include "topaz/runtime/flutter_runner/logging.h"
+#include "topaz/runtime/flutter_runner/vsync_waiter.h"
 
 namespace flutter {
 
@@ -419,9 +423,9 @@ void PlatformView::OnScenicEvent(
                    "(fuchsia.ui.gfx.ViewStateChanged).";
             break;
           case fuchsia::ui::gfx::Event::Tag::Invalid:
-            FXL_DCHECK(false)
-                << "Flutter PlatformView::OnScenicEvent: Got an invalid GFX "
-                   "event.";
+            DEBUG_CHECK(false, LOG_TAG,
+                        "Flutter PlatformView::OnScenicEvent: Got "
+                        "an invalid GFX event.");
             break;
           default:
             FML_LOG(WARNING)
@@ -608,7 +612,7 @@ bool PlatformView::OnHandleFocusEvent(
 }
 
 void PlatformView::ActivateIme() {
-  FXL_DCHECK(last_text_state_);
+  DEBUG_CHECK(last_text_state_ != nullptr, LOG_TAG, "");
 
   text_sync_service_->GetInputMethodEditor(
       fuchsia::ui::input::KeyboardType::TEXT,       // keyboard type

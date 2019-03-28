@@ -60,6 +60,28 @@ source_set("vmo") {
   ]
 }
 
+source_set("inlines") {
+  sources = [
+    "inlines.h",
+  ]
+
+  public_deps = [
+    "//zircon/public/lib/syslog",
+  ]
+}
+
+source_set("files") {
+  sources = [
+    "files.cc",
+    "files.h",
+  ]
+
+  deps = [
+    ":inlines",
+    ":logging",
+  ]
+}
+
 package("run_vmservice_object_tests") {
   testonly = true
 

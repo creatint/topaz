@@ -9,11 +9,11 @@
 
 #include <algorithm>
 
-#include "lib/fxl/logging.h"
 #include "third_party/skia/include/core/SkCanvas.h"
 #include "third_party/skia/include/gpu/GrBackendSemaphore.h"
 #include "third_party/skia/include/gpu/GrBackendSurface.h"
 #include "third_party/skia/include/gpu/GrContext.h"
+#include "topaz/runtime/dart/utils/inlines.h"
 
 namespace flutter {
 
@@ -437,9 +437,10 @@ void VulkanSurface::SignalWritesFinished(
     return;
   }
 
-  FXL_CHECK(pending_on_writes_committed_ == nullptr)
-      << "Attempted to signal a write on the surface when the previous write "
-         "has not yet been acknowledged by the compositor.";
+  dart_utils::Check(pending_on_writes_committed_ == nullptr,
+                    "Attempted to signal a write on the surface when the "
+                    "previous write has not yet been acknowledged by the "
+                    "compositor.");
 
   pending_on_writes_committed_ = on_writes_committed;
 }

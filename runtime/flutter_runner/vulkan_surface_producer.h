@@ -6,6 +6,7 @@
 
 #include <lib/async/default.h>
 #include <lib/async/cpp/time.h>
+#include <lib/syslog/global.h>
 
 #include "flutter/flow/scene_update_context.h"
 #include "flutter/fml/macros.h"
@@ -13,11 +14,12 @@
 #include "flutter/vulkan/vulkan_device.h"
 #include "flutter/vulkan/vulkan_proc_table.h"
 #include "flutter/vulkan/vulkan_provider.h"
-#include "lib/fxl/logging.h"
 #include "lib/ui/scenic/cpp/resources.h"
 #include "lib/ui/scenic/cpp/session.h"
-#include "vulkan_surface.h"
-#include "vulkan_surface_pool.h"
+
+#include "topaz/runtime/flutter_runner/logging.h"
+#include "topaz/runtime/flutter_runner/vulkan_surface.h"
+#include "topaz/runtime/flutter_runner/vulkan_surface_pool.h"
 
 namespace flutter {
 
@@ -60,8 +62,9 @@ class VulkanSurfaceProducer final
 
   void OnSessionSizeChangeHint(float width_change_factor,
                                float height_change_factor) {
-    FXL_LOG(INFO) << "VulkanSurfaceProducer:OnSessionSizeChangeHint "
-                  << width_change_factor << ", " << height_change_factor;
+    FX_LOGF(INFO, LOG_TAG,
+            "VulkanSurfaceProducer:OnSessionSizeChangeHint %f, %f",
+            width_change_factor, height_change_factor);
   }
 
  private:
@@ -93,7 +96,9 @@ class VulkanSurfaceProducer final
 
   bool Initialize(scenic::Session* scenic_session);
 
-  FML_DISALLOW_COPY_AND_ASSIGN(VulkanSurfaceProducer);
+  // Disallow copy and assignment.
+  VulkanSurfaceProducer(const VulkanSurfaceProducer&) = delete;
+  VulkanSurfaceProducer& operator=(const VulkanSurfaceProducer&) = delete;
 };
 
 }  // namespace flutter

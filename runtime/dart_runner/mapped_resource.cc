@@ -10,8 +10,10 @@
 #include <trace/event.h>
 #include <zircon/status.h>
 
-#include "lib/fxl/logging.h"
+#include "topaz/runtime/dart/utils/inlines.h"
 #include "topaz/runtime/dart/utils/vmo.h"
+
+#include "topaz/runtime/dart_runner/logging.h"
 
 namespace dart_runner {
 
@@ -22,7 +24,7 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
   TRACE_DURATION("dart", "LoadFromNamespace", "path", path);
 
   // openat of a path with a leading '/' ignores the namespace fd.
-  FXL_CHECK(path[0] != '/');
+  dart_utils::Check(path[0] != '/', LOG_TAG);
 
   fuchsia::mem::Buffer resource_vmo;
   if (namespc == nullptr) {
@@ -48,8 +50,8 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
     zx_status_t status =
         resource_vmo.vmo.replace_as_executable(zx::handle(), &resource_vmo.vmo);
     if (status != ZX_OK) {
-      FXL_LOG(ERROR) << "Failed to make VMO executable: "
-                     << zx_status_get_string(status);
+      FX_LOGF(ERROR, LOG_TAG, "Failed to make VMO executable: %s",
+              zx_status_get_string(status));
       return false;
     }
   }
@@ -72,8 +74,8 @@ bool MappedResource::LoadFromVmo(const std::string& path,
   zx_status_t status = zx::vmar::root_self()->map(
       0, resource_vmo.vmo, 0, resource_vmo.size, flags, &addr);
   if (status != ZX_OK) {
-    FXL_LOG(ERROR) << "Failed to map " << path << ": "
-                   << zx_status_get_string(status);
+    FX_LOGF(ERROR, LOG_TAG, "Failed to map %s: %s", path.c_str(),
+            zx_status_get_string(status));
     return false;
   }
 

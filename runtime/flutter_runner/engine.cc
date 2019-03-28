@@ -13,9 +13,9 @@
 #include "flutter/fml/task_runner.h"
 #include "flutter/shell/common/rasterizer.h"
 #include "flutter/shell/common/run_configuration.h"
-#include "fuchsia_font_manager.h"
-#include "src/lib/files/file.h"
+#include "topaz/runtime/dart/utils/files.h"
 
+#include "fuchsia_font_manager.h"
 #include "loop.h"
 #include "platform_view.h"
 #include "task_runner_adapter.h"
@@ -382,9 +382,9 @@ static void CreateCompilationTrace(Dart_Isolate isolate) {
     Dart_Handle result = Dart_SaveTypeFeedback(&feedback, &feedback_length);
     tonic::LogIfError(result);
     const std::string kTypeFeedbackFile = "/data/dart_type_feedback.bin";
-    if (files::WriteFile(kTypeFeedbackFile,
-                         reinterpret_cast<const char*>(feedback),
-                         feedback_length)) {
+    if (dart_utils::WriteFile(kTypeFeedbackFile,
+                              reinterpret_cast<const char*>(feedback),
+                              feedback_length)) {
       FML_LOG(INFO) << "Dart type feedback written to "
                      << kTypeFeedbackFile;
     } else {

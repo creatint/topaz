@@ -21,14 +21,14 @@
 
 #include "flutter/fml/synchronization/waitable_event.h"
 #include "flutter/shell/common/switches.h"
-#include "lib/fxl/command_line.h"
-#include "src/lib/files/file.h"
-#include "loop.h"
-#include "service_provider_dir.h"
-#include "task_observers.h"
+#include "topaz/runtime/dart/utils/files.h"
 #include "topaz/runtime/dart/utils/handle_exception.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
 #include "topaz/runtime/dart/utils/vmo.h"
+
+#include "loop.h"
+#include "service_provider_dir.h"
+#include "task_observers.h"
 
 namespace flutter {
 
@@ -228,10 +228,10 @@ Application::Application(
     // Check if we can use the snapshot with the framework already loaded.
     std::string runner_framework;
     std::string app_framework;
-    if (files::ReadFileToString("pkg/data/runner.frameworkversion",
-                                &runner_framework) &&
-        files::ReadFileToStringAt(application_assets_directory_.get(),
-                                  "app.frameworkversion", &app_framework) &&
+    if (dart_utils::ReadFileToString("pkg/data/runner.frameworkversion",
+                                     &runner_framework) &&
+        dart_utils::ReadFileToStringAt(application_assets_directory_.get(),
+                                      "app.frameworkversion", &app_framework) &&
         (runner_framework.compare(app_framework) == 0)) {
       settings_.vm_snapshot_data_path =
           "pkg/data/framework_vm_snapshot_data.bin";

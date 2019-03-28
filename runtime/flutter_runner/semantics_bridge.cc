@@ -4,6 +4,12 @@
 
 #include "topaz/runtime/flutter_runner/semantics_bridge.h"
 
+#include <lib/syslog/global.h>
+
+#include "topaz/runtime/dart/utils/inlines.h"
+
+#include "topaz/runtime/flutter_runner/logging.h"
+
 namespace flutter {
 
 // Helper function to convert SkRect, Flutter semantics node bounding box
@@ -23,7 +29,7 @@ fuchsia::ui::gfx::BoundingBox WrapBoundingBox(SkRect& rect) {
 // format to fuchsia::ui::gfx::mat4, the Fidl equivalent.
 fuchsia::ui::gfx::mat4 WrapSkMatrix(SkMatrix44& args) {
   fuchsia::ui::gfx::mat4 value;
-  FXL_DCHECK(value.matrix.count() == 16);
+  DEBUG_CHECK(value.matrix.count() == 16, LOG_TAG, "");
   float* m = value.matrix.mutable_data();
   args.asColMajorf(m);
   return value;
@@ -61,7 +67,7 @@ SemanticsBridge::SemanticsBridge(shell::PlatformView* platform_view,
                                  blink::LogicalMetrics* metrics)
     : binding_(this), platform_view_(platform_view), metrics_(metrics) {
   root_.set_error_handler([this](zx_status_t status) {
-    FXL_LOG(INFO) << "A11y bridge disconnected from a11y manager";
+    FX_LOG(INFO, LOG_TAG, "A11y bridge disconnected from a11y manager");
     binding_.Unbind();
     root_.Unbind();
     platform_view_->SetSemanticsEnabled(false);
@@ -73,7 +79,7 @@ SemanticsBridge::SemanticsBridge(shell::PlatformView* platform_view,
   a11y_toggle_.events().OnAccessibilityToggle =
       fit::bind_member(this, &SemanticsBridge::OnAccessibilityToggle);
   a11y_toggle_.set_error_handler([this](zx_status_t status) {
-    FXL_LOG(INFO) << "Disconnected from a11y toggle broadcaster.";
+    FX_LOG(INFO, LOG_TAG, "Disconnected from a11y toggle broadcaster.");
     binding_.Unbind();
     root_.Unbind();
     environment_set_ = false;
@@ -139,7 +145,7 @@ void SemanticsBridge::PerformAccessibilityAction(
           node_id, blink::SemanticsAction::kTap, args);
       break;
     default:
-      FXL_LOG(ERROR) << "Accessibility action not supported";
+      FX_LOG(ERROR, LOG_TAG, "Accessibility action not supported");
   }
 }
 

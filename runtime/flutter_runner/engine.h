@@ -15,7 +15,6 @@
 #include "flutter/fml/macros.h"
 #include "flutter/shell/common/shell.h"
 #include "isolate_configurator.h"
-#include "lib/fxl/memory/weak_ptr.h"
 #include "lib/ui/flutter/sdk_ext/src/natives.h"
 
 namespace flutter {
