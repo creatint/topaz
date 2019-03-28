@@ -139,7 +139,8 @@ class TileModel extends ChangeNotifier {
     this.parent,
     this.content,
     this.tiles,
-  }) {
+    double flex = 1,
+  }) : _flex = flex {
     tiles ??= <TileModel>[];
   }
 
@@ -148,6 +149,36 @@ class TileModel extends ChangeNotifier {
   double get flex => _flex;
   set flex(double value) {
     _flex = value;
+    _computeOffset();
+  }
+
+  double _width = 0;
+  double get width =>
+      parent.type == TileType.column ? _width + _offset : _width;
+  set width(double value) {
+    _width = value;
+    _computeOffset();
+  }
+
+  double _height = 0;
+  double get height =>
+      parent.type == TileType.row ? _height + _offset : _height;
+  set height(double value) {
+    _height = value;
+    _computeOffset();
+  }
+
+  double _offset = 0;
+  double get offset => _offset;
+  set offset(double value) {
+    _offset += value;
+    _computeFlex();
+
+    notifyListeners();
+  }
+
+  // Called everytime flex or width/height is set.
+  void _computeOffset() {
     if (parent.type == TileType.column) {
       _offset = -(_width - (_width * _flex));
     } else {
@@ -155,25 +186,11 @@ class TileModel extends ChangeNotifier {
     }
   }
 
-  double _width = 0;
-  double get width =>
-      parent.type == TileType.column ? _width + _offset : _width;
-  set width(double value) => _width = value;
-
-  double _height = 0;
-  double get height =>
-      parent.type == TileType.row ? _height + _offset : _height;
-  set height(double value) => _height = value;
-
-  double _offset = 0;
-  double get offset => _offset;
-  set offset(double value) {
-    _offset += value;
+  // Called everytime offset is set.
+  void _computeFlex() {
     _flex = parent.type == TileType.column
         ? (_width + _offset) / _width
         : (_height + _offset) / _height;
-
-    notifyListeners();
   }
 
   void copy(TileModel other) {
