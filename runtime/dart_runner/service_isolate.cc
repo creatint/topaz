@@ -4,7 +4,7 @@
 
 #include "topaz/runtime/dart_runner/service_isolate.h"
 
-#include "lib/fsl/vmo/file.h"
+#include "lib/fxl/logging.h"
 #include "third_party/dart/runtime/include/bin/dart_io_api.h"
 #include "third_party/tonic/converter/dart_converter.h"
 #include "third_party/tonic/dart_library_natives.h"

@@ -22,7 +22,6 @@
 
 #include "lib/fidl/cpp/optional.h"
 #include "lib/fidl/cpp/string.h"
-#include "lib/fsl/vmo/file.h"
 #include "lib/fxl/arraysize.h"
 #include "lib/fxl/logging.h"
 #include "third_party/dart/runtime/include/dart_tools_api.h"

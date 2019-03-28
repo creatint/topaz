@@ -5,18 +5,24 @@
 import("//build/package.gni")
 import("//build/testing/environments.gni")
 
-source_set("utils") {
-  public = [
-    "handle_exception.h",
-    "tempfs.h",
-    "vmservice_object.h",
+source_set("logging") {
+  visibility = [
+    ":*",
   ]
 
   sources = [
-    "handle_exception.cc",
     "logging.h",
+  ]
+}
+
+source_set("utils") {
+  sources = [
+    "handle_exception.cc",
+    "handle_exception.h",
     "tempfs.cc",
+    "tempfs.h",
     "vmservice_object.cc",
+    "vmservice_object.h",
   ]
 
   public_deps = [
@@ -26,12 +32,30 @@ source_set("utils") {
   ]
 
   deps = [
+    ":logging",
     "//third_party/tonic",
     "//zircon/public/fidl/fuchsia-crash",
     "//zircon/public/fidl/fuchsia-io",
     "//zircon/public/fidl/fuchsia-mem",
     "//zircon/public/lib/async-loop-cpp",
     "//zircon/public/lib/memfs",
+    "//zircon/public/lib/syslog",
+  ]
+}
+
+source_set("vmo") {
+  sources = [
+    "vmo.cc",
+    "vmo.h",
+  ]
+
+  public_deps = [
+    "//zircon/public/fidl/fuchsia-mem",
+    "//zircon/public/lib/fdio",
+  ]
+
+  deps = [
+    ":logging",
     "//zircon/public/lib/syslog",
   ]
 }

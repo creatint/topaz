@@ -4,6 +4,7 @@
 
 #include "runner.h"
 
+#include <fuchsia/mem/cpp/fidl.h>
 #include <lib/async/cpp/task.h>
 #include <trace-engine/instrumentation.h>
 #include <zircon/status.h>
@@ -15,11 +16,10 @@
 #include "flutter/fml/make_copyable.h"
 #include "flutter/lib/ui/text/font_collection.h"
 #include "fuchsia_font_manager.h"
-#include "lib/fsl/vmo/file.h"
-#include "lib/fsl/vmo/sized_vmo.h"
 #include "third_party/flutter/runtime/dart_vm.h"
 #include "third_party/icu/source/common/unicode/udata.h"
 #include "third_party/skia/include/core/SkGraphics.h"
+#include "topaz/runtime/dart/utils/vmo.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
 namespace flutter {
@@ -29,21 +29,16 @@ namespace {
 static constexpr char kIcuDataPath[] = "/pkg/data/icudtl.dat";
 
 // Map the memory into the process and return a pointer to the memory.
-// |size_out| is required and is set with the size of the mapped memory
-// region.
-uintptr_t GetICUData(const fsl::SizedVmo& icu_data, size_t* size_out) {
-  if (!size_out)
-    return 0u;
-  uint64_t data_size = icu_data.size();
+uintptr_t GetICUData(const fuchsia::mem::Buffer& icu_data) {
+  uint64_t data_size = icu_data.size;
   if (data_size > std::numeric_limits<size_t>::max())
     return 0u;
 
   uintptr_t data = 0u;
   zx_status_t status = zx::vmar::root_self()->map(
-      0, icu_data.vmo(), 0, static_cast<size_t>(data_size), ZX_VM_PERM_READ,
+      0, icu_data.vmo, 0, static_cast<size_t>(data_size), ZX_VM_PERM_READ,
       &data);
   if (status == ZX_OK) {
-    *size_out = static_cast<size_t>(data_size);
     return data;
   }
 
@@ -54,13 +49,12 @@ uintptr_t GetICUData(const fsl::SizedVmo& icu_data, size_t* size_out) {
 bool InitializeICU() {
   const char* data_path = kIcuDataPath;
 
-  fsl::SizedVmo icu_data;
-  if (!fsl::VmoFromFilename(data_path, &icu_data)) {
+  fuchsia::mem::Buffer icu_data;
+  if (!fuchsia::dart::VmoFromFilename(data_path, &icu_data)) {
     return false;
   }
 
-  size_t data_size = 0;
-  uintptr_t data = GetICUData(icu_data, &data_size);
+  uintptr_t data = GetICUData(icu_data);
   if (!data) {
     return false;
   }

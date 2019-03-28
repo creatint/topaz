@@ -5,6 +5,7 @@
 #include "component.h"
 
 #include <dlfcn.h>
+#include <fuchsia/mem/cpp/fidl.h>
 #include <lib/async/cpp/task.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/fdio/directory.h>
@@ -20,8 +21,6 @@
 
 #include "flutter/fml/synchronization/waitable_event.h"
 #include "flutter/shell/common/switches.h"
-#include "lib/fsl/vmo/file.h"
-#include "lib/fsl/vmo/vector.h"
 #include "lib/fxl/command_line.h"
 #include "src/lib/files/file.h"
 #include "loop.h"
@@ -29,6 +28,7 @@
 #include "task_observers.h"
 #include "topaz/runtime/dart/utils/handle_exception.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
+#include "topaz/runtime/dart/utils/vmo.h"
 
 namespace flutter {
 
@@ -327,11 +327,11 @@ class FileInNamespaceBuffer final : public blink::DartSnapshotBuffer {
  public:
   FileInNamespaceBuffer(int namespace_fd, const char* path, bool executable)
       : address_(nullptr), size_(0) {
-    fsl::SizedVmo vmo;
-    if (!fsl::VmoFromFilenameAt(namespace_fd, path, &vmo)) {
+    fuchsia::mem::Buffer buffer;
+    if (!fuchsia::dart::VmoFromFilenameAt(namespace_fd, path, &buffer)) {
       return;
     }
-    if (vmo.size() == 0) {
+    if (buffer.size == 0) {
       return;
     }
 
@@ -344,7 +344,7 @@ class FileInNamespaceBuffer final : public blink::DartSnapshotBuffer {
       // ZX_VM_PERM_EXECUTE.
       // TODO(mdempsky): Update comment once SEC-42 is fixed.
       zx_status_t status =
-          vmo.vmo().replace_as_executable(zx::handle(), &vmo.vmo());
+          buffer.vmo.replace_as_executable(zx::handle(), &buffer.vmo);
       if (status != ZX_OK) {
         FML_LOG(FATAL) << "Failed to make VMO executable: "
                        << zx_status_get_string(status);
@@ -352,14 +352,14 @@ class FileInNamespaceBuffer final : public blink::DartSnapshotBuffer {
     }
     uintptr_t addr;
     zx_status_t status =
-        zx::vmar::root_self()->map(0, vmo.vmo(), 0, vmo.size(), flags, &addr);
+        zx::vmar::root_self()->map(0, buffer.vmo, 0, buffer.size, flags, &addr);
     if (status != ZX_OK) {
       FML_LOG(FATAL) << "Failed to map " << path << ": "
                      << zx_status_get_string(status);
     }
 
     address_ = reinterpret_cast<void*>(addr);
-    size_ = vmo.size();
+    size_ = buffer.size;
   }
 
   ~FileInNamespaceBuffer() {

@@ -10,8 +10,8 @@
 #include <trace/event.h>
 #include <zircon/status.h>
 
-#include "lib/fsl/vmo/file.h"
 #include "lib/fxl/logging.h"
+#include "topaz/runtime/dart/utils/vmo.h"
 
 namespace dart_runner {
 
@@ -24,18 +24,18 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
   // openat of a path with a leading '/' ignores the namespace fd.
   FXL_CHECK(path[0] != '/');
 
-  fsl::SizedVmo resource_vmo;
+  fuchsia::mem::Buffer resource_vmo;
   if (namespc == nullptr) {
-    if (!fsl::VmoFromFilename(path, &resource_vmo)) {
+    if (!fuchsia::dart::VmoFromFilename(path, &resource_vmo)) {
       return false;
     }
   } else {
-    fxl::UniqueFD root_dir(fdio_ns_opendir(namespc));
-    if (!root_dir.is_valid()) {
+    auto root_dir = fdio_ns_opendir(namespc);
+    if (root_dir < 0) {
       return false;
     }
 
-    if (!fsl::VmoFromFilenameAt(root_dir.get(), path, &resource_vmo)) {
+    if (!fuchsia::dart::VmoFromFilenameAt(root_dir, path, &resource_vmo)) {
       return false;
     }
   }
@@ -46,7 +46,7 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
     // ZX_VM_PERM_EXECUTE.
     // TODO(mdempsky): Update comment once SEC-42 is fixed.
     zx_status_t status =
-        resource_vmo.vmo().replace_as_executable(zx::handle(), &resource_vmo.vmo());
+        resource_vmo.vmo.replace_as_executable(zx::handle(), &resource_vmo.vmo);
     if (status != ZX_OK) {
       FXL_LOG(ERROR) << "Failed to make VMO executable: "
                      << zx_status_get_string(status);
@@ -58,9 +58,9 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
 }
 
 bool MappedResource::LoadFromVmo(const std::string& path,
-                                 fsl::SizedVmo resource_vmo,
+                                 fuchsia::mem::Buffer resource_vmo,
                                  MappedResource& resource, bool executable) {
-  if (resource_vmo.size() == 0) {
+  if (resource_vmo.size == 0) {
     return true;
   }
 
@@ -70,7 +70,7 @@ bool MappedResource::LoadFromVmo(const std::string& path,
   }
   uintptr_t addr;
   zx_status_t status = zx::vmar::root_self()->map(
-      0, resource_vmo.vmo(), 0, resource_vmo.size(), flags, &addr);
+      0, resource_vmo.vmo, 0, resource_vmo.size, flags, &addr);
   if (status != ZX_OK) {
     FXL_LOG(ERROR) << "Failed to map " << path << ": "
                    << zx_status_get_string(status);
@@ -78,7 +78,7 @@ bool MappedResource::LoadFromVmo(const std::string& path,
   }
 
   resource.address_ = reinterpret_cast<void*>(addr);
-  resource.size_ = resource_vmo.size();
+  resource.size_ = resource_vmo.size;
   return true;
 }
 

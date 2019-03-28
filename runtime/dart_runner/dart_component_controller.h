@@ -7,6 +7,7 @@
 
 #include <memory>
 
+#include <fuchsia/sys/cpp/fidl.h>
 #include <lib/async/cpp/wait.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/fdio/namespace.h>
@@ -14,9 +15,7 @@
 #include <lib/sys/cpp/component_context.h>
 #include <lib/zx/timer.h>
 
-#include <fuchsia/sys/cpp/fidl.h>
 #include "lib/fidl/cpp/binding.h"
-#include "lib/fsl/vmo/sized_vmo.h"
 #include "lib/fxl/macros.h"
 #include "third_party/dart/runtime/include/dart_api.h"
 #include "topaz/runtime/dart_runner/mapped_resource.h"

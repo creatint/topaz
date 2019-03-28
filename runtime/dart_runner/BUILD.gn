@@ -43,9 +43,9 @@ template("runner") {
     ]
 
     deps = [
-             "//garnet/public/lib/fsl",
              "//garnet/public/lib/fxl",
              "//topaz/runtime/dart/utils",
+             "//topaz/runtime/dart/utils:vmo",
              "//third_party/tonic",
              "//topaz/public/dart-pkg/fuchsia",
              "//zircon/public/lib/async",

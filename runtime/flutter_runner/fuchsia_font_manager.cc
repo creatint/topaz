@@ -22,11 +22,11 @@
 
 #include <unordered_map>
 
-#include "lib/fsl/vmo/sized_vmo.h"
 #include "lib/fxl/logging.h"
 #include "lib/fxl/macros.h"
 #include "lib/fxl/memory/weak_ptr.h"
 #include "third_party/icu/source/common/unicode/uchar.h"
+#include "topaz/runtime/dart/utils/vmo.h"
 
 namespace txt {
 
@@ -62,14 +62,15 @@ void ReleaseSkData(const void* buffer, void* context) {
 sk_sp<SkData> MakeSkDataFromBuffer(const fuchsia::mem::Buffer& data,
                                    int buffer_id,
                                    fit::function<void()> release_proc) {
-  if (!fsl::SizedVmo::IsSizeValid(data.vmo, data.size) ||
-      data.size > std::numeric_limits<size_t>::max()) {
+  bool is_valid;
+  zx_status_t status = fuchsia::dart::IsSizeValid(data, &is_valid);
+  if (!is_valid || data.size > std::numeric_limits<size_t>::max()) {
     return nullptr;
   }
   uint64_t size = data.size;
   uintptr_t buffer = 0;
-  zx_status_t status = zx::vmar::root_self()->map(0, data.vmo, 0, size,
-                                                  ZX_VM_PERM_READ, &buffer);
+  status = zx::vmar::root_self()->map(0, data.vmo, 0, size, ZX_VM_PERM_READ,
+                                      &buffer);
   if (status != ZX_OK)
     return nullptr;
   auto context =

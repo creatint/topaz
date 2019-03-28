@@ -7,14 +7,36 @@
 #include <fcntl.h>
 #include <fuchsia/fonts/cpp/fidl.h>
 #include <fuchsia/sys/cpp/fidl.h>
+#include <lib/fdio/fd.h>
 #include <lib/gtest/real_loop_fixture.h>
 #include <lib/sys/cpp/service_directory.h>
+#include <lib/zx/channel.h>
+#include <lib/zx/handle.h>
 #include <memory>
 
 #include "gtest/gtest.h"
-#include "lib/fsl/io/fd.h"
 #include "third_party/skia/include/core/SkFontMgr.h"
 #include "third_party/skia/include/core/SkTypeface.h"
+
+namespace {
+
+zx::channel CloneChannelFromFileDescriptor(int fd) {
+  zx::handle handle;
+  zx_status_t status = fdio_fd_clone(fd, handle.reset_and_get_address());
+  if (status != ZX_OK)
+    return zx::channel();
+
+  zx_info_handle_basic_t info = {};
+  status =
+      handle.get_info(ZX_INFO_HANDLE_BASIC, &info, sizeof(info), NULL, NULL);
+
+  if (status != ZX_OK || info.type != ZX_OBJ_TYPE_CHANNEL)
+    return zx::channel();
+
+  return zx::channel(handle.release());
+}
+
+}  // namespace
 
 namespace txt {
 
@@ -61,12 +83,13 @@ class FuchsiaFontManagerTest : public gtest::RealLoopFixture {
     launch_info.url = kFontsServiceUrl;
     launch_info.arguments.reset(
         {"--no-default-fonts", "--font-manifest=/test_fonts/manifest.json"});
-    fxl::UniqueFD tmp_dir_fd(
-        open("/pkg/data/testdata/test_fonts", O_DIRECTORY | O_RDONLY));
+    auto tmp_dir_fd = open("/pkg/data/testdata/test_fonts",
+                           O_DIRECTORY | O_RDONLY);
     launch_info.flat_namespace = fuchsia::sys::FlatNamespace::New();
     launch_info.flat_namespace->paths.push_back("/test_fonts");
     launch_info.flat_namespace->directories.push_back(
-        fsl::CloneChannelFromFileDescriptor(tmp_dir_fd.get()));
+        CloneChannelFromFileDescriptor(tmp_dir_fd));
+    close(tmp_dir_fd);
     return launch_info;
   }
 
