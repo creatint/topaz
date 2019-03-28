@@ -150,15 +150,16 @@ vulkan::VulkanHandle<VkSemaphore> VulkanSurface::SemaphoreFromEvent(
     return vulkan::VulkanHandle<VkSemaphore>();
   }
 
-  VkImportSemaphoreFuchsiaHandleInfoKHR import_info = {
-      .sType = VK_STRUCTURE_TYPE_IMPORT_SEMAPHORE_FUCHSIA_HANDLE_INFO_KHR,
+  VkImportSemaphoreZirconHandleInfoFUCHSIA import_info = {
+      .sType = VK_STRUCTURE_TYPE_TEMP_IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA,
       .pNext = nullptr,
       .semaphore = semaphore,
-      .handleType = VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_FUCHSIA_FENCE_BIT_KHR,
+      .handleType =
+          VK_EXTERNAL_SEMAPHORE_HANDLE_TYPE_TEMP_ZIRCON_EVENT_BIT_FUCHSIA,
       .handle = static_cast<uint32_t>(semaphore_event.release())};
 
-  result =
-      VK_CALL_LOG_ERROR(vulkan_provider_.vk().ImportSemaphoreFuchsiaHandleKHR(
+  result = VK_CALL_LOG_ERROR(
+      vulkan_provider_.vk().ImportSemaphoreZirconHandleFUCHSIA(
           vulkan_provider_.vk_device(), &import_info));
   if (result != VK_SUCCESS) {
     return vulkan::VulkanHandle<VkSemaphore>();
@@ -220,7 +221,7 @@ bool VulkanSurface::AllocateDeviceMemory(sk_sp<GrContext> context,
   VkExportMemoryAllocateInfoKHR export_allocate_info = {
       .sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_KHR,
       .pNext = nullptr,
-      .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_FUCHSIA_VMO_BIT_KHR};
+      .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA};
 
   const VkMemoryAllocateInfo alloc_info = {
       .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
@@ -259,10 +260,10 @@ bool VulkanSurface::AllocateDeviceMemory(sk_sp<GrContext> context,
     // Acquire the VMO for the device memory.
     uint32_t vmo_handle = 0;
 
-    VkMemoryGetFuchsiaHandleInfoKHR get_handle_info = {
-        VK_STRUCTURE_TYPE_MEMORY_GET_FUCHSIA_HANDLE_INFO_KHR, nullptr,
-        vk_memory_, VK_EXTERNAL_MEMORY_HANDLE_TYPE_FUCHSIA_VMO_BIT_KHR};
-    if (VK_CALL_LOG_ERROR(vulkan_provider_.vk().GetMemoryFuchsiaHandleKHR(
+    VkMemoryGetZirconHandleInfoFUCHSIA get_handle_info = {
+        VK_STRUCTURE_TYPE_TEMP_MEMORY_GET_ZIRCON_HANDLE_INFO_FUCHSIA, nullptr,
+        vk_memory_, VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA};
+    if (VK_CALL_LOG_ERROR(vulkan_provider_.vk().GetMemoryZirconHandleFUCHSIA(
             vulkan_provider_.vk_device(), &get_handle_info, &vmo_handle)) !=
         VK_SUCCESS) {
       return false;
