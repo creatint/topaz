@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:meta/meta.dart';
-import '../surface/surface.dart';
-import '../surface/surface_relation.dart';
+import '../../surface/surface.dart';
+import '../../surface/surface_relation.dart';
 
 /// Simple mutable SurfaceNode data structure
 class SurfaceNode extends Iterable<SurfaceNode> {

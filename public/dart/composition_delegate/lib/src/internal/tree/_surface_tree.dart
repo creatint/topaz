@@ -1,18 +1,18 @@
 // Copyright 2019 The Fuchsia Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-import 'package:fuchsia_logger/logger.dart';
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import '../surface/surface.dart';
-import '../surface/surface_relation.dart';
-import './surface_node.dart';
+import '../../surface/surface.dart';
+import '../../surface/surface_relation.dart';
+import './_surface_node.dart';
+
+/// A logger for Surface Tree warnings
+Logger log = Logger.root;
 
 /// A SurfaceTree of SurfaceNodes
 class SurfaceTree extends Iterable<Surface> {
   /// Construct [SurfaceTree]
-  SurfaceTree() {
-    setupLogger(name: 'libMondrian', level: Level.FINE);
-  }
 
   /// The root of the SurfaceTree. SurfaceNodes added to the Tree without
   /// specifying parents are added to the root.
@@ -29,11 +29,10 @@ class SurfaceTree extends Iterable<Surface> {
   }) {
     // If the Surface is already in the Tree, return;
     if (_nodeMap.containsKey(node.surface.surfaceId)) {
-      log
-        ..warning(
-            'Surface with id "${node.surface.surfaceId}" already in tree.')
-        ..warning('Use update() to modify existing Surfaces.'
-            'Surface will not be not re-added.');
+      log.warning(
+          'Surface with id "${node.surface.surfaceId}" already in tree. '
+          'Use update() to modify existing Surfaces. '
+          'Surface will not be not re-added.');
       return;
     }
     // If an invalid parent was specified throw an error

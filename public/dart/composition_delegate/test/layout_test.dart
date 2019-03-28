@@ -2,41 +2,41 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:lib.mondrian.dart/mondrian.dart';
+import 'package:composition_delegate.dart/composition_delegate.dart';
 import 'package:test/test.dart';
 
 void main() {
-  Composer setupComposer() {
-    Composer composer =
-        new Composer(layoutContext: new LayoutContext(size: Size(1280, 800)));
-    return composer;
+  CompositionDelegate setupCompositionDelegate() {
+    CompositionDelegate compDelegate = new CompositionDelegate(
+        layoutContext: new LayoutContext(size: Size(1280, 800)));
+    return compDelegate;
   }
 
   group(
     'Test layout determination',
     () {
       test('For no Surfaces is empty', () {
-        Composer composer = setupComposer();
-        expect(composer.getLayout(), equals([]));
+        CompositionDelegate compDelegate = setupCompositionDelegate();
+        expect(compDelegate.getLayout(), equals([]));
       });
 
       test('For one Surface is full screen', () {
         // expect a List, with one Layer, with one SurfaceLayout
-        Composer composer = setupComposer();
+        CompositionDelegate compDelegate = setupCompositionDelegate();
 
         List<Layer> expectedLayout = <Layer>[
           Layer(
               element: SurfaceLayout(
                   x: 0.0, y: 0.0, w: 1280.0, h: 800.0, surfaceId: 'first'))
         ];
-        composer
+        compDelegate
           ..addSurface(surface: Surface(surfaceId: 'first'))
           ..focusSurface(surfaceId: 'first');
-        expect(composer.getLayout(), equals(expectedLayout));
+        expect(compDelegate.getLayout(), equals(expectedLayout));
       });
 
       test('For two Surfaces with no relationship is stacked', () {
-        Composer composer = setupComposer();
+        CompositionDelegate compDelegate = setupCompositionDelegate();
 
         Layer expectedUpper = Layer(
             element: SurfaceLayout(
@@ -48,16 +48,16 @@ void main() {
         List<Layer> expectedLayout = [expectedLower, expectedUpper];
         // This test relies on the surface being focused in the correct order as the focus list is
         // maintained separaretly from what has been added to the tree.
-        composer
+        compDelegate
           ..addSurface(surface: Surface(surfaceId: 'first'))
           ..focusSurface(surfaceId: 'first')
           ..addSurface(surface: Surface(surfaceId: 'second'))
           ..focusSurface(surfaceId: 'second');
-        expect(composer.getLayout(), equals(expectedLayout));
+        expect(compDelegate.getLayout(), equals(expectedLayout));
       });
 
       test('For two related Surfaces is a 50/50 split', () {
-        Composer composer = setupComposer();
+        CompositionDelegate compDelegate = setupCompositionDelegate();
         List<SurfaceLayout> surfaces = [
           SurfaceLayout(x: 0.0, y: 0.0, w: 640.0, h: 800.0, surfaceId: 'first'),
           SurfaceLayout(
@@ -65,7 +65,7 @@ void main() {
         ];
 
         Layer expectedLayout = Layer.fromList(elements: surfaces);
-        composer
+        compDelegate
           ..addSurface(surface: Surface(surfaceId: 'first'))
           ..addSurface(
               surface: Surface(
@@ -74,13 +74,13 @@ void main() {
               ),
               parentId: 'first')
           ..focusSurface(surfaceId: 'second');
-        expect(composer.getLayout(), equals([expectedLayout]));
+        expect(compDelegate.getLayout(), equals([expectedLayout]));
       });
 
       test(
           'For four Surfaces, 3 children with the same parent, is split into quarters vertically',
           () {
-        Composer composer = setupComposer();
+        CompositionDelegate compDelegate = setupCompositionDelegate();
         List<SurfaceLayout> surfaces = [
           SurfaceLayout(x: 0.0, y: 0.0, w: 320.0, h: 800.0, surfaceId: 'first'),
           SurfaceLayout(
@@ -92,7 +92,7 @@ void main() {
         ];
 
         Layer expectedLayout = Layer.fromList(elements: surfaces);
-        composer
+        compDelegate
           ..addSurface(surface: Surface(surfaceId: 'first'))
           ..addSurface(
               surface: Surface(
@@ -113,7 +113,7 @@ void main() {
               ),
               parentId: 'first')
           ..focusSurface(surfaceId: 'fourth');
-        expect(composer.getLayout(), equals([expectedLayout]));
+        expect(compDelegate.getLayout(), equals([expectedLayout]));
       });
     },
   );

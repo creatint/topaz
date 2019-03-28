@@ -5,15 +5,15 @@
 import 'dart:collection';
 import 'package:meta/meta.dart';
 
-import 'layout/layout_context.dart';
-import 'layout/layout_types.dart';
-import 'surface/surface.dart';
-import 'tree/surface_tree.dart';
+import '../internal/tree/_surface_tree.dart';
+import '../layout/layout_context.dart';
+import '../layout/layout_types.dart';
+import '../surface/surface.dart';
 
-/// The Composer maintains the model of surfaces participating in an experience
-/// and their relationships. Using context such as viewport area, surface
-/// metadata, etc., it determines a layout given a 'focused' surface.
-class Composer {
+/// The CompositionDelegate maintains the model of surfaces participating in an
+/// experience and their relationships. Using context such as viewport area,
+/// surface metadata, etc., it determines a layout given a 'focused' surface.
+class CompositionDelegate {
   /// The set of surfaces that are currently marked as 'hidden' in the
   /// experience - they are still present in the experience, but they will not
   /// be laid out until they have focusSurface() called on them.
@@ -37,7 +37,7 @@ class Composer {
       const LayoutContext(size: const Size(1280, 800));
 
   /// Constructor
-  Composer({
+  CompositionDelegate({
     this.layoutContext = defaultContext,
   })  : _hiddenSurfaces = <String>{},
         _surfaceTree = new SurfaceTree();

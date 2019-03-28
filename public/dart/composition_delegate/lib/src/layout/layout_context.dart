@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-/// The context in which the Composer determines layout
+/// The context in which the CompositionDelegate determines layout
 class LayoutContext {
-  /// The size of the viewport the Composer can use
+  /// The size of the viewport the CompositionDelegate can use
   final Size size;
 
   /// Constructor

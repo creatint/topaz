@@ -2,7 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:lib.mondrian.dart/mondrian.dart';
+// ignore_for_file: implementation_imports
+import 'package:composition_delegate.dart/composition_delegate.dart';
+import 'package:composition_delegate.dart/src/internal/tree/_surface_node.dart';
+import 'package:composition_delegate.dart/src/internal/tree/_surface_tree.dart';
 import 'package:test/test.dart';
 
 void main() {
