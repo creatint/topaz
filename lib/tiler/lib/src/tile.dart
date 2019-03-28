@@ -210,5 +210,6 @@ class TileModel extends ChangeNotifier {
   void notify() => notifyListeners();
 
   @override
-  String toString() => type == TileType.content ? '$type' : '$type $tiles';
+  String toString() =>
+      type == TileType.content ? '$type($flex)' : '$type $tiles';
 }

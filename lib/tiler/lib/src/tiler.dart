@@ -73,17 +73,21 @@ class TilerModel extends ChangeNotifier {
   }
 
   /// Returns a new tile after splitting the supplied [tile] in the [direction].
+  /// The [tile] is split such that new tile has supplied [flex].
   TileModel split({
     @required TileModel tile,
     Object content,
     AxisDirection direction,
+    double flex = 0.5,
   }) {
     assert(tile != null);
+    assert(flex > 0 && flex < 1);
 
     var parent = tile.parent;
     final newTile = TileModel(
       type: TileType.content,
       content: content,
+      flex: flex,
     );
 
     final newParent = TileModel(
@@ -96,8 +100,6 @@ class TilerModel extends ChangeNotifier {
     // If parent is null, tile should be the root tile.
     if (parent == null) {
       assert(tile == root);
-
-      parent = newParent;
       root = parent;
     } else {
       int index = parent?.tiles?.indexOf(tile) ?? 0;
@@ -111,7 +113,9 @@ class TilerModel extends ChangeNotifier {
       parent.tiles.insert(index, newParent);
     }
     newTile.parent = newParent;
-    tile.parent = newParent;
+    tile
+      ..parent = newParent
+      ..flex = 1 - flex;
 
     notifyListeners();
 
