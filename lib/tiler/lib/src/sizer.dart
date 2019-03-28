@@ -7,7 +7,11 @@ import 'package:flutter/material.dart';
 import 'tile.dart';
 
 typedef TileSizerBuilder = Widget Function(
-    BuildContext context, Axis direction);
+  BuildContext context,
+  Axis direction,
+  TileModel tileBefore,
+  TileModel tileAfter,
+);
 
 class Sizer extends StatelessWidget {
   final Axis direction;
@@ -25,7 +29,7 @@ class Sizer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final sizer = sizerBuilder?.call(context, direction);
+    final sizer = sizerBuilder?.call(context, direction, tileBefore, tileAfter);
     if (sizer == null) {
       return SizedBox.shrink();
     } else {
@@ -46,7 +50,7 @@ class Sizer extends StatelessWidget {
               ),
           child: Container(
             color: Colors.transparent,
-            child: sizerBuilder(context, direction),
+            child: sizer,
           ),
         ),
       );
