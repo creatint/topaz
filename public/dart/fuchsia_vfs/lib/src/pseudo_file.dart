@@ -156,7 +156,7 @@ class PseudoFile extends Vnode {
     if (flags & openFlagDirectory != 0) {
       return ZX.ERR_NOT_DIR;
     }
-    var allowedFlags = openFlagDescribe | openFlagNodeReference;
+    var allowedFlags = openFlagDescribe | openFlagNodeReference | openFlagPosix;
     if (_readFn != null) {
       allowedFlags |= openRightReadable;
     }
