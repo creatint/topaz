@@ -48,10 +48,7 @@ class TilerModel extends ChangeNotifier {
   TileModel root;
 
   /// Initializes the [TilerModel] to start layout in supplied [direction].
-  TilerModel({
-    Axis direction = Axis.horizontal,
-    this.root,
-  }) {
+  TilerModel({this.root}) {
     if (root != null) {
       _initialize(root);
     }
