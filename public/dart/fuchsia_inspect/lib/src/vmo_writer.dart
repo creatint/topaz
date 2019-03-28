@@ -5,6 +5,8 @@
 import 'dart:math' show min;
 import 'dart:typed_data';
 
+import 'package:fuchsia_vfs/vfs.dart';
+
 import 'block.dart';
 import 'heap.dart';
 import 'util.dart';
@@ -53,6 +55,10 @@ class VmoWriter {
 
   /// Gets the top Node of the Inspect tree (always at index 1).
   int get rootNode => rootNodeIndex;
+
+  /// The read-only node of the VMO.
+  VmoFile get vmoNode =>
+      VmoFile.readOnly(_vmo.vmo, VmoSharingMode.shareDuplicate);
 
   /// Creates and writes a Node block
   int createNode(int parent, String name) {

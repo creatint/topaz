@@ -5,12 +5,15 @@
 import 'package:flutter/material.dart';
 import 'package:fuchsia_inspect/inspect.dart';
 import 'package:fuchsia_modular/module.dart';
+import 'package:fuchsia_services/services.dart';
 
 class RootIntentHandler extends IntentHandler {
   @override
   void handleIntent(Intent intent) {
-    // TODO(CF-602): Actually use this.
-    Inspect();
+    var context = StartupContext.fromStartupInfo();
+
+    // TODO(CF-602): Actually use this to track app attributes.
+    Inspect(context);
 
     runApp(Container(color: Colors.blue));
   }
