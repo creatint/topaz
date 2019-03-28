@@ -38,8 +38,7 @@ bool VmoFromFd(int fd, fuchsia::mem::Buffer* buffer) {
 
 }  // namespace
 
-namespace fuchsia {
-namespace dart {
+namespace dart_utils {
 
 bool VmoFromFilename(const std::string& filename,
                      fuchsia::mem::Buffer* buffer) {
@@ -68,5 +67,4 @@ zx_status_t IsSizeValid(const fuchsia::mem::Buffer& buffer, bool* is_valid) {
   return status;
 }
 
-}  // namespace dart
-}  // namespace fuchsia
+}  // namespace dart_utils

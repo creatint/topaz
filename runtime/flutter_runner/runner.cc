@@ -50,7 +50,7 @@ bool InitializeICU() {
   const char* data_path = kIcuDataPath;
 
   fuchsia::mem::Buffer icu_data;
-  if (!fuchsia::dart::VmoFromFilename(data_path, &icu_data)) {
+  if (!dart_utils::VmoFromFilename(data_path, &icu_data)) {
     return false;
   }
 
@@ -95,8 +95,8 @@ Runner::Runner(async::Loop* loop)
   // vm service protocol port under /tmp. The VMServiceObject exposes that
   // port number to The Hub.
   host_context_->outgoing()->debug_dir()->AddEntry(
-      fuchsia::dart::VMServiceObject::kPortDirName,
-      std::make_unique<fuchsia::dart::VMServiceObject>());
+      dart_utils::VMServiceObject::kPortDirName,
+      std::make_unique<dart_utils::VMServiceObject>());
 
   SetupTraceObserver();
 #endif  // !defined(DART_PRODUCT)

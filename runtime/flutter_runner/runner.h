@@ -51,7 +51,7 @@ class Runner final : public fuchsia::sys::Runner {
 
 #if !defined(DART_PRODUCT)
   // The connection between the Dart VM service and The Hub.
-  std::unique_ptr<fuchsia::dart::VMServiceObject> vmservice_object_;
+  std::unique_ptr<dart_utils::VMServiceObject> vmservice_object_;
 
   std::unique_ptr<trace::TraceObserver> trace_observer_;
   trace_prolonged_context_t* prolonged_context_;

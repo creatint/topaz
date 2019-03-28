@@ -19,7 +19,7 @@ int main(int argc, const char** argv) {
     trace::TraceProvider::CreateSynchronously(loop.dispatcher(), "dart_runner",
                                               &provider, &already_started);
   }
-  fuchsia::dart::SetupRunnerTemp();
+  dart_utils::SetupRunnerTemp();
   dart_runner::DartRunner runner;
   loop.Run();
   return 0;

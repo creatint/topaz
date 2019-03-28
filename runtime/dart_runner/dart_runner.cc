@@ -132,8 +132,8 @@ DartRunner::DartRunner() : context_(sys::ComponentContext::Create()) {
   // vm service protocol port under /tmp. The VMServiceObject exposes that
   // port number to The Hub.
   context_->outgoing()->debug_dir()->AddEntry(
-      fuchsia::dart::VMServiceObject::kPortDirName,
-      std::make_unique<fuchsia::dart::VMServiceObject>());
+      dart_utils::VMServiceObject::kPortDirName,
+      std::make_unique<dart_utils::VMServiceObject>());
 
 #endif  // !defined(DART_PRODUCT)
 

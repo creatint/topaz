@@ -42,8 +42,7 @@ void DispatchTempMemFS() {
 
 }  // namespace
 
-namespace fuchsia {
-namespace dart {
+namespace dart_utils {
 
 // Set up a memfs bound to /tmp in the process-wide namespace that has the
 // lifetime of the process.
@@ -87,5 +86,4 @@ void SetupComponentTemp(fdio_ns_t* ns) {
   }
 }
 
-}  // namespace dart
-}  // namespace fuchsia
+}  // namespace dart_utils

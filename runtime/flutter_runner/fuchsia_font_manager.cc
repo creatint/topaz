@@ -63,7 +63,7 @@ sk_sp<SkData> MakeSkDataFromBuffer(const fuchsia::mem::Buffer& data,
                                    int buffer_id,
                                    fit::function<void()> release_proc) {
   bool is_valid;
-  zx_status_t status = fuchsia::dart::IsSizeValid(data, &is_valid);
+  zx_status_t status = dart_utils::IsSizeValid(data, &is_valid);
   if (!is_valid || data.size > std::numeric_limits<size_t>::max()) {
     return nullptr;
   }

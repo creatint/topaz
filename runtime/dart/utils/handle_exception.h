@@ -12,8 +12,7 @@
 #include <sys/types.h>
 #include <third_party/dart/runtime/include/dart_api.h>
 
-namespace fuchsia {
-namespace dart {
+namespace dart_utils {
 
 // If |result| is a Dart Exception, passes the exception message and stack trace
 // to the crash analyzer service for further handling.
@@ -30,7 +29,6 @@ zx_status_t HandleException(std::shared_ptr<::sys::ServiceDirectory> services,
                             const std::string& error,
                             const std::string& stack_trace);
 
-}  // namespace dart
-}  // namespace fuchsia
+}  // namespace dart_utils
 
 #endif  // TOPAZ_RUNTIME_DART_UTILS_HANDLE_EXCEPTION_H_

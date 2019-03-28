@@ -153,7 +153,7 @@ bool DartComponentController::SetupNamespace() {
     return false;
   }
 
-  fuchsia::dart::SetupComponentTemp(namespace_);
+  dart_utils::SetupComponentTemp(namespace_);
 
   for (size_t i = 0; i < flat->paths.size(); ++i) {
     if (flat->paths.at(i) == kTmpPath) {
@@ -412,8 +412,8 @@ bool DartComponentController::Main() {
       FXL_LOG(ERROR) << Dart_GetError(main_result);
       return_code_ = tonic::GetErrorExitCode(main_result);
 
-      fuchsia::dart::HandleIfException(runner_incoming_services_, url_,
-                                       main_result);
+      dart_utils::HandleIfException(runner_incoming_services_, url_,
+                                    main_result);
     }
     Dart_ExitScope();
     return false;
@@ -461,7 +461,7 @@ void DartComponentController::MessageEpilogue(Dart_Handle result) {
     return;
   }
 
-  fuchsia::dart::HandleIfException(runner_incoming_services_, url_, result);
+  dart_utils::HandleIfException(runner_incoming_services_, url_, result);
 
   // Otherwise, see if there was any other error.
   return_code_ = tonic::GetErrorExitCode(result);

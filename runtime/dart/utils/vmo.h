@@ -9,8 +9,7 @@
 
 #include <fuchsia/mem/cpp/fidl.h>
 
-namespace fuchsia {
-namespace dart {
+namespace dart_utils {
 
 bool VmoFromFilename(const std::string& filename, fuchsia::mem::Buffer* buffer);
 
@@ -19,7 +18,6 @@ bool VmoFromFilenameAt(int dirfd, const std::string& filename,
 
 zx_status_t IsSizeValid(const fuchsia::mem::Buffer& buffer, bool* is_valid);
 
-}  // namespace dart
-}  // namespace fuchsia
+}  // namespace dart_utils
 
 #endif  // TOPAZ_RUNTIME_DART_UTILS_VMO_H_

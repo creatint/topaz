@@ -108,7 +108,7 @@ Application::Application(
   }
 
   // Setup /tmp to be mapped to the process-local memfs.
-  fuchsia::dart::SetupComponentTemp(fdio_ns_.get());
+  dart_utils::SetupComponentTemp(fdio_ns_.get());
 
   // LaunchInfo::flat_namespace optional.
   for (size_t i = 0; i < startup_info.flat_namespace.paths.size(); ++i) {
@@ -307,8 +307,8 @@ Application::Application(
           const std::string& error, const std::string& stack_trace) {
         async::PostTask(dispatcher,
             [runner_incoming_services, component_url, error, stack_trace]() {
-              fuchsia::dart::HandleException(runner_incoming_services,
-                                             component_url, error, stack_trace);
+              dart_utils::HandleException(runner_incoming_services,
+                                          component_url, error, stack_trace);
             });
         // Ideally we would return whether HandleException returned ZX_OK, but
         // short of knowing if the exception was correctly handled, we return
@@ -328,7 +328,7 @@ class FileInNamespaceBuffer final : public blink::DartSnapshotBuffer {
   FileInNamespaceBuffer(int namespace_fd, const char* path, bool executable)
       : address_(nullptr), size_(0) {
     fuchsia::mem::Buffer buffer;
-    if (!fuchsia::dart::VmoFromFilenameAt(namespace_fd, path, &buffer)) {
+    if (!dart_utils::VmoFromFilenameAt(namespace_fd, path, &buffer)) {
       return;
     }
     if (buffer.size == 0) {

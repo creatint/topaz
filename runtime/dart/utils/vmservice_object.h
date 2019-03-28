@@ -7,8 +7,7 @@
 
 #include <lib/vfs/cpp/lazy_dir.h>
 
-namespace fuchsia {
-namespace dart {
+namespace dart_utils {
 
 class VMServiceObject : public vfs::LazyDir {
  public:
@@ -21,7 +20,6 @@ class VMServiceObject : public vfs::LazyDir {
                       uint64_t id, std::string name) const override;
 };
 
-}  // namespace dart
-}  // namespace fuchsia
+}  // namespace dart_utils
 
 #endif  // TOPAZ_RUNTIME_DART_UTILS_VMSERVICE_OBJECT_H_

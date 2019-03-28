@@ -33,8 +33,7 @@ bool ReadDirContents(const std::string& path, std::vector<std::string>* out) {
 
 }
 
-namespace fuchsia {
-namespace dart {
+namespace dart_utils {
 
 void VMServiceObject::GetContents(LazyEntryVector* out_vector) const {
   // List /tmp/dart.services if it exists, and push its contents as
@@ -60,5 +59,4 @@ zx_status_t VMServiceObject::GetFile(Node** out_node, uint64_t id,
   return ZX_ERR_NOT_FOUND;
 }
 
-}  // namespace dart
-}  // namespace fuchsia
+}  // namespace dart_utils

@@ -39,8 +39,7 @@ static bool FillBuffer(const std::string& data, fuchsia::mem::Buffer* buffer) {
 }
 }  // namespace
 
-namespace fuchsia {
-namespace dart {
+namespace dart_utils {
 
 zx_status_t HandleIfException(std::shared_ptr<::sys::ServiceDirectory> services,
                               const std::string& component_url,
@@ -91,5 +90,4 @@ zx_status_t HandleException(std::shared_ptr<::sys::ServiceDirectory> services,
   return ZX_OK;
 }
 
-}  // namespace dart
-}  // namespace fuchsia
+}  // namespace dart_utils

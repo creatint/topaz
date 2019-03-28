@@ -26,7 +26,7 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
 
   fuchsia::mem::Buffer resource_vmo;
   if (namespc == nullptr) {
-    if (!fuchsia::dart::VmoFromFilename(path, &resource_vmo)) {
+    if (!dart_utils::VmoFromFilename(path, &resource_vmo)) {
       return false;
     }
   } else {
@@ -35,7 +35,7 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
       return false;
     }
 
-    if (!fuchsia::dart::VmoFromFilenameAt(root_dir, path, &resource_vmo)) {
+    if (!dart_utils::VmoFromFilenameAt(root_dir, path, &resource_vmo)) {
       return false;
     }
   }
