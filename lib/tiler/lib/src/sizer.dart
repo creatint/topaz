@@ -33,25 +33,11 @@ class Sizer extends StatelessWidget {
     if (sizer == null) {
       return SizedBox.shrink();
     } else {
-      final hoverNotifier = ValueNotifier<bool>(false);
       return Listener(
-        onPointerEnter: (_) => hoverNotifier.value = true,
-        onPointerExit: (_) => hoverNotifier.value = false,
-        onPointerCancel: (_) => hoverNotifier.value = false,
-        onPointerDown: (_) => hoverNotifier.value = true,
         onPointerMove: _onPointerMove,
-        child: AnimatedBuilder(
-          animation: hoverNotifier,
-          builder: (context, child) => AnimatedOpacity(
-                opacity: hoverNotifier.value ? 1.0 : 0.0,
-                duration: Duration(milliseconds: 100),
-                curve: Curves.easeInOut,
-                child: child,
-              ),
-          child: Container(
-            color: Colors.transparent,
-            child: sizer,
-          ),
+        child: Container(
+          color: Colors.transparent,
+          child: sizer,
         ),
       );
     }

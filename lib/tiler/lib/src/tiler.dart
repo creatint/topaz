@@ -83,39 +83,56 @@ class TilerModel extends ChangeNotifier {
     assert(tile != null);
     assert(flex > 0 && flex < 1);
 
-    var parent = tile.parent;
+    final parent = tile.parent;
+    int index = parent?.tiles?.indexOf(tile) ?? 0;
+
     final newTile = TileModel(
       type: TileType.content,
       content: content,
       flex: flex,
     );
 
-    final newParent = TileModel(
-      type: _isHorizontal(direction) ? TileType.column : TileType.row,
-      tiles: axisDirectionIsReversed(direction)
-          ? [newTile, tile]
-          : [tile, newTile],
-    );
+    // If we are splitting in the same axis as the parent, just add the
+    // tile to the parent's tiles.
+    if (parent?.type == TileType.row && _isVertical(direction) ||
+        parent?.type == TileType.column && _isHorizontal(direction)) {
+      parent.tiles.insert(
+        axisDirectionIsReversed(direction) ? index : index + 1,
+        newTile,
+      );
+      newTile.parent = parent;
 
-    // If parent is null, tile should be the root tile.
-    if (parent == null) {
-      assert(tile == root);
-      root = parent;
+      double oldFlex = tile.flex;
+      newTile.flex = oldFlex - oldFlex * flex;
+      tile.flex = oldFlex - newTile.flex;
     } else {
-      int index = parent?.tiles?.indexOf(tile) ?? 0;
-      parent?.tiles?.remove(tile);
+      // Create a new parent that holds the tile being split and the new tile.
+      final newParent = TileModel(
+        type: _isHorizontal(direction) ? TileType.column : TileType.row,
+        tiles: axisDirectionIsReversed(direction)
+            ? [newTile, tile]
+            : [tile, newTile],
+      );
 
-      // Copy existing flex and resize offsets from tile.
-      newParent.copy(tile);
-      tile.reset();
+      if (parent == null) {
+        // If parent is null, tile should be the root tile.
+        assert(tile == root);
+        root = newParent;
+      } else {
+        parent.tiles.remove(tile);
 
-      newParent.parent = parent;
-      parent.tiles.insert(index, newParent);
+        // Copy existing flex and resize offsets from tile.
+        newParent.copy(tile);
+        tile.reset();
+
+        newParent.parent = parent;
+        parent.tiles.insert(index, newParent);
+      }
+      newTile.parent = newParent;
+      tile
+        ..parent = newParent
+        ..flex = 1 - flex;
     }
-    newTile.parent = newParent;
-    tile
-      ..parent = newParent
-      ..flex = 1 - flex;
 
     notifyListeners();
 
