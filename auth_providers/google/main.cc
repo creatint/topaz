@@ -14,7 +14,7 @@
 #include "lib/fidl/cpp/interface_request.h"
 #include "lib/fsl/syslogger/init.h"
 #include "lib/fsl/vmo/strings.h"
-#include "lib/fxl/command_line.h"
+#include "src/lib/fxl/command_line.h"
 #include "lib/network_wrapper/network_wrapper_impl.h"
 #include "topaz/auth_providers/google/factory_impl.h"
 #include "topaz/auth_providers/google/settings.h"

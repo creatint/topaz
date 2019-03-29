@@ -9,7 +9,7 @@
 #include <trace/event.h>
 #include <lib/zx/vmar.h>
 
-#include "lib/fxl/logging.h"
+#include "src/lib/fxl/logging.h"
 
 static_assert(sizeof(size_t) == sizeof(uint64_t),
               "Fuchsia should always be 64-bit");

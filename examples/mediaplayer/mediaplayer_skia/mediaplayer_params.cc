@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-#include "lib/fxl/strings/split_string.h"
+#include "src/lib/fxl/strings/split_string.h"
 
 namespace examples {
 

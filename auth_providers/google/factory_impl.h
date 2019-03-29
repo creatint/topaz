@@ -9,7 +9,7 @@
 #include <lib/async/dispatcher.h>
 
 #include "lib/callback/auto_cleanable.h"
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/macros.h"
 #include "lib/network_wrapper/network_wrapper.h"
 #include "topaz/auth_providers/google/google_auth_provider_impl.h"
 #include "topaz/auth_providers/google/settings.h"

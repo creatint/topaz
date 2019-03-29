@@ -7,7 +7,7 @@
 #include <string>
 
 #include "gtest/gtest.h"
-#include "lib/fxl/logging.h"
+#include "src/lib/fxl/logging.h"
 #include "peridot/lib/rapidjson/rapidjson.h"
 
 namespace auth_providers {

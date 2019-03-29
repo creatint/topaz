@@ -6,8 +6,8 @@
 #define TOPAZ_EXAMPLES_UI_LIB_SKIA_VIEW_H_
 
 #include "examples/ui/lib/host_canvas_cycler.h"
-#include "lib/fxl/logging.h"
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/logging.h"
+#include "src/lib/fxl/macros.h"
 #include "lib/ui/base_view/cpp/base_view.h"
 
 namespace scenic {

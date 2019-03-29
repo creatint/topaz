@@ -4,7 +4,7 @@
 
 #include "view_config_demo_view.h"
 
-#include "lib/fxl/logging.h"
+#include "src/lib/fxl/logging.h"
 #include "third_party/skia/include/core/SkFont.h"
 #include "third_party/skia/include/core/SkPaint.h"
 

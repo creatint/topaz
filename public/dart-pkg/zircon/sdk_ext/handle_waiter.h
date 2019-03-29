@@ -8,7 +8,7 @@
 #include <lib/async/cpp/wait.h>
 #include <lib/zx/handle.h>
 
-#include "lib/fxl/memory/ref_counted.h"
+#include "src/lib/fxl/memory/ref_counted.h"
 #include "third_party/tonic/dart_wrappable.h"
 
 namespace tonic {

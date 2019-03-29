@@ -4,7 +4,7 @@
 
 #include "examples/ui/lib/host_canvas_cycler.h"
 
-#include "lib/fxl/logging.h"
+#include "src/lib/fxl/logging.h"
 
 namespace scenic {
 namespace skia {

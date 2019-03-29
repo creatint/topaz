@@ -6,8 +6,8 @@
 #include <gtest/gtest.h>
 #include <lib/component/cpp/environment_services_helper.h>
 #include <lib/fit/function.h>
-#include <lib/fxl/logging.h>
-#include <lib/fxl/strings/string_printf.h>
+#include <src/lib/fxl/logging.h>
+#include <src/lib/fxl/strings/string_printf.h>
 #include <lib/gtest/real_loop_fixture.h>
 #include <zircon/status.h>
 

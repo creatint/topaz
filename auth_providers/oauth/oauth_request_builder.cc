@@ -9,10 +9,10 @@
 
 #include "lib/fsl/socket/strings.h"
 #include "lib/fsl/vmo/strings.h"
-#include "lib/fxl/logging.h"
-#include "lib/fxl/macros.h"
-#include "lib/fxl/strings/join_strings.h"
-#include "lib/fxl/strings/string_number_conversions.h"
+#include "src/lib/fxl/logging.h"
+#include "src/lib/fxl/macros.h"
+#include "src/lib/fxl/strings/join_strings.h"
+#include "src/lib/fxl/strings/string_number_conversions.h"
 
 namespace auth_providers {
 namespace oauth {

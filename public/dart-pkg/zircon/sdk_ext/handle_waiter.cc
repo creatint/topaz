@@ -7,7 +7,7 @@
 #include <lib/async/default.h>
 
 #include "dart-pkg/zircon/sdk_ext/handle.h"
-#include "lib/fxl/logging.h"
+#include "src/lib/fxl/logging.h"
 #include "third_party/tonic/converter/dart_converter.h"
 #include "third_party/tonic/dart_args.h"
 #include "third_party/tonic/dart_binding_macros.h"

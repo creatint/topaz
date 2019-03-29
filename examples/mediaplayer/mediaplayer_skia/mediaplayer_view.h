@@ -17,7 +17,7 @@
 #include <queue>
 #include "examples/ui/lib/host_canvas_cycler.h"
 #include "lib/component/cpp/startup_context.h"
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/macros.h"
 #include "lib/media/timeline/timeline_function.h"
 #include "lib/ui/base_view/cpp/base_view.h"
 #include "mediaplayer_params.h"

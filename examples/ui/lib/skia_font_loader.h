@@ -10,7 +10,7 @@
 #include <fuchsia/fonts/cpp/fidl.h>
 #include <lib/fit/function.h>
 
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/macros.h"
 #include "third_party/skia/include/core/SkTypeface.h"
 
 namespace mozart {

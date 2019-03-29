@@ -9,7 +9,7 @@
 #include <fuchsia/ui/input/cpp/fidl.h>
 #include <map>
 #include <vector>
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/macros.h"
 #include "third_party/skia/include/core/SkCanvas.h"
 #include "third_party/skia/include/core/SkPath.h"
 

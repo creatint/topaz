@@ -12,7 +12,7 @@
 #include "examples/ui/lib/skia_view.h"
 #include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/binding_set.h"
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/macros.h"
 //#if defined(SK_ENABLE_SKOTTIE)
 #include "third_party/skia/modules/skottie/include/Skottie.h"
 //#endif

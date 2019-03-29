@@ -14,7 +14,7 @@
 #include "lib/component/cpp/connect.h"
 #include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/interface_request.h"
-#include "lib/fxl/strings/join_strings.h"
+#include "src/lib/fxl/strings/join_strings.h"
 #include "lib/svc/cpp/services.h"
 #include "peridot/lib/rapidjson/rapidjson.h"
 #include "rapidjson/document.h"

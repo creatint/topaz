@@ -10,7 +10,7 @@
 #include <vector>
 
 #include "dart-pkg/zircon/sdk_ext/handle_waiter.h"
-#include "lib/fxl/memory/ref_counted.h"
+#include "src/lib/fxl/memory/ref_counted.h"
 #include "third_party/dart/runtime/include/dart_api.h"
 #include "third_party/tonic/dart_library_natives.h"
 #include "third_party/tonic/dart_wrappable.h"

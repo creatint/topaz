@@ -6,7 +6,7 @@
 
 #include <gtest/gtest.h>
 #include <lib/fdio/directory.h>
-#include <lib/fxl/logging.h>
+#include <src/lib/fxl/logging.h>
 #include <zircon/status.h>
 
 ChromiumContext::ChromiumContext(component::StartupContext* startup_context) {

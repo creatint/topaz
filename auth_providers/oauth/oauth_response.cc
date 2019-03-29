@@ -5,8 +5,8 @@
 #include "topaz/auth_providers/oauth/oauth_response.h"
 
 #include "lib/fsl/socket/strings.h"
-#include "lib/fxl/logging.h"
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/logging.h"
+#include "src/lib/fxl/macros.h"
 #include "rapidjson/error/en.h"
 
 namespace auth_providers {

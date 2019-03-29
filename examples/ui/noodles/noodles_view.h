@@ -7,7 +7,7 @@
 
 #include <fuchsia/images/cpp/fidl.h>
 #include "examples/ui/lib/skia_view.h"
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/macros.h"
 
 class SkCanvas;
 

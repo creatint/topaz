@@ -11,9 +11,9 @@
 #include <vector>
 
 #include "dart-pkg/zircon/sdk_ext/handle.h"
-#include "lib/fxl/arraysize.h"
-#include "lib/fxl/logging.h"
-#include "lib/fxl/macros.h"
+#include "src/lib/fxl/arraysize.h"
+#include "src/lib/fxl/logging.h"
+#include "src/lib/fxl/macros.h"
 
 namespace mozart {
 

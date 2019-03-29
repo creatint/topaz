@@ -9,9 +9,9 @@
 #include <string>
 
 #include "lib/component/cpp/connect.h"
-#include "lib/fxl/logging.h"
-#include "lib/fxl/macros.h"
-#include "lib/fxl/time/time_delta.h"
+#include "src/lib/fxl/logging.h"
+#include "src/lib/fxl/macros.h"
+#include "src/lib/fxl/time/time_delta.h"
 
 namespace examples {
 

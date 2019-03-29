@@ -13,7 +13,7 @@
 #include "lib/fidl/cpp/clone.h"
 #include "lib/fidl/cpp/optional.h"
 #include "lib/fsl/io/fd.h"
-#include "lib/fxl/logging.h"
+#include "src/lib/fxl/logging.h"
 #include "lib/media/timeline/timeline.h"
 #include "lib/media/timeline/type_converters.h"
 #include "lib/ui/scenic/cpp/view_token_pair.h"
