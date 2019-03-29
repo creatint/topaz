@@ -130,10 +130,20 @@ class PseudoDir extends Vnode {
   void open(
       int flags, int mode, String path, fidl.InterfaceRequest<Node> request) {
     var p = path.trim();
+    // remove all ./, .//, etc
+    while (p.startsWith('./')) {
+      var index = 2;
+      while (index < p.length && p[index] == '/') {
+        index++;
+      }
+      p = p.substring(index);
+    }
+
     if (p.startsWith('/')) {
       sendErrorEvent(flags, ZX.ERR_BAD_PATH, request);
       return;
     }
+
     if (p == '' || p == '.') {
       connect(flags, mode, request);
       return;

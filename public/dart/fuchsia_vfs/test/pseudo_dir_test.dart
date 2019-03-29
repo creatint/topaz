@@ -722,7 +722,7 @@ void main() {
         PseudoDir dir = _setUpDir();
 
         var proxy = _getProxyForDir(dir);
-        var paths = ['.', ''];
+        var paths = ['.', '', './', './/', './//'];
         for (var path in paths) {
           DirectoryProxy newProxy = DirectoryProxy();
           await proxy.open(0, 0, path,
@@ -739,7 +739,10 @@ void main() {
         var proxy = _getProxyForDir(dir);
 
         // open file 1 check contents.
-        await _openFileAndAssert(proxy, 'file1', 100, 'file1');
+        var paths = ['file1', './file1', './/file1', './//file1'];
+        for (var path in paths) {
+          await _openFileAndAssert(proxy, path, 100, 'file1');
+        }
       });
 
       test('open file fails for path ending with "/"', () async {
