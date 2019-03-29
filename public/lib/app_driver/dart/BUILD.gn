@@ -3,15 +3,6 @@
 # found in the LICENSE file.
 
 import("//build/dart/dart_library.gni")
-import("//third_party/cobalt_config/metrics_registry.gni")
-
-metrics_registry("modules_metrics_registry") {
-  project_id = 104
-  sdk_category = "partner"
-
-  generate_binarypb = false
-  generate_dart = true
-}
 
 dart_library("dart") {
   package_name = "lib.app_driver.dart"
@@ -28,7 +19,6 @@ dart_library("dart") {
   ]
 
   deps = [
-    ":modules_metrics_registry_dartlib",
     "//sdk/fidl/fuchsia.modular",
     "//topaz/public/lib/app/dart",
     "//topaz/public/lib/component/dart",
@@ -39,6 +29,5 @@ dart_library("dart") {
     "//topaz/public/lib/module_resolver/dart",
     "//topaz/public/lib/schemas/dart",
     "//topaz/public/lib/story/dart",
-    "//zircon/public/fidl/fuchsia-cobalt",
   ]
 }

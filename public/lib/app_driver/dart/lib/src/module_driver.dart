@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_cobalt/fidl.dart';
 import 'package:fidl_fuchsia_mem/fidl.dart' as fuchsia_mem;
 import 'package:fidl_fuchsia_sys/fidl.dart';
 import 'package:lib.app.dart/app.dart';
@@ -22,8 +21,6 @@ import 'package:lib.schemas.dart/entity_codec.dart';
 import 'package:lib.story.dart/story.dart';
 import 'package:meta/meta.dart';
 import 'package:zircon/zircon.dart';
-import 'package:modules_metrics_registry/modules_metrics_registry.dart'
-    as modules_metrics_registry;
 
 import 'service_client.dart';
 
@@ -49,17 +46,6 @@ typedef OnTerminateAsync = Future<Null> Function();
 
 typedef OnHandleIntent = void Function(
     String action, IntentParameters parameters);
-
-// The following metrics id's must be registered here:
-// https://cobalt-analytics.googlesource.com/config/+/master/fuchsia/modules/config.yaml
-const int _cobaltFirstLinkDataMetricId = 9;
-// const int _cobaltEntitySerializationMetricId = 2;
-// const int _cobaltEventFrameRatesMetricId = 3;
-const int _cobaltTimeToConnectAgentMetricId = 10;
-// const int _cobaltModuleErrorMetricId = 5;
-const int _cobaltTimeToStartModuleDriverMetricId = 6;
-const int _cobaltTimeToStartNewModMetricId = 7;
-const int _cobaltTimeToEmbedNewModMetricId = 8;
 
 /// The [ModuleDriver] provides a high-level API for running a module in Dart
 /// code. The name and structure of this library is based on the peridot layer's
@@ -106,13 +92,9 @@ class ModuleDriver {
   // TODO(meiyili): update to handle creating to multiple message queues MS-1288
   MessageQueueClient _messageQueue;
 
-  /// Message queue token completer
-  final LoggerProxy _logger = new LoggerProxy();
-  final DateTime _initializationTime;
   final Set<String> _firstObservationSent = <String>{};
   LifecycleHost _lifecycle;
   IntentHandlerImpl _intentHandler;
-  String _packageName = 'modulePackageNameNotYetSet';
 
   /// Shadow async completion of [startSync].
   final _start = Completer<ModuleDriver>();
@@ -144,7 +126,7 @@ class ModuleDriver {
   ModuleDriver({
     // TODO(MS-1521): consider removing
     OnTerminate onTerminate,
-  }) : _initializationTime = new DateTime.now() {
+  }) {
     if (onTerminate != null) {
       _onTerminatesAsync.add(() async {
         onTerminate();
@@ -155,20 +137,6 @@ class ModuleDriver {
       onTerminate: _handleTerminate,
     );
     _intentHandler = IntentHandlerImpl(onHandleIntent: _handleIntent);
-
-    _connectToCobalt();
-
-    // Grab the current module's package name
-    getComponentContext().then((ComponentContextClient componentContext) async {
-      try {
-        String packageName = await componentContext.getPackageName();
-        _packageName = packageName;
-      } on Exception catch (err, stackTrace) {
-        log.warning(
-          'Error retrieving module package name: $err\n$stackTrace',
-        );
-      }
-    });
 
     // Observe time to default link
     // TODO(meiyili): remove once default link is deprecated
@@ -228,13 +196,6 @@ class ModuleDriver {
     connectToService(environmentServices, moduleContext.proxy.ctrl);
     moduleContext.getLink(linkClient: link);
 
-    _cobaltLogElapsedTime(
-      metricId: _cobaltTimeToStartModuleDriverMetricId,
-      elapsedMicros:
-          new DateTime.now().difference(_initializationTime).inMicroseconds,
-      shouldIncludeModuleName: true,
-    );
-
     // Still complete the future since the rest of the login in this class
     // awaiting on it.
     _start.complete(this);
@@ -288,7 +249,6 @@ class ModuleDriver {
     Proxy<dynamic> proxy,
   ) async {
     log.fine('#connectToAgentService(...)');
-    final _initTime = new DateTime.now();
     assert(proxy.ctrl.$serviceName != null,
         'controller.\$serviceName must not be null. Check the FIDL file for a missing [Discoverable]');
     ComponentContextClient componentContext = await getComponentContext();
@@ -299,11 +259,6 @@ class ModuleDriver {
 
     // Close all unnecessary bindings
     serviceProviderProxy.ctrl.close();
-
-    _cobaltLogElapsedTime(
-      metricId: _cobaltTimeToConnectAgentMetricId,
-      elapsedMicros: new DateTime.now().difference(_initTime).inMicroseconds,
-    );
   }
 
   /// Connect to an agent using a new-style async proxy.
@@ -312,7 +267,6 @@ class ModuleDriver {
     AsyncProxy<dynamic> proxy,
   ) async {
     log.fine('#connectToAgentService(...)');
-    final _initTime = new DateTime.now();
     assert(proxy.ctrl.$serviceName != null,
         'controller.\$serviceName must not be null. Check the FIDL file for a missing [Discoverable]');
 
@@ -323,11 +277,6 @@ class ModuleDriver {
       ..connectToService(serviceName, proxy.ctrl.request().passChannel())
       // Close all unnecessary bindings
       ..ctrl.close();
-
-    _cobaltLogElapsedTime(
-      metricId: _cobaltTimeToConnectAgentMetricId,
-      elapsedMicros: new DateTime.now().difference(_initTime).inMicroseconds,
-    );
   }
 
   /// Retrieve the story id of the story this module lives in
@@ -340,7 +289,6 @@ class ModuleDriver {
     log.info('closing service connections');
 
     _messageQueue?.close();
-    _logger.ctrl.close();
 
     List<Future<Null>> futures = <Future<Null>>[
       moduleContext.terminate(),
@@ -355,6 +303,13 @@ class ModuleDriver {
       log.warning('failed to close all service connections');
       throw err;
     });
+  }
+
+  /// Save when the link data first becomes non-null.
+  void _observeLinkData(String linkName, String data) {
+    if (!_firstObservationSent.contains(linkName) && data != null) {
+      _firstObservationSent.add(linkName);
+    }
   }
 
   void _handleIntent(Intent intent) {
@@ -553,22 +508,6 @@ class ModuleDriver {
     return moduleContext.done();
   }
 
-  /// Log a cobalt metric when the link data first becomes non-null.
-  void _observeLinkData(String linkName, String data) {
-    if (!_firstObservationSent.contains(linkName) && data != null) {
-      _firstObservationSent.add(linkName);
-
-      int linkIndex = linkName == 'card_data' ? 0 : 1;
-      _cobaltLogElapsedTime(
-        metricId: _cobaltFirstLinkDataMetricId,
-        enumIndex: linkIndex,
-        elapsedMicros:
-            new DateTime.now().difference(_initializationTime).inMicroseconds,
-        shouldIncludeModuleName: true,
-      );
-    }
-  }
-
   /// Cache for [getComponentContext].
   Completer<ComponentContextClient> _componentContext;
 
@@ -628,7 +567,6 @@ class ModuleDriver {
       emphasis: 0.5,
     ),
   }) async {
-    final _initTime = new DateTime.now();
     name ??= module;
     assert(name != null && name.isNotEmpty);
     assert(intent != null);
@@ -639,20 +577,11 @@ class ModuleDriver {
       log.warning('param "module" is deprecated, use "name" instead');
     }
 
-    return moduleContext
-        .addModuleToStory(
-          module: name,
-          intent: intent,
-          surfaceRelation: surfaceRelation,
-        )
-        .whenComplete(
-          () => _cobaltLogElapsedTime(
-                metricId: _cobaltTimeToStartNewModMetricId,
-                component: name,
-                elapsedMicros:
-                    new DateTime.now().difference(_initTime).inMicroseconds,
-              ),
-        );
+    return moduleContext.addModuleToStory(
+      module: name,
+      intent: intent,
+      surfaceRelation: surfaceRelation,
+    );
   }
 
   /// # Embed Module
@@ -677,77 +606,13 @@ class ModuleDriver {
     assert(intent != null);
 
     log.fine('resolving module ("$name") for embedding...');
-    final _initTime = new DateTime.now();
-    return moduleContext.embedModule(name: name, intent: intent).whenComplete(
-          () => _cobaltLogElapsedTime(
-                metricId: _cobaltTimeToEmbedNewModMetricId,
-                component: name,
-                elapsedMicros:
-                    new DateTime.now().difference(_initTime).inMicroseconds,
-              ),
-        );
+    return moduleContext.embedModule(name: name, intent: intent);
   }
 
   /// Made available for video module to access MediaPlayer.
   /// TODO(MS-1287): Determine whether this should be refactored
   ServiceProviderProxy get environmentServices =>
       _startupContext.environmentServices;
-
-  /// The [LoggerProxy] for sending Cobalt metrics
-  LoggerProxy get cobaltLogger => _logger;
-
-  void _connectToCobalt() {
-    LoggerFactoryProxy loggerFactory = new LoggerFactoryProxy();
-    connectToService(environmentServices, loggerFactory.ctrl);
-
-    SizedVmo configVmo =
-        SizedVmo.fromUint8List(base64.decode(modules_metrics_registry.config));
-    ProjectProfile profile = ProjectProfile(
-      config: fuchsia_mem.Buffer(vmo: configVmo, size: configVmo.size),
-      releaseStage: ReleaseStage.ga,
-    );
-
-    loggerFactory.createLogger(
-      profile,
-      _logger.ctrl.request(),
-      (Status s) {
-        if (s != Status.ok) {
-          log.warning('Failed to create Logger. Cobalt config is invalid.');
-        }
-      },
-    );
-    loggerFactory.ctrl.close();
-  }
-
-  /// Helper method to emit cobalt metrics.
-  void _cobaltLogElapsedTime({
-    int metricId,
-    int elapsedMicros,
-    int enumIndex = 0,
-    String component = '',
-    shouldIncludeModuleName = false,
-  }) {
-    String componentString;
-    if (shouldIncludeModuleName) {
-      componentString =
-          moduleName == null || moduleName.isEmpty ? _packageName : moduleName;
-    } else {
-      componentString = component;
-    }
-
-    _logger.logElapsedTime(
-      metricId,
-      enumIndex,
-      componentString,
-      elapsedMicros,
-      (Status status) {
-        if (status != Status.ok) {
-          log.warning('Failed to observe frame Cobalt metric '
-              '$metricId: $status.');
-        }
-      },
-    );
-  }
 }
 
 /// [app-driver]: https://fuchsia.googlesource.com/peridot/+/master/public/lib/app_driver/cpp?autodive=0/
