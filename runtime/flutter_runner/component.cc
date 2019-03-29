@@ -6,8 +6,8 @@
 
 #include <dlfcn.h>
 #include <fuchsia/mem/cpp/fidl.h>
-#include <lib/async/cpp/task.h>
 #include <lib/async-loop/cpp/loop.h>
+#include <lib/async/cpp/task.h>
 #include <lib/fdio/directory.h>
 #include <lib/fdio/namespace.h>
 #include <lib/vfs/cpp/remote_dir.h>
@@ -36,8 +36,7 @@ constexpr char kDataKey[] = "data";
 constexpr char kTmpPath[] = "/tmp";
 constexpr char kServiceRootPath[] = "/svc";
 
-std::pair<std::unique_ptr<async::Loop>,
-          std::unique_ptr<Application>>
+std::pair<std::unique_ptr<async::Loop>, std::unique_ptr<Application>>
 Application::Create(
     TerminationCallback termination_callback, fuchsia::sys::Package package,
     fuchsia::sys::StartupInfo startup_info,
@@ -119,9 +118,9 @@ Application::Application(
 
     zx::channel dir;
     if (path == kServiceRootPath) {
-      // clone /svc so component_context can still use it below
-      dir = zx::channel(fdio_service_clone(
-          startup_info.flat_namespace.directories.at(i).get()));
+      svc_ = std::make_unique<sys::ServiceDirectory>(
+          std::move(startup_info.flat_namespace.directories.at(i)));
+      dir = svc_->CloneChannel().TakeChannel();
     } else {
       dir = std::move(startup_info.flat_namespace.directories.at(i));
     }
@@ -199,12 +198,12 @@ Application::Application(
   // for this application.
   service_provider_dir->AddService(
       fuchsia::ui::app::ViewProvider::Name_,
-      std::make_unique<vfs::Service>([this](zx::channel channel,
-                                            async_dispatcher_t* dispatcher) {
-        shells_bindings_.AddBinding(
-            this, fidl::InterfaceRequest<fuchsia::ui::app::ViewProvider>(
-                      std::move(channel)));
-      }));
+      std::make_unique<vfs::Service>(
+          [this](zx::channel channel, async_dispatcher_t* dispatcher) {
+            shells_bindings_.AddBinding(
+                this, fidl::InterfaceRequest<fuchsia::ui::app::ViewProvider>(
+                          std::move(channel)));
+          }));
 
   outgoing_dir_->AddEntry("public", std::move(service_provider_dir));
 
@@ -212,9 +211,6 @@ Application::Application(
   if (application_controller_request) {
     application_controller_.Bind(std::move(application_controller_request));
   }
-
-  component_context_ =
-      sys::ComponentContext::CreateFrom(std::move(startup_info));
 
   // Compare flutter_jit_runner in BUILD.gn.
   settings_.vm_snapshot_data_path = "pkg/data/vm_snapshot_data.bin";
@@ -231,7 +227,8 @@ Application::Application(
     if (dart_utils::ReadFileToString("pkg/data/runner.frameworkversion",
                                      &runner_framework) &&
         dart_utils::ReadFileToStringAt(application_assets_directory_.get(),
-                                      "app.frameworkversion", &app_framework) &&
+                                       "app.frameworkversion",
+                                       &app_framework) &&
         (runner_framework.compare(app_framework) == 0)) {
       settings_.vm_snapshot_data_path =
           "pkg/data/framework_vm_snapshot_data.bin";
@@ -305,11 +302,11 @@ Application::Application(
   settings_.unhandled_exception_callback =
       [dispatcher, runner_incoming_services, component_url](
           const std::string& error, const std::string& stack_trace) {
-        async::PostTask(dispatcher,
-            [runner_incoming_services, component_url, error, stack_trace]() {
-              dart_utils::HandleException(runner_incoming_services,
-                                          component_url, error, stack_trace);
-            });
+        async::PostTask(dispatcher, [runner_incoming_services, component_url,
+                                     error, stack_trace]() {
+          dart_utils::HandleException(runner_incoming_services, component_url,
+                                      error, stack_trace);
+        });
         // Ideally we would return whether HandleException returned ZX_OK, but
         // short of knowing if the exception was correctly handled, we return
         // false to have the error and stack trace printed in the logs.
@@ -484,16 +481,17 @@ void Application::CreateView(
     zx::eventpair view_token,
     fidl::InterfaceRequest<fuchsia::sys::ServiceProvider> incoming_services,
     fidl::InterfaceHandle<fuchsia::sys::ServiceProvider> outgoing_services) {
-  if (!component_context_) {
-    FML_DLOG(ERROR) << "Application context was invalid when attempting to "
-                       "create a shell for a view provider request.";
+  if (!svc_) {
+    FML_DLOG(ERROR)
+        << "Component incoming services was invalid when attempting to "
+           "create a shell for a view provider request.";
     return;
   }
 
   shell_holders_.emplace(std::make_unique<Engine>(
       *this,                         // delegate
       debug_label_,                  // thread label
-      *component_context_,             // application context
+      svc_,                          // Component incoming services
       settings_,                     // settings
       std::move(isolate_snapshot_),  // isolate snapshot
       std::move(shared_snapshot_),   // shared snapshot

@@ -8,7 +8,7 @@
 #include <fuchsia/io/cpp/fidl.h>
 #include <fuchsia/ui/viewsv1/cpp/fidl.h>
 #include <lib/async-loop/cpp/loop.h>
-#include <lib/sys/cpp/component_context.h>
+#include <lib/sys/cpp/service_directory.h>
 #include <lib/zx/event.h>
 #include <lib/zx/eventpair.h>
 
@@ -29,7 +29,7 @@ class Engine final : public mozart::NativesDelegate {
   };
 
   Engine(Delegate& delegate, std::string thread_label,
-         sys::ComponentContext& component_context, blink::Settings settings,
+         std::shared_ptr<sys::ServiceDirectory> svc, blink::Settings settings,
          fml::RefPtr<blink::DartSnapshot> isolate_snapshot,
          fml::RefPtr<blink::DartSnapshot> shared_snapshot,
          zx::eventpair view_token, UniqueFDIONS fdio_ns,

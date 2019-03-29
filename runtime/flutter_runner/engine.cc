@@ -40,7 +40,7 @@ static void UpdateNativeThreadLabelNames(const std::string& label,
 }
 
 Engine::Engine(Delegate& delegate, std::string thread_label,
-               sys::ComponentContext& component_context,
+               std::shared_ptr<sys::ServiceDirectory> svc,
                blink::Settings settings,
                fml::RefPtr<blink::DartSnapshot> isolate_snapshot,
                fml::RefPtr<blink::DartSnapshot> shared_snapshot,
@@ -63,7 +63,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   }
 
   // Set up the session connection.
-  auto scenic = component_context.svc()->Connect<fuchsia::ui::scenic::Scenic>();
+  auto scenic = svc->Connect<fuchsia::ui::scenic::Scenic>();
   fidl::InterfaceHandle<fuchsia::ui::scenic::Session> session;
   fidl::InterfaceHandle<fuchsia::ui::scenic::SessionListener> session_listener;
   auto session_listener_request = session_listener.NewRequest();
@@ -71,7 +71,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
 #ifndef SCENIC_VIEWS2
   fuchsia::ui::viewsv1::ViewManagerPtr view_manager;
-  component_context.svc()->Connect(view_manager.NewRequest());
+  svc->Connect(view_manager.NewRequest());
 
   zx::eventpair import_token, export_token;
   if (zx::eventpair::create(0u, &import_token, &export_token) != ZX_OK) {
@@ -83,7 +83,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   // Grab the parent environment services. The platform view may want to access
   // some of these services.
   fuchsia::sys::EnvironmentPtr environment;
-  component_context.svc()->Connect(environment.NewRequest());
+  svc->Connect(environment.NewRequest());
   fidl::InterfaceHandle<fuchsia::sys::ServiceProvider>
       parent_environment_service_provider;
   environment->GetServices(parent_environment_service_provider.NewRequest());
@@ -93,7 +93,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   // on the platform view.
   fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
       accessibility_context_writer;
-  component_context.svc()->Connect(accessibility_context_writer.NewRequest());
+  svc->Connect(accessibility_context_writer.NewRequest());
 
   // We need to manually schedule a frame when the session metrics change.
   OnMetricsUpdate on_session_metrics_change_callback = std::bind(
@@ -185,7 +185,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
         std::move(import_token),  // import token (scenic node we attach our
                                   // tree to)
 #else
-        std::move(view_token),    // scenic view we attach our tree to
+        std::move(view_token),  // scenic view we attach our tree to
 #endif
         std::move(session),                    // scenic session
         std::move(on_session_error_callback),  // session did encounter error
@@ -268,7 +268,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 #endif
 
     fuchsia::sys::EnvironmentPtr environment;
-    component_context.svc()->Connect(environment.NewRequest());
+    svc->Connect(environment.NewRequest());
 
     isolate_configurator_ = std::make_unique<IsolateConfigurator>(
         std::move(fdio_ns),  //
@@ -288,18 +288,17 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   auto run_configuration = shell::RunConfiguration::InferFromSettings(
       settings_, task_runners.GetIOTaskRunner());
 
-  auto on_run_failure =
-      [weak = weak_factory_.GetWeakPtr()]() {
-        // The engine could have been killed by the caller right after the
-        // constructor was called but before it could run on the UI thread.
-        if (weak) {
-          weak->Terminate();
-        }
-      };
+  auto on_run_failure = [weak = weak_factory_.GetWeakPtr()]() {
+    // The engine could have been killed by the caller right after the
+    // constructor was called but before it could run on the UI thread.
+    if (weak) {
+      weak->Terminate();
+    }
+  };
 
   // Connect to the system font provider.
   fuchsia::fonts::ProviderSyncPtr sync_font_provider;
-  component_context.svc()->Connect(sync_font_provider.NewRequest());
+  svc->Connect(sync_font_provider.NewRequest());
 
   shell_->GetTaskRunners().GetUITaskRunner()->PostTask(
       fml::MakeCopyable([engine = shell_->GetEngine(),                        //
@@ -362,7 +361,8 @@ static void CreateCompilationTrace(Dart_Isolate isolate) {
 
     for (intptr_t start = 0; start < trace_length;) {
       intptr_t end = start;
-      while ((end < trace_length) && trace[end] != '\n') end++;
+      while ((end < trace_length) && trace[end] != '\n')
+        end++;
 
       std::string line(reinterpret_cast<char*>(&trace[start]), end - start);
       FML_LOG(INFO) << "compilation-trace: " << line;
@@ -385,8 +385,7 @@ static void CreateCompilationTrace(Dart_Isolate isolate) {
     if (dart_utils::WriteFile(kTypeFeedbackFile,
                               reinterpret_cast<const char*>(feedback),
                               feedback_length)) {
-      FML_LOG(INFO) << "Dart type feedback written to "
-                     << kTypeFeedbackFile;
+      FML_LOG(INFO) << "Dart type feedback written to " << kTypeFeedbackFile;
     } else {
       FML_LOG(ERROR) << "Could not write Dart type feedback to "
                      << kTypeFeedbackFile;
@@ -492,7 +491,7 @@ void Engine::OfferServiceProvider(
         }
       }));
 #else
-                                  // TODO(SCN-840): Remove OfferServiceProvider.
+                                // TODO(SCN-840): Remove OfferServiceProvider.
 #endif
 }
 

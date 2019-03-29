@@ -11,18 +11,19 @@
 #include <lib/fdio/directory.h>
 #include <lib/fdio/fd.h>
 #include <lib/fdio/namespace.h>
+#include <lib/fidl/cpp/optional.h>
+#include <lib/fidl/cpp/string.h>
+#include <lib/sys/cpp/service_directory.h>
 #include <lib/syslog/global.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <zircon/status.h>
 #include <lib/zx/thread.h>
 #include <lib/zx/time.h>
-#include <regex>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
+#include <zircon/status.h>
+#include <regex>
 #include <utility>
 
-#include "lib/fidl/cpp/optional.h"
-#include "lib/fidl/cpp/string.h"
 #include "third_party/dart/runtime/include/dart_tools_api.h"
 #include "third_party/tonic/converter/dart_converter.h"
 #include "third_party/tonic/dart_message_handler.h"
@@ -55,8 +56,8 @@ void AfterTask(async_loop_t*, void*) {
 }
 
 constexpr async_loop_config_t kLoopConfig = {
-  .make_default_for_current_thread = true,
-  .epilogue = &AfterTask,
+    .make_default_for_current_thread = true,
+    .epilogue = &AfterTask,
 };
 
 // Find the last path component.
@@ -73,8 +74,7 @@ std::string GetLabelFromURL(const std::string& url) {
 }  // namespace
 
 DartComponentController::DartComponentController(
-    fuchsia::sys::Package package,
-    fuchsia::sys::StartupInfo startup_info,
+    fuchsia::sys::Package package, fuchsia::sys::StartupInfo startup_info,
     std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
     fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller)
     : loop_(new async::Loop(&kLoopConfig)),
@@ -135,8 +135,10 @@ bool DartComponentController::Setup() {
   } else if (SetupFromKernel()) {
     FX_LOGF(INFO, LOG_TAG, "%s is running from kernel", url_.c_str());
   } else {
-    FX_LOGF(ERROR, LOG_TAG, "Could not find a program in %s. Was data specified"
-            " correctly in the component manifest?", url_.c_str());
+    FX_LOGF(ERROR, LOG_TAG,
+            "Could not find a program in %s. Was data specified"
+            " correctly in the component manifest?",
+            url_.c_str());
     return false;
   }
 
@@ -364,12 +366,26 @@ bool DartComponentController::Main() {
 
   stdoutfd_ = SetupFileDescriptor(std::move(startup_info_.launch_info.out));
   stderrfd_ = SetupFileDescriptor(std::move(startup_info_.launch_info.err));
-  auto directory_request = std::move(
-      startup_info_.launch_info
-          .directory_request);  // capture before moving component_context
-  context_ = sys::ComponentContext::CreateFrom(std::move(startup_info_));
+  auto directory_request =
+      std::move(startup_info_.launch_info.directory_request);
+
+  auto* flat = &startup_info_.flat_namespace;
+  std::unique_ptr<sys::ServiceDirectory> svc;
+  for (size_t i = 0; i < flat->paths.size(); ++i) {
+    zx::channel dir;
+    if (flat->paths.at(i) == kServiceRootPath) {
+      svc = std::make_unique<sys::ServiceDirectory>(
+          std::move(flat->directories.at(i)));
+      break;
+    }
+  }
+  if (!svc) {
+    FX_LOG(ERROR, LOG_TAG, "Unable to get /svc for dart component");
+    return false;
+  }
+
   fidl::InterfaceHandle<fuchsia::sys::Environment> environment;
-  context_->svc()->Connect(environment.NewRequest());
+  svc->Connect(environment.NewRequest());
 
   InitBuiltinLibrariesForIsolate(
       url_, namespace_, stdoutfd_, stderrfd_, std::move(environment),
@@ -406,9 +422,8 @@ bool DartComponentController::Main() {
       dart_arguments,
   };
 
-  Dart_Handle main_result =
-      Dart_Invoke(Dart_RootLibrary(), ToDart("main"),
-                  dart_utils::ArraySize(argv), argv);
+  Dart_Handle main_result = Dart_Invoke(Dart_RootLibrary(), ToDart("main"),
+                                        dart_utils::ArraySize(argv), argv);
   if (Dart_IsError(main_result)) {
     auto dart_state = tonic::DartState::Current();
     if (!dart_state->has_set_return_code()) {

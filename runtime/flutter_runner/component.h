@@ -12,19 +12,19 @@
 #include <fuchsia/io/cpp/fidl.h>
 #include <fuchsia/sys/cpp/fidl.h>
 #include <fuchsia/ui/app/cpp/fidl.h>
-#include <lib/async/default.h>
 #include <lib/async-loop/cpp/loop.h>
+#include <lib/async/default.h>
+#include <lib/fidl/cpp/binding_set.h>
+#include <lib/fidl/cpp/interface_request.h>
 #include <lib/fit/function.h>
 #include <lib/sys/cpp/service_directory.h>
-#include <lib/sys/cpp/component_context.h>
 #include <lib/vfs/cpp/pseudo_dir.h>
 #include <lib/zx/eventpair.h>
 
 #include "engine.h"
 #include "flutter/common/settings.h"
 #include "flutter/fml/macros.h"
-#include "lib/fidl/cpp/binding_set.h"
-#include "lib/fidl/cpp/interface_request.h"
+
 #include "unique_fdio_ns.h"
 
 namespace flutter {
@@ -40,8 +40,7 @@ class Application final : public Engine::Delegate,
   // Creates a dedicated thread to run the application and constructions the
   // application on it. The application can be accessed only on this thread.
   // This is a synchronous operation.
-  static std::pair<std::unique_ptr<async::Loop>,
-                   std::unique_ptr<Application>>
+  static std::pair<std::unique_ptr<async::Loop>, std::unique_ptr<Application>>
   Create(TerminationCallback termination_callback,
          fuchsia::sys::Package package, fuchsia::sys::StartupInfo startup_info,
          std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
@@ -70,7 +69,7 @@ class Application final : public Engine::Delegate,
   fuchsia::io::NodePtr cloned_directory_ptr_;
   fidl::InterfaceRequest<fuchsia::io::Directory> directory_request_;
   std::unique_ptr<vfs::PseudoDir> outgoing_dir_;
-  std::unique_ptr<sys::ComponentContext> component_context_;
+  std::shared_ptr<sys::ServiceDirectory> svc_;
   std::shared_ptr<sys::ServiceDirectory> runner_incoming_services_;
   fidl::BindingSet<fuchsia::ui::app::ViewProvider> shells_bindings_;
 
