@@ -22,7 +22,7 @@ executable("mediaplayer_skia_bin") {
     "//sdk/fidl/fuchsia.images",
     "//sdk/fidl/fuchsia.math",
     "//sdk/fidl/fuchsia.media",
-    "//sdk/fidl/fuchsia.mediaplayer",
+    "//sdk/fidl/fuchsia.media.playback",
     "//sdk/fidl/fuchsia.ui.gfx",
     "//sdk/fidl/fuchsia.ui.input",
     "//sdk/fidl/fuchsia.ui.scenic",

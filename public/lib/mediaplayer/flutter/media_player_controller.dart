@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:fidl_fuchsia_math/fidl.dart' as geom;
-import 'package:fidl_fuchsia_mediaplayer/fidl.dart';
+import 'package:fidl_fuchsia_media_playback/fidl.dart';
 import 'package:fidl_fuchsia_sys/fidl.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:flutter/foundation.dart';

@@ -7,7 +7,7 @@ import 'dart:io' as io;
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_media/fidl.dart' as media;
-import 'package:fidl_fuchsia_mediaplayer/fidl.dart' as mediaplayer;
+import 'package:fidl_fuchsia_media_playback/fidl.dart' as playback;
 import 'package:fidl_fuchsia_modular/fidl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -126,7 +126,7 @@ void _playLeafAsset(Asset asset) {
 
   _leafAssetToPlay = asset;
 
-  if (_controller.problem?.type == mediaplayer.kProblemConnectionFailed) {
+  if (_controller.problem?.type == playback.problemConnectionFailed) {
     _controller.close();
   }
 
@@ -182,7 +182,7 @@ class _PlaybackScreenState extends State<_PlaybackScreen> {
 
   /// Adds a problem description to list [to] if there is a problem.
   void _addProblem(List<Widget> to) {
-    mediaplayer.Problem problem = _controller.problem;
+    playback.Problem problem = _controller.problem;
     if (problem != null) {
       String text;
 
@@ -190,22 +190,22 @@ class _PlaybackScreenState extends State<_PlaybackScreen> {
         text = problem.details;
       } else {
         switch (problem.type) {
-          case mediaplayer.kProblemInternal:
+          case playback.problemInternal:
             text = 'Internal error';
             break;
-          case mediaplayer.kProblemAssetNotFound:
+          case playback.problemAssetNotFound:
             text = 'The requested content was not found';
             break;
-          case mediaplayer.kProblemContainerNotSupported:
+          case playback.problemContainerNotSupported:
             text = 'The requested content uses an unsupported container format';
             break;
-          case mediaplayer.kProblemAudioEncodingNotSupported:
+          case playback.problemAudioEncodingNotSupported:
             text = 'The requested content uses an unsupported audio encoding';
             break;
-          case mediaplayer.kProblemVideoEncodingNotSupported:
+          case playback.problemVideoEncodingNotSupported:
             text = 'The requested content uses an unsupported video encoding';
             break;
-          case mediaplayer.kProblemConnectionFailed:
+          case playback.problemConnectionFailed:
             text = 'Connection to player failed';
             break;
           default:

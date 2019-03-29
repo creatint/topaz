@@ -9,7 +9,7 @@
         ],
         "services": [
             "fuchsia.fonts.Provider",
-            "fuchsia.mediaplayer.Player",
+            "fuchsia.media.playback.Player",
             "fuchsia.tracelink.Registry",
             "fuchsia.ui.scenic.Scenic"
         ]

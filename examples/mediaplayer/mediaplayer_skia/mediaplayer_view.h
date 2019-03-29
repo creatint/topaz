@@ -5,24 +5,21 @@
 #ifndef TOPAZ_EXAMPLES_MEDIAPLAYER_MEDIAPLAYER_SKIA_MEDIAPLAYER_VIEW_H_
 #define TOPAZ_EXAMPLES_MEDIAPLAYER_MEDIAPLAYER_SKIA_MEDIAPLAYER_VIEW_H_
 
-#include <memory>
-#include <queue>
-
 #include <fuchsia/images/cpp/fidl.h>
 #include <fuchsia/math/cpp/fidl.h>
 #include <fuchsia/media/cpp/fidl.h>
-#include <fuchsia/mediaplayer/cpp/fidl.h>
+#include <fuchsia/media/playback/cpp/fidl.h>
 #include <fuchsia/ui/gfx/cpp/fidl.h>
 #include <fuchsia/ui/input/cpp/fidl.h>
 #include <fuchsia/ui/scenic/cpp/fidl.h>
 #include <lib/async-loop/cpp/loop.h>
-
+#include <memory>
+#include <queue>
 #include "examples/ui/lib/host_canvas_cycler.h"
 #include "lib/component/cpp/startup_context.h"
 #include "lib/fxl/macros.h"
 #include "lib/media/timeline/timeline_function.h"
 #include "lib/ui/base_view/cpp/base_view.h"
-
 #include "mediaplayer_params.h"
 
 namespace examples {
@@ -57,7 +54,7 @@ class MediaPlayerView : public scenic::BaseView {
 
   // Handles a status update from the player. When called with the default
   // argument values, initiates status updates.
-  void HandleStatusChanged(const fuchsia::mediaplayer::PlayerStatus& status);
+  void HandleStatusChanged(const fuchsia::media::playback::PlayerStatus& status);
 
   // Toggles between play and pause.
   void TogglePlayPause();
@@ -81,7 +78,7 @@ class MediaPlayerView : public scenic::BaseView {
   std::unique_ptr<scenic::EntityNode> video_host_node_;
   std::unique_ptr<scenic::ViewHolder> video_host_view_holder_;
 
-  fuchsia::mediaplayer::PlayerPtr player_;
+  fuchsia::media::playback::PlayerPtr player_;
   fuchsia::math::Size video_size_;
   fuchsia::math::Size pixel_aspect_ratio_;
   State previous_state_ = State::kPaused;

@@ -6,7 +6,7 @@
         "features": [ "isolated-persistent-storage" ],
         "services": [
             "fuchsia.fonts.Provider",
-            "fuchsia.mediaplayer.Player",
+            "fuchsia.media.playback.Player",
             "fuchsia.modular.ContextWriter",
             "fuchsia.modular.Clipboard",
             "fuchsia.sys.Environment",

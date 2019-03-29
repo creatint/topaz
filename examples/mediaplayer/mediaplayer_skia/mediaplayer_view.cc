@@ -74,9 +74,9 @@ MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
   pixel_aspect_ratio_.height = 1;
 
   player_ = startup_context()
-                ->ConnectToEnvironmentService<fuchsia::mediaplayer::Player>();
+                ->ConnectToEnvironmentService<fuchsia::media::playback::Player>();
   player_.events().OnStatusChanged =
-      [this](fuchsia::mediaplayer::PlayerStatus status) {
+      [this](fuchsia::media::playback::PlayerStatus status) {
         HandleStatusChanged(status);
       };
 
@@ -364,7 +364,7 @@ void MediaPlayerView::DrawControls(SkCanvas* canvas, const SkISize& size) {
 }
 
 void MediaPlayerView::HandleStatusChanged(
-    const fuchsia::mediaplayer::PlayerStatus& status) {
+    const fuchsia::media::playback::PlayerStatus& status) {
   // Process status received from the player.
   if (status.timeline_function) {
     timeline_function_ =
@@ -405,7 +405,7 @@ void MediaPlayerView::HandleStatusChanged(
     Layout();
   }
 
-  duration_ns_ = status.duration_ns;
+  duration_ns_ = status.duration;
 
   // TODO(dalesat): Display metadata on the screen.
   if (status.metadata && !metadata_shown_) {

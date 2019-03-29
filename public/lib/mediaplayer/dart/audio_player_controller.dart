@@ -5,7 +5,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:fidl_fuchsia_mediaplayer/fidl.dart';
+import 'package:fidl_fuchsia_media_playback/fidl.dart';
 import 'package:fidl_fuchsia_net_oldhttp/fidl.dart';
 import 'package:fidl_fuchsia_sys/fidl.dart';
 import 'package:fidl_fuchsia_math/fidl.dart' as geom;
@@ -312,9 +312,9 @@ class AudioPlayerController {
       _metadata = null;
     }
 
-    _durationNanoseconds = status.durationNs;
+    _durationNanoseconds = status.duration;
 
-    if (status.durationNs != 0) {
+    if (status.duration != 0) {
       _loading = false;
       if (_deferredNormalizedSeek != null) {
         normalizedSeek(_deferredNormalizedSeek);
@@ -351,7 +351,7 @@ class AudioPlayerController {
 
   /// Called when the connection to the NetMediaPlayer fails.
   void _handleConnectionError() {
-    _problem = const Problem(type: kProblemConnectionFailed);
+    _problem = const Problem(type: problemConnectionFailed);
 
     if (updateCallback != null) {
       scheduleMicrotask(() {
