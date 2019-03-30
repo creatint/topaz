@@ -5,8 +5,10 @@
 // ignore_for_file: implementation_imports
 
 import 'dart:io';
+import 'dart:math' show min;
 import 'dart:typed_data';
 
+import 'package:fuchsia_inspect/src/block.dart';
 import 'package:fuchsia_inspect/src/vmo_holder.dart';
 import 'package:test/test.dart';
 import 'package:zircon/zircon.dart';
@@ -156,4 +158,25 @@ void dumpBlocks(FakeVmo vmo, {int startIndex = 0, int howMany32 = -1}) {
     index += 1 << order;
     stdout.writeln('');
   }
+}
+
+/// Reads the property at [propertyIndex] out of [vmo] and returns the value.
+ByteData readProperty(FakeVmo vmo, int propertyIndex) {
+  final property = Block.read(vmo, propertyIndex);
+  final totalLength = property.propertyTotalLength;
+  final data = ByteData(totalLength);
+  if (totalLength == 0) {
+    return data;
+  }
+  var nextExtentIndex = property.propertyExtentIndex;
+  int offset = 0;
+  while (offset < totalLength) {
+    final extent = Block.read(vmo, nextExtentIndex);
+    int amountToCopy = min(totalLength - offset, extent.payloadSpaceBytes);
+    data.buffer.asUint8List().setRange(offset, offset + amountToCopy,
+        extent.payloadBytes.buffer.asUint8List());
+    offset += amountToCopy;
+    nextExtentIndex = extent.nextExtent;
+  }
+  return data;
 }

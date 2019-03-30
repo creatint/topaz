@@ -4,7 +4,6 @@
 
 // ignore_for_file: implementation_imports
 
-import 'dart:math' show min;
 import 'dart:typed_data';
 
 import 'package:fuchsia_inspect/src/bitfield64.dart';
@@ -206,27 +205,6 @@ void main() {
           data200.buffer.asUint8List());
     });
   });
-}
-
-/// Gets a Property's value.
-ByteData readProperty(FakeVmo vmo, int propertyIndex) {
-  final property = Block.read(vmo, propertyIndex);
-  final totalLength = property.propertyTotalLength;
-  final data = ByteData(totalLength);
-  if (totalLength == 0) {
-    return data;
-  }
-  var nextExtentIndex = property.propertyExtentIndex;
-  int offset = 0;
-  while (offset < totalLength) {
-    final extent = Block.read(vmo, nextExtentIndex);
-    int amountToCopy = min(totalLength - offset, extent.payloadSpaceBytes);
-    data.buffer.asUint8List().setRange(offset, offset + amountToCopy,
-        extent.payloadBytes.buffer.asUint8List());
-    offset += amountToCopy;
-    nextExtentIndex = extent.nextExtent;
-  }
-  return data;
 }
 
 /// Counts the free blocks in this VMO.

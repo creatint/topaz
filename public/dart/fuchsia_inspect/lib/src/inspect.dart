@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import 'package:fuchsia_services/services.dart';
+import 'package:meta/meta.dart';
 
+import 'node.dart';
 import 'vmo_writer.dart';
 
 const int _defaultVmoSizeBytes = 256 * 1024;
@@ -12,21 +14,24 @@ const int _defaultVmoSizeBytes = 256 * 1024;
 class Inspect {
   final VmoWriter _writer;
 
-  /// Initialize the VMO with given or default size.
-  Inspect(StartupContext context, [int vmoSize = _defaultVmoSizeBytes])
-      : _writer = VmoWriter.withSize(vmoSize) {
-    // TODO(CF-602): Remove this placeholder.
-    print('hello inspect!');
+  Node _rootNode;
 
-    _publish(context);
+  /// Initializes a VMO with [vmoSize] and publishes the Inspect data on the
+  /// component's (as provided by its [context]) out/ directory.
+  factory Inspect(StartupContext context,
+      [int vmoSize = _defaultVmoSizeBytes]) {
+    var writer = VmoWriter.withSize(vmoSize);
+    context.outgoing.debugDir().addNode('root.inspect', writer.vmoNode);
+    return Inspect.internal(writer);
   }
 
-  /// Publishes the Inspect data to the component's (as provided by its
-  /// [context]) out/ directory.
-  void _publish(StartupContext context) {
-    context.outgoing.debugDir().addNode('root.inspect', _writer.vmoNode);
+  /// Constructor that takes a [VmoWriter] as a parameter, allowing for
+  /// injection of fakes for testing.
+  @visibleForTesting
+  Inspect.internal(this._writer) {
+    _rootNode = Node(_writer.rootNode, _writer);
   }
 
-  /// Placeholder for the upper-level API.
-  bool get valid => _writer != null;
+  /// The root [Node] of this Inspect tree.
+  Node get rootNode => _rootNode;
 }

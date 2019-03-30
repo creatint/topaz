@@ -4,23 +4,14 @@
 
 import 'package:flutter/material.dart';
 import 'package:fuchsia_inspect/inspect.dart';
-import 'package:fuchsia_modular/module.dart';
-import 'package:fuchsia_services/services.dart';
 
-class RootIntentHandler extends IntentHandler {
-  @override
-  void handleIntent(Intent intent) {
-    var context = StartupContext.fromStartupInfo();
-    runApp(_InspectExampleApp(Inspect(context)));
-  }
-}
-
-class _InspectExampleApp extends StatelessWidget {
+/// A Flutter app that demonstrates usage of the [Inspect] API.
+class InspectExampleApp extends StatelessWidget {
   static const _appColor = Colors.blue;
 
   final Inspect _inspect;
 
-  _InspectExampleApp(this._inspect) {
+  InspectExampleApp(this._inspect) {
     _initMetrics();
   }
 
