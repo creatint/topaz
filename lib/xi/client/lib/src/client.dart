@@ -4,7 +4,8 @@
 
 import 'dart:async';
 import 'dart:convert';
-import 'package:lib.app.dart/logging.dart';
+
+import 'package:fuchsia_logger/logger.dart';
 
 /// ignore_for_file: avoid_annotating_with_dynamic
 

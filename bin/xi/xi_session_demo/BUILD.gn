@@ -22,8 +22,8 @@ flutter_app("xi_session_demo") {
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/bin/xi/xi_session_agent:xi_session_services",
     "//topaz/public/dart/fuchsia_scenic_flutter",
-    "//topaz/public/lib/app/dart",
-    "//topaz/public/lib/app_driver/dart",
+    "//topaz/public/dart/fuchsia_logger",
+    "//topaz/public/dart/fuchsia_modular",
     "//topaz/public/lib/widgets/dart",
   ]
 }

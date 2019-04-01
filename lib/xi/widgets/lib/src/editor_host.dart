@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:meta/meta.dart';
-import 'package:lib.app.dart/logging.dart';
 import 'package:xi_client/client.dart';
 
 import 'document.dart';

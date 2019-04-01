@@ -6,16 +6,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:lib.app.dart/app.dart';
-import 'package:fidl_fuchsia_ledger/fidl.dart';
-import 'package:fidl_fuchsia_sys/fidl.dart';
+import 'package:fidl_fuchsia_ledger/fidl_async.dart';
+import 'package:fidl_fuchsia_io/fidl_async.dart' as io;
+import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_xi/fidl.dart' as service;
+import 'package:fidl_fuchsia_xi/fidl_async.dart' as service;
+import 'package:fuchsia_services/services.dart';
 import 'package:xi_client/client.dart';
 import 'package:zircon/zircon.dart';
-
-/// [StartupContext] exported here so it can be used in `main.dart`.
-final StartupContext kContext = new StartupContext.fromStartupInfo();
 
 /// A partial implementation of XiClient to handle socket reading and writing.
 /// This should not be used on its own, but subclassed by some another type
@@ -71,7 +69,7 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
   XiFuchsiaClient(InterfaceHandle<Ledger> _ledgerHandle) {
     // Note: _ledgerHandle is currently unused, but we're hoping to bring it back.
   }
-  final Services _services = new Services();
+  final _dirProxy = io.DirectoryProxy();
   final service.JsonProxy _jsonProxy = new service.JsonProxy();
 
   @override
@@ -80,18 +78,19 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
       return;
     }
 
-    final LaunchInfo launchInfo =
-        new LaunchInfo(url: 'fuchsia-pkg://fuchsia.com/xi_core#meta/xi_core.cmx', directoryRequest: _services.request());
-    kContext.launcher.createComponent(launchInfo, null);
-    // TODO(jasoncampbell): File a bug for how to get rid of the Dart warning
-    // "Unsafe implicit cast from InterfaceHandle<dynamic>"?
-    // ignore: STRONG_MODE_DOWN_CAST_COMPOSITE
-    InterfaceHandle<service.Json> handle = _services.connectToServiceByName(
-      service.Json.$serviceName,
-    );
-    _jsonProxy.ctrl.bind(handle);
+    final LaunchInfo launchInfo = new LaunchInfo(
+        url: 'fuchsia-pkg://fuchsia.com/xi_core#meta/xi_core.cmx',
+        directoryRequest: _dirProxy.ctrl.request().passChannel());
+
+    //TODO: should explicitly control the lifecycle of the component instead of passing null
+    await StartupContext.fromStartupInfo()
+        .launcher
+        .createComponent(launchInfo, null);
+
+    Incoming(_dirProxy).connectToService(_jsonProxy);
+
     final SocketPair pair = new SocketPair();
-    _jsonProxy.connectSocket(pair.first);
+    await _jsonProxy.connectSocket(pair.first);
     _reader
       ..bind(pair.second)
       ..onReadable = handleRead;

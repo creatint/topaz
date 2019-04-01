@@ -3,9 +3,11 @@
 // found in the LICENSE file.
 
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:xi_client/client.dart';
+
 import 'document.dart';
 import 'editor.dart';
 import 'editor_host.dart';

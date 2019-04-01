@@ -3,8 +3,10 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:xi_client/client.dart';
+
 import 'editor.dart';
 import 'line_cache.dart';
 

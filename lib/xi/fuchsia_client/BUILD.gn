@@ -18,7 +18,7 @@ dart_library("xi_fuchsia_client") {
     "//sdk/fidl/fuchsia.modular",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia",
-    "//topaz/public/lib/app/dart",
+    "//topaz/public/dart/fuchsia_services",
   ]
 }
 
