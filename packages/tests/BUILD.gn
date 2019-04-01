@@ -203,3 +203,10 @@ group("flutter_runner_tests") {
     "//topaz/runtime/flutter_runner:flutter_runner_tests",
   ]
 }
+
+group("dart_fidl_benchmarks") {
+  testonly = true
+  public_deps = [
+    "//topaz/tests/dart_fidl_benchmarks",
+  ]
+}
