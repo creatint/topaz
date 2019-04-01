@@ -52,7 +52,7 @@ class WebProposer extends QueryHandler {
     if (url != null && url.length >= 2) {
       if (url.startsWith('http://') || url.startsWith('https://')) {
         proposals = await Future.wait([_createPackageProposal(url, url)]);
-      } else {
+      } else if (!url.startsWith('fuchsia-pkg://')) {
         String search = 'https://www.google.com/search?q=${input.text}';
         proposals = await Future.wait([_createPackageProposal(search, url)]);
       }

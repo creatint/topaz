@@ -49,15 +49,19 @@ class PackageProposer extends QueryHandler {
     List<Proposal> proposals = <Proposal>[];
 
     if ((query.text?.length ?? 0) >= 2) {
-      final directory = Directory('/pkgfs/packages/');
+      if (query.text.startsWith('fuchsia-pkg://')) {
+        proposals.add(await _createPackageProposal(query.text, query.text));
+      } else {
+        final directory = Directory('/pkgfs/packages/');
 
-      if (await directory.exists()) {
-        proposals = await Future.wait(directory
-            .listSync(followLinks: false)
-            .map((FileSystemEntity fileSystemEntity) =>
-                Uri.parse(fileSystemEntity.path).pathSegments.last)
-            .where((String package) => package.contains(query.text))
-            .map((package) => _createPackageProposal(package, query.text)));
+        if (await directory.exists()) {
+          proposals = await Future.wait(directory
+              .listSync(followLinks: false)
+              .map((FileSystemEntity fileSystemEntity) =>
+                  Uri.parse(fileSystemEntity.path).pathSegments.last)
+              .where((String package) => package.contains(query.text))
+              .map((package) => _createPackageProposal(package, query.text)));
+        }
       }
     }
 
@@ -65,13 +69,14 @@ class PackageProposer extends QueryHandler {
   }
 
   Future<Proposal> _createPackageProposal(String package, String query) async {
-    final fullPackageName =
-        'fuchsia-pkg://fuchsia.com/$package#meta/$package.cmx';
+    final fullPackageName = package.startsWith('fuchsia-pkg://')
+        ? package
+        : 'fuchsia-pkg://fuchsia.com/$package#meta/$package.cmx';
     final addMod = AddMod(
       intent: Intent(action: '', handler: fullPackageName),
       surfaceParentModName: [],
       modName: ['root'],
-      surfaceRelation: const SurfaceRelation(),
+      surfaceRelation: SurfaceRelation(),
     );
 
     return Proposal(
