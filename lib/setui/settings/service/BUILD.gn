@@ -14,7 +14,6 @@ dart_library("service") {
     "src/network_controller.dart",
     "src/intl_controller.dart",
     "src/connectivity_controller.dart",
-    "src/local_service.dart",
     "src/timezone_controller.dart",
     "src/intl/intl_settings_util.dart",
   ]
@@ -41,7 +40,6 @@ flutter_test("lib_setui_service_test") {
     # STOPSHIP(brycelee): add test back once migration to new api is complete.
     # "network_controller_test.dart",
     "intl_controller_test.dart",
-    "service_test.dart",
   ]
 
   deps = [

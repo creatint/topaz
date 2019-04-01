@@ -5,8 +5,6 @@ import 'package:fidl_fuchsia_setui/fidl.dart';
 import 'package:lib_setui_settings_common/setting_adapter.dart';
 import 'package:lib_setui_settings_common/setting_source.dart';
 
-import 'src/local_service.dart';
-
 /// Library that wraps the underlying setUi service.
 ///
 /// Can be used to swap out between different implementations.
@@ -37,7 +35,7 @@ class SetUiServiceAdapter implements SettingAdapter {
       this._service, this._listenerBinder, this._logger);
 
   SetUiServiceAdapter._local(this._listenerBinder, this._logger)
-      : _service = LocalSetUiService();
+      : _service = null;
 
   /// Gets the setting from the service with the given [SettingType].
   ///
