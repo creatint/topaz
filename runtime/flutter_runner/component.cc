@@ -285,9 +285,6 @@ Application::Application(
   // debugging (that is, with no bytecode), the VM will fall back on ASTs.
   settings_.dart_flags.push_back("--enable_interpreter");
 
-  // TODO(FL-208): Remove when field guards work.
-  settings_.dart_flags.push_back("--no_use_field_guards");
-
   // Don't collect CPU samples from Dart VM C++ code.
   settings_.dart_flags.push_back("--no_profile_vm");
 
