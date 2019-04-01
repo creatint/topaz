@@ -15,8 +15,8 @@ executable("test") {
   ]
 
   deps = [
-    "//garnet/public/lib/fxl",
-    "//garnet/public/lib/fxl/test:gtest_main",
+    "//src/lib/fxl",
+    "//src/lib/fxl/test:gtest_main",
     "//garnet/public/lib/inspect:reader",
     "//garnet/public/lib/inspect/testing",
     "//sdk/lib/sys/cpp",

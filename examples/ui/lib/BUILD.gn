@@ -17,7 +17,7 @@ source_set("scenic_skia") {
   ]
 
   public_deps = [
-    "//garnet/public/lib/fxl",
+    "//src/lib/fxl",
     "//sdk/lib/ui/scenic/cpp",
     "//third_party/skia",
   ]
@@ -46,7 +46,7 @@ source_set("skia_fonts") {
   deps = [
     ":skia_type_converters",
     ":skia_vmo",
-    "//garnet/public/lib/fxl",
+    "//src/lib/fxl",
     "//sdk/fidl/fuchsia.fonts",
     "//third_party/skia",
   ]
@@ -77,7 +77,7 @@ source_set("skia_vmo") {
 
   public_deps = [
     "//garnet/public/lib/fsl",
-    "//garnet/public/lib/fxl",
+    "//src/lib/fxl",
     "//third_party/skia",
     "//zircon/public/lib/zx",
   ]

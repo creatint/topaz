@@ -18,7 +18,7 @@ source_set("oauth") {
   ]
   deps = [
     "//garnet/public/lib/fsl",
-    "//garnet/public/lib/fxl",
+    "//src/lib/fxl",
     "//garnet/public/lib/network_wrapper",
     "//peridot/lib/rapidjson",
   ]
@@ -35,8 +35,8 @@ source_set("unittests") {
   deps = [
     ":oauth",
     "//garnet/public/lib/fsl",
-    "//garnet/public/lib/fxl",
-    "//garnet/public/lib/fxl:printers",
+    "//src/lib/fxl",
+    "//src/lib/fxl:printers",
     "//peridot/lib/rapidjson",
     "//third_party/googletest:gtest",
   ]
