@@ -559,7 +559,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
     @override
     {{ template "AsyncReturn" . }} {{ .Name }}({{ template "AsyncParams" .Request }}) async {
       if (!ctrl.isBound) {
-        return new Future.error(new $fidl.FidlStateException('The proxy is closed.'));
+        return new Future.error(new $fidl.FidlStateException('The proxy is closed.'), StackTrace.current);
       }
 
       final $fidl.Encoder $encoder = new $fidl.Encoder();
