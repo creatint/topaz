@@ -218,6 +218,7 @@ zx_status_t System::ChannelWrite(fxl::RefPtr<Handle> channel,
                                  const tonic::DartByteData& data,
                                  std::vector<Handle*> handles) {
   if (!channel || !channel->is_valid()) {
+    data.Release();
     return ZX_ERR_BAD_HANDLE;
   }
 
@@ -234,6 +235,7 @@ zx_status_t System::ChannelWrite(fxl::RefPtr<Handle> channel,
     handle->ReleaseHandle();
   }
 
+  data.Release();
   return status;
 }
 
@@ -387,7 +389,7 @@ zx_status_t System::VmoWrite(fxl::RefPtr<Handle> vmo,
                              const tonic::DartByteData& data) {
   if (!vmo || !vmo->is_valid()) {
     data.Release();
-    ZX_ERR_BAD_HANDLE;
+    return ZX_ERR_BAD_HANDLE;
   }
 
   zx_status_t status =
