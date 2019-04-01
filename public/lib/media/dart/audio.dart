@@ -31,7 +31,7 @@ class Audio {
   /// Constructs an Audio object.
   Audio() {
     try {
-      connectToEnvironmentService(_audioService);
+      StartupContext.fromStartupInfo().incoming.connectToService(_audioService);
     } on Exception catch (error) {
       log.severe('Unable to connect to audio service', error);
     }

@@ -80,9 +80,13 @@ class AppModel extends Model {
   StoryManager storyManager;
 
   AppModel() {
-    connectToEnvironmentService(_sessionShellContext);
-    connectToEnvironmentService(_componentContext);
-    connectToEnvironmentService(_puppetMaster);
+    StartupContext.fromStartupInfo()
+        .incoming
+        .connectToService(_sessionShellContext);
+    StartupContext.fromStartupInfo()
+        .incoming
+        .connectToService(_componentContext);
+    StartupContext.fromStartupInfo().incoming.connectToService(_puppetMaster);
     _packageProposer.start();
     _webProposer.start();
 

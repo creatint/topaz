@@ -39,6 +39,6 @@ void main() {
 
 modular.ComponentContext _getComponentContext() {
   final proxy = modular.ComponentContextProxy();
-  connectToEnvironmentService(proxy);
+  StartupContext.fromStartupInfo().incoming.connectToService(proxy);
   return proxy;
 }

@@ -4,13 +4,16 @@
 
 // ignore_for_file: implementation_imports
 import 'package:fidl/fidl.dart';
-import 'package:fuchsia_services/src/environment_service_connection.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
 
 void main() {
   group('connectToEnvironmentService', () {
     test('throws if serviceProxy is null', () {
-      expect(() => connectToEnvironmentService(null), throwsArgumentError);
+      expect(
+          () =>
+              StartupContext.fromStartupInfo().incoming.connectToService(null),
+          throwsArgumentError);
     });
   });
 }

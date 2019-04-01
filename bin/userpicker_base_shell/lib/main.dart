@@ -37,7 +37,7 @@ void main() {
   cobalt.LoggerProxy logger = new cobalt.LoggerProxy();
 
   cobalt.LoggerFactoryProxy loggerFactory = new cobalt.LoggerFactoryProxy();
-  connectToEnvironmentService(loggerFactory);
+  StartupContext.fromStartupInfo().incoming.connectToService(loggerFactory);
 
   SizedVmo configVmo = SizedVmo.fromFile(_kCobaltConfigBinProtoPath);
   cobalt.ProjectProfile profile = cobalt.ProjectProfile(
@@ -53,7 +53,7 @@ void main() {
   loggerFactory.ctrl.close();
 
   NetstackProxy netstackProxy = new NetstackProxy();
-  connectToEnvironmentService(netstackProxy);
+  StartupContext.fromStartupInfo().incoming.connectToService(netstackProxy);
 
   NetstackModel netstackModel = new NetstackModel(netstack: netstackProxy)
     ..start();

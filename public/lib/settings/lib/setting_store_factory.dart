@@ -16,7 +16,9 @@ class SettingStoreFactory {
 
   SettingStoreFactory() {
     try {
-      connectToEnvironmentService(_deviceSettingsManagerService);
+      StartupContext.fromStartupInfo()
+          .incoming
+          .connectToService(_deviceSettingsManagerService);
     } catch (error) {
       log.severe('Unable to connect to device settings service', error);
     }

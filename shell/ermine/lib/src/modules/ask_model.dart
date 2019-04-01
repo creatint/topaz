@@ -21,8 +21,7 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart'
         UserInput;
 import 'package:fidl_fuchsia_shell_ermine/fidl_async.dart'
     show AskBar, AskBarBinding;
-import 'package:fuchsia_services/services.dart'
-    show connectToEnvironmentService, StartupContext;
+import 'package:fuchsia_services/services.dart' show StartupContext;
 import 'package:lib.widgets/model.dart' show SpringModel;
 import 'package:zircon/zircon.dart' show Vmo;
 
@@ -59,7 +58,9 @@ class AskModel extends ChangeNotifier {
 
   AskModel({this.startupContext}) {
     _ask = _AskImpl(this);
-    connectToEnvironmentService(_suggestionProvider);
+    StartupContext.fromStartupInfo()
+        .incoming
+        .connectToService(_suggestionProvider);
   }
 
   void focus(BuildContext context) =>

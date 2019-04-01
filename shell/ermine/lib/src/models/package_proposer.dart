@@ -19,8 +19,7 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart'
         UserInput;
 import 'package:fuchsia_modular/module.dart';
 import 'package:fuchsia_modular/proposal.dart';
-import 'package:fuchsia_services/services.dart'
-    show connectToEnvironmentService;
+import 'package:fuchsia_services/services.dart';
 
 /// Proposes suggestions for packages found on the system.
 class PackageProposer extends QueryHandler {
@@ -30,7 +29,9 @@ class PackageProposer extends QueryHandler {
   /// Starts the proposal process.
   void start() {
     final intelligenceServicesProxy = IntelligenceServicesProxy();
-    connectToEnvironmentService(intelligenceServicesProxy);
+    StartupContext.fromStartupInfo()
+        .incoming
+        .connectToService(intelligenceServicesProxy);
     intelligenceServicesProxy
       ..getProposalPublisher(_proposalPublisherProxy.ctrl.request())
       ..registerQueryHandler(_queryHandlerBinding.wrap(this));

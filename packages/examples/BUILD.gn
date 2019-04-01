@@ -45,11 +45,11 @@ group("dart_sdk") {
 group("fidl") {
   testonly = true
   public_deps = [
+    "//topaz/examples/fidl/compiler",
     "//topaz/examples/fidl/echo_client_async_dart",
     "//topaz/examples/fidl:echo_dart",
     "//topaz/examples/fidl/echo_server_async_dart",
     "//topaz/examples/fidl/fidl_bindings_performance",
-    "//topaz/examples/fidl/compiler",
   ]
 }
 
@@ -67,24 +67,24 @@ group("misc") {
   testonly = true
   public_deps = [
     "//garnet/packages/prod:drivers",
-    "//topaz/examples/mediaplayer/mediaplayer_flutter",
-    "//topaz/examples/mediaplayer/mediaplayer_skia",
-    "//topaz/examples/mine_digger",
     "//topaz/examples/ledger/todo_list",
     "//topaz/examples/ledger/todo_list_sledge",
     "//topaz/examples/media/vu_meter:package",
+    "//topaz/examples/mediaplayer/mediaplayer_flutter",
+    "//topaz/examples/mediaplayer/mediaplayer_skia",
+    "//topaz/examples/mine_digger",
   ]
 }
 
 group("ui") {
   testonly = true
   public_deps = [
-    "//topaz/packages/examples:noodles",
     "//topaz/examples/ui/button_flutter",
     "//topaz/examples/ui/jank:package",
     "//topaz/examples/ui/localized_mod",
     "//topaz/examples/ui/paint:package",
     "//topaz/examples/ui/view_config_demo",
+    "//topaz/packages/examples:noodles",
   ]
 }
 

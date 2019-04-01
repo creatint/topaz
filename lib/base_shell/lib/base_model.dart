@@ -325,7 +325,9 @@ class CommonBaseShellModel extends BaseShellModel
     super.onReady(userProvider, baseShellContext, presentation);
 
     final netstackProxy = NetstackProxy();
-    app.connectToEnvironmentService(netstackProxy);
+    app.StartupContext.fromStartupInfo()
+        .incoming
+        .connectToService(netstackProxy);
     _netstackModel = NetstackModel(netstack: netstackProxy)..start();
 
     await presentation

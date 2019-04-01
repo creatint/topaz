@@ -18,8 +18,7 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart'
         UserInput;
 import 'package:fuchsia_modular/module.dart';
 import 'package:fuchsia_modular/proposal.dart';
-import 'package:fuchsia_services/services.dart'
-    show connectToEnvironmentService;
+import 'package:fuchsia_services/services.dart';
 
 /// Proposes suggestions for queries matching http(s) prefix or web search.
 class WebProposer extends QueryHandler {
@@ -29,7 +28,9 @@ class WebProposer extends QueryHandler {
   /// Starts the proposal process.
   void start() {
     final intelligenceServicesProxy = IntelligenceServicesProxy();
-    connectToEnvironmentService(intelligenceServicesProxy);
+    StartupContext.fromStartupInfo()
+        .incoming
+        .connectToService(intelligenceServicesProxy);
     intelligenceServicesProxy
       ..getProposalPublisher(_proposalPublisherProxy.ctrl.request())
       ..registerQueryHandler(

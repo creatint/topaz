@@ -116,7 +116,7 @@ class NetstackModel extends Model with TickerProviderModelMixin {
 
   /// Constructor.
   NetstackModel({this.netstack}) {
-    connectToEnvironmentService(connectivity);
+    StartupContext.fromStartupInfo().incoming.connectToService(connectivity);
     networkReachable.addListener(notifyListeners);
     _reachabilitySubscription =
         connectivity.onNetworkReachable.listen((reachable) {

@@ -40,7 +40,7 @@ EventPair _createPresentationViewToken() {
   final presenter = PresenterProxy();
 
   try {
-    connectToEnvironmentService(presenter);
+    StartupContext.fromStartupInfo().incoming.connectToService(presenter);
     presenter.presentView(ViewHolderToken(value: viewTokens.second), null);
     return viewTokens.first;
   } finally {
@@ -184,7 +184,8 @@ Future<void> _expectTopColors(ScenicProxy scenic, Set<int> expected) async {
 void main() {
   final scenic = ScenicProxy();
 
-  setUpAll(() => connectToEnvironmentService(scenic));
+  setUpAll(
+      () => StartupContext.fromStartupInfo().incoming.connectToService(scenic));
   tearDownAll(scenic.ctrl.close);
 
   setUp(() => _waitForBlank(scenic));
