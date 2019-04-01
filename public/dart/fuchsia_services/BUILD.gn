@@ -15,7 +15,6 @@ dart_library("fuchsia_services") {
 
   sources = [
     "services.dart",
-    "src/environment_service_connection.dart",
     "src/incoming.dart",
     "src/internal/_startup_context_impl.dart",
     "src/outgoing.dart",
@@ -36,7 +35,6 @@ dart_library("fuchsia_services") {
 
 flutter_test("fuchsia_services_package_unittests") {
   sources = [
-    "environment_service_connection_test.dart",
     "service_provider_impl_test.dart",
     "startup_context_test.dart",
   ]
