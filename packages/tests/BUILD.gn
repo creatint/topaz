@@ -30,6 +30,7 @@ group("dart_unittests") {
     "//topaz/lib/setui/settings/common:lib_setui_settings_common_test($host_toolchain)",
     "//topaz/lib/setui/settings/service:lib_setui_service_test($host_toolchain)",
     "//topaz/lib/setui/settings/testing:lib_setui_settings_testing_test($host_toolchain)",
+    "//topaz/lib/tiler:tiler_unittests($host_toolchain)",
     "//topaz/public/dart/composition_delegate:composition_delegate_tests($host_toolchain)",
     "//topaz/public/dart/fuchsia_inspect:fuchsia_inspect_package_unittests($host_toolchain)",
     "//topaz/public/dart/fuchsia_logger:fuchsia_logger_package_unittests($host_toolchain)",

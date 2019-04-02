@@ -77,14 +77,13 @@ class TilerModel extends ChangeNotifier {
   TileModel split({
     @required TileModel tile,
     Object content,
-    AxisDirection direction,
+    AxisDirection direction = AxisDirection.right,
     double flex = 0.5,
   }) {
     assert(tile != null);
     assert(flex > 0 && flex < 1);
 
     final parent = tile.parent;
-    int index = parent?.tiles?.indexOf(tile) ?? 0;
 
     final newTile = TileModel(
       type: TileType.content,
@@ -92,47 +91,31 @@ class TilerModel extends ChangeNotifier {
       flex: flex,
     );
 
-    // If we are splitting in the same axis as the parent, just add the
-    // tile to the parent's tiles.
-    if (parent?.type == TileType.row && _isVertical(direction) ||
-        parent?.type == TileType.column && _isHorizontal(direction)) {
-      parent.tiles.insert(
-        axisDirectionIsReversed(direction) ? index : index + 1,
-        newTile,
-      );
-      newTile.parent = parent;
+    final newParent = TileModel(
+      type: _isHorizontal(direction) ? TileType.column : TileType.row,
+      tiles: axisDirectionIsReversed(direction)
+          ? [newTile, tile]
+          : [tile, newTile],
+    );
 
-      double oldFlex = tile.flex;
-      newTile.flex = oldFlex - oldFlex * flex;
-      tile.flex = oldFlex - newTile.flex;
+    // If parent is null, tile should be the root tile.
+    if (parent == null) {
+      assert(tile == root);
+      root = newParent;
     } else {
-      // Create a new parent that holds the tile being split and the new tile.
-      final newParent = TileModel(
-        type: _isHorizontal(direction) ? TileType.column : TileType.row,
-        tiles: axisDirectionIsReversed(direction)
-            ? [newTile, tile]
-            : [tile, newTile],
-      );
-
-      if (parent == null) {
-        // If parent is null, tile should be the root tile.
-        assert(tile == root);
-        root = newParent;
-      } else {
-        parent.tiles.remove(tile);
-
-        // Copy existing flex and resize offsets from tile.
-        newParent.copy(tile);
-        tile.reset();
-
-        newParent.parent = parent;
-        parent.tiles.insert(index, newParent);
-      }
-      newTile.parent = newParent;
-      tile
-        ..parent = newParent
-        ..flex = 1 - flex;
+      int index = parent?.tiles?.indexOf(tile) ?? 0;
+      parent?.tiles?.remove(tile);
+      // Copy existing flex and resize offsets from tile.
+      newParent.copy(tile);
+      tile.reset();
+      newParent.parent = parent;
+      parent.tiles.insert(index, newParent);
     }
+
+    newTile.parent = newParent;
+    tile
+      ..parent = newParent
+      ..flex = 1 - flex;
 
     notifyListeners();
 
@@ -155,10 +138,8 @@ class TilerModel extends ChangeNotifier {
 
     if (root == null) {
       root = tile;
-    } else if (nearTile == null) {
-      tile.parent = root;
-      root.tiles.add(tile);
     } else {
+      nearTile ??= root;
       _insert(nearTile, tile, direction);
     }
 
@@ -194,17 +175,22 @@ class TilerModel extends ChangeNotifier {
       if (parent.tiles.isEmpty) {
         // Remove empty parent.
         _remove(parent);
-      } else if (parent.tiles.length == 1 && parent.parent != null) {
+      } else if (parent.tiles.length == 1) {
         // For parent with only one child, move the child to it's grand parent.
         // and remove the parent.
         final grandParent = parent.parent;
-        final index = grandParent.tiles.indexOf(parent);
-        var child = parent.tiles.first;
-        parent.tiles.remove(child);
-        grandParent.tiles.remove(parent);
+        if (grandParent != null) {
+          final index = grandParent.tiles.indexOf(parent);
+          var child = parent.tiles.first;
+          parent.tiles.remove(child);
+          grandParent.tiles.remove(parent);
 
-        child.parent = grandParent;
-        grandParent.tiles.insert(index, child);
+          child.parent = grandParent;
+          grandParent.tiles.insert(index, child);
+        } else {
+          assert(parent == root);
+          root = parent.tiles.first..parent = null;
+        }
       }
       tile.parent = null;
     }
