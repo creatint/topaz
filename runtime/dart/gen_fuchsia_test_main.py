@@ -50,7 +50,7 @@ def main():
     for i in range(len(test_files)):
         outfile.write('test_%d.main,\n' % i)
 
-    outfile.write(''']) ? 0 : 1;
+    outfile.write('''], args);
 
       exitFuchsiaTest(exitCode);
       return exitCode;

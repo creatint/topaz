@@ -8,7 +8,9 @@ import("//topaz/runtime/dart_runner/dart_app.gni")
 # Defines a device-side test binary
 #
 # Bundles a set of `package:test` tests into a single Fuchsia application
-# with generated helper code to invoke the tests appropriately.
+# with generated helper code to invoke the tests appropriately. The resulting
+# application can take Dart test arguments; pass --help to see full options.
+# Some options (e.g. Dart test platform selectors) are not supported.
 #
 # Parameters
 #
@@ -39,6 +41,14 @@ import("//topaz/runtime/dart_runner/dart_app.gni")
 #   dart_fuchsia_test("some_tests") {
 #     tests = [ "test_foo.dart", "test_bar.dart" ]
 #   }
+#
+# Example of running:
+#
+#   fx run-test some_tests
+#
+# To see Dart test options:
+#
+#   fx run-test some_tests -- --help
 #
 # TODO:
 #
