@@ -55,4 +55,25 @@ void main() {
         ExampleUnionConverter.fromJson(jsonDecode(
             jsonEncode(ExampleUnionConverter.toJson(exampleUnion)))));
   });
+
+  // Ensure xunion encode/decode.
+  test('test_xunion', () async {
+    const ExampleXUnion exampleUnion = ExampleXUnion.withStruct1(ExampleStruct(
+        bar: 1, foo: 'test', structs: null, vals: null, integers: null));
+
+    expect(
+        exampleUnion,
+        ExampleXUnionConverter.fromJson(jsonDecode(
+            jsonEncode(ExampleXUnionConverter.toJson(exampleUnion)))));
+  });
+
+  // Ensure table encode/decode.
+  test('test_table', () async {
+    const ExampleTable exampleTable = ExampleTable(bar: 1, foo: 'test');
+
+    expect(
+        exampleTable,
+        ExampleTableConverter.fromJson(jsonDecode(
+            jsonEncode(ExampleTableConverter.toJson(exampleTable)))));
+  });
 }

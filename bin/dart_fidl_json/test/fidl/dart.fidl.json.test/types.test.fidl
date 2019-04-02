@@ -17,8 +17,20 @@ union ExampleUnion {
   ExampleStruct2 struct2;
 };
 
+xunion ExampleXUnion {
+  ExampleStruct struct1;
+  ExampleStruct2 struct2;
+  int32 bar;
+};
+
 enum ExampleEnum {
   val1 = 1;
   val2 = 2;
   val3 = 3;
+};
+
+table ExampleTable {
+  1: string foo;
+  2: reserved;
+  3: int32 bar;
 };
