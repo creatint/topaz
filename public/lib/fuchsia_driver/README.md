@@ -61,7 +61,7 @@ To build one of these tests, first make sure that your test file is under a
 `_test.dart`.
 
 Then, make a `dart_fuchsia_test` target in your BUILD.gn file(imported from
-`//build/dart/dart_fuchsia_test.gni`).
+`//topaz/runtime/dart/dart_fuchsia_test.gni`).
 
 You should then point to the target as a package (an example would be
 `//topaz/packages/examples/tests` for something that points to a
