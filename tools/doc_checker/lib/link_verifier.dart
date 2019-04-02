@@ -55,6 +55,16 @@ class _LinkVerifier<P> {
           sleep(new Duration(milliseconds: delay));
           continue;
         }
+
+        // Http client doesn't automatically follow 308 (Permanent Redirect).
+        if (code == HttpStatus.permanentRedirect) {
+          if (response.headers.containsKey('location')) {
+            Uri redirectUri = Uri.parse(link.uri.origin + response.headers['location']);
+            return _verifyLink(new Link<P>(redirectUri, link.payload));
+          }
+          return false;
+        }
+
         return code == HttpStatus.ok;
       }
     } on IOException {
