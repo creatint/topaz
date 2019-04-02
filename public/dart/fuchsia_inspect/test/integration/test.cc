@@ -106,9 +106,9 @@ class InspectTest : public sys::testing::TestWithEnvironment {
 TEST_F(InspectTest, ReadHierarchy) {
   zx::vmo vmo;
   ASSERT_EQ(ZX_OK, GetInspectVmo(&vmo));
-  inspect::ObjectHierarchy hierarchy =
-      inspect::ReadFromVmo(std::move(vmo)).take_value();
-
+  auto result = inspect::ReadFromVmo(std::move(vmo));
+  ASSERT_TRUE(result.is_ok());
+  inspect::ObjectHierarchy hierarchy = result.take_value();
   EXPECT_THAT(
       hierarchy,
       AllOf(
