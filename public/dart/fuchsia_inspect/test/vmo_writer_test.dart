@@ -179,6 +179,7 @@ void main() {
         }
       }
 
+      final data0 = ByteData(0);
       final data200 = ByteData(200);
       fill(data200);
       final data230 = ByteData(230);
@@ -186,23 +187,22 @@ void main() {
       final data530 = ByteData(530);
       fill(data530);
       final property = writer.createProperty(writer.rootNode, 'property');
-      expect(readProperty(vmo, property).buffer.asUint8List(),
-          ByteData(0).buffer.asUint8List());
+      expect(readProperty(vmo, property), equalsByteData(data0));
+
       writer.setProperty(property, data200);
-      expect(readProperty(vmo, property).buffer.asUint8List(),
-          data200.buffer.asUint8List());
+      expect(readProperty(vmo, property), equalsByteData(data200));
+
       // There isn't space for 200+230, but the set to 230 should still work.
       writer.setProperty(property, data230);
-      expect(readProperty(vmo, property).buffer.asUint8List(),
-          data230.buffer.asUint8List());
+      expect(readProperty(vmo, property), equalsByteData(data230));
+
       // The set to 530 should fail and leave an empty property.
       writer.setProperty(property, data530);
-      expect(readProperty(vmo, property).buffer.asUint8List(),
-          ByteData(0).buffer.asUint8List());
+      expect(readProperty(vmo, property), equalsByteData(data0));
+
       // And after all that, 200 should still work.
       writer.setProperty(property, data200);
-      expect(readProperty(vmo, property).buffer.asUint8List(),
-          data200.buffer.asUint8List());
+      expect(readProperty(vmo, property), equalsByteData(data200));
     });
   });
 }

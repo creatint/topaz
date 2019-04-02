@@ -8,6 +8,7 @@ import 'dart:io';
 import 'dart:math' show min;
 import 'dart:typed_data';
 
+import 'package:collection/collection.dart';
 import 'package:fuchsia_inspect/src/block.dart';
 import 'package:fuchsia_inspect/src/vmo_holder.dart';
 import 'package:test/test.dart';
@@ -179,4 +180,42 @@ ByteData readProperty(FakeVmo vmo, int propertyIndex) {
     nextExtentIndex = extent.nextExtent;
   }
   return data;
+}
+
+/// A matcher that matches ByteData values as unit8 lists.
+Matcher equalsByteData(ByteData data) => _EqualsByteData(data);
+
+class _EqualsByteData extends Matcher {
+  final ByteData _other;
+
+  const _EqualsByteData(this._other);
+
+  @override
+  bool matches(dynamic item, _) {
+    if (item is! ByteData) {
+      return false;
+    }
+
+    var listEquals = const ListEquality().equals;
+
+    ByteData byteData = item;
+    return listEquals(
+        byteData.buffer.asUint8List(), _other.buffer.asUint8List());
+  }
+
+  @override
+  Description describe(Description description) =>
+      description.add('buffer as uint8 list: ${_other.buffer.asUint8List()}');
+
+  @override
+  Description describeMismatch(
+      dynamic item, Description mismatchDescription, _, __) {
+    if (item is! ByteData) {
+      return mismatchDescription.add('$item is not of type ByteData');
+    }
+
+    ByteData byteData = item;
+    return mismatchDescription
+        .replace('buffer as uint8 list: ${byteData.buffer.asUint8List()}');
+  }
 }

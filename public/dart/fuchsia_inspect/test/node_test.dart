@@ -25,18 +25,18 @@ void main() {
   test('String properties are written to the VMO when the value is set', () {
     var property = node.createStringProperty('color')..value = 'fuchsia';
 
-    expect(readProperty(vmo, property.index).buffer.asUint8List(),
-        toByteData('fuchsia').buffer.asUint8List());
+    expect(readProperty(vmo, property.index),
+        equalsByteData(toByteData('fuchsia')));
   });
 
   test('String properties can be mutated', () {
     var property = node.createStringProperty('breakfast')..value = 'pancakes';
 
-    expect(readProperty(vmo, property.index).buffer.asUint8List(),
-        toByteData('pancakes').buffer.asUint8List());
+    expect(readProperty(vmo, property.index),
+        equalsByteData(toByteData('pancakes')));
 
     property.value = 'waffles';
-    expect(readProperty(vmo, property.index).buffer.asUint8List(),
-        toByteData('waffles').buffer.asUint8List());
+    expect(readProperty(vmo, property.index),
+        equalsByteData(toByteData('waffles')));
   });
 }
