@@ -123,18 +123,6 @@ void _copyFloat64(ByteData data, Float64List value, int offset) {
   }
 }
 
-String _convertFromUTF8(Uint8List bytes) {
-  try {
-    return const Utf8Decoder().convert(bytes);
-  } on FormatException {
-    throw FidlError('Received a string with invalid UTF8: $bytes');
-  }
-}
-
-Uint8List _convertToUTF8(String string) {
-  return new Uint8List.fromList(const Utf8Encoder().convert(string));
-}
-
 const int kAllocAbsent = 0;
 const int kAllocPresent = 0xFFFFFFFFFFFFFFFF;
 const int kHandleAbsent = 0;
@@ -572,8 +560,8 @@ class StringType extends NullableFidlType<String> {
         ..encodeUint64(kAllocAbsent, offset + 8); // data
       return null;
     }
-    final Uint8List bytes = _convertToUTF8(value);
-    final int size = bytes.lengthInBytes;
+    final bytes = const Utf8Encoder().convert(value);
+    final int size = bytes.length;
     encoder
       ..encodeUint64(size, offset) // size
       ..encodeUint64(kAllocPresent, offset + 8); // data
@@ -591,7 +579,11 @@ class StringType extends NullableFidlType<String> {
     }
     final Uint8List bytes =
         decoder.data.buffer.asUint8List(decoder.claimMemory(size), size);
-    return _convertFromUTF8(bytes);
+    try {
+      return const Utf8Decoder().convert(bytes, 0, size);
+    } on FormatException {
+      throw FidlError('Received a string with invalid UTF8: $bytes');
+    }
   }
 
   void validate(String value) {
