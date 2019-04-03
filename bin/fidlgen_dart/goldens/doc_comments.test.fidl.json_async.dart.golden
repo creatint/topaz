@@ -279,7 +279,9 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
   Future<void> method() async {
     if (!ctrl.isBound) {
       return new Future.error(
-          new $fidl.FidlStateException('The proxy is closed.'));
+          new $fidl.FidlStateException(
+              'Proxy<${ctrl.$interfaceName}> is closed.'),
+          StackTrace.current);
     }
 
     final $fidl.Encoder $encoder = new $fidl.Encoder();

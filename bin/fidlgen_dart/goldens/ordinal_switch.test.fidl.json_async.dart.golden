@@ -192,7 +192,9 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
   Future<void> ordinalFive() async {
     if (!ctrl.isBound) {
       return new Future.error(
-          new $fidl.FidlStateException('The proxy is closed.'));
+          new $fidl.FidlStateException(
+              'Proxy<${ctrl.$interfaceName}> is closed.'),
+          StackTrace.current);
     }
 
     final $fidl.Encoder $encoder = new $fidl.Encoder();
@@ -206,7 +208,9 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
   Future<void> onlyGeneratedOrdinal() async {
     if (!ctrl.isBound) {
       return new Future.error(
-          new $fidl.FidlStateException('The proxy is closed.'));
+          new $fidl.FidlStateException(
+              'Proxy<${ctrl.$interfaceName}> is closed.'),
+          StackTrace.current);
     }
 
     final $fidl.Encoder $encoder = new $fidl.Encoder();
