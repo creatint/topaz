@@ -148,15 +148,6 @@ type Interface struct {
 	Documented
 }
 
-type MethodResponse struct {
-	WireParameters   []Parameter
-	MethodParameters []Parameter
-	HasError         bool
-	ResultType       Union
-	ValueType        Type
-	ErrorType        Type
-}
-
 // Method represents a method declaration within an interface declaration.
 type Method struct {
 	Ordinal            types.Ordinal
@@ -166,7 +157,7 @@ type Method struct {
 	Request            []Parameter
 	RequestSize        int
 	HasResponse        bool
-	Response           MethodResponse
+	Response           []Parameter
 	ResponseSize       int
 	AsyncResponseClass string
 	AsyncResponseType  string
@@ -463,9 +454,8 @@ func changeIfReserved(str string) string {
 }
 
 type compiler struct {
-	decls     *types.DeclMap
-	library   types.LibraryIdentifier
-	typesRoot types.Root
+	decls   *types.DeclMap
+	library types.LibraryIdentifier
 }
 
 func (c *compiler) inExternalLibrary(ci types.CompoundIdentifier) bool {
@@ -749,147 +739,31 @@ func (c *compiler) compileEnum(val types.Enum) Enum {
 	return e
 }
 
-func (c *compiler) compileParameter(paramName types.Identifier, paramType types.Type, offset int) Parameter {
-	var (
-		t         = c.compileType(paramType)
-		typeStr   = fmt.Sprintf("type: %s", t.typeExpr)
-		offsetStr = fmt.Sprintf("offset: %v", offset)
-		name      = c.compileLowerCamelIdentifier(paramName)
-		convert   string
-	)
-	if t.declType == types.InterfaceDeclType {
-		convert = "$fidl.convertInterfaceHandle"
-	} else if paramType.Kind == types.RequestType {
-		convert = "$fidl.convertInterfaceRequest"
-	}
-	return Parameter{
-		Type:     t,
-		Name:     name,
-		Offset:   offset,
-		Convert:  convert,
-		typeExpr: fmt.Sprintf("const $fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
-	}
-}
-
 func (c *compiler) compileParameterArray(val []types.Parameter) []Parameter {
 	r := []Parameter{}
+
 	for _, v := range val {
-		r = append(r, c.compileParameter(v.Name, v.Type, v.Offset))
+		t := c.compileType(v.Type)
+		typeStr := fmt.Sprintf("type: %s", t.typeExpr)
+		offsetStr := fmt.Sprintf("offset: %v", v.Offset)
+		name := c.compileLowerCamelIdentifier(v.Name)
+		convert := ""
+		if t.declType == types.InterfaceDeclType {
+			convert = "$fidl.convertInterfaceHandle"
+		} else if v.Type.Kind == types.RequestType {
+			convert = "$fidl.convertInterfaceRequest"
+		}
+		p := Parameter{
+			Type:     t,
+			Name:     name,
+			Offset:   v.Offset,
+			Convert:  convert,
+			typeExpr: fmt.Sprintf("const $fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		}
+		r = append(r, p)
 	}
+
 	return r
-}
-
-func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
-	var (
-		resultUnion *types.Union
-		resultType  types.Type
-		valueStruct *types.Struct
-		valueType   types.Type
-		isResult    bool
-		parameters  []Parameter
-	)
-
-	// Method needs to have exactly one response arg
-	if !method.HasResponse || len(method.Response) != 1 {
-		goto NotAResult
-	}
-	// That arg must be a non-nullable identifier
-	resultType = method.Response[0].Type
-	if resultType.Kind != types.IdentifierType || resultType.Nullable {
-		goto NotAResult
-	}
-	// That identifier is for a union
-	for _, union := range c.typesRoot.Unions {
-		if union.Name == resultType.Identifier {
-			resultUnion = &union
-			break
-		}
-	}
-	if resultUnion == nil {
-		goto NotAResult
-	}
-	// Union needs the [Result] attribute, two members
-	_, isResult = resultUnion.LookupAttribute("Result")
-	if !isResult || len(resultUnion.Members) != 2 {
-		goto NotAResult
-	}
-
-	// Find the struct
-	valueType = resultUnion.Members[0].Type
-	for _, decl := range c.typesRoot.Structs {
-		if decl.Name == valueType.Identifier {
-			valueStruct = &decl
-			break
-		}
-	}
-	if valueStruct == nil {
-		goto NotAResult
-	}
-
-	// Turn the struct into a parameter array that will be used for function arguments.
-	for _, v := range valueStruct.Members {
-		parameters = append(parameters, c.compileParameter(v.Name, v.Type, v.Offset))
-	}
-
-	return MethodResponse{
-		WireParameters:   c.compileParameterArray(method.Response),
-		MethodParameters: parameters,
-		HasError:         true,
-		ResultType:       c.compileUnion(*resultUnion),
-		ValueType:        c.compileType(resultUnion.Members[0].Type),
-		ErrorType:        c.compileType(resultUnion.Members[1].Type),
-	}
-
-NotAResult:
-	response := c.compileParameterArray(method.Response)
-	return MethodResponse{
-		WireParameters:   response,
-		MethodParameters: response,
-	}
-}
-
-func (c *compiler) compileMethod(val types.Method, protocol Interface) Method {
-	var (
-		name               = c.compileLowerCamelIdentifier(val.Name)
-		request            = c.compileParameterArray(val.Request)
-		response           = c.compileMethodResponse(val)
-		asyncResponseClass string
-		asyncResponseType  string
-	)
-	if len(response.MethodParameters) > 1 {
-		asyncResponseClass = fmt.Sprintf("%s$%s$Response", protocol.Name, val.Name)
-	}
-	if val.HasResponse {
-		switch len(response.MethodParameters) {
-		case 0:
-			asyncResponseType = "void"
-		case 1:
-			responseType := response.MethodParameters[0].Type
-			asyncResponseType = responseType.Decl
-		default:
-			asyncResponseType = asyncResponseClass
-
-		}
-	}
-	_, transitional := val.LookupAttribute("Transitional")
-	return Method{
-		Ordinal:            val.Ordinal,
-		OrdinalName:        fmt.Sprintf("_k%s_%s_Ordinal", protocol.Name, val.Name),
-		Name:               name,
-		HasRequest:         val.HasRequest,
-		Request:            request,
-		RequestSize:        val.RequestSize,
-		HasResponse:        val.HasResponse,
-		Response:           response,
-		ResponseSize:       val.ResponseSize,
-		AsyncResponseClass: asyncResponseClass,
-		AsyncResponseType:  asyncResponseType,
-		CallbackType:       fmt.Sprintf("%s%sCallback", protocol.Name, val.Name),
-		TypeSymbol:         fmt.Sprintf("_k%s_%s_Type", protocol.Name, val.Name),
-		TypeExpr:           typeExprForMethod(request, response.WireParameters, fmt.Sprintf("%s.%s", protocol.Name, val.Name)),
-		Transitional:       transitional,
-		Documented:         docString(val),
-	}
 }
 
 func (c *compiler) compileInterface(val types.Interface) Interface {
@@ -911,7 +785,47 @@ func (c *compiler) compileInterface(val types.Interface) Interface {
 	}
 
 	for _, v := range val.Methods {
-		m := c.compileMethod(v, r)
+		name := c.compileLowerCamelIdentifier(v.Name)
+		request := c.compileParameterArray(v.Request)
+		response := c.compileParameterArray(v.Response)
+		asyncResponseClass := ""
+		if len(response) > 1 {
+			asyncResponseClass = fmt.Sprintf("%s$%s$Response", r.Name, v.Name)
+		}
+		asyncResponseType := ""
+		if v.HasResponse {
+			if len(response) == 0 {
+				asyncResponseType = "void"
+			} else if len(response) == 1 {
+				responseType := response[0].Type
+				if responseType.SyncDecl != "" {
+					asyncResponseType = responseType.Decl
+				} else {
+					asyncResponseType = responseType.Decl
+				}
+			} else {
+				asyncResponseType = asyncResponseClass
+			}
+		}
+		_, transitional := v.LookupAttribute("Transitional")
+		m := Method{
+			v.Ordinal,
+			fmt.Sprintf("_k%s_%s_Ordinal", r.Name, v.Name),
+			name,
+			v.HasRequest,
+			request,
+			v.RequestSize,
+			v.HasResponse,
+			response,
+			v.ResponseSize,
+			asyncResponseClass,
+			asyncResponseType,
+			fmt.Sprintf("%s%sCallback", r.Name, v.Name),
+			fmt.Sprintf("_k%s_%s_Type", r.Name, v.Name),
+			typeExprForMethod(request, response, fmt.Sprintf("%s.%s", r.Name, v.Name)),
+			transitional,
+			docString(v),
+		}
 		r.Methods = append(r.Methods, m)
 		if !v.HasRequest && v.HasResponse {
 			r.HasEvents = true
@@ -1095,11 +1009,7 @@ nullable: true,
 // Compile the language independent type definition into the Dart-specific representation.
 func Compile(r types.Root) Root {
 	root := Root{}
-	c := compiler{
-		decls:     &r.Decls,
-		library:   types.ParseLibraryName(r.Name),
-		typesRoot: r,
-	}
+	c := compiler{&r.Decls, types.ParseLibraryName(r.Name)}
 
 	root.LibraryName = fmt.Sprintf("fidl_%s", formatLibraryName(c.library))
 

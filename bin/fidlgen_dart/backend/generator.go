@@ -8,7 +8,7 @@ import (
 	"fidl/compiler/backend/types"
 	"fidlgen_dart/backend/ir"
 	"fidlgen_dart/backend/templates"
-	"io/ioutil"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -19,39 +19,38 @@ func writeFile(outputFilename string,
 	templateName string,
 	tmpls *template.Template,
 	tree ir.Root, dartfmt string) error {
-	// Set up the output directory
-	outputDirectory := filepath.Dir(outputFilename)
-	if err := os.MkdirAll(outputDirectory, os.ModePerm); err != nil {
+	if err := os.MkdirAll(filepath.Dir(outputFilename), os.ModePerm); err != nil {
 		return err
 	}
+	generated, err := os.Create(outputFilename)
+	if err != nil {
+		return err
+	}
+	defer generated.Close()
+	var f io.WriteCloser = generated
 
-	// Generate to a temporary file
-	temporaryFile, err := ioutil.TempFile(outputDirectory, "fidlgen_tmp")
-	if err != nil {
-		return err
-	}
-	defer os.Remove(temporaryFile.Name())
-	err = tmpls.ExecuteTemplate(temporaryFile, templateName, tree)
-	if err != nil {
-		return err
-	}
-	err = temporaryFile.Close()
-	if err != nil {
-		return err
-	}
-
-	// Run dartfmt over the file
 	if dartfmt != "" {
-		cmd := exec.Command(dartfmt, "--overwrite", temporaryFile.Name())
-		cmd.Stderr = os.Stderr
-		err = cmd.Run()
+		// Pipe output via supplied dartfmt command.
+		cmd := exec.Command(dartfmt)
+		cmd.Stdout = generated
+		cmd.Stderr = nil
+		f, err = cmd.StdinPipe()
 		if err != nil {
 			return err
 		}
+		err = cmd.Start()
+		if err != nil {
+			return err
+		}
+
+		defer cmd.Wait()
 	}
 
-	// Rename the temporary file to the destination name
-	return os.Rename(temporaryFile.Name(), outputFilename)
+	err = tmpls.ExecuteTemplate(f, templateName, tree)
+	if err != nil {
+		return err
+	}
+	return f.Close()
 }
 
 // GenerateFidl generates Dart bindings from FIDL types structures.

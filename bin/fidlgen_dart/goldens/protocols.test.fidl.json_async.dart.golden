@@ -44,289 +44,6 @@ import 'fidl.dart' as $strongly_connect_sync;
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: comment_references
 
-class ErrorEnun extends $fidl.Enum {
-  factory ErrorEnun(int v) {
-    switch (v) {
-      case 1:
-        return errFoo;
-      case 2:
-        return errBar;
-      default:
-        return null;
-    }
-  }
-  static const ErrorEnun errFoo = const ErrorEnun._(1);
-  static const ErrorEnun errBar = const ErrorEnun._(2);
-
-  const ErrorEnun._(this.value);
-
-  @override
-  final int value;
-
-  static const Map<String, ErrorEnun> valuesMap = const {
-    r'errFoo': errFoo,
-    r'errBar': errBar,
-  };
-
-  static const List<ErrorEnun> values = const [
-    errFoo,
-    errBar,
-  ];
-
-  static ErrorEnun valueOf(String name) => valuesMap[name];
-
-  @override
-  String toString() {
-    switch (value) {
-      case 1:
-        return r'ErrorEnun.errFoo';
-      case 2:
-        return r'ErrorEnun.errBar';
-      default:
-        return null;
-    }
-  }
-
-  static ErrorEnun _ctor(int v) => new ErrorEnun(v);
-}
-
-const $fidl.EnumType<ErrorEnun> kErrorEnun_Type =
-    const $fidl.EnumType<ErrorEnun>(
-        type: const $fidl.Uint32Type(), ctor: ErrorEnun._ctor);
-
-enum WithErrorSyntaxErrorAsPrimitiveResultTag {
-  response,
-  err,
-}
-
-class WithErrorSyntaxErrorAsPrimitiveResult extends $fidl.Union {
-  const WithErrorSyntaxErrorAsPrimitiveResult.withResponse(
-      WithErrorSyntaxErrorAsPrimitiveResponse value)
-      : _data = value,
-        tag = WithErrorSyntaxErrorAsPrimitiveResultTag.response;
-
-  const WithErrorSyntaxErrorAsPrimitiveResult.withErr(int value)
-      : _data = value,
-        tag = WithErrorSyntaxErrorAsPrimitiveResultTag.err;
-
-  WithErrorSyntaxErrorAsPrimitiveResult._(this.tag, Object data) : _data = data;
-
-  final WithErrorSyntaxErrorAsPrimitiveResultTag tag;
-  final _data;
-  WithErrorSyntaxErrorAsPrimitiveResponse get response {
-    if (tag != WithErrorSyntaxErrorAsPrimitiveResultTag.response) {
-      return null;
-    }
-    return _data;
-  }
-
-  int get err {
-    if (tag != WithErrorSyntaxErrorAsPrimitiveResultTag.err) {
-      return null;
-    }
-    return _data;
-  }
-
-  @override
-  String toString() {
-    switch (tag) {
-      case WithErrorSyntaxErrorAsPrimitiveResultTag.response:
-        return 'WithErrorSyntaxErrorAsPrimitiveResult.response($response)';
-      case WithErrorSyntaxErrorAsPrimitiveResultTag.err:
-        return 'WithErrorSyntaxErrorAsPrimitiveResult.err($err)';
-      default:
-        return null;
-    }
-  }
-
-  @override
-  int get $index => tag.index;
-
-  @override
-  Object get $data => _data;
-
-  static WithErrorSyntaxErrorAsPrimitiveResult _ctor(int index, Object data) {
-    return new WithErrorSyntaxErrorAsPrimitiveResult._(
-        WithErrorSyntaxErrorAsPrimitiveResultTag.values[index], data);
-  }
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>
-    kWithErrorSyntax_ErrorAsPrimitive_Result_Type =
-    const $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>(
-  encodedSize: 8,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResponse>(
-        type: kWithErrorSyntax_ErrorAsPrimitive_Response_Type, offset: 4),
-    const $fidl.MemberType<int>(type: const $fidl.Uint32Type(), offset: 4),
-  ],
-  ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
-);
-
-enum WithErrorSyntaxErrorAsEnumResultTag {
-  response,
-  err,
-}
-
-class WithErrorSyntaxErrorAsEnumResult extends $fidl.Union {
-  const WithErrorSyntaxErrorAsEnumResult.withResponse(
-      WithErrorSyntaxErrorAsEnumResponse value)
-      : _data = value,
-        tag = WithErrorSyntaxErrorAsEnumResultTag.response;
-
-  const WithErrorSyntaxErrorAsEnumResult.withErr(ErrorEnun value)
-      : _data = value,
-        tag = WithErrorSyntaxErrorAsEnumResultTag.err;
-
-  WithErrorSyntaxErrorAsEnumResult._(this.tag, Object data) : _data = data;
-
-  final WithErrorSyntaxErrorAsEnumResultTag tag;
-  final _data;
-  WithErrorSyntaxErrorAsEnumResponse get response {
-    if (tag != WithErrorSyntaxErrorAsEnumResultTag.response) {
-      return null;
-    }
-    return _data;
-  }
-
-  ErrorEnun get err {
-    if (tag != WithErrorSyntaxErrorAsEnumResultTag.err) {
-      return null;
-    }
-    return _data;
-  }
-
-  @override
-  String toString() {
-    switch (tag) {
-      case WithErrorSyntaxErrorAsEnumResultTag.response:
-        return 'WithErrorSyntaxErrorAsEnumResult.response($response)';
-      case WithErrorSyntaxErrorAsEnumResultTag.err:
-        return 'WithErrorSyntaxErrorAsEnumResult.err($err)';
-      default:
-        return null;
-    }
-  }
-
-  @override
-  int get $index => tag.index;
-
-  @override
-  Object get $data => _data;
-
-  static WithErrorSyntaxErrorAsEnumResult _ctor(int index, Object data) {
-    return new WithErrorSyntaxErrorAsEnumResult._(
-        WithErrorSyntaxErrorAsEnumResultTag.values[index], data);
-  }
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>
-    kWithErrorSyntax_ErrorAsEnum_Result_Type =
-    const $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>(
-  encodedSize: 8,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<WithErrorSyntaxErrorAsEnumResponse>(
-        type: kWithErrorSyntax_ErrorAsEnum_Response_Type, offset: 4),
-    const $fidl.MemberType<ErrorEnun>(type: kErrorEnun_Type, offset: 4),
-  ],
-  ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
-);
-
-class WithErrorSyntaxErrorAsPrimitiveResponse extends $fidl.Struct {
-  const WithErrorSyntaxErrorAsPrimitiveResponse({
-    this.reserved: 0,
-  });
-  WithErrorSyntaxErrorAsPrimitiveResponse.clone(
-    WithErrorSyntaxErrorAsPrimitiveResponse $orig, {
-    int reserved,
-  }) : this(
-          reserved: reserved ?? $orig.reserved,
-        );
-
-  WithErrorSyntaxErrorAsPrimitiveResponse._(List<Object> argv)
-      : reserved = argv[0];
-  final int reserved;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      reserved,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'WithErrorSyntaxErrorAsPrimitiveResponse' r'(reserved: ' +
-        reserved.toString() +
-        r')';
-  }
-
-  static WithErrorSyntaxErrorAsPrimitiveResponse _ctor(List<Object> argv) =>
-      new WithErrorSyntaxErrorAsPrimitiveResponse._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>
-    kWithErrorSyntax_ErrorAsPrimitive_Response_Type =
-    const $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>(
-  encodedSize: 1,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Uint8Type(), offset: 0),
-  ],
-  ctor: WithErrorSyntaxErrorAsPrimitiveResponse._ctor,
-);
-
-class WithErrorSyntaxErrorAsEnumResponse extends $fidl.Struct {
-  const WithErrorSyntaxErrorAsEnumResponse({
-    this.reserved: 0,
-  });
-  WithErrorSyntaxErrorAsEnumResponse.clone(
-    WithErrorSyntaxErrorAsEnumResponse $orig, {
-    int reserved,
-  }) : this(
-          reserved: reserved ?? $orig.reserved,
-        );
-
-  WithErrorSyntaxErrorAsEnumResponse._(List<Object> argv) : reserved = argv[0];
-  final int reserved;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      reserved,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'WithErrorSyntaxErrorAsEnumResponse' r'(reserved: ' +
-        reserved.toString() +
-        r')';
-  }
-
-  static WithErrorSyntaxErrorAsEnumResponse _ctor(List<Object> argv) =>
-      new WithErrorSyntaxErrorAsEnumResponse._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>
-    kWithErrorSyntax_ErrorAsEnum_Response_Type =
-    const $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>(
-  encodedSize: 1,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Uint8Type(), offset: 0),
-  ],
-  ctor: WithErrorSyntaxErrorAsEnumResponse._ctor,
-);
-
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();
 
@@ -508,8 +225,9 @@ class WithAndWithoutRequestResponseProxy
           final List<$fidl.MemberType> $types =
               _kWithAndWithoutRequestResponse_OnWithResponse_Type.response;
           $decoder.claimMemory(32);
-          _onWithResponseEventStreamController
-              .add($types[0].decode($decoder, 0));
+          _onWithResponseEventStreamController.add(
+            $types[0].decode($decoder, 0),
+          );
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(
@@ -550,11 +268,7 @@ class WithAndWithoutRequestResponseProxy
               _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Type
                   .response;
           $decoder.claimMemory(16);
-          // ignore: prefer_const_declarations
-          final $response = null;
-
-          $completer.complete($response);
-
+          $completer.complete(null);
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(new $fidl.FidlError(
@@ -574,11 +288,9 @@ class WithAndWithoutRequestResponseProxy
               _kWithAndWithoutRequestResponse_NoRequestWithResponse_Type
                   .response;
           $decoder.claimMemory(32);
-          // ignore: prefer_const_declarations
-          final $response = $types[0].decode($decoder, 0);
-
-          $completer.complete($response);
-
+          $completer.complete(
+            $types[0].decode($decoder, 0),
+          );
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(new $fidl.FidlError(
@@ -598,11 +310,7 @@ class WithAndWithoutRequestResponseProxy
               _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Type
                   .response;
           $decoder.claimMemory(16);
-          // ignore: prefer_const_declarations
-          final $response = null;
-
-          $completer.complete($response);
-
+          $completer.complete(null);
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(new $fidl.FidlError(
@@ -622,11 +330,9 @@ class WithAndWithoutRequestResponseProxy
               _kWithAndWithoutRequestResponse_WithRequestWithResponse_Type
                   .response;
           $decoder.claimMemory(32);
-          // ignore: prefer_const_declarations
-          final $response = $types[0].decode($decoder, 0);
-
-          $completer.complete($response);
-
+          $completer.complete(
+            $types[0].decode($decoder, 0),
+          );
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(new $fidl.FidlError(
@@ -981,269 +687,6 @@ class WithAndWithoutRequestResponseBinding
   }
 }
 
-// errorAsPrimitive: () -> ()
-const int _kWithErrorSyntax_ErrorAsPrimitive_Ordinal = 2069369145;
-const $fidl.MethodType _kWithErrorSyntax_ErrorAsPrimitive_Type =
-    const $fidl.MethodType(
-  request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResult>(
-        type: kWithErrorSyntax_ErrorAsPrimitive_Result_Type, offset: 16),
-  ],
-  name: r"WithErrorSyntax.ErrorAsPrimitive",
-);
-// errorAsEnum: () -> ()
-const int _kWithErrorSyntax_ErrorAsEnum_Ordinal = 1284890143;
-const $fidl.MethodType _kWithErrorSyntax_ErrorAsEnum_Type =
-    const $fidl.MethodType(
-  request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<WithErrorSyntaxErrorAsEnumResult>(
-        type: kWithErrorSyntax_ErrorAsEnum_Result_Type, offset: 16),
-  ],
-  name: r"WithErrorSyntax.ErrorAsEnum",
-);
-
-abstract class WithErrorSyntax extends $fidl.Service {
-  static const String $serviceName = null;
-  @override
-  $fidl.ServiceData get $serviceData => const WithErrorSyntaxData();
-  Future<void> errorAsPrimitive();
-  Future<void> errorAsEnum();
-}
-
-class WithErrorSyntaxData implements $fidl.ServiceData<WithErrorSyntax> {
-  const WithErrorSyntaxData();
-
-  @override
-  String getName() {
-    return WithErrorSyntax.$serviceName;
-  }
-
-  @override
-  $fidl.AsyncBinding getBinding() {
-    return WithErrorSyntaxBinding();
-  }
-}
-
-class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
-    implements WithErrorSyntax {
-  WithErrorSyntaxProxy()
-      : super(new $fidl.AsyncProxyController<WithErrorSyntax>(
-            $serviceName: null, $interfaceName: r'WithErrorSyntax')) {
-    ctrl.onResponse = _handleResponse;
-  }
-
-  @override
-  $fidl.ServiceData get $serviceData => WithErrorSyntaxData();
-
-  void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
-    switch ($message.ordinal) {
-      default:
-        ctrl.proxyError(new $fidl.FidlError(
-            'Unexpected message ordinal: ${$message.ordinal}'));
-        ctrl.close();
-        break;
-    }
-  }
-
-  void _handleResponse($fidl.Message $message) {
-    final int $txid = $message.txid;
-    if ($txid == 0) {
-      _handleEvent($message);
-      return;
-    }
-    final Completer $completer = ctrl.getCompleter($txid);
-    if ($completer == null) {
-      $message.closeHandles();
-      return;
-    }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
-    switch ($message.ordinal) {
-      case _kWithErrorSyntax_ErrorAsPrimitive_Ordinal:
-        final String _name = _kWithErrorSyntax_ErrorAsPrimitive_Type.name;
-        try {
-          Timeline.startSync(_name);
-          final List<$fidl.MemberType> $types =
-              _kWithErrorSyntax_ErrorAsPrimitive_Type.response;
-          $decoder.claimMemory(24);
-          // ignore: prefer_const_declarations
-          final $response = $types[0].decode($decoder, 0);
-
-          if ($response.tag ==
-              WithErrorSyntaxErrorAsPrimitiveResultTag.response) {
-            $completer.complete(null);
-          } else {
-            $completer.completeError($fidl.MethodError($response.err));
-          }
-
-          // ignore: avoid_catches_without_on_clauses
-        } catch (_e) {
-          ctrl.proxyError(new $fidl.FidlError(
-              'Exception handling method response $_name: $_e'));
-          ctrl.close();
-          rethrow;
-        } finally {
-          Timeline.finishSync();
-        }
-        break;
-      case _kWithErrorSyntax_ErrorAsEnum_Ordinal:
-        final String _name = _kWithErrorSyntax_ErrorAsEnum_Type.name;
-        try {
-          Timeline.startSync(_name);
-          final List<$fidl.MemberType> $types =
-              _kWithErrorSyntax_ErrorAsEnum_Type.response;
-          $decoder.claimMemory(24);
-          // ignore: prefer_const_declarations
-          final $response = $types[0].decode($decoder, 0);
-
-          if ($response.tag == WithErrorSyntaxErrorAsEnumResultTag.response) {
-            $completer.complete(null);
-          } else {
-            $completer.completeError($fidl.MethodError($response.err));
-          }
-
-          // ignore: avoid_catches_without_on_clauses
-        } catch (_e) {
-          ctrl.proxyError(new $fidl.FidlError(
-              'Exception handling method response $_name: $_e'));
-          ctrl.close();
-          rethrow;
-        } finally {
-          Timeline.finishSync();
-        }
-        break;
-      default:
-        ctrl.proxyError(new $fidl.FidlError(
-            'Unexpected message ordinal: ${$message.ordinal}'));
-        ctrl.close();
-        break;
-    }
-  }
-
-  @override
-  Future<void> errorAsPrimitive() async {
-    if (!ctrl.isBound) {
-      return new Future.error(
-          new $fidl.FidlStateException('The proxy is closed.'));
-    }
-
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kWithErrorSyntax_ErrorAsPrimitive_Ordinal, 0);
-    final $completer = new Completer<void>();
-    ctrl.sendMessageWithResponse($encoder.message, $completer);
-    return $completer.future;
-  }
-
-  @override
-  Future<void> errorAsEnum() async {
-    if (!ctrl.isBound) {
-      return new Future.error(
-          new $fidl.FidlStateException('The proxy is closed.'));
-    }
-
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kWithErrorSyntax_ErrorAsEnum_Ordinal, 0);
-    final $completer = new Completer<void>();
-    ctrl.sendMessageWithResponse($encoder.message, $completer);
-    return $completer.future;
-  }
-}
-
-class WithErrorSyntaxBinding extends $fidl.AsyncBinding<WithErrorSyntax> {
-  WithErrorSyntaxBinding() : super(r"WithErrorSyntax");
-
-  @override
-  void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
-    switch ($message.ordinal) {
-      case _kWithErrorSyntax_ErrorAsPrimitive_Ordinal:
-        final String _name = _kWithErrorSyntax_ErrorAsPrimitive_Type.name;
-        try {
-          Timeline.startSync(_name);
-          final List<$fidl.MemberType> $types =
-              _kWithErrorSyntax_ErrorAsPrimitive_Type.request;
-          $decoder.claimMemory(16);
-          final Future<void> $future = impl.errorAsPrimitive();
-          $future.then(($responseValue) {
-            return WithErrorSyntaxErrorAsPrimitiveResult.withResponse(
-                WithErrorSyntaxErrorAsPrimitiveResponse());
-          }, onError: ($error) {
-            if ($error is $fidl.MethodError) {
-              return WithErrorSyntaxErrorAsPrimitiveResult.withErr(
-                  $error.value);
-            } else {
-              return Future.error($error);
-            }
-          }).then(($response) {
-            final $fidl.Encoder $encoder = new $fidl.Encoder();
-            $encoder.encodeMessageHeader(
-                _kWithErrorSyntax_ErrorAsPrimitive_Ordinal, $message.txid);
-            $encoder.alloc(24 - $fidl.kMessageHeaderSize);
-            final List<$fidl.MemberType> $types =
-                _kWithErrorSyntax_ErrorAsPrimitive_Type.response;
-            $types[0].encode($encoder, $response, 0);
-            $respond($encoder.message);
-          }, onError: (_e) {
-            close();
-            print('Exception handling method call $_name: $_e');
-          });
-          // ignore: avoid_catches_without_on_clauses
-        } catch (_e) {
-          close();
-          print('Exception handling method call $_name: $_e');
-          rethrow;
-        } finally {
-          Timeline.finishSync();
-        }
-        break;
-      case _kWithErrorSyntax_ErrorAsEnum_Ordinal:
-        final String _name = _kWithErrorSyntax_ErrorAsEnum_Type.name;
-        try {
-          Timeline.startSync(_name);
-          final List<$fidl.MemberType> $types =
-              _kWithErrorSyntax_ErrorAsEnum_Type.request;
-          $decoder.claimMemory(16);
-          final Future<void> $future = impl.errorAsEnum();
-          $future.then(($responseValue) {
-            return WithErrorSyntaxErrorAsEnumResult.withResponse(
-                WithErrorSyntaxErrorAsEnumResponse());
-          }, onError: ($error) {
-            if ($error is $fidl.MethodError) {
-              return WithErrorSyntaxErrorAsEnumResult.withErr($error.value);
-            } else {
-              return Future.error($error);
-            }
-          }).then(($response) {
-            final $fidl.Encoder $encoder = new $fidl.Encoder();
-            $encoder.encodeMessageHeader(
-                _kWithErrorSyntax_ErrorAsEnum_Ordinal, $message.txid);
-            $encoder.alloc(24 - $fidl.kMessageHeaderSize);
-            final List<$fidl.MemberType> $types =
-                _kWithErrorSyntax_ErrorAsEnum_Type.response;
-            $types[0].encode($encoder, $response, 0);
-            $respond($encoder.message);
-          }, onError: (_e) {
-            close();
-            print('Exception handling method call $_name: $_e');
-          });
-          // ignore: avoid_catches_without_on_clauses
-        } catch (_e) {
-          close();
-          print('Exception handling method call $_name: $_e');
-          rethrow;
-        } finally {
-          Timeline.finishSync();
-        }
-        break;
-      default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for WithErrorSyntaxBinding');
-    }
-  }
-}
-
 // methodA: (int a, int b)
 const int _kOvernetInternalProtocol_MethodA_Ordinal = 1993818253;
 const $fidl.MethodType _kOvernetInternalProtocol_MethodA_Type =
@@ -1380,11 +823,9 @@ class OvernetInternalProtocolProxy extends $fidl
           final List<$fidl.MemberType> $types =
               _kOvernetInternalProtocol_MethodB_Type.response;
           $decoder.claimMemory(24);
-          // ignore: prefer_const_declarations
-          final $response = $types[0].decode($decoder, 0);
-
-          $completer.complete($response);
-
+          $completer.complete(
+            $types[0].decode($decoder, 0),
+          );
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(new $fidl.FidlError(
@@ -1678,11 +1119,9 @@ class SocketControlProtocolProxy extends $fidl.AsyncProxy<SocketControlProtocol>
           final List<$fidl.MemberType> $types =
               _kSocketControlProtocol_MethodB_Type.response;
           $decoder.claimMemory(24);
-          // ignore: prefer_const_declarations
-          final $response = $types[0].decode($decoder, 0);
-
-          $completer.complete($response);
-
+          $completer.complete(
+            $types[0].decode($decoder, 0),
+          );
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(new $fidl.FidlError(
@@ -1971,11 +1410,9 @@ class ChannelProtocolProxy extends $fidl.AsyncProxy<ChannelProtocol>
           final List<$fidl.MemberType> $types =
               _kChannelProtocol_MethodB_Type.response;
           $decoder.claimMemory(24);
-          // ignore: prefer_const_declarations
-          final $response = $types[0].decode($decoder, 0);
-
-          $completer.complete($response);
-
+          $completer.complete(
+            $types[0].decode($decoder, 0),
+          );
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(new $fidl.FidlError(
@@ -2262,11 +1699,9 @@ class KitchenSinkProxy extends $fidl.AsyncProxy<KitchenSink>
           final List<$fidl.MemberType> $types =
               _kKitchenSink_MethodB_Type.response;
           $decoder.claimMemory(24);
-          // ignore: prefer_const_declarations
-          final $response = $types[0].decode($decoder, 0);
-
-          $completer.complete($response);
-
+          $completer.complete(
+            $types[0].decode($decoder, 0),
+          );
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           ctrl.proxyError(new $fidl.FidlError(
