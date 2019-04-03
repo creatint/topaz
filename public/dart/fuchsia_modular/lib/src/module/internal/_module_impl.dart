@@ -122,14 +122,6 @@ class ModuleImpl implements Module {
     @required String name,
     @required modular.Intent intent,
   }) async {
-    return embedModuleNew(name: name, intent: intent);
-  }
-
-  @override
-  Future<EmbeddedModule> embedModuleNew({
-    @required String name,
-    @required modular.Intent intent,
-  }) async {
     if (name == null || name.isEmpty) {
       throw ArgumentError.value(
           name, 'name', 'embedModuleNew should be called with a valid name');

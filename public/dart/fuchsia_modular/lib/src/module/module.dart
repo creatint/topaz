@@ -111,13 +111,6 @@ abstract class Module {
     @required modular.Intent intent,
   });
 
-  /// TEMPORARY, for transition purposes only.
-  @experimental
-  Future<EmbeddedModule> embedModuleNew({
-    @required String name,
-    @required modular.Intent intent,
-  });
-
   /// Registers the [intentHandler] with this.
   ///
   /// This method must be called in the main function of the module
