@@ -32,4 +32,4 @@ sdk://fidl/fuchsia.ui.viewsv1
 sdk://fidl/fuchsia.ui.viewsv1token
 sdk://tools/dart_kernel_compiler
 sdk://tools/fidlgen_dart
-sdk://tools/gen_snapshot_x64
+sdk://tools/gen_snapshot
