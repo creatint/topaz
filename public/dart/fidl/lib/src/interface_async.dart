@@ -413,7 +413,7 @@ class AsyncProxyController<T> extends _Stateful {
 
   /// Log an [error] message and close the channel.
   void proxyError(FidlError error) {
-    print('Proxy error: ${error.message}');
+    print('AsyncProxyController<${$interfaceName}> error: ${error.message}');
     close();
   }
 

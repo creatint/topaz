@@ -293,7 +293,8 @@ abstract class Binding<T> {
   void _handleReadable() {
     final ReadResult result = _reader.channel.queryAndRead();
     if ((result.bytes == null) || (result.bytes.lengthInBytes == 0))
-      throw new FidlError('Unexpected empty message or error: $result');
+      throw new FidlError('Unexpected empty message or error: $result '
+          'from channel ${_reader.channel}');
 
     final Message message = new Message.fromReadResult(result);
     handleMessage(message, sendMessage);
@@ -498,7 +499,7 @@ class ProxyController<T> {
     _callbackMap.clear();
     _errorCompleter = new Completer<ProxyError>();
     if (!_boundCompleter.isCompleted) {
-      _boundCompleter.completeError('The proxy closed.');
+      _boundCompleter.completeError('Proxy<${$interfaceName}> closed.');
     }
     _boundCompleter = new Completer<Null>();
     _nextTxid = 1;
@@ -508,7 +509,7 @@ class ProxyController<T> {
   void _handleReadable() {
     final ReadResult result = _reader.channel.queryAndRead();
     if ((result.bytes == null) || (result.bytes.lengthInBytes == 0)) {
-      proxyError('Read from channel failed');
+      proxyError('Read from channel ${_reader.channel} failed');
       return;
     }
     try {
