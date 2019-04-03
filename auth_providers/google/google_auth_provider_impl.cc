@@ -5,20 +5,20 @@
 #include "topaz/auth_providers/google/google_auth_provider_impl.h"
 
 #include <fuchsia/net/oldhttp/cpp/fidl.h>
-#include <fuchsia/ui/app/cpp/fidl.h>
 #include <lib/fdio/directory.h>
 #include <lib/fit/function.h>
 #include <lib/syslog/global.h>
+#include <lib/ui/scenic/cpp/view_token_pair.h>
 
 #include "garnet/public/lib/rapidjson_utils/rapidjson_validation.h"
 #include "lib/component/cpp/connect.h"
 #include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/interface_request.h"
-#include "src/lib/fxl/strings/join_strings.h"
 #include "lib/svc/cpp/services.h"
 #include "peridot/lib/rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "rapidjson/schema.h"
+#include "src/lib/fxl/strings/join_strings.h"
 #include "topaz/auth_providers/google/constants.h"
 #include "topaz/auth_providers/oauth/oauth_request_builder.h"
 #include "topaz/auth_providers/oauth/oauth_response.h"
@@ -153,9 +153,8 @@ void GoogleAuthProviderImpl::GetPersistentCredential(
   get_persistent_credential_callback_ = std::move(callback);
 
   std::string url = GetAuthorizeUrl(user_profile_id);
-  zx::eventpair view_holder_token;
-  view_holder_token = SetupChromium();
-  if (!view_holder_token) {
+  fuchsia::ui::views::ViewHolderToken view_holder_token = SetupChromium();
+  if (!view_holder_token.value) {
     return;
   }
   chromium::web::NavigationControllerPtr controller;
@@ -173,7 +172,7 @@ void GoogleAuthProviderImpl::GetPersistentCredential(
     return;
   });
 
-  auth_ui_context_->StartOverlay2(std::move(view_holder_token));
+  auth_ui_context_->StartOverlay2(std::move(view_holder_token.value));
   ExposeCredentialInjectorInterface();
 }
 
@@ -601,7 +600,7 @@ void GoogleAuthProviderImpl::GetUserProfile(fidl::StringPtr credential,
   });
 }
 
-zx::eventpair GoogleAuthProviderImpl::SetupChromium() {
+fuchsia::ui::views::ViewHolderToken GoogleAuthProviderImpl::SetupChromium() {
   // Connect to the Chromium service and create a new frame.
   auto context_provider =
       context_->ConnectToEnvironmentService<chromium::web::ContextProvider>();
@@ -612,7 +611,7 @@ zx::eventpair GoogleAuthProviderImpl::SetupChromium() {
               context_->incoming_services()->directory().get())));
   if (!incoming_service_clone.is_valid()) {
     FX_LOG(ERROR, NULL, "Failed to clone service directory");
-    return zx::eventpair();
+    return fuchsia::ui::views::ViewHolderToken();
   }
 
   chromium::web::CreateContextParams params;
@@ -628,14 +627,10 @@ zx::eventpair GoogleAuthProviderImpl::SetupChromium() {
       std::move(navigation_event_observer));
 
   // And create a view for the frame.
-  zx::eventpair view_token, view_holder_token;
-  if (zx::eventpair::create(0u, &view_token, &view_holder_token) != ZX_OK) {
-    FX_LOG(ERROR, NULL, "Failed to create view tokens");
-    return zx::eventpair();
-  }
-  chromium_frame_->CreateView2(std::move(view_token), nullptr, nullptr);
+  auto [view_token, view_holder_token] = scenic::NewViewTokenPair();
+  chromium_frame_->CreateView(std::move(view_token));
 
-  return view_holder_token;
+  return std::move(view_holder_token);
 }
 
 void GoogleAuthProviderImpl::SafelyCallbackGetPersistentCredential(

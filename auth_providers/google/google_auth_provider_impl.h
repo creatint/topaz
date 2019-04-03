@@ -7,17 +7,20 @@
 // |auth_provider.fidl| interface and is typically invoked by the Token Manager
 // service in Garnet layer.
 
+#ifndef TOPAZ_AUTH_PROVIDERS_GOOGLE_GOOGLE_AUTH_PROVIDER_IMPL_H_
+#define TOPAZ_AUTH_PROVIDERS_GOOGLE_GOOGLE_AUTH_PROVIDER_IMPL_H_
+
 #include <chromium/web/cpp/fidl.h>
 #include <fuchsia/auth/cpp/fidl.h>
 #include <fuchsia/auth/testing/cpp/fidl.h>
+#include <fuchsia/ui/views/cpp/fidl.h>
 #include <lib/fit/function.h>
-#include <lib/zx/eventpair.h>
 
 #include "lib/callback/cancellable.h"
 #include "lib/component/cpp/startup_context.h"
 #include "lib/fidl/cpp/binding.h"
-#include "src/lib/fxl/macros.h"
 #include "lib/network_wrapper/network_wrapper.h"
+#include "src/lib/fxl/macros.h"
 #include "topaz/auth_providers/google/settings.h"
 
 namespace google_auth_provider {
@@ -111,8 +114,8 @@ class GoogleAuthProviderImpl
 
   // Launches and connects to a Chromium frame, binding |this| as a
   // |NavigationEventObserver| to process any changes in the URL, and returning
-  // a |zx::eventpair| token for the view's ViewHolder.
-  zx::eventpair SetupChromium();
+  // a |fuchsia::ui::views::ViewHolderToken| token for the view's ViewHolder.
+  fuchsia::ui::views::ViewHolderToken SetupChromium();
 
   // Calls the GetPersistentCredential callback if one is available, or logs
   // and returns immediately otherwise.  This enables interactive signin or
@@ -163,3 +166,5 @@ class GoogleAuthProviderImpl
 };
 
 }  // namespace google_auth_provider
+
+#endif  // TOPAZ_AUTH_PROVIDERS_GOOGLE_GOOGLE_AUTH_PROVIDER_IMPL_H_

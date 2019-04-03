@@ -15,7 +15,6 @@
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.input.ImeVisibilityService",
             "fuchsia.ui.scenic.Scenic",
-            "fuchsia.ui.viewsv1.ViewManager",
             "fuchsia.logger.LogSink",
             "fuchsia.tracelink.Registry"
         ]

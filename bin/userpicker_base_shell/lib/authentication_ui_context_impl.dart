@@ -28,6 +28,7 @@ class AuthenticationUiContextImpl extends AuthenticationUiContext {
         _onStopOverlay = onStopOverlay;
 
   @override
+  // ignore: override_on_non_overriding_method
   Future<void> startOverlay(InterfaceHandle<ViewOwner> viewOwner) =>
       startOverlay2(EventPair(viewOwner?.passChannel()?.passHandle()));
 
