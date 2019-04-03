@@ -13,29 +13,32 @@ import sys
 def main():
   parser = argparse.ArgumentParser(
       description='Generate a script that invokes the Dart tester')
+  parser.add_argument('--wd',
+                      help='Path to the working directory, relative to that of the invocation file',
+                      required=True)
   parser.add_argument('--out',
                       help='Path to the invocation file to generate',
                       required=True)
-  parser.add_argument('--source-dir',
-                      help='Path to test sources',
+  parser.add_argument('--dart',
+                      help='Path to the dart binary, relative to the working directory',
+                      required=True)
+  parser.add_argument('--snapshot',
+                      help='Path to snapshot of the the test runner, relative to the working directory',
                       required=True)
   parser.add_argument('--sdk-root',
-                      help='Path to the SDK platform files',
+                      help='Path to the SDK platform files, relative to the working directory',
                       required=True)
   parser.add_argument('--tests',
-                      help='Path to test-to-precompiled-kernel file list',
+                      help='Path to test-to-precompiled-kernel file list, relative to the working directory',
                       required=True)
   parser.add_argument('--dot-packages',
-                      help='Path to the .packages file',
-                      required=True)
-  parser.add_argument('--test-runner',
-                      help='Path to the test runner',
+                      help='Path to the .packages file, relative to the working directory',
                       required=True)
   parser.add_argument('--flutter-shell',
-                      help='Path to the Flutter shell',
+                      help='Path to the Flutter shell, relative to the working directory',
                       required=True)
   parser.add_argument('--icudtl',
-                      help='Path to the ICU data file',
+                      help='Path to the ICU data file, relative to the working directory',
                       required=True)
   args = parser.parse_args()
 
@@ -50,10 +53,11 @@ def main():
 #   //topaz/runtime/dart/gen_flutter_test_invocation.py
 # See: //topaz/runtime/dart/flutter_test.gni
 
-$test_runner \\
+cd "$$(dirname $$0)/$wd"
+
+$dart $snapshot \\
   --packages=$dot_packages \\
   --shell=$flutter_shell \\
-  --test-directory=$source_dir \\
   --tests=$tests \\
   --sdk-root=$sdk_root \\
   --icudtl=$icudtl \\
