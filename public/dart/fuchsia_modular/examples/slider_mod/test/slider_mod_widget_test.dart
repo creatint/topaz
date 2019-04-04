@@ -9,7 +9,7 @@ import 'package:fuchsia_remote_debug_protocol/logging.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
 
-const Pattern _isolatePattern = 'slider_mod';
+const Pattern _isolatePattern = 'slider_mod.cmx';
 const _testAppUrl = 'fuchsia-pkg://fuchsia.com/slider_mod#meta/slider_mod.cmx';
 const _basemgrUrl = 'fuchsia-pkg://fuchsia.com/basemgr#meta/basemgr.cmx';
 

@@ -8,7 +8,7 @@ import 'package:flutter_driver/flutter_driver.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
 
-const Pattern _isolatePattern = 'driver_example_mod';
+const Pattern _isolatePattern = 'driver_example_mod.cmx';
 const _testAppUrl =
     'fuchsia-pkg://fuchsia.com/driver_example_mod#meta/driver_example_mod.cmx';
 const _basemgrUrl = 'fuchsia-pkg://fuchsia.com/basemgr#meta/basemgr.cmx';

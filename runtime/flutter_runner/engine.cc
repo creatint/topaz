@@ -219,6 +219,8 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
   settings_.advisory_script_uri = thread_label_;
 
+  settings_.advisory_script_entrypoint = thread_label_;
+
   settings_.root_isolate_create_callback =
       std::bind(&Engine::OnMainIsolateStart, this);
 

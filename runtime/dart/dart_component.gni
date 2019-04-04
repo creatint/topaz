@@ -35,10 +35,10 @@ declare_args() {
   }
 
   # Whether experimental space dart mode is enabled for Flutter applications.
-  flutter_space_dart = true
+  flutter_space_dart = !is_debug
 
   # Whether experimental space dart mode is enabled for Dart applications.
-  dart_space_dart = true
+  dart_space_dart = !is_debug
 }
 
 declare_args() {
@@ -281,11 +281,9 @@ template("flutter_dart_jit_component") {
       }
 
       gen_bytecode = false
-      interpreter = false
       if ((defined(invoker.space_dart) && invoker.space_dart) ||
           flutter_space_dart) {
         gen_bytecode = true
-        interpreter = true
       }
 
       product_suffix = ""
@@ -314,11 +312,9 @@ template("flutter_dart_jit_component") {
       }
 
       gen_bytecode = false
-      interpreter = false
       if ((defined(invoker.space_dart) && invoker.space_dart) ||
           dart_space_dart) {
         gen_bytecode = true
-        interpreter = true
       }
       runtime_meta =
           "//topaz/runtime/dart_runner/meta/jit${product_suffix}_runtime"
