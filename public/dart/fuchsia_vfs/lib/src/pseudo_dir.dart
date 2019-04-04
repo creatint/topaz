@@ -214,7 +214,8 @@ class PseudoDir extends Vnode {
         openFlagDirectory |
         openFlagNodeReference |
         openFlagDescribe |
-        openFlagPosix;
+        openFlagPosix |
+        cloneFlagSameRights;
     var prohibitedFlags = openFlagCreate |
         openFlagCreateIfAbsent |
         openFlagTruncate |

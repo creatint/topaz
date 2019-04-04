@@ -59,7 +59,10 @@ class Service<T> extends Vnode {
     // to be of type fidl.InterfaceRequest<Node> most of the time, but we do send
     // OnOpen event incase of bad flags and if openRightDescribe is passed
     // so that underlying services don't need to handle these flags.
-    var unsupportedFlags = ~(openRightReadable | openRightWritable);
+    var unsupportedFlags = ~(openRightReadable |
+        openRightWritable |
+        openFlagPosix |
+        cloneFlagSameRights);
     if (flags & unsupportedFlags != 0) {
       return ZX.ERR_NOT_SUPPORTED;
     }

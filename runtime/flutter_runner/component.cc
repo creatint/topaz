@@ -144,7 +144,9 @@ Application::Application(
 
   // LaunchInfo::service_request optional.
   if (launch_info.directory_request) {
-    outgoing_dir_->Serve(fuchsia::io::OPEN_FLAG_DIRECTORY,
+    outgoing_dir_->Serve(fuchsia::io::OPEN_RIGHT_READABLE |
+                             fuchsia::io::OPEN_RIGHT_WRITABLE |
+                             fuchsia::io::OPEN_FLAG_DIRECTORY,
                          std::move(launch_info.directory_request));
   }
 
@@ -152,7 +154,7 @@ Application::Application(
 
   fidl::InterfaceHandle<fuchsia::io::Directory> flutter_public_dir;
   // TODO(anmittal): when fixing enumeration using new c++ vfs, make sure that
-  // flutter_public_dir is only accessed once we recieve OnOpen Event.
+  // flutter_public_dir is only accessed once we receive OnOpen Event.
   // That will prevent FL-175 for public directory
   auto request = flutter_public_dir.NewRequest().TakeChannel();
   fdio_service_connect_at(directory_ptr_.channel().get(), "public",
