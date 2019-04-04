@@ -35,65 +35,42 @@ class FakeLedgerPage extends ledger.PageProxy {
     _storageState = new StorageState(onChange);
   }
 
-  ledger.Status putStatus;
-  ledger.Status deleteStatus;
-  ledger.Status startTransactionStatus;
-  ledger.Status commitStatus;
-  ledger.Status rollbackStatus;
-  ledger.Status getSnapshotStatus;
-
-  void resetAllStatus() {
-    putStatus = null;
-    deleteStatus = null;
-    startTransactionStatus = null;
-    commitStatus = null;
-    rollbackStatus = null;
-    getSnapshotStatus = null;
-  }
-
   StorageState get storageState => _storageState;
 
   @override
-  void put(
-      Uint8List key, Uint8List value, void callback(ledger.Status status)) {
+  void putNew(Uint8List key, Uint8List value) {
     _modification.changedEntries.add(new KeyValue(key, value));
-    callback(putStatus ?? ledger.Status.ok);
   }
 
   @override
-  void delete(Uint8List key, void callback(ledger.Status status)) {
+  void deleteNew(Uint8List key) {
     _modification.deletedKeys.add(key);
-    callback(deleteStatus ?? ledger.Status.ok);
   }
 
   @override
-  void startTransaction(void callback(ledger.Status status)) {
+  void startTransactionNew() {
     assert(_modification.changedEntries.isEmpty);
     assert(_modification.deletedKeys.isEmpty);
-    callback(startTransactionStatus ?? ledger.Status.ok);
   }
 
   @override
-  void commit(void callback(ledger.Status status)) {
+  void commitNew() {
     _storageState.applyChange(_modification);
     onChange(_modification);
     _modification.clear();
-    callback(commitStatus ?? ledger.Status.ok);
   }
 
   @override
-  void rollback(void callback(ledger.Status status)) {
+  void rollbackNew() {
     _modification.clear();
-    callback(rollbackStatus ?? ledger.Status.ok);
   }
 
   @override
-  void getSnapshot(Object snapshotRequest, Uint8List keyPrefix, dynamic watcher,
-      void callback(ledger.Status status)) {
+  void getSnapshotNew(
+      Object snapshotRequest, Uint8List keyPrefix, dynamic watcher) {
     if (watcher != null) {
       _watcher = watcher;
     }
-    callback(getSnapshotStatus ?? ledger.Status.ok);
   }
 
   List<ledger.Entry> getEntries(Uint8List keyPrefix) =>

@@ -7,7 +7,6 @@ import 'dart:typed_data';
 
 // TODO: investigate whether we can get rid of the implementation_imports.
 // ignore_for_file: implementation_imports
-import 'package:fidl_fuchsia_ledger/fidl.dart' as ledger;
 import 'package:lib.app.dart/logging.dart';
 import 'package:sledge/sledge.dart';
 import 'package:sledge/src/document/change.dart';
@@ -341,18 +340,17 @@ void main() {
       expect(transactionSucceed, true);
       expect(doc['someInteger'].value, equals(14));
 
-      // Test case when commit fails.
-      sledge.fakeLedgerPage.commitStatus = ledger.Status.ioError;
+      // Test case when transaction fails.
       transactionSucceed = await sledge.runInTransaction(() async {
         doc['someBool'].value = true;
         doc['someInteger'].value = 42;
+        sledge.abortAndRollback();
       });
       expect(transactionSucceed, false);
       expect(doc['someBool'].value, equals(false));
       expect(doc['someInteger'].value, equals(14));
 
       // Check that after failed transaction we can get successful one.
-      sledge.fakeLedgerPage.resetAllStatus();
       transactionSucceed = await sledge.runInTransaction(() async {
         doc['someInteger'].value = 8;
       });
@@ -380,18 +378,16 @@ void main() {
       expect(transactionSucceed, true);
       expect(doc['map'].length, equals(1));
 
-      // Test case when commit fails.
-      sledge.fakeLedgerPage.commitStatus = ledger.Status.ioError;
+      // Test case when transaction fails.
       transactionSucceed = await sledge.runInTransaction(() async {
         doc['map']['a'] = new Uint8List.fromList([4]);
         doc['map']['foo'] = new Uint8List.fromList([1, 3]);
+        sledge.abortAndRollback();
       });
       expect(transactionSucceed, false);
       expect(doc['map'].length, equals(1));
       expect(doc['map']['a'], equals([1, 2, 3]));
 
-      // Check that after failed transaction we can get successful one.
-      sledge.fakeLedgerPage.resetAllStatus();
       transactionSucceed = await sledge.runInTransaction(() async {
         doc['map']['foo'] = new Uint8List.fromList([1, 3]);
       });

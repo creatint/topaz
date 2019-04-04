@@ -69,7 +69,7 @@ void main() {
     int someInteger;
     while (someInteger != 43) {
       await passiveSledge.runInTransaction(() async {
-        Document doc = await passiveSledge.getDocument(id);
+        Document doc = await Future(() => passiveSledge.getDocument(id));
         someInteger = doc['someInteger'].value;
       });
     }

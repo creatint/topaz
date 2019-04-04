@@ -40,11 +40,9 @@ class Sledge {
   // The factories used for fake object injection.
   final LedgerObjectsFactory _ledgerObjectsFactory;
 
-  // Contains the status of the initialization.
-  // ignore: unused_field
-  Future<bool> _initializationSucceeded;
-
   ModificationQueue _modificationQueue;
+
+  Subscription _subscribtion;
 
   /// Default constructor.
   factory Sledge(ComponentContext componentContext, [SledgePageId pageId]) {
@@ -65,20 +63,9 @@ class Sledge {
     // 2/ Setting a conflict resolver on the LedgerProxy (not yet implemented).
     // 3/ Obtaining a LedgerPageProxy using the LedgerProxy.
     // 4/ Subscribing for change notifications on the LedgerPageProxy.
-    // Any of these steps can fail.
-    //
-    // The following Completer is completed with `false` if an error occurs at
-    // any step. It is completed with `true` if the 4th step finishes
-    // succesfully.
-    //
-    // Operations that require the succesfull initialization of the Sledge
-    // instance await the Future returned by this completer.
-    Completer<bool> initializationCompleter = new Completer<bool>();
 
     _ledgerProxy.ctrl.onConnectionError = () {
-      if (!initializationCompleter.isCompleted) {
-        initializationCompleter.complete(false);
-      }
+      // TODO(jif): Handle disconnection from the Ledger.
     };
 
     _ledgerProxy.ctrl.bind(ledgerHandle);
@@ -86,8 +73,7 @@ class Sledge {
     _ledgerProxy.getPage(pageId.id, _pageProxy.ctrl.request());
     _modificationQueue =
         new ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
-    _subscribe(initializationCompleter);
-    _initializationSucceeded = initializationCompleter.future;
+    _subscribtion = _subscribe();
   }
 
   /// Constructor that takes a new-style binding of ComponentContext
@@ -108,11 +94,9 @@ class Sledge {
 
   /// Convenience constructor for tests.
   Sledge.testing(this._pageProxy, this._ledgerObjectsFactory) {
-    Completer<bool> initializationCompleter = new Completer<bool>();
     _modificationQueue =
         new ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
-    _subscribe(initializationCompleter);
-    _initializationSucceeded = initializationCompleter.future;
+    _subscribtion = _subscribe();
   }
 
   /// Convenience constructor for integration tests.
@@ -122,6 +106,7 @@ class Sledge {
 
   /// Closes connection to ledger.
   void close() {
+    _subscribtion.unsubscribe();
     _pageProxy.ctrl.close();
     _ledgerProxy.ctrl.close();
   }
@@ -130,11 +115,7 @@ class Sledge {
   /// Returns false if an error occurred and the modification couldn't be
   /// committed.
   /// Returns true otherwise.
-  Future<bool> runInTransaction(Modification modification) async {
-    bool initializationSucceeded = await _initializationSucceeded;
-    if (!initializationSucceeded) {
-      return false;
-    }
+  Future<bool> runInTransaction(Modification modification) {
     return _modificationQueue.queueModification(modification);
   }
 
@@ -211,11 +192,10 @@ class Sledge {
   }
 
   /// Subscribes for page.onChange to perform applyChange.
-  Subscription _subscribe(Completer<bool> subscriptionCompleter) {
+  Subscription _subscribe() {
     assert(_modificationQueue.currentTransaction == null,
         '`_subscribe` must be called before any transaction can start.');
-    return new Subscription(
-        _pageProxy, _ledgerObjectsFactory, _applyChange, subscriptionCompleter);
+    return new Subscription(_pageProxy, _ledgerObjectsFactory, _applyChange);
   }
 
   void _verifyThatTransactionHasStarted() {

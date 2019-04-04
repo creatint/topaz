@@ -117,10 +117,12 @@ class Document implements ValueObserver {
 
   /// Applies [change] to fields of this document.
   void applyChange(final Change change) {
-    Map<Uint8List, Change> splittedChanges =
-        change.splitByPrefix(_identifierLength);
-    for (final splittedChange in splittedChanges.entries) {
-      _fields[splittedChange.key].applyChange(splittedChange.value);
+    if (_state == DocumentState.available) {
+      Map<Uint8List, Change> splittedChanges =
+          change.splitByPrefix(_identifierLength);
+      for (final splittedChange in splittedChanges.entries) {
+        _fields[splittedChange.key].applyChange(splittedChange.value);
+      }
     }
     _changeController.add(null);
   }
