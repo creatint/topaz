@@ -30,8 +30,8 @@ class Engine final : public mozart::NativesDelegate {
 
   Engine(Delegate& delegate, std::string thread_label,
          std::shared_ptr<sys::ServiceDirectory> svc, blink::Settings settings,
-         fml::RefPtr<blink::DartSnapshot> isolate_snapshot,
-         fml::RefPtr<blink::DartSnapshot> shared_snapshot,
+         fml::RefPtr<const blink::DartSnapshot> isolate_snapshot,
+         fml::RefPtr<const blink::DartSnapshot> shared_snapshot,
          zx::eventpair view_token, UniqueFDIONS fdio_ns,
          fidl::InterfaceRequest<fuchsia::io::Directory> directory_request);
   ~Engine();

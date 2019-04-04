@@ -31,12 +31,13 @@ static struct NativeEntries {
   int argument_count;
 } Entries[] = {SCENIC_NATIVE_LIST(REGISTER_FUNCTION)};
 
-Dart_NativeFunction NativeLookup(Dart_Handle name,
-                                 int argument_count,
+Dart_NativeFunction NativeLookup(Dart_Handle name, int argument_count,
                                  bool* auto_setup_scope) {
   const char* function_name = nullptr;
   Dart_Handle result = Dart_StringToCString(name, &function_name);
-  DART_CHECK_VALID(result);
+  if (Dart_IsError(result)) {
+    Dart_PropagateError(result);
+  }
   assert(function_name != nullptr);
   assert(auto_setup_scope != nullptr);
   *auto_setup_scope = true;

@@ -21,6 +21,7 @@
 
 #include "flutter/fml/synchronization/waitable_event.h"
 #include "flutter/shell/common/switches.h"
+#include "third_party/flutter/runtime/dart_vm_lifecycle.h"
 #include "topaz/runtime/dart/utils/files.h"
 #include "topaz/runtime/dart/utils/handle_exception.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
@@ -420,16 +421,12 @@ void Application::AttemptVMLaunchWithCurrentSettings(
           application_assets_directory_.get() /* /pkg/data */,
           "shared_snapshot_instructions.bin", true));
 
-  blink::DartVM::ForProcess(settings_,               //
-                            std::move(vm_snapshot),  //
-                            isolate_snapshot_,       //
-                            shared_snapshot_         //
+  auto vm = blink::DartVMRef::Create(settings_,               //
+                                     std::move(vm_snapshot),  //
+                                     isolate_snapshot_,       //
+                                     shared_snapshot_         //
   );
-  if (blink::DartVM::ForProcessIfInitialized()) {
-    FML_DLOG(INFO) << "VM successfully initialized for AOT mode.";
-  } else {
-    FML_LOG(ERROR) << "VM could not be initialized for AOT mode.";
-  }
+  FML_CHECK(vm) << "Mut be able to initialize the VM.";
 }
 
 // |fuchsia::sys::ComponentController|

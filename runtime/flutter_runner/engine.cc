@@ -13,6 +13,7 @@
 #include "flutter/fml/task_runner.h"
 #include "flutter/shell/common/rasterizer.h"
 #include "flutter/shell/common/run_configuration.h"
+#include "third_party/flutter/runtime/dart_vm_lifecycle.h"
 #include "topaz/runtime/dart/utils/files.h"
 
 #include "fuchsia_font_manager.h"
@@ -42,8 +43,8 @@ static void UpdateNativeThreadLabelNames(const std::string& label,
 Engine::Engine(Delegate& delegate, std::string thread_label,
                std::shared_ptr<sys::ServiceDirectory> svc,
                blink::Settings settings,
-               fml::RefPtr<blink::DartSnapshot> isolate_snapshot,
-               fml::RefPtr<blink::DartSnapshot> shared_snapshot,
+               fml::RefPtr<const blink::DartSnapshot> isolate_snapshot,
+               fml::RefPtr<const blink::DartSnapshot> shared_snapshot,
                zx::eventpair view_token, UniqueFDIONS fdio_ns,
                fidl::InterfaceRequest<fuchsia::io::Directory> directory_request)
     : delegate_(delegate),
@@ -234,10 +235,12 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
         });
       });
 
+  auto vm = blink::DartVMRef::Create(settings_);
+
   if (!isolate_snapshot) {
-    isolate_snapshot =
-        blink::DartVM::ForProcess(settings_)->GetIsolateSnapshot();
+    isolate_snapshot = vm->GetVMData()->GetIsolateSnapshot();
   }
+
   if (!shared_snapshot) {
     shared_snapshot = blink::DartSnapshot::Empty();
   }
@@ -250,7 +253,8 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
         std::move(isolate_snapshot),  // isolate snapshot
         std::move(shared_snapshot),   // shared snapshot
         on_create_platform_view,      // platform view create callback
-        on_create_rasterizer          // rasterizer create callback
+        on_create_rasterizer,         // rasterizer create callback
+        std::move(vm)                 // vm reference
     );
   }
 

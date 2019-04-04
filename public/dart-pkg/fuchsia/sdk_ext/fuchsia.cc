@@ -59,9 +59,11 @@ Dart_NativeFunction NativeLookup(Dart_Handle name, int argument_count,
                                  bool* auto_setup_scope) {
   const char* function_name = nullptr;
   Dart_Handle result = Dart_StringToCString(name, &function_name);
-  DART_CHECK_VALID(result);
-  assert(function_name != nullptr);
-  assert(auto_setup_scope != nullptr);
+  if (Dart_IsError(result)) {
+    Dart_PropagateError(result);
+  }
+  FXL_DCHECK(function_name != nullptr);
+  FXL_DCHECK(auto_setup_scope != nullptr);
   *auto_setup_scope = true;
   size_t num_entries = arraysize(Entries);
   for (size_t i = 0; i < num_entries; ++i) {
@@ -105,9 +107,10 @@ void Initialize(fidl::InterfaceHandle<fuchsia::sys::Environment> environment,
   zircon::dart::Initialize();
 
   Dart_Handle library = Dart_LookupLibrary(ToDart("dart:fuchsia"));
-  DART_CHECK_VALID(library);
-  DART_CHECK_VALID(Dart_SetNativeResolver(library, fuchsia::dart::NativeLookup,
-                                          fuchsia::dart::NativeSymbol));
+  FXL_CHECK(!tonic::LogIfError(library));
+  Dart_Handle result = Dart_SetNativeResolver(
+      library, fuchsia::dart::NativeLookup, fuchsia::dart::NativeSymbol);
+  FXL_CHECK(!tonic::LogIfError(result));
 
   auto dart_state = tonic::DartState::Current();
   std::unique_ptr<tonic::DartClassProvider> fuchsia_class_provider(
@@ -115,14 +118,16 @@ void Initialize(fidl::InterfaceHandle<fuchsia::sys::Environment> environment,
   dart_state->class_library().add_provider("fuchsia",
                                            std::move(fuchsia_class_provider));
 
-  DART_CHECK_VALID(Dart_SetField(
+  result = Dart_SetField(
       library, ToDart("_environment"),
-      ToDart(zircon::dart::Handle::Create(environment.TakeChannel()))));
+      ToDart(zircon::dart::Handle::Create(environment.TakeChannel())));
+  FXL_CHECK(!tonic::LogIfError(result));
 
   if (directory_request) {
-    DART_CHECK_VALID(Dart_SetField(
+    result = Dart_SetField(
         library, ToDart("_outgoingServices"),
-        ToDart(zircon::dart::Handle::Create(std::move(directory_request)))));
+        ToDart(zircon::dart::Handle::Create(std::move(directory_request))));
+    FXL_CHECK(!tonic::LogIfError(result));
   }
 }
 
