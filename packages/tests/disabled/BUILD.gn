@@ -6,7 +6,6 @@ group("dart_unittests") {
   testonly = true
   public_deps = [
     "//topaz/shell/keyboard:keyboard_tests($host_toolchain)",
-    "//topaz/bin/session_shell/capybara_session_shell:capybara_session_shell_tests($host_toolchain)",
   ]
 }
 
