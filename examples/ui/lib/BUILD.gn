@@ -17,8 +17,8 @@ source_set("scenic_skia") {
   ]
 
   public_deps = [
-    "//src/lib/fxl",
     "//sdk/lib/ui/scenic/cpp",
+    "//src/lib/fxl",
     "//third_party/skia",
   ]
 
@@ -40,6 +40,7 @@ source_set("skia_fonts") {
   ]
 
   public_deps = [
+    "//sdk/fidl/fuchsia.fonts",
     "//zircon/public/lib/fit",
   ]
 
@@ -47,7 +48,6 @@ source_set("skia_fonts") {
     ":skia_type_converters",
     ":skia_vmo",
     "//src/lib/fxl",
-    "//sdk/fidl/fuchsia.fonts",
     "//third_party/skia",
   ]
 
