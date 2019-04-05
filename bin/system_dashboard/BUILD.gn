@@ -23,7 +23,6 @@ flutter_app("system_dashboard") {
     "//third_party/dart-pkg/pub/flutter_staggered_grid_view",
     "//topaz/public/dart/widgets:lib.widgets",
     "//topaz/public/lib/app/dart",
-    "//topaz/public/lib/app_driver/dart",
     "//topaz/public/lib/schemas/dart",
   ]
 }

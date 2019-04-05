@@ -33,7 +33,6 @@ flutter_app("driver_example_mod") {
     "//topaz/public/dart/fuchsia_modular",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/lib/app/dart",
-    "//topaz/public/lib/app_driver/dart",
     "//topaz/public/lib/widgets/dart",
   ]
 }
