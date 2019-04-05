@@ -108,7 +108,7 @@ fuchsia::math::Transform TypeConverter<fuchsia::math::Transform, SkMatrix>::Conv
     const SkMatrix& input) {
   // Expand 3x3 to 4x4.
   fuchsia::math::Transform output;
-  float* m = output.matrix.mutable_data();
+  float* m = output.matrix.data();
   m[0] = input[0];
   m[1] = input[1];
   m[2] = 0.f;
@@ -138,7 +138,7 @@ SkMatrix44 TypeConverter<SkMatrix44, fuchsia::math::Transform>::Convert(
 fuchsia::math::Transform TypeConverter<fuchsia::math::Transform, SkMatrix44>::Convert(
     const SkMatrix44& input) {
   fuchsia::math::Transform output;
-  input.asRowMajorf(output.matrix.mutable_data());
+  input.asRowMajorf(output.matrix.data());
   return output;
 }
 

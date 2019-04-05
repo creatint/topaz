@@ -29,8 +29,8 @@ fuchsia::ui::gfx::BoundingBox WrapBoundingBox(SkRect& rect) {
 // format to fuchsia::ui::gfx::mat4, the Fidl equivalent.
 fuchsia::ui::gfx::mat4 WrapSkMatrix(SkMatrix44& args) {
   fuchsia::ui::gfx::mat4 value;
-  DEBUG_CHECK(value.matrix.count() == 16, LOG_TAG, "");
-  float* m = value.matrix.mutable_data();
+  DEBUG_CHECK(value.matrix.size() == 16, LOG_TAG, "");
+  float* m = value.matrix.data();
   args.asColMajorf(m);
   return value;
 }
