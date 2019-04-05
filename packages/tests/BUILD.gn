@@ -113,7 +113,6 @@ group("dart_target_unittests") {
     "//topaz/public/dart/fuchsia_modular:fuchsia_modular_package_integration_tests",
     "//topaz/public/dart/fuchsia_services:fuchsia_services_package_integration_tests",
     "//topaz/public/dart/fuchsia_vfs:fuchsia_vfs_package_unittests",
-    "//topaz/runtime/dart/utils:run_vmservice_object_tests",
   ]
 }
 
