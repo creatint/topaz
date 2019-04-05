@@ -17,11 +17,57 @@ class InspectExampleApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: _appColor);
+    return MaterialApp(
+      title: 'Inspect Example',
+      theme: ThemeData(
+        primarySwatch: _appColor,
+      ),
+      home: _InspectHomePage(title: 'Hello Inspect!'),
+    );
   }
 
   /// Initializes the [Inspect] metrics for this widget.
   void _initMetrics() {
     _inspect.rootNode.createStringProperty('app-color').value = '$_appColor';
+  }
+}
+
+class _InspectHomePage extends StatefulWidget {
+  final String title;
+
+  _InspectHomePage({Key key, this.title}) : super(key: key);
+
+  @override
+  _InspectHomePageState createState() => _InspectHomePageState();
+}
+
+class _InspectHomePageState extends State<_InspectHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          widget.title,
+        ),
+      ),
+      body: Center(
+        child: Text(
+          'Button tapped $_counter time${_counter == 1 ? '' : 's'}.',
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _incrementCounter,
+        tooltip: 'Increment',
+        child: Icon(Icons.add),
+      ),
+    );
   }
 }
