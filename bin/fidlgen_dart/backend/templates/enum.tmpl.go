@@ -11,8 +11,8 @@ const Enum = `
 ///{{ . -}}
 {{- end }}
 class {{ .Name }} extends $fidl.Enum {
-  factory {{ .Name }}(int v) {
-    switch (v) {
+  factory {{ .Name }}(int _v) {
+    switch (_v) {
 {{- range .Members }}
       case {{ .Value }}:
         return {{ .Name }};
