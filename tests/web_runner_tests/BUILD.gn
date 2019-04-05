@@ -94,7 +94,16 @@ package("web_runner_tests") {
   tests = [
     {
       name = "web_runner_integration_tests"
-      environments = basic_envs
+      # FLK-148
+      # environments = basic_envs
+      # This does not seem to flake on NUCs.
+      environments = [
+        {
+          dimensions = {
+            device_type = "Intel NUC Kit NUC7i5DNHE"
+          }
+        },
+      ]
     },
     {
       name = "web_runner_pixel_tests"
