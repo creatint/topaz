@@ -39,7 +39,7 @@ static bool FillBuffer(const std::string& data, fuchsia::mem::Buffer* buffer) {
 }
 
 template <typename T, size_t N>
-void CopyToArray(const std::string& s, fidl::Array<T, N>* arr) {
+void CopyToArray(const std::string& s, std::array<T, N>* arr) {
   const size_t max_size = arr->size();
   auto end = s.end();
   if (s.size() > max_size) {
