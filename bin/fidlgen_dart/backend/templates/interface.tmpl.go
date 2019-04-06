@@ -52,12 +52,12 @@ typedef void {{ .CallbackType }}({{ template "Params" .Response.WireParameters }
 class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
     implements {{ .Name }} {
 
-  {{ .ProxyName }}() : super(new $fidl.ProxyController<{{ .Name }}>($serviceName: {{ .ServiceName }}, $interfaceName: r'{{ .Name }}')) {
+  {{ .ProxyName }}() : super($fidl.ProxyController<{{ .Name }}>($serviceName: {{ .ServiceName }}, $interfaceName: r'{{ .Name }}')) {
     ctrl.onResponse = _handleResponse;
   }
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
 {{- range .Methods }}
 {{- if not .HasRequest }}
@@ -108,7 +108,7 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
 {{- range .Methods }}
   {{- if .HasRequest }}
@@ -152,7 +152,7 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader({{ .OrdinalName }}, 0);
     {{- if .Request }}
     $encoder.alloc({{ .RequestSize }} - $fidl.kMessageHeaderSize);
@@ -202,7 +202,7 @@ class {{ .EventsName }} {
   {{- if not .HasRequest }}
     {{- if .HasResponse }}
   void {{ template "ResponseMethodSignature" . }} {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader({{ .OrdinalName }}, 0);
       {{- if .Response.WireParameters }}
     $encoder.alloc({{ .ResponseSize }} - $fidl.kMessageHeaderSize);
@@ -226,7 +226,7 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
     events._binding = this;
   }
 
-  final {{ .EventsName }} events = new {{ .EventsName }}();
+  final {{ .EventsName }} events = {{ .EventsName }}();
 {{- end }}
 
 {{ range .Methods }}
@@ -234,7 +234,7 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
     {{- if .HasResponse }}
   Function _{{ .Name }}Responder($fidl.MessageSink $respond, int $txid) {
     return ({{ template "Params" .Response.WireParameters }}) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader({{ .OrdinalName }}, $txid);
       {{- if .Response.WireParameters }}
       $encoder.alloc({{ .ResponseSize }} - $fidl.kMessageHeaderSize);
@@ -252,7 +252,7 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
 {{- range .Methods }}
   {{- if .HasRequest }}
@@ -282,7 +282,7 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
   {{- end }}
 {{- end }}
       default:
-        throw new $fidl.FidlError('Unexpected message name for {{ .BindingName }}');
+        throw $fidl.FidlError('Unexpected message name for {{ .BindingName }}');
     }
   }
 }
@@ -343,7 +343,7 @@ Future<void>
     $types[0].decode($decoder, 0)
   {{- else }}
     {{- if .AsyncResponseClass -}}
-      new {{ .AsyncResponseClass }}(
+      {{ .AsyncResponseClass }}(
         {{- range $index, $response := .Response.WireParameters }}
           $types[{{ $index }}].decode($decoder, 0),
         {{- end -}}
@@ -411,7 +411,7 @@ class {{ .AsyncResponseClass }} {
 abstract class {{ .Name }} extends $fidl.Service {
   static const String $serviceName = {{ .ServiceName }};
   @override
-  $fidl.ServiceData get $serviceData => const {{ .ServiceData }}();
+  $fidl.ServiceData get $serviceData => {{ .ServiceData }}();
 
 {{- range .Methods }}
   {{- if .HasRequest }}
@@ -458,7 +458,7 @@ class {{ .ServiceData }} implements $fidl.ServiceData<{{ .Name }}> {
 {{- end }}
 class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
     implements {{ .Name }} {
-  {{ .ProxyName }}() : super(new $fidl.AsyncProxyController<{{ .Name }}>($serviceName: {{ .ServiceName }}, $interfaceName: r'{{ .Name }}')) {
+  {{ .ProxyName }}() : super($fidl.AsyncProxyController<{{ .Name }}>($serviceName: {{ .ServiceName }}, $interfaceName: r'{{ .Name }}')) {
     ctrl.onResponse = _handleResponse;
 
     {{- if .HasEvents }}
@@ -479,7 +479,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
   $fidl.ServiceData get $serviceData => {{ .ServiceData }}();
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
 {{- range .Methods }}
 {{- if not .HasRequest }}
@@ -495,7 +495,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
           );
         // ignore: avoid_catches_without_on_clauses
         } catch(_e) {
-          ctrl.proxyError(new $fidl.FidlError('Exception handling event $_name: $_e'));
+          ctrl.proxyError($fidl.FidlError('Exception handling event $_name: $_e'));
           ctrl.close();
           rethrow;
         } finally {
@@ -506,7 +506,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
 {{- end }}
 {{- end }}
       default:
-        ctrl.proxyError(new $fidl.FidlError('Unexpected message ordinal: ${$message.ordinal}'));
+        ctrl.proxyError($fidl.FidlError('Unexpected message ordinal: ${$message.ordinal}'));
         ctrl.close();
         break;
     }
@@ -523,7 +523,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
 {{- range .Methods }}
   {{- if .HasRequest }}
@@ -560,7 +560,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
           {{ end }}
         // ignore: avoid_catches_without_on_clauses
         } catch(_e) {
-          ctrl.proxyError(new $fidl.FidlError('Exception handling method response $_name: $_e'));
+          ctrl.proxyError($fidl.FidlError('Exception handling method response $_name: $_e'));
           ctrl.close();
           rethrow;
         } finally {
@@ -571,7 +571,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
   {{- end }}
 {{- end }}
       default:
-        ctrl.proxyError(new $fidl.FidlError('Unexpected message ordinal: ${$message.ordinal}'));
+        ctrl.proxyError($fidl.FidlError('Unexpected message ordinal: ${$message.ordinal}'));
         ctrl.close();
         break;
     }
@@ -585,10 +585,10 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
     @override
     {{ template "AsyncReturn" . }} {{ .Name }}({{ template "AsyncParams" .Request }}) async {
       if (!ctrl.isBound) {
-        return new Future.error(new $fidl.FidlStateException('Proxy<${ctrl.$interfaceName}> is closed.'), StackTrace.current);
+        return Future.error($fidl.FidlStateException('Proxy<${ctrl.$interfaceName}> is closed.'), StackTrace.current);
       }
 
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader({{ .OrdinalName }}, 0);
       {{- if .Request }}
         $encoder.alloc({{ .RequestSize }} - $fidl.kMessageHeaderSize);
@@ -599,17 +599,17 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
       {{- end }}
 
       {{- if .HasResponse }}
-        final $completer = new Completer<{{ .AsyncResponseType }}>();
+        final $completer = Completer<{{ .AsyncResponseType }}>();
         ctrl.sendMessageWithResponse($encoder.message, $completer);
         return $completer.future;
       {{- else }}
-        return new Future.sync(() {
+        return Future.sync(() {
           ctrl.sendMessage($encoder.message);
         });
       {{- end }}
     }
   {{ else }}
-    final _{{ .Name }}EventStreamController = new StreamController<{{ .AsyncResponseType }}>.broadcast();
+    final _{{ .Name }}EventStreamController = StreamController<{{ .AsyncResponseType }}>.broadcast();
     {{- range .Doc }}
     ///{{ . -}}
     {{- end }}
@@ -634,7 +634,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
         {{- if not .HasRequest }}
           if (impl.{{ .Name }} != null) {
             $subscriptions.add(impl.{{ .Name }}.listen(($response) {
-              final $fidl.Encoder $encoder = new $fidl.Encoder();
+              final $fidl.Encoder $encoder = $fidl.Encoder();
               $encoder.encodeMessageHeader({{ .OrdinalName }}, 0);
               $encoder.alloc({{ .ResponseSize }} - $fidl.kMessageHeaderSize);
               final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
@@ -653,7 +653,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
     {{- range .Methods }}
       {{- if .HasRequest }}
@@ -696,7 +696,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
                 })
                 {{ end }}
                 .then(($response) {
-                  final $fidl.Encoder $encoder = new $fidl.Encoder();
+                  final $fidl.Encoder $encoder = $fidl.Encoder();
                   $encoder.encodeMessageHeader({{ .OrdinalName }}, $message.txid);
                   {{- if .Response.WireParameters }}
                     $encoder.alloc({{ .ResponseSize }} - $fidl.kMessageHeaderSize);
@@ -721,7 +721,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
       {{- end }}
     {{- end }}
       default:
-        throw new $fidl.FidlError('Unexpected message name for {{ .BindingName }}');
+        throw $fidl.FidlError('Unexpected message name for {{ .BindingName }}');
     }
   }
 }

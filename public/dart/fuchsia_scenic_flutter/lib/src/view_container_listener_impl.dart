@@ -21,7 +21,7 @@ abstract class ViewContainerListenerDelegate {
 class ViewContainerListenerImpl extends ViewContainerListener {
   /// The shared [ViewContainerListenerImpl] instance.
   static final ViewContainerListenerImpl instance =
-      new ViewContainerListenerImpl._();
+      ViewContainerListenerImpl._();
 
   ViewContainerListenerImpl._() : super();
 

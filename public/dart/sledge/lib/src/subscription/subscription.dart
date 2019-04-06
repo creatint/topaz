@@ -16,7 +16,7 @@ class Subscription extends ledger.PageWatcher {
   final ledger.PageSnapshotProxy _snapshotProxy;
   final ledger.PageWatcherBinding _pageWatcherBinding;
   final void Function(Change change) _applyChangeCallback;
-  final Change _currentChange = new Change();
+  final Change _currentChange = Change();
 
   /// Register a watcher for Ledger page, which pass all changes to
   /// _applyChangeCallback.
@@ -26,7 +26,7 @@ class Subscription extends ledger.PageWatcher {
         _pageWatcherBinding = ledgerObjectsFactory.newPageWatcherBinding() {
     _pageProxy.getSnapshotNew(
       _snapshotProxy.ctrl.request(),
-      new Uint8List(0),
+      Uint8List(0),
       _pageWatcherBinding.wrap(this),
     );
   }

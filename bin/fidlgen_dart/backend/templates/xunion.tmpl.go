@@ -13,7 +13,7 @@ enum {{ .TagName }} {
 {{- end }}
 }
 
-const Map<int, {{ .TagName }}> _{{ .TagName }}_map = const {
+const Map<int, {{ .TagName }}> _{{ .TagName }}_map = {
 {{- range .Members }}
   {{ .Ordinal }}: {{ $.TagName }}.{{ .Name }},
 {{- end }}
@@ -65,7 +65,7 @@ class {{ .Name }} extends $fidl.XUnion {
   Object get $data => _data;
 
   static {{ .Name }} _ctor(int ordinal, Object data) {
-    return new {{ .Name }}._(ordinal, data);
+    return {{ .Name }}._(ordinal, data);
   }
 }
 

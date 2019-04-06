@@ -30,7 +30,7 @@ class KeyListener extends KeyboardCaptureListenerHack {
 
   /// Key event listener
   final KeyboardCaptureListenerHackBinding _keyEventListener =
-      new KeyboardCaptureListenerHackBinding();
+      KeyboardCaptureListenerHackBinding();
 
   /// Call to register a key event - callback pair. The pair will be added
   /// to a Map, multiple callbacks can be associated with the same key event.

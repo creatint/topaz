@@ -27,17 +27,17 @@ abstract class LedgerObjectsFactory {
 class LedgerObjectsFactoryImpl implements LedgerObjectsFactory {
   @override
   ledger.PageSnapshotProxy newPageSnapshotProxy() =>
-      new ledger.PageSnapshotProxy();
+      ledger.PageSnapshotProxy();
 
   @override
   ledger.PageWatcherBinding newPageWatcherBinding() =>
-      new ledger.PageWatcherBinding();
+      ledger.PageWatcherBinding();
 }
 
 /// Throws an exception containing [operation] if the status is not `ok`.
 void checkStatus(ledger.Status status, String operation) {
   if (status != ledger.Status.ok) {
-    throw new Exception('Ledger operation `$operation` failed.');
+    throw Exception('Ledger operation `$operation` failed.');
   }
 }
 
@@ -45,12 +45,12 @@ void checkStatus(ledger.Status status, String operation) {
 Uint8List readBuffer(Buffer buffer) {
   ReadResult readResult = buffer.vmo.read(buffer.size);
   if (readResult.status != ZX.OK) {
-    throw new Exception('Unable to read from vmo `${readResult.status}`.');
+    throw Exception('Unable to read from vmo `${readResult.status}`.');
   }
   if (readResult.bytes.lengthInBytes != buffer.size) {
-    throw new Exception('Unexpected count of bytes read.');
+    throw Exception('Unexpected count of bytes read.');
   }
-  return new Uint8List.view(readResult.bytes.buffer);
+  return Uint8List.view(readResult.bytes.buffer);
 }
 
 /// Helper method for the [getFullEntries] method.
@@ -60,11 +60,11 @@ Future<Null> _getFullEntriesRecursively(
   List<int> keyPrefix, {
   ledger.Token token,
 }) async {
-  Completer<ledger.Status> statusCompleter = new Completer<ledger.Status>();
+  Completer<ledger.Status> statusCompleter = Completer<ledger.Status>();
   List<ledger.Entry> entries;
   ledger.Token nextToken;
 
-  snapshot.getEntries(keyPrefix ?? new Uint8List(0), token,
+  snapshot.getEntries(keyPrefix ?? Uint8List(0), token,
       (ledger.Status status, List<ledger.Entry> entriesResult,
           ledger.Token nextTokenResult) {
     entries = entriesResult;
@@ -75,7 +75,7 @@ Future<Null> _getFullEntriesRecursively(
   ledger.Status status = await statusCompleter.future;
 
   if (status != ledger.Status.ok && status != ledger.Status.partialResult) {
-    throw new Exception(
+    throw Exception(
         'PageSnapshot::GetEntries() returned an error status: $status');
   }
 
@@ -116,17 +116,17 @@ Future<List<KeyValue>> getEntriesFromSnapshotWithPrefix(
   for (final entry in entries) {
     Uint8List k = entry.key;
     Uint8List v = readBuffer(entry.value);
-    keyValues.add(new KeyValue(k, v));
+    keyValues.add(KeyValue(k, v));
   }
   return keyValues;
 }
 
 /// Returns Change with the same content as a pageChange.
 Change getChangeFromPageChange(ledger.PageChange pageChange) {
-  return new Change(
+  return Change(
       pageChange.changedEntries
           .map((ledger.Entry entry) =>
-              new KeyValue(entry.key, readBuffer(entry.value)))
+              KeyValue(entry.key, readBuffer(entry.value)))
           .toList(),
       pageChange.deletedKeys);
 }

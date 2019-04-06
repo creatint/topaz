@@ -24,7 +24,7 @@ class NavigationBar extends StatelessWidget {
                 initialData: false,
                 builder: (context, snapshot) => RaisedButton(
                       padding: EdgeInsets.all(4),
-                      child: const Text('BCK'),
+                      child: Text('BCK'),
                       color: Colors.grey[350],
                       disabledColor: Colors.grey[700],
                       onPressed: snapshot.data
@@ -40,7 +40,7 @@ class NavigationBar extends StatelessWidget {
                 initialData: false,
                 builder: (context, snapshot) => RaisedButton(
                       padding: EdgeInsets.all(4),
-                      child: const Text('FWD'),
+                      child: Text('FWD'),
                       color: Colors.grey[350],
                       disabledColor: Colors.grey[700],
                       onPressed: snapshot.data

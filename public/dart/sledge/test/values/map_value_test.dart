@@ -13,13 +13,13 @@ void main() {
   setupLogger();
 
   group('Map API coverage', () {
-    new MapApiTester<MapValue>(() => new MapValue<int, int>())
+    MapApiTester<MapValue>(() => MapValue<int, int>())
       ..testApi()
       ..testObserver();
   });
 
   test('MapValue get and set.', () {
-    var m = new MapValue<int, int>();
+    var m = MapValue<int, int>();
     expect(m[0], equals(null));
     expect(m[3], equals(null));
     m[2] = 1;
@@ -32,7 +32,7 @@ void main() {
   });
 
   test('MapValue get, set and remove.', () {
-    var m = new MapValue<int, int>();
+    var m = MapValue<int, int>();
     expect(m[0], equals(null));
     m[0] = 3;
     expect(m[0], equals(3));

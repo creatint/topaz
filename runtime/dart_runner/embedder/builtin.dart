@@ -25,7 +25,7 @@ Uri _scriptUri() {
       _rawScript.startsWith('file:')) {
     return Uri.parse(_rawScript);
   } else {
-    return Uri.base.resolveUri(new Uri.file(_rawScript));
+    return Uri.base.resolveUri(Uri.file(_rawScript));
   }
 }
 

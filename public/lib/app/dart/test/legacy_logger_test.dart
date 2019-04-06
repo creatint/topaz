@@ -20,7 +20,7 @@ void main() {
 }
 
 void _testLegacyLogger() {
-  MockSocket mockSocket = new MockSocket();
+  MockSocket mockSocket = MockSocket();
   setupLogger(
     name: 'TEST',
     forceShowCodeLocation: false,

@@ -29,7 +29,7 @@ class Editor extends StatefulWidget {
         super(key: key);
 
   @override
-  EditorState createState() => new EditorState();
+  EditorState createState() => EditorState();
 }
 
 /// A simple class representing a line and column location in the view.
@@ -52,22 +52,22 @@ const String _zeroWidthSpace = '\u{200b}';
 
 /// State for editor tab
 class EditorState extends State<Editor> {
-  final ScrollController _controller = new ScrollController();
+  final ScrollController _controller = ScrollController();
   // Height of lines (currently fixed, all lines have the same height)
   double _lineHeight;
 
   // location of last tap (used to expand selection on long press)
   LineCol _lastTapLocation;
 
-  final FocusNode _focusNode = new FocusNode();
+  final FocusNode _focusNode = FocusNode();
   TextStyle _defaultStyle;
 
   StreamSubscription<Document> _documentStream;
 
   /// Creates a new editor state.
   EditorState() {
-    Color color = const Color(0xFF000000);
-    _defaultStyle = new TextStyle(color: color);
+    Color color = Color(0xFF000000);
+    _defaultStyle = TextStyle(color: color);
     // TODO: make style configurable
     _lineHeight = _lineHeightForStyle(_defaultStyle);
   }
@@ -106,11 +106,11 @@ class EditorState extends State<Editor> {
 
   double _lineHeightForStyle(TextStyle style) {
     ui.ParagraphBuilder builder =
-        new ui.ParagraphBuilder(new ui.ParagraphStyle())
+        ui.ParagraphBuilder(ui.ParagraphStyle())
           ..pushStyle(style.getTextStyle())
           ..addText(_zeroWidthSpace);
     ui.Paragraph layout = builder.build()
-      ..layout(new ui.ParagraphConstraints(width: double.infinity));
+      ..layout(ui.ParagraphConstraints(width: double.infinity));
     return layout.height;
   }
 
@@ -189,7 +189,7 @@ class EditorState extends State<Editor> {
     } else if (codePoint == 10) {
       viewProxy.then((view) => view.insertNewline());
     } else {
-      String chars = new String.fromCharCode(codePoint);
+      String chars = String.fromCharCode(codePoint);
       viewProxy.then((view) => view.insert(chars));
     }
   }
@@ -237,7 +237,7 @@ class EditorState extends State<Editor> {
     if (text != null) {
       col = _utf16ToUtf8Offset(text.text.text, text.getIndexForHorizontal(x));
     }
-    return new LineCol(line: line, col: col);
+    return LineCol(line: line, col: col);
   }
 
   void _handleTapDown(TapDownDetails details) {
@@ -281,10 +281,10 @@ class EditorState extends State<Editor> {
     if (line == null) {
       viewProxy.then((view) => view.requestLines(ix, ix + 1));
     }
-    return new TextLine(
+    return TextLine(
       // TODO: the string '[invalid]' is debug painting, replace with actual UX.
       line?.text ??
-          new TextSpan(text: '[invalid]', style: widget.document.lines.style),
+          TextSpan(text: '[invalid]', style: widget.document.lines.style),
       line?.cursor,
       line?.styles,
       _lineHeight,
@@ -296,28 +296,28 @@ class EditorState extends State<Editor> {
     FocusScope.of(context).reparentIfNeeded(_focusNode);
 
     final Widget lines = (widget.document == null)
-        ? new Container()
-        : new ListView.builder(
+        ? Container()
+        : ListView.builder(
             itemExtent: _lineHeight,
             itemCount: widget.document.lines.height,
             itemBuilder: _itemBuilder,
             controller: _controller,
           );
 
-    return new RawKeyboardListener(
+    return RawKeyboardListener(
       focusNode: _focusNode,
       onKey: _handleKey,
-      child: new GestureDetector(
+      child: GestureDetector(
         onTapDown: _handleTapDown,
         onLongPress: _handleLongPress,
         onHorizontalDragUpdate: _handleHorizontalDragUpdate,
         behavior: HitTestBehavior.opaque,
-        child: new NotificationListener<ScrollUpdateNotification>(
+        child: NotificationListener<ScrollUpdateNotification>(
           onNotification: (ScrollUpdateNotification update) {
             _sendScrollViewport();
             return true;
           },
-          child: new Container(
+          child: Container(
             color: Colors.white,
             constraints: BoxConstraints.expand(),
             child: widget.debugBackground ? _makeDebugBackground(lines) : lines,
@@ -351,13 +351,13 @@ int _utf16ToUtf8Offset(String s, int utf16Offset) {
 
 /// Creates a new widget with the editor overlayed on a watermarked background
 Widget _makeDebugBackground(Widget editor) {
-  return new Stack(children: <Widget>[
+  return Stack(children: <Widget>[
     Container(
-        constraints: new BoxConstraints.expand(),
-        child: new Center(
+        constraints: BoxConstraints.expand(),
+        child: Center(
             child: Transform.rotate(
           angle: -math.pi / 6.0,
-          child: new Text('xi editor',
+          child: Text('xi editor',
               style: TextStyle(
                   fontSize: 144.0,
                   color: Colors.pink[50],

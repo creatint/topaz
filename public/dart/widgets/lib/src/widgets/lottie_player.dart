@@ -51,7 +51,7 @@ class LottiePlayer extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _LottiePlayerState createState() => new _LottiePlayerState();
+  _LottiePlayerState createState() => _LottiePlayerState();
 }
 
 class _LottiePlayerState extends State<LottiePlayer> {

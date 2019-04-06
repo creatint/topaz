@@ -15,7 +15,7 @@ class DeviceInfo {
 
   /// Returns the date the source code was last updated.
   static DateTime getSourceDate() {
-    final File updateFile = new File(_lastUpdateFilePath);
+    final File updateFile = File(_lastUpdateFilePath);
 
     if (updateFile.existsSync()) {
       final String lastUpdate = updateFile.readAsStringSync();

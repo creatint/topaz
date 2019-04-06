@@ -19,7 +19,7 @@ void main() {
     home: Container(
       child: ProviderNode(
         providers: providers,
-        child: const DeviceSettings(),
+        child: DeviceSettings(),
       ),
     ),
   );

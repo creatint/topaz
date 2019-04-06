@@ -38,7 +38,7 @@ class LinkClientNotFoundException extends Error {
 class LinkClient {
   /// The underlying [Proxy] used to send client requests to the [fidl.Link]
   /// service.
-  final fidl.LinkProxy proxy = new fidl.LinkProxy();
+  final fidl.LinkProxy proxy = fidl.LinkProxy();
 
   /// The name of the link.
   final String name;
@@ -59,7 +59,7 @@ class LinkClient {
       ..onUnbind = _handleUnbind;
   }
 
-  final Completer<Null> _bind = new Completer<Null>();
+  final Completer<Null> _bind = Completer<Null>();
 
   /// A future that completes when the [proxy] is bound.
   Future<Null> get bound => _bind.future;
@@ -75,7 +75,7 @@ class LinkClient {
   }) async {
     log.fine('#get($path)');
 
-    Completer<Object> completer = new Completer<Object>();
+    Completer<Object> completer = Completer<Object>();
 
     try {
       await bound;
@@ -107,7 +107,7 @@ class LinkClient {
   }) async {
     log.fine('#set($path, $json)');
 
-    Completer<Null> completer = new Completer<Null>();
+    Completer<Null> completer = Completer<Null>();
 
     try {
       await bound;
@@ -119,7 +119,7 @@ class LinkClient {
     String jsonString = json.encode(jsonData);
     var jsonList = Uint8List.fromList(utf8.encode(jsonString));
     var data = fuchsia_mem.Buffer(
-      vmo: new SizedVmo.fromUint8List(jsonList),
+      vmo: SizedVmo.fromUint8List(jsonList),
       size: jsonList.length,
     );
 
@@ -160,13 +160,13 @@ class LinkClient {
     // TODO(SO-1127): connect the stream's control plane to the underlying link watcher
     // so that it properly responds to clients requesting listen, pause, resume,
     // cancel.
-    StreamController<String> controller = new StreamController<String>();
+    StreamController<String> controller = StreamController<String>();
     _streams.add(controller);
 
     bound.then((_) {
       log.fine('link proxy bound, adding watcher');
 
-      LinkWatcherHost watcher = new LinkWatcherHost(onNotify: (String data) {
+      LinkWatcherHost watcher = LinkWatcherHost(onNotify: (String data) {
         // TODO: remove when MI4-940 is done
         bool isInitialNullData =
             (data == null || data == 'null') && !_receivedInitialValue;
@@ -196,7 +196,7 @@ class LinkClient {
     assert(ref != null);
     assert(ref.isNotEmpty);
 
-    Completer<Null> completer = new Completer<Null>();
+    Completer<Null> completer = Completer<Null>();
 
     try {
       await bound;
@@ -233,7 +233,7 @@ class LinkClient {
 
   /// See [fidl.Link#getEntity].
   Future<String> getEntity() async {
-    Completer<String> completer = new Completer<String>();
+    Completer<String> completer = Completer<String>();
 
     try {
       await bound;

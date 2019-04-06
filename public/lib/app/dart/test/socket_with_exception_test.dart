@@ -19,13 +19,13 @@ void main() {
 }
 
 void _testLogToSocketWithException() {
-  MockSocket mockSocket = new MockSocket();
+  MockSocket mockSocket = MockSocket();
   setupLogger(
     name: 'TEST',
     forceShowCodeLocation: false,
     logSocket: mockSocket,
   );
-  log.shout('error', new Exception('cause'));
+  log.shout('error', Exception('cause'));
 
   ByteData byteData = verify(mockSocket.write(captureAny)).captured.single;
   List<int> logged = byteData.buffer.asInt8List(0, byteData.lengthInBytes);

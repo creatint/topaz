@@ -53,8 +53,8 @@ void main() {
   void onWindowMetricsChanged() {
     Timeline.instantSync(
       'Mondrian: onWindowMetricsChanged '
-          '${new MediaQueryData.fromWindow(window).size.width},'
-          '${new MediaQueryData.fromWindow(window).size.height}',
+          '${MediaQueryData.fromWindow(window).size.width},'
+          '${MediaQueryData.fromWindow(window).size.height}',
     );
   }
 

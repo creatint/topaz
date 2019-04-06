@@ -47,7 +47,7 @@ class Transaction {
       // All the read operations in |modification| will read from that snapshot.
       ..getSnapshotNew(
         _pageSnapshotProxy.ctrl.request(),
-        new Uint8List(0),
+        Uint8List(0),
         null,
       );
 
@@ -105,7 +105,7 @@ class Transaction {
   /// Returns the document identified with [documentId].
   /// If the document does not exist, a new document is returned.
   Future<Document> getDocument(DocumentId documentId) async {
-    final document = new Document(_sledge, documentId);
+    final document = Document(_sledge, documentId);
     Uint8List keyPrefix = concatUint8Lists(
         sledge_storage.prefixForType(sledge_storage.KeyValueType.document),
         documentId.prefix);
@@ -114,14 +114,14 @@ class Transaction {
 
     // Strip the document prefix from the KVs.
     for (int i = 0; i < kvs.length; i++) {
-      kvs[i] = new KeyValue(
+      kvs[i] = KeyValue(
           getSublistView(kvs[i].key,
               start: DocumentId.prefixLength + sledge_storage.typePrefixLength),
           kvs[i].value);
     }
 
     if (kvs.isNotEmpty) {
-      final change = new Change(kvs);
+      final change = Change(kvs);
       document.applyChange(change);
     }
 
@@ -141,12 +141,12 @@ class Transaction {
         List<KeyValue> keyValues = await getEntriesFromSnapshotWithPrefix(
             _pageSnapshotProxy, keyPrefix);
         for (KeyValue keyValue in keyValues) {
-          documentIds.add(new DocumentId(query.schema, keyValue.value));
+          documentIds.add(DocumentId(query.schema, keyValue.value));
         }
       } else {
         print('getDocumentIds called with missing index');
         List<DocumentId> documentIds =
-            await getDocumentIds(new Query(query.schema));
+            await getDocumentIds(Query(query.schema));
         final filteredDocumentIds = <DocumentId>[];
         for (final documentId in documentIds) {
           // TODO(LE-638): Avoid discarding the documents after reading them.
@@ -173,7 +173,7 @@ class Transaction {
         final newDocumentSubId =
             sledge_storage.documentSubIdFromKey(keyValue.key);
         if (!uint8ListsAreEqual(currentDocumentSubId, newDocumentSubId)) {
-          documentIds.add(new DocumentId(query.schema, newDocumentSubId));
+          documentIds.add(DocumentId(query.schema, newDocumentSubId));
           currentDocumentSubId = newDocumentSubId;
         }
       }

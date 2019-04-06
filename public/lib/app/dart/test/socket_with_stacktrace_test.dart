@@ -24,13 +24,13 @@ const String _errorMsg = 'this error message plus the stacktrace need to be '
     'messages works properly';
 
 void _testLogToSocketWithStacktrace() {
-  MockSocket mockSocket = new MockSocket();
+  MockSocket mockSocket = MockSocket();
   setupLogger(
     name: 'TEST',
     forceShowCodeLocation: false,
     logSocket: mockSocket,
   );
-  log.severe(_errorMsg, new Exception('because'), StackTrace.current);
+  log.severe(_errorMsg, Exception('because'), StackTrace.current);
 
   ByteData byteData = verify(mockSocket.write(captureAny)).captured.single;
   List<int> logged = byteData.buffer.asInt8List(0, byteData.lengthInBytes);

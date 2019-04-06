@@ -22,7 +22,7 @@ class UserPickerBaseShellScreen extends StatelessWidget {
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return new ScopedModelDescendant<UserPickerBaseShellModel>(
+    return ScopedModelDescendant<UserPickerBaseShellModel>(
       builder: (
         BuildContext context,
         Widget child,
@@ -32,28 +32,28 @@ class UserPickerBaseShellScreen extends StatelessWidget {
 
         if (model.childViewConnection == null || model.loadingChildView) {
           stackChildren.addAll(<Widget>[
-            new UserPickerScreen(),
-            new Align(
+            UserPickerScreen(),
+            Align(
               alignment: FractionalOffset.center,
-              child: new Offstage(
+              child: Offstage(
                 offstage: !model.showingClock,
-                child: new Clock(),
+                child: Clock(),
               ),
             ),
           ]);
         }
 
         if (model.childViewConnection != null) {
-          stackChildren.add(new Offstage(
-            child: new Container(
+          stackChildren.add(Offstage(
+            child: Container(
               color: Colors.black,
-              child: new ChildView(connection: model.childViewConnection),
+              child: ChildView(connection: model.childViewConnection),
             ),
             offstage: model.loadingChildView,
           ));
         }
 
-        return new Stack(fit: StackFit.expand, children: stackChildren);
+        return Stack(fit: StackFit.expand, children: stackChildren);
       },
     );
   }

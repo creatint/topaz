@@ -31,8 +31,8 @@ class MessageSenderClientAsync {
 
   /// Send the given [message].
   Future<void> sendUint8List(Uint8List message) {
-    return _messageSenderProxy.send(new fuchsia_mem.Buffer(
-      vmo: new SizedVmo.fromUint8List(message),
+    return _messageSenderProxy.send(fuchsia_mem.Buffer(
+      vmo: SizedVmo.fromUint8List(message),
       size: message.length,
     ));
   }
@@ -49,7 +49,7 @@ class MessageSenderClientAsync {
       _messageSenderProxy.ctrl.close();
     }
 
-    _messageSenderProxy = new MessageSenderProxy();
+    _messageSenderProxy = MessageSenderProxy();
     return _messageSenderProxy.ctrl.request();
   }
 }

@@ -45,8 +45,8 @@ class MessageSenderClient {
 
   /// Send the given [message].
   void sendUint8List(Uint8List message) {
-    _messageSenderProxy.send(new fuchsia_mem.Buffer(
-      vmo: new SizedVmo.fromUint8List(message),
+    _messageSenderProxy.send(fuchsia_mem.Buffer(
+      vmo: SizedVmo.fromUint8List(message),
       size: message.length,
     ));
   }
@@ -63,7 +63,7 @@ class MessageSenderClient {
       _messageSenderProxy.ctrl.close();
     }
 
-    _messageSenderProxy = new MessageSenderProxy();
+    _messageSenderProxy = MessageSenderProxy();
     _messageSenderProxy.ctrl.error.then((ProxyError err) {
       if (_onConnectionError != null) {
         _onConnectionError(MessageSenderError.unavailable,

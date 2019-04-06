@@ -16,7 +16,7 @@ class ScenicStartupInfo {
 
 class Scenic {
   static void offerServiceProvider(Handle handle, List<String> services) {
-    throw new UnimplementedError(
+    throw UnimplementedError(
         'offerServiceProvider is not implemented on this platform.');
   }
 }

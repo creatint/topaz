@@ -26,7 +26,7 @@ class SettingStoreFactory {
 
   /// Returns the setting store for [Audio].
   SettingStore<Audio> createAudioStore() {
-    return new SettingStore<Audio>(
-        _deviceSettingsManagerService, 'Audio', new Audio());
+    return SettingStore<Audio>(
+        _deviceSettingsManagerService, 'Audio', Audio());
   }
 }

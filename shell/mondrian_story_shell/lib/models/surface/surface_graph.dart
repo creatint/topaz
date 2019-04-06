@@ -33,7 +33,7 @@ class SurfaceGraph extends Model {
   final Map<String, Surface> _surfaces = <String, Surface>{};
 
   /// Surface relationship tree
-  final Tree<String> _tree = new Tree<String>(value: null);
+  final Tree<String> _tree = Tree<String>(value: null);
 
   /// The stack of previous focusedSurfaces, most focused at end
   final List<String> _focusedSurfaces = <String>[];
@@ -76,13 +76,13 @@ class SurfaceGraph extends Model {
     String pattern,
     String placeholderColor,
   ) {
-    Tree<String> node = _tree.find(id) ?? new Tree<String>(value: id);
+    Tree<String> node = _tree.find(id) ?? Tree<String>(value: id);
     Tree<String> parent =
         (parentId == kNoParent) ? _tree : _tree.find(parentId);
     assert(parent != null);
     assert(relation != null);
     Surface oldSurface = _surfaces[id];
-    Surface updatedSurface = new Surface(
+    Surface updatedSurface = Surface(
         this, node, properties, relation, pattern, placeholderColor);
     // if this is an external surface, create an association between this and
     // the most focused surface.
@@ -161,7 +161,7 @@ class SurfaceGraph extends Model {
     // TODO (djurphy): collisions/pathing - partial fix if we
     // make the changes so container IDs are paths.
     log.info('addContainer: $id');
-    Tree<String> node = _tree.find(id) ?? new Tree<String>(value: id);
+    Tree<String> node = _tree.find(id) ?? Tree<String>(value: id);
     log.info('found or made node: $node');
     Tree<String> parent =
         (parentId == kNoParent) ? _tree : _tree.find(parentId);
@@ -169,7 +169,7 @@ class SurfaceGraph extends Model {
     assert(relation != null);
     parent.add(node);
     Surface oldSurface = _surfaces[id];
-    _surfaces[id] = new SurfaceContainer(
+    _surfaces[id] = SurfaceContainer(
         this, node, properties, relation, '' /*pattern*/, layouts);
     oldSurface?.notifyListeners();
     log.info('_surfaces[id]: ${_surfaces[id]}');
@@ -265,7 +265,7 @@ class SurfaceGraph extends Model {
     List<dynamic> decodedSurfaceList = json['surfaceList'];
     for (dynamic s in decodedSurfaceList) {
       Map<String, dynamic> item = s.cast<String, dynamic>();
-      Surface surface = new Surface.fromJson(item, this);
+      Surface surface = Surface.fromJson(item, this);
 
       _surfaces.putIfAbsent(surface.node.value, () {
         return surface;

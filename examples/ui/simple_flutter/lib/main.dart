@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:lib.app.dart/app.dart';
 import 'package:lib.widgets/application_deprecated.dart';
 
-void main() => runApp(new MyApp());
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'Gesture Demo',
-      theme: new ThemeData(
+      theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: new MyHomePage(title: 'Gesture Demo - Multiple Process'),
+      home: MyHomePage(title: 'Gesture Demo - Multiple Process'),
     );
   }
 }
@@ -23,7 +23,7 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
@@ -53,47 +53,47 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(widget.title),
       ),
-      body: new Center(
-        child: new Row(
+      body: Center(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new Column(
+            Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  new Dismissible(
-                      key: new Key('left$leftCounter'),
+                  Dismissible(
+                      key: Key('left$leftCounter'),
                       onDismissed: _onLeftDismissed,
                       resizeDuration: null,
-                      child: new Card(
-                        child: new Container(
+                      child: Card(
+                        child: Container(
                             width: 300.0,
                             height: 300.0,
                             color: colors[leftCounter % colors.length]),
                       )),
-                  new Text('Left, $leftCounter')
+                  Text('Left, $leftCounter')
                 ]),
-            new Column(
+            Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  new Dismissible(
-                      key: new Key('right$rightCounter'),
+                  Dismissible(
+                      key: Key('right$rightCounter'),
                       onDismissed: _onRightDismissed,
                       resizeDuration: null,
-                      child: new Card(
-                          child: new Container(
+                      child: Card(
+                          child: Container(
                         width: 300.0,
                         height: 300.0,
-                        child: new ApplicationWidget(
+                        child: ApplicationWidget(
                             url:
                                 'fuchsia-pkg://fuchsia.com/simple_flutter#meta/leaf_flutter.cmx',
                             launcher:
                                 StartupContext.fromStartupInfo().launcher),
                       ))),
-                  new Text('Right, $rightCounter')
+                  Text('Right, $rightCounter')
                 ]),
           ],
         ),

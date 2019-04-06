@@ -29,7 +29,7 @@ class AuthenticationUiContextImpl extends AuthenticationUiContext {
 
   @override
   Future<void> startOverlay(InterfaceHandle<ViewOwner> viewOwner) =>
-      startOverlay2(new EventPair(viewOwner?.passChannel()?.passHandle()));
+      startOverlay2(EventPair(viewOwner?.passChannel()?.passHandle()));
 
   @override
   // ignore: override_on_non_overriding_method

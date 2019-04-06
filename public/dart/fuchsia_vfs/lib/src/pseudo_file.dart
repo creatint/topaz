@@ -205,7 +205,7 @@ class PseudoFile extends Vnode {
 ///
 /// This class should not be used directly, but by [fuchsia_vfs.PseudoFile].
 class _FileConnection extends File {
-  final FileBinding _binding = new FileBinding();
+  final FileBinding _binding = FileBinding();
 
   /// open file connection flags
   final int flags;

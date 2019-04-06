@@ -22,7 +22,7 @@ class Mondrian extends StatefulWidget {
   const Mondrian({Key key}) : super(key: key);
 
   @override
-  MondrianState createState() => new MondrianState();
+  MondrianState createState() => MondrianState();
 }
 
 /// State
@@ -30,7 +30,7 @@ class MondrianState extends State<Mondrian> {
   @override
   Widget build(BuildContext context) {
     _traceFrame();
-    return new SurfaceDirector();
+    return SurfaceDirector();
   }
 }
 

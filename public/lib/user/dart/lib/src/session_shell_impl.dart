@@ -31,19 +31,19 @@ typedef OnSessionShellStop = void Function();
 class SessionShellImpl implements Lifecycle {
   /// Binding for the actual SessionShell interface object.
   final SessionShellContextProxy _sessionShellContextProxy =
-      new SessionShellContextProxy();
-  final FocusProviderProxy _focusProviderProxy = new FocusProviderProxy();
-  final FocusControllerProxy _focusControllerProxy = new FocusControllerProxy();
+      SessionShellContextProxy();
+  final FocusProviderProxy _focusProviderProxy = FocusProviderProxy();
+  final FocusControllerProxy _focusControllerProxy = FocusControllerProxy();
   final VisibleStoriesControllerProxy _visibleStoriesControllerProxy =
-      new VisibleStoriesControllerProxy();
-  final StoryProviderProxy _storyProviderProxy = new StoryProviderProxy();
+      VisibleStoriesControllerProxy();
+  final StoryProviderProxy _storyProviderProxy = StoryProviderProxy();
   final SuggestionProviderProxy _suggestionProviderProxy =
-      new SuggestionProviderProxy();
-  final ContextReaderProxy _contextReaderProxy = new ContextReaderProxy();
-  final ContextWriterProxy _contextWriterProxy = new ContextWriterProxy();
+      SuggestionProviderProxy();
+  final ContextReaderProxy _contextReaderProxy = ContextReaderProxy();
+  final ContextWriterProxy _contextWriterProxy = ContextWriterProxy();
   final IntelligenceServicesProxy _intelligenceServicesProxy =
-      new IntelligenceServicesProxy();
-  final LinkProxy _linkProxy = new LinkProxy();
+      IntelligenceServicesProxy();
+  final LinkProxy _linkProxy = LinkProxy();
 
   /// Called when [initialize] occurs.
   final OnSessionShellReady onReady;
@@ -121,8 +121,8 @@ class SessionShellImpl implements Lifecycle {
     }
 
     if (onNotify != null) {
-      _linkWatcherImpl = new LinkWatcherImpl(onNotify: onNotify);
-      _linkWatcherBinding = new LinkWatcherBinding();
+      _linkWatcherImpl = LinkWatcherImpl(onNotify: onNotify);
+      _linkWatcherBinding = LinkWatcherBinding();
 
       if (watchAll) {
         _linkProxy.watchAll(_linkWatcherBinding.wrap(_linkWatcherImpl));

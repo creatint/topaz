@@ -167,7 +167,7 @@ class FuchsiaLogger {
     }
     int systemTime = Platform.isFuchsia
         ? System.clockGet(_zxClockMonotonic)
-        : new DateTime.now().microsecondsSinceEpoch * 1000;
+        : DateTime.now().microsecondsSinceEpoch * 1000;
     String logMsg;
     if (message is Function) {
       logMsg = message();
@@ -177,13 +177,13 @@ class FuchsiaLogger {
       Object object = message;
       logMsg = object.toString();
     }
-    _publish(new FuchsiaLogRecord(logLevel, logMsg, systemTime,
+    _publish(FuchsiaLogRecord(logLevel, logMsg, systemTime,
         localTag: localTag, error: error, stackTrace: stackTrace));
   }
 
   Stream<FuchsiaLogRecord> _getStream() {
     _controller ??=
-        new StreamController<FuchsiaLogRecord>.broadcast(sync: true);
+        StreamController<FuchsiaLogRecord>.broadcast(sync: true);
     return _controller.stream;
   }
 

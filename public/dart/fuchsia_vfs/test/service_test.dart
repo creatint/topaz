@@ -39,7 +39,7 @@ void main() {
 
     test('connect to service fails for bad flags and check status', () async {
       for (var unsupportedFlag in unsupportedFlags) {
-        _EchoImpl echo = new _EchoImpl();
+        _EchoImpl echo = _EchoImpl();
         Service<Echo> service = Service.withConnector(echo.bind);
         EchoProxy echoProxy = EchoProxy();
         var expectedStatus = ZX.ERR_NOT_SUPPORTED;
@@ -143,7 +143,7 @@ void main() {
 class _FsWithEchoService {
   final io_fidl.DirectoryProxy dirProxy = io_fidl.DirectoryProxy();
   final PseudoDir _dir = PseudoDir();
-  _EchoImpl echo = new _EchoImpl();
+  _EchoImpl echo = _EchoImpl();
 
   _FsWithEchoService() {
     Service<Echo> service = Service.withConnector(echo.bind);
@@ -155,7 +155,7 @@ class _FsWithEchoService {
 }
 
 class _EchoImpl extends Echo {
-  final EchoBinding _binding = new EchoBinding();
+  final EchoBinding _binding = EchoBinding();
 
   void bind(InterfaceRequest<Echo> request) {
     _binding.bind(this, request);

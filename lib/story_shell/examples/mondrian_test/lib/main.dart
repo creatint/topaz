@@ -11,13 +11,13 @@ void main() {
   setupLogger(name: 'mondrianTest');
 
   Color randomColor =
-      new Color(0xFF000000 + new math.Random().nextInt(0xFFFFFF));
+      Color(0xFF000000 + math.Random().nextInt(0xFFFFFF));
 
-  runApp(new MaterialApp(
+  runApp(MaterialApp(
     title: 'Mondrian Test',
-    home: new Container(
+    home: Container(
       color: randomColor,
     ),
-    theme: new ThemeData(canvasColor: randomColor),
+    theme: ThemeData(canvasColor: randomColor),
   ));
 }

@@ -22,7 +22,7 @@ class Audio {
   static const double _minDbDiff = 0.006;
   static const double _minPerceivedDiff = 0.0001;
 
-  final AudioProxy _audioService = new AudioProxy();
+  final AudioProxy _audioService = AudioProxy();
 
   double _systemAudioGainDb = _initialGainDb;
   bool _systemAudioMuted = false;

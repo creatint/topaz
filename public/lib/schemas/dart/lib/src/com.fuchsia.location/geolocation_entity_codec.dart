@@ -41,7 +41,7 @@ String _encode(GeolocationEntityData data) {
 /// Decodes [String] into a structured [GeolocationEntityCodec].
 GeolocationEntityData _decode(String data) {
   if (data == null || data.isEmpty || data == 'null') {
-    throw new FormatException('Entity data is null: "$data"');
+    throw FormatException('Entity data is null: "$data"');
   }
 
   // TODO(MS-1428): use a schema to validate decoded value.
@@ -60,10 +60,10 @@ GeolocationEntityData _decode(String data) {
   } catch (err, stackTrace) {
     log.warning(
         'Exception occured during JSON destructuring: \n$err\n$stackTrace');
-    throw new FormatException('Invalid JSON data: "$map"');
+    throw FormatException('Invalid JSON data: "$map"');
   }
 
-  return new GeolocationEntityData(
+  return GeolocationEntityData(
     lat: lat,
     long: long,
     accuracy: accuracy,

@@ -22,10 +22,10 @@ void main() {
   //TODO: migrate to using intents
   Module().registerIntentHandler(NoopIntentHandler());
 
-  XiFuchsiaClient xi = new XiFuchsiaClient(null);
-  XiCoreProxy coreProxy = new CoreProxy(xi);
+  XiFuchsiaClient xi = XiFuchsiaClient(null);
+  XiCoreProxy coreProxy = CoreProxy(xi);
 
-  runApp(new EditorTabs(
+  runApp(EditorTabs(
     coreProxy: coreProxy,
     debugBackground: kDrawDebugBackground,
   ));

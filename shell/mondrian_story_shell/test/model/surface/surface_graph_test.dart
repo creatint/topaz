@@ -14,10 +14,10 @@ import 'package:zircon/zircon.dart';
 
 void main() {
   test('toJson and back again with a single surface', () {
-    SurfaceGraph graph = new SurfaceGraph();
+    SurfaceGraph graph = SurfaceGraph();
     SurfaceProperties properties =
-        new SurfaceProperties(containerLabel: 'containerLabel');
-    SurfaceRelation relation = new SurfaceRelation(
+        SurfaceProperties(containerLabel: 'containerLabel');
+    SurfaceRelation relation = SurfaceRelation(
       emphasis: 0.12,
       arrangement: SurfaceArrangement.copresent,
       dependency: SurfaceDependency.dependent,
@@ -31,7 +31,7 @@ void main() {
     String encoded = json.encode(graph);
 
     Map<String, dynamic> decoded = json.decode(encoded);
-    SurfaceGraph decodedGraph = new SurfaceGraph.fromJson(decoded);
+    SurfaceGraph decodedGraph = SurfaceGraph.fromJson(decoded);
 
     expect(decodedGraph.focusStack.length, 1);
     Surface surface = decodedGraph.focusStack.first;
@@ -44,10 +44,10 @@ void main() {
   });
 
   test('toJson and back again with two surfaces', () {
-    SurfaceGraph graph = new SurfaceGraph();
+    SurfaceGraph graph = SurfaceGraph();
     SurfaceProperties properties =
-        new SurfaceProperties(containerLabel: 'containerLabel');
-    SurfaceRelation relation = new SurfaceRelation(
+        SurfaceProperties(containerLabel: 'containerLabel');
+    SurfaceRelation relation = SurfaceRelation(
       emphasis: 0.12,
       arrangement: SurfaceArrangement.copresent,
       dependency: SurfaceDependency.dependent,
@@ -59,8 +59,8 @@ void main() {
       ..focusSurface('parent');
     expect(graph.focusStack.length, 1);
 
-    properties = new SurfaceProperties(containerLabel: 'containerLabel');
-    relation = new SurfaceRelation(
+    properties = SurfaceProperties(containerLabel: 'containerLabel');
+    relation = SurfaceRelation(
       emphasis: 0.5,
       arrangement: SurfaceArrangement.copresent,
       dependency: SurfaceDependency.dependent,
@@ -75,7 +75,7 @@ void main() {
     String encoded = json.encode(graph);
 
     Map<String, dynamic> decoded = json.decode(encoded);
-    SurfaceGraph decodedGraph = new SurfaceGraph.fromJson(decoded);
+    SurfaceGraph decodedGraph = SurfaceGraph.fromJson(decoded);
 
     expect(decodedGraph.focusStack.length, 2);
     Surface surface = decodedGraph.focusStack.first;
@@ -100,10 +100,10 @@ void main() {
   });
 
   test('toJson and back again with one surface with two children', () {
-    SurfaceGraph graph = new SurfaceGraph();
+    SurfaceGraph graph = SurfaceGraph();
     SurfaceProperties properties =
-        new SurfaceProperties(containerLabel: 'containerLabel');
-    SurfaceRelation relation = new SurfaceRelation(
+        SurfaceProperties(containerLabel: 'containerLabel');
+    SurfaceRelation relation = SurfaceRelation(
       emphasis: 0.12,
       arrangement: SurfaceArrangement.copresent,
       dependency: SurfaceDependency.dependent,
@@ -115,8 +115,8 @@ void main() {
       ..focusSurface('parent');
     expect(graph.focusStack.length, 1);
 
-    properties = new SurfaceProperties(containerLabel: 'containerLabel');
-    relation = new SurfaceRelation(
+    properties = SurfaceProperties(containerLabel: 'containerLabel');
+    relation = SurfaceRelation(
       emphasis: 0.5,
       arrangement: SurfaceArrangement.copresent,
       dependency: SurfaceDependency.dependent,
@@ -128,8 +128,8 @@ void main() {
       ..focusSurface('child1');
     expect(graph.focusStack.length, 2);
 
-    properties = new SurfaceProperties(containerLabel: 'containerLabel');
-    relation = new SurfaceRelation(
+    properties = SurfaceProperties(containerLabel: 'containerLabel');
+    relation = SurfaceRelation(
       emphasis: 0.0,
       arrangement: SurfaceArrangement.ontop,
       dependency: SurfaceDependency.dependent,
@@ -144,7 +144,7 @@ void main() {
     String encoded = json.encode(graph);
 
     Map<String, dynamic> decoded = json.decode(encoded);
-    SurfaceGraph decodedGraph = new SurfaceGraph.fromJson(decoded);
+    SurfaceGraph decodedGraph = SurfaceGraph.fromJson(decoded);
 
     expect(decodedGraph.focusStack.length, 3);
     Surface surface = decodedGraph.focusStack.first;
@@ -180,18 +180,18 @@ void main() {
   });
 
   test('external surfaces are found by resummon dismissed checks', () {
-    SurfaceGraph graph = new SurfaceGraph();
+    SurfaceGraph graph = SurfaceGraph();
     SurfaceProperties externalProp =
-        new SurfaceProperties(source: ModuleSource.external$);
+        SurfaceProperties(source: ModuleSource.external$);
     graph
-      ..addSurface('parent', new SurfaceProperties(), '', new SurfaceRelation(),
+      ..addSurface('parent', SurfaceProperties(), '', SurfaceRelation(),
           null, '')
       ..connectViewFromViewHolderToken(
           'parent', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('parent')
       // Now add external surface
       ..addSurface(
-          'external', externalProp, 'parent', new SurfaceRelation(), null, '')
+          'external', externalProp, 'parent', SurfaceRelation(), null, '')
       ..connectViewFromViewHolderToken(
           'external', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('external')
@@ -202,10 +202,10 @@ void main() {
   });
 
   test('duplicate surface add', () {
-    SurfaceGraph graph = new SurfaceGraph();
+    SurfaceGraph graph = SurfaceGraph();
     SurfaceProperties properties =
-        new SurfaceProperties(containerLabel: 'containerLabel');
-    SurfaceRelation relation = new SurfaceRelation(
+        SurfaceProperties(containerLabel: 'containerLabel');
+    SurfaceRelation relation = SurfaceRelation(
       emphasis: 0.12,
       arrangement: SurfaceArrangement.copresent,
       dependency: SurfaceDependency.dependent,
@@ -226,10 +226,10 @@ void main() {
   });
 
   test('duplicate child surface add', () {
-    SurfaceGraph graph = new SurfaceGraph();
+    SurfaceGraph graph = SurfaceGraph();
     SurfaceProperties properties =
-        new SurfaceProperties(containerLabel: 'containerLabel');
-    SurfaceRelation relation = new SurfaceRelation(
+        SurfaceProperties(containerLabel: 'containerLabel');
+    SurfaceRelation relation = SurfaceRelation(
       emphasis: 0.12,
       arrangement: SurfaceArrangement.copresent,
       dependency: SurfaceDependency.dependent,
@@ -257,10 +257,10 @@ void main() {
   });
 
   test('duplicate child surface add', () {
-    SurfaceGraph graph = new SurfaceGraph();
+    SurfaceGraph graph = SurfaceGraph();
     SurfaceProperties properties =
-        new SurfaceProperties(containerLabel: 'containerLabel');
-    SurfaceRelation relation = new SurfaceRelation(
+        SurfaceProperties(containerLabel: 'containerLabel');
+    SurfaceRelation relation = SurfaceRelation(
       emphasis: 0.12,
       arrangement: SurfaceArrangement.copresent,
       dependency: SurfaceDependency.dependent,

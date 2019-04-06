@@ -29,8 +29,8 @@ class SettingStoreFactoryLegacy {
 
   /// Returns the setting store for [Audio].
   SettingStoreLegacy<Audio> createAudioStore() {
-    return new SettingStoreLegacy<Audio>(
-        _deviceSettingsManagerService, 'Audio', new Audio());
+    return SettingStoreLegacy<Audio>(
+        _deviceSettingsManagerService, 'Audio', Audio());
   }
 
   /// Handles connection error to the settings service.

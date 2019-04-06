@@ -24,17 +24,17 @@ const List<int> kDefaultCalls = [1000, 10000];
 const String kMessage = 'hello';
 
 Future<int> runTest(String server, void ready(Echo echo, void complete())) {
-  final EchoProxy echo = new EchoProxy();
-  final ComponentControllerProxy controller = new ComponentControllerProxy();
-  final Services services = new Services();
-  final LaunchInfo launchInfo = new LaunchInfo(
+  final EchoProxy echo = EchoProxy();
+  final ComponentControllerProxy controller = ComponentControllerProxy();
+  final Services services = Services();
+  final LaunchInfo launchInfo = LaunchInfo(
       url: server,
       arguments: <String>['-q'],
       directoryRequest: services.request());
   _context.launcher.createComponent(launchInfo, controller.ctrl.request());
   echo.ctrl.bind(services.connectToServiceByName<Echo>(Echo.$serviceName));
 
-  final Completer<int> completer = new Completer<int>();
+  final Completer<int> completer = Completer<int>();
 
   // Notice if the echo server or its controller goes away.
   echo.ctrl.onConnectionError = () {
@@ -50,7 +50,7 @@ Future<int> runTest(String server, void ready(Echo echo, void complete())) {
 
   // Wait until the echo server is up and replying to messages.
   echo.echoString(kMessage, (String response) {
-    final Stopwatch stopwatch = new Stopwatch()..start();
+    final Stopwatch stopwatch = Stopwatch()..start();
     void done() {
       stopwatch.stop();
       void complete() {
@@ -119,7 +119,7 @@ Future<int> testParallelPerf(String server, int number) async {
 }
 
 void main(List<String> argv) async {
-  final parser = new ArgParser()
+  final parser = ArgParser()
     ..addMultiOption('server', abbr: 's', defaultsTo: kDefaultServers)
     ..addMultiOption('num-calls',
         abbr: 'n', defaultsTo: kDefaultCalls.map((i) => i.toString()))
@@ -133,7 +133,7 @@ void main(List<String> argv) async {
   final PerfTest perfTest =
       args['parallel'] ? testParallelPerf : testSerialPerf;
 
-  _context = new StartupContext.fromStartupInfo();
+  _context = StartupContext.fromStartupInfo();
 
   // Map of server to map of count to total microseconds.
   final Map<String, Map<int, int>> results = {};
@@ -157,7 +157,7 @@ void main(List<String> argv) async {
 
   print('server,${numCalls.join(',')}');
   for (final String server in results.keys) {
-    StringBuffer line = new StringBuffer(server);
+    StringBuffer line = StringBuffer(server);
     for (final int count in numCalls) {
       final int microseconds = results[server][count] ?? 0;
       line.write(',${(microseconds / count)}');

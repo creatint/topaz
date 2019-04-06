@@ -28,7 +28,7 @@ Future<Null> verifyLinks<P>(
     urisByDomain.putIfAbsent(link.uri.authority, () => []).add(link);
   }
   await Future.wait(urisByDomain.keys.map((String domain) =>
-      new _LinkVerifier(urisByDomain[domain]).verify(callback)));
+      _LinkVerifier(urisByDomain[domain]).verify(callback)));
   return null;
 }
 
@@ -55,7 +55,7 @@ class _LinkVerifier<P> {
         if (code == HttpStatus.tooManyRequests) {
           final int delay =
               int.tryParse(response.headers['retry-after'] ?? '') ?? 50;
-          sleep(new Duration(milliseconds: delay));
+          sleep(Duration(milliseconds: delay));
           continue;
         }
 
@@ -63,7 +63,7 @@ class _LinkVerifier<P> {
         if (code == HttpStatus.permanentRedirect) {
           if (response.headers.containsKey('location')) {
             Uri redirectUri = Uri.parse(link.uri.origin + response.headers['location']);
-            return _verifyLink(new Link<P>(redirectUri, link.payload));
+            return _verifyLink(Link<P>(redirectUri, link.payload));
           }
           return false;
         }

@@ -19,7 +19,7 @@ void main() {
 }
 
 void _testlogToSocket() {
-  MockSocket mockSocket = new MockSocket();
+  MockSocket mockSocket = MockSocket();
   setupLogger(
     name: 'TEST',
     forceShowCodeLocation: false,

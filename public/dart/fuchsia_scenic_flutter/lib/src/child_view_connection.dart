@@ -159,11 +159,11 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
     assert(!_available);
     assert(_sceneHost == null);
 
-    final EventPairPair sceneTokens = new EventPairPair();
+    final EventPairPair sceneTokens = EventPairPair();
     assert(sceneTokens.status == ZX.OK);
 
     // Analyzer doesn't know Handle must be dart:zircon's Handle
-    _sceneHost = new SceneHost(sceneTokens.first.passHandle());
+    _sceneHost = SceneHost(sceneTokens.first.passHandle());
     _viewKey = shared.nextGlobalViewKey();
     shared.globalViewContainer
         .addChild2(_viewKey, _viewHolderToken.value, sceneTokens.second);
@@ -229,7 +229,7 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
     assert(_sceneHost != null);
     assert(ViewContainerListenerImpl.instance.getConnectionForKey(_viewKey) ==
         this);
-    final EventPairPair viewTokens = new EventPairPair();
+    final EventPairPair viewTokens = EventPairPair();
     assert(viewTokens.status == ZX.OK);
     ViewContainerListenerImpl.instance.removeConnectionForKey(_viewKey);
     _viewHolderToken = ViewHolderToken(value: viewTokens.first);
@@ -397,7 +397,7 @@ class RenderChildView extends RenderBox {
     assert(() {
       if (shared.globalViewContainer == null) {
         context.canvas
-            .drawRect(offset & size, Paint()..color = const Color(0xFF0000FF));
+            .drawRect(offset & size, Paint()..color = Color(0xFF0000FF));
         _debugErrorMessage.paint(context.canvas, offset);
       }
       return true;
@@ -430,7 +430,7 @@ class RenderChildView extends RenderBox {
     assert(() {
       if (shared.globalViewContainer == null) {
         _debugErrorMessage ??= TextPainter(
-            text: const TextSpan(
+            text: TextSpan(
                 text:
                     'Child views are supported only when running in Scenic.'));
         _debugErrorMessage.layout(minWidth: size.width, maxWidth: size.width);

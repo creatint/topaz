@@ -19,7 +19,7 @@ import 'package:zircon/zircon.dart';
 /// This should not be used on its own, but subclassed by some another type
 /// that will handle setting up the socket.
 class FuchsiaSocketClient extends XiClient {
-  final SocketReader _reader = new SocketReader();
+  final SocketReader _reader = SocketReader();
 
   @override
   Future<Null> init() async {}
@@ -27,13 +27,13 @@ class FuchsiaSocketClient extends XiClient {
   @override
   void send(String data) {
     final List<int> ints = utf8.encode('$data\n');
-    final Uint8List bytes = new Uint8List.fromList(ints);
+    final Uint8List bytes = Uint8List.fromList(ints);
     final ByteData buffer = bytes.buffer.asByteData();
 
     final WriteResult result = _reader.socket.write(buffer);
 
     if (result.status != ZX.OK) {
-      StateError error = new StateError('ERROR WRITING: $result');
+      StateError error = StateError('ERROR WRITING: $result');
       streamController
         ..addError(error)
         ..close();
@@ -48,7 +48,7 @@ class FuchsiaSocketClient extends XiClient {
     final ReadResult result = _reader.socket.read(1000);
 
     if (result.status != ZX.OK) {
-      StateError error = new StateError('Socket read error: ${result.status}');
+      StateError error = StateError('Socket read error: ${result.status}');
       streamController
         ..addError(error)
         ..close();
@@ -70,7 +70,7 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
     // Note: _ledgerHandle is currently unused, but we're hoping to bring it back.
   }
   final _dirProxy = io.DirectoryProxy();
-  final service.JsonProxy _jsonProxy = new service.JsonProxy();
+  final service.JsonProxy _jsonProxy = service.JsonProxy();
 
   @override
   Future<Null> init() async {
@@ -78,7 +78,7 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
       return;
     }
 
-    final LaunchInfo launchInfo = new LaunchInfo(
+    final LaunchInfo launchInfo = LaunchInfo(
         url: 'fuchsia-pkg://fuchsia.com/xi_core#meta/xi_core.cmx',
         directoryRequest: _dirProxy.ctrl.request().passChannel());
 
@@ -89,7 +89,7 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
 
     Incoming(_dirProxy).connectToService(_jsonProxy);
 
-    final SocketPair pair = new SocketPair();
+    final SocketPair pair = SocketPair();
     await _jsonProxy.connectSocket(pair.first);
     _reader
       ..bind(pair.second)
@@ -101,7 +101,7 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
   @override
   void send(String data) {
     if (initialized == false) {
-      throw new StateError('Must call .init() first.');
+      throw StateError('Must call .init() first.');
     }
     super.send(data);
   }

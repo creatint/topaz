@@ -14,7 +14,7 @@ const Duration _deviceListRefreshInterval = Duration(seconds: 5);
 /// Model containing state needed for the bluetooth settings app.
 class BluetoothSettingsModel extends Model {
   /// Bluetooth controller proxy.
-  final ControlProxy _control = new ControlProxy();
+  final ControlProxy _control = ControlProxy();
   final BluetoothSettingsPairingDelegate _pairingDelegate =
       BluetoothSettingsPairingDelegate();
 

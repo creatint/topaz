@@ -18,7 +18,7 @@ class SurfaceRelationUtil {
   }
 
   static SurfaceRelation decode(Map<String, String> encoded) {
-    return new SurfaceRelation(
+    return SurfaceRelation(
       emphasis: double.parse(encoded['emphasis']),
       arrangement: arrangementFromString(encoded['arrangement']),
       dependency: dependencyFromString(encoded['dependency']),

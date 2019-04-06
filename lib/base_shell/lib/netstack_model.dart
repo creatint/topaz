@@ -14,9 +14,9 @@ import 'package:lib.widgets/model.dart';
 
 const String _kLoopbackInterfaceName = 'en1';
 
-const Duration _kRepeatAnimationDuration = const Duration(milliseconds: 400);
+const Duration _kRepeatAnimationDuration = Duration(milliseconds: 400);
 
-const Duration _kRevealAnimationDuration = const Duration(milliseconds: 200);
+const Duration _kRevealAnimationDuration = Duration(milliseconds: 200);
 void _updateAnimations(
   bool oldValue,
   bool newValue,
@@ -55,19 +55,19 @@ class InterfaceInfo {
 
   /// Constructor.
   InterfaceInfo(this._interface, this._stats, TickerProvider _vsync) {
-    receivingRevealAnimation = new AnimationController(
+    receivingRevealAnimation = AnimationController(
       duration: _kRevealAnimationDuration,
       vsync: _vsync,
     );
-    receivingRepeatAnimation = new AnimationController(
+    receivingRepeatAnimation = AnimationController(
       duration: _kRepeatAnimationDuration,
       vsync: _vsync,
     );
-    sendingRevealAnimation = new AnimationController(
+    sendingRevealAnimation = AnimationController(
       duration: _kRevealAnimationDuration,
       vsync: _vsync,
     );
-    sendingRepeatAnimation = new AnimationController(
+    sendingRepeatAnimation = AnimationController(
       duration: _kRepeatAnimationDuration,
       vsync: _vsync,
     );
@@ -146,7 +146,7 @@ class NetstackModel extends Model with TickerProviderModelMixin {
       netstack.getStats(interface.id).then(
         (ns.NetInterfaceStats stats) {
           if (_interfaces[interface.id] == null) {
-            _interfaces[interface.id] = new InterfaceInfo(
+            _interfaces[interface.id] = InterfaceInfo(
               interface,
               stats,
               this,

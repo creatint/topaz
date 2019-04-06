@@ -14,7 +14,7 @@ import 'entity_client.dart';
 class EntityResolverClient {
   /// The underlying [Proxy] used to send client requests to the
   /// [fidl.EntityResolver] service.
-  final fidl.EntityResolverProxy proxy = new fidl.EntityResolverProxy();
+  final fidl.EntityResolverProxy proxy = fidl.EntityResolverProxy();
 
   final List<EntityClient> _entities = <EntityClient>[];
 
@@ -29,11 +29,11 @@ class EntityResolverClient {
 
   /// A future that completes when the [proxy] is bound.
   Future<Null> get bound => _bind.future;
-  final Completer<Null> _bind = new Completer<Null>();
+  final Completer<Null> _bind = Completer<Null>();
 
   /// See [fidl.EntityResolver#resolveEntity].
   Future<EntityClient> resolveEntity(String ref) async {
-    Completer<EntityClient> completer = new Completer<EntityClient>();
+    Completer<EntityClient> completer = Completer<EntityClient>();
 
     try {
       await bound;
@@ -41,7 +41,7 @@ class EntityResolverClient {
       completer.completeError(err, stackTrace);
     }
 
-    EntityClient entity = new EntityClient();
+    EntityClient entity = EntityClient();
 
     // ignore: unawaited_futures
     proxy.ctrl.error.then((ProxyError err) {

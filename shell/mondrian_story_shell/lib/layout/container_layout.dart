@@ -38,7 +38,7 @@ List<PositionedSurface> layoutSurfaces(
   ContainerLayout layoutSpec = layouts.first;
 
   for (LayoutEntry entry in layoutSpec.surfaces) {
-    Rect rect = new Rect.fromLTWH(
+    Rect rect = Rect.fromLTWH(
       entry.rectangle[0],
       entry.rectangle[1],
       entry.rectangle[2],
@@ -46,7 +46,7 @@ List<PositionedSurface> layoutSurfaces(
     );
     String label = entry.nodeName;
     layout.add(
-      new PositionedSurface(
+      PositionedSurface(
         surface: nodeMap[label],
         position: rect,
       ),
@@ -56,9 +56,9 @@ List<PositionedSurface> layoutSurfaces(
     log.warning('''Container $containerId with surfaces $containerSurfaces
     could not be laid out. Falling back on focused surface.''');
     layout.add(
-      new PositionedSurface(
+      PositionedSurface(
         surface: focusedSurface,
-        position: new Rect.fromLTWH(0.0, 0.0, 1.0, 1.0),
+        position: Rect.fromLTWH(0.0, 0.0, 1.0, 1.0),
       ),
     );
   }

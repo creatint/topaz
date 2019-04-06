@@ -15,7 +15,7 @@ void main() async {
   TestServerInstance server;
   group('failure', () {
     setUp(() async {
-      server = new TestServerInstance();
+      server = TestServerInstance();
       await server.start();
     });
 
@@ -62,7 +62,7 @@ void main() async {
     });
 
     test('binding closes immediately after sending response', () async {
-      var impl = new SimpleServerImpl();
+      var impl = SimpleServerImpl();
       var proxy = impl.newAsyncProxy();
       var pinged = false;
 
@@ -78,15 +78,15 @@ void main() async {
 
   group('unbound', () {
     test('one-way call on unbound proxy', () {
-      final proxy = new TestServerProxy();
+      final proxy = TestServerProxy();
       expect(proxy.oneWayNoArgs(), throwsA(anything));
     });
     test('two-way call on unbound proxy', () {
-      final proxy = new TestServerProxy();
+      final proxy = TestServerProxy();
       expect(proxy.twoWayNoArgs(), throwsA(anything));
     });
     test('event listen on unbound proxy', () {
-      final proxy = new TestServerProxy();
+      final proxy = TestServerProxy();
       expect(proxy.emptyEvent.first, doesNotComplete);
     });
   });
@@ -97,7 +97,7 @@ void main() async {
 // close the bound channel.
 class SimpleServerImpl extends fidlgen.SimpleServer {
   SimpleServerProxy newAsyncProxy() {
-    var proxy = new SimpleServerProxy();
+    var proxy = SimpleServerProxy();
     binding.bind(
         this,
         InterfaceRequest<fidlgen.SimpleServer>(
@@ -111,5 +111,5 @@ class SimpleServerImpl extends fidlgen.SimpleServer {
     binding.close();
   }
 
-  fidlgen.SimpleServerBinding binding = new fidlgen.SimpleServerBinding();
+  fidlgen.SimpleServerBinding binding = fidlgen.SimpleServerBinding();
 }

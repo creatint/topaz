@@ -19,7 +19,7 @@ class EntityClient {
   final fidl.EntityProxy proxy;
 
   /// Constructor.
-  EntityClient() : proxy = new fidl.EntityProxy() {
+  EntityClient() : proxy = fidl.EntityProxy() {
     proxy.ctrl
       ..onBind = _handleBind
       ..onClose = _handleClose
@@ -32,7 +32,7 @@ class EntityClient {
 
   /// List of types this entity supports.
   Future<List<String>> getTypes() {
-    Completer<List<String>> result = new Completer<List<String>>();
+    Completer<List<String>> result = Completer<List<String>>();
     proxy.getTypes(result.complete);
     return result.future;
   }
@@ -51,7 +51,7 @@ class EntityClient {
   }
 
   Future<fuchsia_mem.Buffer> _getVmoData(String type) {
-    Completer<fuchsia_mem.Buffer> result = new Completer<fuchsia_mem.Buffer>();
+    Completer<fuchsia_mem.Buffer> result = Completer<fuchsia_mem.Buffer>();
     proxy.getData(type, result.complete);
     return result.future;
   }
@@ -59,7 +59,7 @@ class EntityClient {
   /// Returns the data associated with the given type without validating it.
   Future<String> getData(String type) async {
     var buffer = await _getVmoData(type);
-    var dataVmo = new SizedVmo(buffer.vmo.handle, buffer.size);
+    var dataVmo = SizedVmo(buffer.vmo.handle, buffer.size);
     var data = dataVmo.read(buffer.size);
     dataVmo.close();
     return utf8.decode(data.bytesAsUint8List());

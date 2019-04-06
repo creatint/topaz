@@ -80,14 +80,14 @@ class AssetSpecifierEntityCodec extends EntityCodec<AssetSpecifierEntityData> {
       case _kMovieType:
         return _movieFromMap(map);
       default:
-        throw new FormatException(
+        throw FormatException(
             'Converting AssetSpecifierEntityData with unsupported type: ${map[_kAssetTypeKey]}');
     }
   }
 
   static AssetSpecifierEntityData _movieFromMap(Map<String, dynamic> map) {
     if (map[_kAssetUriKey] == null || map[_kAssetUriKey] is! String) {
-      throw new FormatException(
+      throw FormatException(
           'Converting AssetSpecifierEntityData with invalid Uri: ${map[_kAssetUriKey]}');
     }
     String uri = map[_kAssetUriKey];
@@ -95,6 +95,6 @@ class AssetSpecifierEntityCodec extends EntityCodec<AssetSpecifierEntityData> {
       throw const FormatException(
           'Converting AssetSpecifierEntityData with null Uri');
     }
-    return new AssetSpecifierEntityData.movie(uri: uri);
+    return AssetSpecifierEntityData.movie(uri: uri);
   }
 }

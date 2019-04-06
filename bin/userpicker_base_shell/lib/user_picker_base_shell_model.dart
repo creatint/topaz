@@ -21,7 +21,7 @@ export 'package:lib.widgets/model.dart'
 /// Function signature for GetPresentationMode callback
 typedef GetPresentationModeCallback = void Function(PresentationMode mode);
 
-const Duration _kShowLoadingSpinnerDelay = const Duration(milliseconds: 500);
+const Duration _kShowLoadingSpinnerDelay = Duration(milliseconds: 500);
 
 /// Model that provides common state
 class UserPickerBaseShellModel extends CommonBaseShellModel
@@ -76,7 +76,7 @@ class UserPickerBaseShellModel extends CommonBaseShellModel
 
   /// Call when reset is tapped.
   void resetTapped() {
-    File dm = new File('/dev/misc/dmctl');
+    File dm = File('/dev/misc/dmctl');
     print('dmctl exists? ${dm.existsSync()}');
     if (dm.existsSync()) {
       dm.writeAsStringSync('reboot', flush: true);
@@ -163,7 +163,7 @@ class UserPickerBaseShellModel extends CommonBaseShellModel
   void _updateShowLoadingSpinner() {
     if (accounts == null || _addingUser || _loadingChildView) {
       if (_showingLoadingSpinner == null) {
-        _showLoadingSpinnerTimer = new Timer(
+        _showLoadingSpinnerTimer = Timer(
           _kShowLoadingSpinnerDelay,
           () {
             _showingLoadingSpinner = true;

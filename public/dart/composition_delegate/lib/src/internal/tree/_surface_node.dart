@@ -43,7 +43,7 @@ class SurfaceNode extends Iterable<SurfaceNode> {
 
   /// Direct descendents of parent, except this
   Iterable<SurfaceNode> get siblings => (_parentNode == null)
-      ? new Iterable<SurfaceNode>.empty()
+      ? Iterable<SurfaceNode>.empty()
       : _parentNode.childNodes.where((SurfaceNode node) => node != this);
 
   /// Direct ancestors of this, starting at parent to root

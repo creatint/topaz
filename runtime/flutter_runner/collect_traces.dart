@@ -19,10 +19,10 @@ main(List<String> args) async {
     return;
   }
 
-  var functionCounts = new Map<String, int>();
+  var functionCounts = Map<String, int>();
 
   ProcessSignal.sigint.watch().listen((_) {
-    var functions = new List<String>();
+    var functions = List<String>();
     // TODO(flutter): Investigate consensus functions to avoid bloat.
     var minimumCount = 1;
     functionCounts.forEach((String function, int count) {
@@ -33,15 +33,15 @@ main(List<String> args) async {
 
     functions.sort();
 
-    var sb = new StringBuffer();
+    var sb = StringBuffer();
     for (var function in functions) {
       sb.writeln(function);
     }
 
-    new File(args[0]).writeAsString(sb.toString(), flush: true).then((_) { exit(0); });
+    File(args[0]).writeAsString(sb.toString(), flush: true).then((_) { exit(0); });
   });
 
-  final stdinAsLines = new LineSplitter().bind(new Utf8Decoder().bind(stdin));
+  final stdinAsLines = LineSplitter().bind(Utf8Decoder().bind(stdin));
   await for (final line in stdinAsLines) {
     final marker = "compilation-trace: ";
     final markerPosition = line.indexOf(marker);

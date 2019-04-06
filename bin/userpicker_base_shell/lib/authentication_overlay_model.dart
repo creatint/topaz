@@ -18,12 +18,12 @@ class AuthenticationOverlayModel extends Model implements TickerProvider {
 
   /// Constructor.
   AuthenticationOverlayModel() {
-    _transitionAnimation = new AnimationController(
+    _transitionAnimation = AnimationController(
       value: 0.0,
-      duration: const Duration(seconds: 1),
+      duration: Duration(seconds: 1),
       vsync: this,
     );
-    _curvedTransitionAnimation = new CurvedAnimation(
+    _curvedTransitionAnimation = CurvedAnimation(
       parent: _transitionAnimation,
       curve: Curves.fastOutSlowIn,
       reverseCurve: Curves.fastOutSlowIn,
@@ -73,5 +73,5 @@ class AuthenticationOverlayModel extends Model implements TickerProvider {
   }
 
   @override
-  Ticker createTicker(TickerCallback onTick) => new Ticker(onTick);
+  Ticker createTicker(TickerCallback onTick) => Ticker(onTick);
 }

@@ -27,7 +27,7 @@ void _testlogToStdout() {
       expect(logOutput.length, equals(1));
       expect(logOutput[0], equals('[INFO:TEST] foo'));
     },
-    zoneSpecification: new ZoneSpecification(
+    zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         logOutput.add(line);
       },

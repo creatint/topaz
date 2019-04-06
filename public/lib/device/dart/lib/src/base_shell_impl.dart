@@ -20,9 +20,9 @@ typedef OnBaseShellStop = void Function();
 /// operate.
 class BaseShellImpl extends BaseShell implements Lifecycle {
   final BaseShellContextProxy _baseShellContextProxy =
-      new BaseShellContextProxy();
-  final UserProviderProxy _userProviderProxy = new UserProviderProxy();
-  final PresentationProxy _presentationProxy = new PresentationProxy();
+      BaseShellContextProxy();
+  final UserProviderProxy _userProviderProxy = UserProviderProxy();
+  final PresentationProxy _presentationProxy = PresentationProxy();
   final Set<AuthenticationUiContextBinding> _authUiContextBindingSet =
       <AuthenticationUiContextBinding>{};
 
@@ -73,7 +73,7 @@ class BaseShellImpl extends BaseShell implements Lifecycle {
     InterfaceRequest<AuthenticationUiContext> request,
   ) async {
     AuthenticationUiContextBinding binding =
-        new AuthenticationUiContextBinding()
+        AuthenticationUiContextBinding()
           ..bind(authenticationUiContext, request);
     _authUiContextBindingSet.add(binding);
   }

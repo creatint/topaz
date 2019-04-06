@@ -50,7 +50,7 @@ class MediaProgressEntityCodec extends EntityCodec<MediaProgressEntityData> {
         map[_kProgressKey] is! double) {
       throw const FormatException('Converting Entity with invalid values');
     }
-    return new MediaProgressEntityData(map[_kDurationKey], map[_kProgressKey]);
+    return MediaProgressEntityData(map[_kDurationKey], map[_kProgressKey]);
   }
 
   // Convert to a json string suitable for sending over a Link

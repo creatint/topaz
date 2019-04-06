@@ -19,11 +19,11 @@ import 'package:lib.mediaplayer.flutter/media_player_controller.dart';
 import 'asset.dart';
 import 'config.dart';
 
-final StartupContext _context = new StartupContext.fromStartupInfo();
+final StartupContext _context = StartupContext.fromStartupInfo();
 final MediaPlayerController _controller =
-    new MediaPlayerController(_context.environmentServices);
+    MediaPlayerController(_context.environmentServices);
 
-ModuleImpl _module = new ModuleImpl();
+ModuleImpl _module = ModuleImpl();
 
 void _log(String msg) {
   print('[mediaplayer_flutter Module] $msg');
@@ -32,7 +32,7 @@ void _log(String msg) {
 /// An implementation of the [Lifecycle] interface, which controls the lifetime
 /// of the module.
 class ModuleImpl implements Lifecycle {
-  final LifecycleBinding _lifecycleBinding = new LifecycleBinding();
+  final LifecycleBinding _lifecycleBinding = LifecycleBinding();
 
   /// Binds an [InterfaceRequest] for a [Lifecycle] interface to this object.
   void bindLifecycle(InterfaceRequest<Lifecycle> request) {
@@ -48,7 +48,7 @@ class ModuleImpl implements Lifecycle {
   }
 }
 
-const List<String> _configFileNames = const <String>[
+const List<String> _configFileNames = <String>[
   '/data/mediaplayer_flutter.config',
   '/pkg/data/mediaplayer_flutter.config',
 ];
@@ -140,7 +140,7 @@ class _PlaybackScreen extends StatefulWidget {
   const _PlaybackScreen({Key key}) : super(key: key);
 
   @override
-  _PlaybackScreenState createState() => new _PlaybackScreenState();
+  _PlaybackScreenState createState() => _PlaybackScreenState();
 }
 
 class _PlaybackScreenState extends State<_PlaybackScreen> {
@@ -171,11 +171,11 @@ class _PlaybackScreenState extends State<_PlaybackScreen> {
       return;
     }
 
-    to.add(new Container(
-      margin: const EdgeInsets.only(left: 10.0),
-      child: new Text(
+    to.add(Container(
+      margin: EdgeInsets.only(left: 10.0),
+      child: Text(
         label,
-        style: new TextStyle(color: color, fontSize: fontSize),
+        style: TextStyle(color: color, fontSize: fontSize),
       ),
     ));
   }
@@ -225,7 +225,7 @@ class _PlaybackScreenState extends State<_PlaybackScreen> {
   @override
   Widget build(BuildContext context) {
     List<Widget> columnChildren = <Widget>[
-      new MediaPlayer(_controller),
+      MediaPlayer(_controller),
     ];
 
     Map<String, String> metadata = _controller.metadata;
@@ -251,30 +251,30 @@ class _PlaybackScreenState extends State<_PlaybackScreen> {
 
     _addProblem(columnChildren);
 
-    return new Material(
+    return Material(
       color: Colors.black,
-      child: new Stack(
+      child: Stack(
         children: <Widget>[
-          new Positioned(
+          Positioned(
             left: 0.0,
             right: 0.0,
             top: 0.0,
-            child: new Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: columnChildren,
             ),
           ),
-          new Positioned(
+          Positioned(
             right: 0.0,
             top: 0.0,
-            child: new Offstage(
+            child: Offstage(
               offstage: !_controller.shouldShowControlOverlay,
-              child: new PhysicalModel(
+              child: PhysicalModel(
                 elevation: 2.0,
                 color: Colors.transparent,
-                borderRadius: new BorderRadius.circular(60.0),
-                child: new IconButton(
-                  icon: new Icon(
+                borderRadius: BorderRadius.circular(60.0),
+                child: IconButton(
+                  icon: Icon(
                       _assets.length == 1 ? Icons.close : Icons.arrow_back),
                   iconSize: 60.0,
                   onPressed: () {
@@ -302,7 +302,7 @@ class _ChooserScreen extends StatefulWidget {
   const _ChooserScreen({Key key}) : super(key: key);
 
   @override
-  _ChooserScreenState createState() => new _ChooserScreenState();
+  _ChooserScreenState createState() => _ChooserScreenState();
 }
 
 class _ChooserScreenState extends State<_ChooserScreen> {
@@ -321,34 +321,34 @@ class _ChooserScreenState extends State<_ChooserScreen> {
         break;
     }
 
-    return new RaisedButton(
+    return RaisedButton(
       onPressed: () {
         _play(asset);
         Navigator.of(context).pushNamed('/play');
       },
       color: Colors.black,
-      child: new Row(
+      child: Row(
         children: <Widget>[
-          new Icon(
+          Icon(
             iconData,
             size: 60.0,
             color: Colors.grey[200],
           ),
-          new Column(
+          Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              new Text(
+              Text(
                 asset.title ?? '(no title)',
-                style: new TextStyle(color: Colors.grey[200], fontSize: 18.0),
+                style: TextStyle(color: Colors.grey[200], fontSize: 18.0),
               ),
-              new Text(
+              Text(
                 asset.artist ?? '',
-                style: new TextStyle(color: Colors.grey[600], fontSize: 13.0),
+                style: TextStyle(color: Colors.grey[600], fontSize: 13.0),
               ),
-              new Text(
+              Text(
                 asset.album ?? '',
-                style: new TextStyle(color: Colors.grey[800], fontSize: 13.0),
+                style: TextStyle(color: Colors.grey[800], fontSize: 13.0),
               ),
             ],
           ),
@@ -359,22 +359,22 @@ class _ChooserScreenState extends State<_ChooserScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return new Material(
+    return Material(
       color: Colors.black,
-      child: new Stack(
+      child: Stack(
         children: <Widget>[
-          new ListView(
+          ListView(
             itemExtent: 75.0,
             children: _assets.map(_buildChooseButton).toList(),
           ),
-          new Positioned(
+          Positioned(
             right: 0.0,
             top: 0.0,
-            child: new PhysicalModel(
+            child: PhysicalModel(
               elevation: 2.0,
               color: Colors.transparent,
-              child: new IconButton(
-                icon: const Icon(Icons.close),
+              child: IconButton(
+                icon: Icon(Icons.close),
                 iconSize: 60.0,
                 onPressed: () {
                   io.exit(0);
@@ -411,14 +411,14 @@ Future<Null> main() async {
     _play(_assets[0]);
   }
 
-  runApp(new MaterialApp(
+  runApp(MaterialApp(
     title: 'Media Player',
     home:
-        _assets.length == 1 ? const _PlaybackScreen() : const _ChooserScreen(),
+        _assets.length == 1 ? const _PlaybackScreen() : _ChooserScreen(),
     routes: <String, WidgetBuilder>{
       '/play': (BuildContext context) => const _PlaybackScreen()
     },
-    theme: new ThemeData(primarySwatch: Colors.blue),
+    theme: ThemeData(primarySwatch: Colors.blue),
     debugShowCheckedModeBanner: false,
   ));
 }

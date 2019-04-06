@@ -31,7 +31,7 @@ typedef MessageQueueErrorCallback = void Function(
 /// Helper class for receiving messages on a given message queue.
 class MessageQueueClient extends MessageReader {
   MessageQueueProxy _queue;
-  final MessageReaderBinding _readerBinding = new MessageReaderBinding();
+  final MessageReaderBinding _readerBinding = MessageReaderBinding();
 
   /// [onMessage] is called when there is a new message.
   final MessageReceiverCallback onMessage;
@@ -56,7 +56,7 @@ class MessageQueueClient extends MessageReader {
   /// Binds a new MessageQueue proxy and returns the request-side interface.
   InterfaceRequest<MessageQueue> newRequest() {
     _queue?.ctrl?.close();
-    _queue ??= new MessageQueueProxy();
+    _queue ??= MessageQueueProxy();
     _queue.ctrl.error.then((ProxyError err) {
       if (onConnectionError != null) {
         onConnectionError(MessageQueueError.unavailable,
@@ -74,7 +74,7 @@ class MessageQueueClient extends MessageReader {
   Future<String> getToken() {
     assert(_queue.ctrl.isBound);
 
-    Completer<String> result = new Completer();
+    Completer<String> result = Completer();
     _queue.getToken((String token) {
       result.complete(token);
     });
@@ -92,7 +92,7 @@ class MessageQueueClient extends MessageReader {
   /// Not public; implements [MessageReader.onReceive].
   @override
   void onReceive(fuchsia_mem.Buffer message, void Function() ack) {
-    var dataVmo = new SizedVmo(message.vmo.handle, message.size);
+    var dataVmo = SizedVmo(message.vmo.handle, message.size);
     var readResult = dataVmo.read(message.size);
     dataVmo.close();
     onMessage.call(readResult.bytesAsUint8List(), ack);

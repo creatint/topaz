@@ -17,12 +17,12 @@ class ConflictResolverFactory extends ledger.ConflictResolverFactory {
   // factory as been succesfully set.
   static Completer<bool> _setUpCompleted;
   static final ledger.ConflictResolverFactoryBinding _factoryBinding =
-      new ledger.ConflictResolverFactoryBinding();
+      ledger.ConflictResolverFactoryBinding();
 
   final ledger.ConflictResolverBinding _conflictResolverBinding =
-      new ledger.ConflictResolverBinding();
+      ledger.ConflictResolverBinding();
   // The conflict resolver that resolves conflicts for all the pages.
-  final ConflictResolver _conflictResolver = new ConflictResolver();
+  final ConflictResolver _conflictResolver = ConflictResolver();
 
   ConflictResolverFactory._internal();
 
@@ -32,12 +32,12 @@ class ConflictResolverFactory extends ledger.ConflictResolverFactory {
     if (_setUpCompleted != null) {
       return _setUpCompleted.future;
     }
-    _setUpCompleted = new Completer<bool>();
+    _setUpCompleted = Completer<bool>();
     final wrapper =
-        _factoryBinding.wrap(new ConflictResolverFactory._internal());
+        _factoryBinding.wrap(ConflictResolverFactory._internal());
     ledgerInstance.setConflictResolverFactory(wrapper, (ledger.Status status) {
       if (status != ledger.Status.ok) {
-        throw new Exception(
+        throw Exception(
             'Sledge failed to SetConflictResolverFactory (status: $status).');
         _setUpCompleted.complete(false);
       } else {

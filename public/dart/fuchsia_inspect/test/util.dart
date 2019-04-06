@@ -196,7 +196,7 @@ class _EqualsByteData extends Matcher {
       return false;
     }
 
-    var listEquals = const ListEquality().equals;
+    var listEquals = ListEquality().equals;
 
     ByteData byteData = item;
     return listEquals(

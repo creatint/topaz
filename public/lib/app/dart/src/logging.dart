@@ -58,13 +58,13 @@ void setupLoggerAsync({
   FutureOr<zircon.Socket> sock;
   if (logSocket == null) {
     final socketPair = zircon.SocketPair(zircon.Socket.DATAGRAM);
-    final logSinkProxy = new logger_async.LogSinkProxy();
+    final logSinkProxy = logger_async.LogSinkProxy();
 
     final completer = Completer<zircon.Socket>();
 
     app_async
         .connectToService(
-          new app_async.StartupContext.fromStartupInfo().environmentServices,
+          app_async.StartupContext.fromStartupInfo().environmentServices,
           logSinkProxy.ctrl,
         )
         .then((_) => logSinkProxy.connect(socketPair.second))
@@ -125,7 +125,7 @@ void setupLogger({
       Platform.script?.pathSegments?.lastWhere((_) => true, orElse: () => null);
   final List<String> approvedTags = _verifyGlobalTags(globalTags);
 
-  log = new FuchsiaLogger(level ?? Level.ALL);
+  log = FuchsiaLogger(level ?? Level.ALL);
 
   // This code decides how to log messages. Here's the why:
   // If not running on zircon, there is no sys_logger so must use stdout.
@@ -152,7 +152,7 @@ void setupLogger({
   log.onRecord.listen((FuchsiaLogRecord rec) {
     String codeLocation;
     if (forceShowCodeLocation ?? inCheckedMode) {
-      final Trace trace = new Trace.current();
+      final Trace trace = Trace.current();
       final Frame callerFrame = _findCallerFrame(trace);
       if (callerFrame != null) {
         if (callerFrame.uri.pathSegments.isNotEmpty) {
@@ -164,7 +164,7 @@ void setupLogger({
       }
     }
 
-    activeLogWriter(new LogWriterMessage(
+    activeLogWriter(LogWriterMessage(
       logRecord: rec,
       scopeName: scopeName,
       codeLocation: codeLocation,
@@ -176,9 +176,9 @@ void setupLogger({
 /// Create a Socket and connect it to the FIDL logger
 zircon.Socket _connectToLoggerSocket() {
   final socketPair = zircon.SocketPair(zircon.Socket.DATAGRAM);
-  final logSinkProxy = new LogSinkProxy();
+  final logSinkProxy = LogSinkProxy();
   connectToService(
-    new StartupContext.fromStartupInfo().environmentServices,
+    StartupContext.fromStartupInfo().environmentServices,
     logSinkProxy.ctrl,
   );
   logSinkProxy.connect(socketPair.second);
@@ -207,7 +207,7 @@ class LogWriterMessage {
 
 /// The default logger to be used by dart applications. Each application should
 /// call [setupLogger()] in their main function to properly configure it.
-FuchsiaLogger log = new FuchsiaLogger(Level.ALL)
+FuchsiaLogger log = FuchsiaLogger(Level.ALL)
   ..onRecord.listen((FuchsiaLogRecord rec) {
     print('WARNING: The logger is not initialized properly.');
     print('WARNING: Please call setupLogger() from your main function.');
@@ -272,7 +272,7 @@ int _convertLogLevel(Level logLevel) =>
 
 /// Format log message zircon socket connected to Log Viewer
 void writeLogToSocket(LogWriterMessage message) {
-  ByteData bytes = new ByteData(_socketBufferLength)
+  ByteData bytes = ByteData(_socketBufferLength)
     ..setUint64(0, pid, Endian.little)
     ..setUint64(8, Isolate.current.hashCode, Endian.little)
     ..setUint64(16, message.logRecord.systemTime, Endian.little)
@@ -324,7 +324,7 @@ void writeLogToSocket(LogWriterMessage message) {
   assert(byteOffset <= _socketBufferLength);
 
   void writeBytes(zircon.Socket sock) {
-    sock.write(new ByteData.view(bytes.buffer, 0, byteOffset));
+    sock.write(ByteData.view(bytes.buffer, 0, byteOffset));
   }
 
   if (_logSocket is Future) {
@@ -375,7 +375,7 @@ int _setString(ByteData bytes, int firstByteOffset, String value, int maxLen) {
 /// A convenient function for displaying the stack trace of the caller in the
 /// console.
 void showStackTrace() {
-  print(new Trace.current(1).toString());
+  print(Trace.current(1).toString());
 }
 
 /// Emits an instant trace with [name] prefixed with [log]'s name

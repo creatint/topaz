@@ -39,8 +39,8 @@ class EntityCodec<T> extends Codec<T, String> {
         assert(type.isEmpty == false),
         assert(encode != null),
         assert(decode != null),
-        _encoder = new _EntityEncoder<T>(encode),
-        _decoder = new _EntityDecoder<T>(decode);
+        _encoder = _EntityEncoder<T>(encode),
+        _decoder = _EntityDecoder<T>(decode);
 
   @override
   _EntityEncoder<T> get encoder => _encoder;
@@ -75,9 +75,9 @@ class _EntityDecoder<T> extends Converter<String, T> {
   @override
   Stream<T> bind(Stream<String> source) {
     EntityDecoderSink<T> map(EventSink<T> out) =>
-        new EntityDecoderSink<T>(out, this);
+        EntityDecoderSink<T>(out, this);
 
-    return new Stream<T>.eventTransformed(source, map);
+    return Stream<T>.eventTransformed(source, map);
   }
 }
 

@@ -20,18 +20,18 @@ void _testLogToStdoutWithException() async {
         level: Level.ALL,
         forceShowCodeLocation: false,
       );
-      log.shout('foo', new Exception('cause'));
+      log.shout('foo', Exception('cause'));
 
       expect(logOutput.length, equals(1));
       expect(logOutput[0], equals('[FATAL:TEST] foo: Exception: cause'));
 
-      log.severe('bar', new Exception('because'), StackTrace.current);
+      log.severe('bar', Exception('because'), StackTrace.current);
 
       expect(logOutput.length, equals(3));
       expect(logOutput[1], equals('[ERROR:TEST] bar: Exception: because'));
       expect(logOutput[2], matches(r'.*_testLogToStdoutWithError.*'));
     },
-    zoneSpecification: new ZoneSpecification(
+    zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         logOutput.add(line);
       },

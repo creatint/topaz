@@ -58,7 +58,7 @@ abstract class XiClient {
   ///     process.stdout.listen(streamController.add);
   ///
   StreamController<List<int>> streamController =
-      new StreamController<List<int>>();
+      StreamController<List<int>>();
 
   /// [XiClient] constructor.
   XiClient() {

@@ -13,10 +13,10 @@ void main() {
   setupLogger();
 
   test('Create SledgePageId objects', () {
-    final a = new SledgePageId();
-    final b = new SledgePageId('');
-    final c = new SledgePageId('foo');
-    final d = new SledgePageId(
+    final a = SledgePageId();
+    final b = SledgePageId('');
+    final c = SledgePageId('foo');
+    final d = SledgePageId(
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
     expect(a.id.id, equals(b.id.id));
     expect(SledgePageId.pageIsManagedBySledge(a.id), equals(true));
@@ -26,8 +26,8 @@ void main() {
   });
 
   test('pageIsManagedBySledge detects PageIds not managed by Sledge', () {
-    final bytes = new Uint8List(16);
-    final pageId = new ledger.PageId(id: bytes);
+    final bytes = Uint8List(16);
+    final pageId = ledger.PageId(id: bytes);
     expect(SledgePageId.pageIsManagedBySledge(pageId), equals(false));
   });
 
@@ -36,7 +36,7 @@ void main() {
     // the SledgePageId, because if the encoding changes then clients of Sledge
     // won't be able to read their data back.
     // The format of the expected value is described in SledgePageId.
-    final sledgePageId = new SledgePageId('foo');
+    final sledgePageId = SledgePageId('foo');
     expect(
         sledgePageId.id.id,
         equals([

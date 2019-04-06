@@ -96,7 +96,7 @@ void main() {
       mockPresentation.triggerEvent();
       // give the call time to propagate
       Future sleep1() {
-        return new Future.delayed(const Duration(seconds: 1), () {});
+        return Future.delayed(const Duration(seconds: 1), () {});
       }
 
       await sleep1();

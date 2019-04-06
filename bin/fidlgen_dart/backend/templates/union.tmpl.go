@@ -59,7 +59,7 @@ class {{ .Name }} extends $fidl.Union {
   Object get $data => _data;
 
   static {{ .Name }} _ctor(int index, Object data) {
-    return new {{ .Name }}._({{ .TagName }}.values[index], data);
+    return {{ .Name }}._({{ .TagName }}.values[index], data);
   }
 }
 

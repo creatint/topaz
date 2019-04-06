@@ -26,11 +26,11 @@ class StartModuleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: new RaisedButton(
-        child: new Center(
-          child: new Text(_display),
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: RaisedButton(
+        child: Center(
+          child: Text(_display),
         ),
         onPressed: () {
           print(
@@ -44,11 +44,11 @@ class StartModuleButton extends StatelessWidget {
   /// Starts a new module and returns its controller
   ModuleController startChildModule(
       ModuleContext moduleContext, SurfaceRelation relation) {
-    ModuleControllerProxy moduleController = new ModuleControllerProxy();
+    ModuleControllerProxy moduleController = ModuleControllerProxy();
 
     String name = _generateChildId();
 
-    IntentBuilder intentBuilder = new IntentBuilder.handler(_kModuleUrl);
+    IntentBuilder intentBuilder = IntentBuilder.handler(_kModuleUrl);
     moduleContext.addModuleToStory(
         name,
         intentBuilder.intent,

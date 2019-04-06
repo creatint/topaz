@@ -17,8 +17,8 @@ ViewContainerProxy _initViewContainer() {
   if (handle == null) {
     return null;
   }
-  final ViewContainerProxy proxy = new ViewContainerProxy()
-    ..ctrl.bind(new InterfaceHandle<ViewContainer>(new Channel(handle)))
+  final ViewContainerProxy proxy = ViewContainerProxy()
+    ..ctrl.bind(InterfaceHandle<ViewContainer>(Channel(handle)))
     ..setListener(ViewContainerListenerImpl.instance.createInterfaceHandle());
 
   assert(() {

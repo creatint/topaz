@@ -16,12 +16,12 @@ class MapFleetFactory<K, V> {
 
   // Returns Fleet of [count] MapValues.
   Fleet<MapValue<K, V>> newFleet(int count) {
-    return new Fleet<MapValue<K, V>>(count, (index) => new MapValue<K, V>());
+    return Fleet<MapValue<K, V>>(count, (index) => MapValue<K, V>());
   }
 }
 
 const MapFleetFactory<int, int> intMapFleetFactory =
-    const MapFleetFactory<int, int>();
+    MapFleetFactory<int, int>();
 
 void main() async {
   setupLogger();

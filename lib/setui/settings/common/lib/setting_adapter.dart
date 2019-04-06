@@ -78,18 +78,18 @@ class AdapterLogType {
 
   const AdapterLogType._(this.value);
 
-  static const AdapterLogType fetch = const AdapterLogType._(fetchId);
+  static const AdapterLogType fetch = AdapterLogType._(fetchId);
 
-  static const AdapterLogType update = const AdapterLogType._(updateId);
+  static const AdapterLogType update = AdapterLogType._(updateId);
 
-  static const AdapterLogType setting = const AdapterLogType._(settingId);
+  static const AdapterLogType setting = AdapterLogType._(settingId);
 
-  static const AdapterLogType response = const AdapterLogType._(responseId);
+  static const AdapterLogType response = AdapterLogType._(responseId);
 
-  static const AdapterLogType mutation = const AdapterLogType._(mutationId);
+  static const AdapterLogType mutation = AdapterLogType._(mutationId);
 
   static const AdapterLogType mutationResponse =
-      const AdapterLogType._(mutationResponseId);
+      AdapterLogType._(mutationResponseId);
 
   int toJson() {
     return value;

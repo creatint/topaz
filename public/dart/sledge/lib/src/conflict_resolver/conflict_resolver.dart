@@ -35,8 +35,8 @@ class ConflictResolver extends ledger.ConflictResolver {
       InterfaceHandle<ledger.PageSnapshot> commonVersion,
       InterfaceHandle<ledger.MergeResultProvider> newResultProvider) async {
     // Obtain the left and right snapshots.
-    ledger.PageSnapshotProxy leftPageSnapshot = new ledger.PageSnapshotProxy();
-    ledger.PageSnapshotProxy rightPageSnapshot = new ledger.PageSnapshotProxy();
+    ledger.PageSnapshotProxy leftPageSnapshot = ledger.PageSnapshotProxy();
+    ledger.PageSnapshotProxy rightPageSnapshot = ledger.PageSnapshotProxy();
     leftPageSnapshot.ctrl.bind(left);
     rightPageSnapshot.ctrl.bind(right);
 
@@ -45,7 +45,7 @@ class ConflictResolver extends ledger.ConflictResolver {
         await getMapOfAllSchemas(leftPageSnapshot, rightPageSnapshot);
 
     // Find all the KVs that changed.
-    final resultProviderProxy = new ledger.MergeResultProviderProxy();
+    final resultProviderProxy = ledger.MergeResultProviderProxy();
     resultProviderProxy.ctrl.bind(newResultProvider);
     List<ledger.DiffEntry> diffs =
         await getConflictingDiff(resultProviderProxy);

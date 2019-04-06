@@ -62,8 +62,8 @@ class KeyboardContainer extends StatelessWidget {
       child: SizedBox(
         height: _kKeyboardOverlayHeight,
         child: Material(
-          borderRadius: const BorderRadius.vertical(
-              top: const Radius.circular(_kKeyboardCornerRadius)),
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(_kKeyboardCornerRadius)),
           elevation: elevation ?? model.keyboardElevation,
           child: ApplicationWidget(
             url: 'fuchsia-pkg://fuchsia.com/latin-ime#meta/latin-ime.cmx',

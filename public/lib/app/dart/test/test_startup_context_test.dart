@@ -8,22 +8,22 @@ import 'package:test/test.dart';
 import 'package:zircon/zircon.dart';
 
 void main() {
-  TestStartupContext testContext = new TestStartupContext();
+  TestStartupContext testContext = TestStartupContext();
   StartupContext.provideStartupContext(testContext);
 
   group('Fake context', () {
     test('can be obtained through fromStartupInfo', () {
-      expect(new StartupContext.fromStartupInfo(), testContext);
+      expect(StartupContext.fromStartupInfo(), testContext);
     });
     test('should not crash with normal calls', () {
-      final context = new StartupContext.fromStartupInfo();
+      final context = StartupContext.fromStartupInfo();
 
       context.outgoingServices.addServiceForName((req) {}, 'service');
       context.environmentServices.ctrl.close();
       context.close();
     });
     test('should connect a service when connected', () {
-      final context = new StartupContext.fromStartupInfo();
+      final context = StartupContext.fromStartupInfo();
       var wasConnected = false;
 
       testContext.withTestService((req) {
@@ -31,7 +31,7 @@ void main() {
       }, 'connectedService');
 
       context.environmentServices.connectToService(
-          'connectedService', new Channel(new Handle.invalid()));
+          'connectedService', Channel(Handle.invalid()));
 
       expect(wasConnected, true);
     }, skip: 'TODO(tvolkert): re-enable this test');

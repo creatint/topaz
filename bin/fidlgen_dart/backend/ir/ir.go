@@ -364,12 +364,12 @@ func formatParameterList(params []Parameter) string {
 		lines = append(lines, fmt.Sprintf("      %s,\n", p.typeExpr))
 	}
 
-	return fmt.Sprintf("const <$fidl.MemberType>[\n%s    ]", strings.Join(lines, ""))
+	return fmt.Sprintf("<$fidl.MemberType>[\n%s    ]", strings.Join(lines, ""))
 }
 
 func formatStructMemberList(members []StructMember) string {
 	if len(members) == 0 {
-		return "const <$fidl.MemberType>[]"
+		return "<$fidl.MemberType>[]"
 	}
 
 	lines := []string{}
@@ -378,12 +378,12 @@ func formatStructMemberList(members []StructMember) string {
 		lines = append(lines, fmt.Sprintf("    %s,\n", v.typeExpr))
 	}
 
-	return fmt.Sprintf("const <$fidl.MemberType>[\n%s  ]", strings.Join(lines, ""))
+	return fmt.Sprintf("<$fidl.MemberType>[\n%s  ]", strings.Join(lines, ""))
 }
 
 func formatTableMemberList(members []TableMember) string {
 	if len(members) == 0 {
-		return "const <int, $fidl.FidlType>{}"
+		return "<int, $fidl.FidlType>{}"
 	}
 
 	lines := []string{}
@@ -392,12 +392,12 @@ func formatTableMemberList(members []TableMember) string {
 		lines = append(lines, fmt.Sprintf("    %d: %s,\n", v.Ordinal, v.Type.typeExpr))
 	}
 
-	return fmt.Sprintf("const <int, $fidl.FidlType>{\n%s  }", strings.Join(lines, ""))
+	return fmt.Sprintf("<int, $fidl.FidlType>{\n%s  }", strings.Join(lines, ""))
 }
 
 func formatUnionMemberList(members []UnionMember) string {
 	if len(members) == 0 {
-		return "const <$fidl.MemberType>[]"
+		return "<$fidl.MemberType>[]"
 	}
 
 	lines := []string{}
@@ -406,12 +406,12 @@ func formatUnionMemberList(members []UnionMember) string {
 		lines = append(lines, fmt.Sprintf("    %s,\n", v.typeExpr))
 	}
 
-	return fmt.Sprintf("const <$fidl.MemberType>[\n%s  ]", strings.Join(lines, ""))
+	return fmt.Sprintf("<$fidl.MemberType>[\n%s  ]", strings.Join(lines, ""))
 }
 
 func formatXUnionMemberList(members []XUnionMember) string {
 	if len(members) == 0 {
-		return "const <int, $fidl.FidlType>{}"
+		return "<int, $fidl.FidlType>{}"
 	}
 
 	var lines []string
@@ -419,7 +419,7 @@ func formatXUnionMemberList(members []XUnionMember) string {
 		lines = append(lines, fmt.Sprintf("    %d: %s,\n", v.Ordinal, v.Type.typeExpr))
 	}
 
-	return fmt.Sprintf("const <int, $fidl.FidlType>{\n%s  }", strings.Join(lines, ""))
+	return fmt.Sprintf("<int, $fidl.FidlType>{\n%s  }", strings.Join(lines, ""))
 }
 
 func formatLibraryName(library types.LibraryIdentifier) string {
@@ -431,7 +431,7 @@ func formatLibraryName(library types.LibraryIdentifier) string {
 }
 
 func typeExprForMethod(request []Parameter, response []Parameter, name string) string {
-	return fmt.Sprintf(`const $fidl.MethodType(
+	return fmt.Sprintf(`$fidl.MethodType(
     request: %s,
 	response: %s,
 	name: r"%s",
@@ -443,7 +443,7 @@ func typeExprForPrimitiveSubtype(val types.PrimitiveSubtype) string {
 	if !ok {
 		log.Fatal("Unknown primitive subtype: ", val)
 	}
-	return fmt.Sprintf("const $fidl.%s()", t)
+	return fmt.Sprintf("$fidl.%s()", t)
 }
 
 func libraryPrefix(library types.LibraryIdentifier) string {
@@ -594,7 +594,7 @@ func (c *compiler) compileType(val types.Type) Type {
 		}
 		elementStr := fmt.Sprintf("element: %s", t.typeExpr)
 		elementCountStr := fmt.Sprintf("elementCount: %s", formatInt(val.ElementCount))
-		r.typeExpr = fmt.Sprintf("const $fidl.ArrayType<%s>(%s, %s)", r.Decl, elementStr, elementCountStr)
+		r.typeExpr = fmt.Sprintf("$fidl.ArrayType<%s>(%s, %s)", r.Decl, elementStr, elementCountStr)
 	case types.VectorType:
 		t := c.compileType(*val.ElementType)
 		if len(t.typedDataDecl) > 0 {
@@ -609,13 +609,13 @@ func (c *compiler) compileType(val types.Type) Type {
 		elementStr := fmt.Sprintf("element: %s", t.typeExpr)
 		maybeElementCountStr := fmt.Sprintf("maybeElementCount: %s", formatInt(val.ElementCount))
 		nullableStr := fmt.Sprintf("nullable: %s", formatBool(val.Nullable))
-		r.typeExpr = fmt.Sprintf("const $fidl.VectorType<%s>(%s, %s, %s)",
+		r.typeExpr = fmt.Sprintf("$fidl.VectorType<%s>(%s, %s, %s)",
 			r.Decl, elementStr, maybeElementCountStr, nullableStr)
 	case types.StringType:
 		r.Decl = "String"
 		r.SyncDecl = r.Decl
 		r.AsyncDecl = r.Decl
-		r.typeExpr = fmt.Sprintf("const $fidl.StringType(maybeElementCount: %s, nullable: %s)",
+		r.typeExpr = fmt.Sprintf("$fidl.StringType(maybeElementCount: %s, nullable: %s)",
 			formatInt(val.ElementCount), formatBool(val.Nullable))
 	case types.HandleType:
 		switch val.HandleSubtype {
@@ -632,7 +632,7 @@ func (c *compiler) compileType(val types.Type) Type {
 		}
 		r.SyncDecl = r.Decl
 		r.AsyncDecl = r.Decl
-		r.typeExpr = fmt.Sprintf("const $fidl.%sType(nullable: %s)",
+		r.typeExpr = fmt.Sprintf("$fidl.%sType(nullable: %s)",
 			r.Decl, formatBool(val.Nullable))
 	case types.RequestType:
 		compound := types.ParseCompoundIdentifier(val.RequestSubtype)
@@ -644,7 +644,7 @@ func (c *compiler) compileType(val types.Type) Type {
 			r.SyncDecl = fmt.Sprintf("$fidl.InterfaceRequest<$sync.%s>", t)
 		}
 		r.AsyncDecl = r.Decl
-		r.typeExpr = fmt.Sprintf("const $fidl.InterfaceRequestType<%s>(nullable: %s)",
+		r.typeExpr = fmt.Sprintf("$fidl.InterfaceRequestType<%s>(nullable: %s)",
 			t, formatBool(val.Nullable))
 	case types.PrimitiveType:
 		r.Decl = c.compilePrimitiveSubtype(val.PrimitiveSubtype)
@@ -682,7 +682,7 @@ func (c *compiler) compileType(val types.Type) Type {
 			r.AsyncDecl = r.SyncDecl
 			if val.Nullable {
 				if r.declType != types.XUnionDeclType {
-					r.typeExpr = fmt.Sprintf("const $fidl.PointerType<%s>(element: %s)",
+					r.typeExpr = fmt.Sprintf("$fidl.PointerType<%s>(element: %s)",
 						t, c.typeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier)))
 				} else {
 					r.typeExpr = c.optTypeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier))
@@ -699,7 +699,7 @@ func (c *compiler) compileType(val types.Type) Type {
 				r.SyncDecl = fmt.Sprintf("$fidl.InterfaceHandle<$sync.%s>", t)
 			}
 			r.AsyncDecl = r.Decl
-			r.typeExpr = fmt.Sprintf("const $fidl.InterfaceHandleType<%s>(nullable: %s)",
+			r.typeExpr = fmt.Sprintf("$fidl.InterfaceHandleType<%s>(nullable: %s)",
 				t, formatBool(val.Nullable))
 		default:
 			log.Fatal("Unknown declaration type: ", r.declType)
@@ -736,7 +736,7 @@ func (c *compiler) compileEnum(val types.Enum) Enum {
 		n,
 		[]EnumMember{},
 		c.typeSymbolForCompoundIdentifier(ci),
-		fmt.Sprintf("const $fidl.EnumType<%s>(type: %s, ctor: %s._ctor)", n, typeExprForPrimitiveSubtype(val.Type), n),
+		fmt.Sprintf("$fidl.EnumType<%s>(type: %s, ctor: %s._ctor)", n, typeExprForPrimitiveSubtype(val.Type), n),
 		docString(val),
 	}
 	for _, v := range val.Members {
@@ -767,7 +767,7 @@ func (c *compiler) compileParameter(paramName types.Identifier, paramType types.
 		Name:     name,
 		Offset:   offset,
 		Convert:  convert,
-		typeExpr: fmt.Sprintf("const $fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		typeExpr: fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
 	}
 }
 
@@ -936,7 +936,7 @@ func (c *compiler) compileStructMember(val types.StructMember) StructMember {
 		c.compileLowerCamelIdentifier(val.Name),
 		defaultValue,
 		val.Offset,
-		fmt.Sprintf("const $fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
 		docString(val),
 	}
 }
@@ -970,7 +970,7 @@ func (c *compiler) compileStruct(val types.Struct) Struct {
 
 	r.HasNullableField = hasNullableField
 
-	r.TypeExpr = fmt.Sprintf(`const $fidl.StructType<%s>(
+	r.TypeExpr = fmt.Sprintf(`$fidl.StructType<%s>(
   encodedSize: %v,
   members: %s,
   ctor: %s._ctor,
@@ -1009,7 +1009,7 @@ func (c *compiler) compileTable(val types.Table) Table {
 		}
 	}
 
-	r.TypeExpr = fmt.Sprintf(`const $fidl.TableType<%s>(
+	r.TypeExpr = fmt.Sprintf(`$fidl.TableType<%s>(
   encodedSize: %v,
   members: %s,
   ctor: %s._ctor,
@@ -1026,7 +1026,7 @@ func (c *compiler) compileUnionMember(val types.UnionMember) UnionMember {
 		c.compileLowerCamelIdentifier(val.Name),
 		c.compileUpperCamelIdentifier(val.Name),
 		val.Offset,
-		fmt.Sprintf("const $fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
 		docString(val),
 	}
 }
@@ -1046,7 +1046,7 @@ func (c *compiler) compileUnion(val types.Union) Union {
 		r.Members = append(r.Members, c.compileUnionMember(v))
 	}
 
-	r.TypeExpr = fmt.Sprintf(`const $fidl.UnionType<%s>(
+	r.TypeExpr = fmt.Sprintf(`$fidl.UnionType<%s>(
   encodedSize: %v,
   members: %s,
   ctor: %s._ctor,
@@ -1077,12 +1077,12 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 		Members:       members,
 		Documented:    docString(val),
 	}
-	r.TypeExpr = fmt.Sprintf(`const $fidl.XUnionType<%s>(
+	r.TypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
   encodedSize: %v,
   members: %s,
   ctor: %s._ctor,
 )`, r.Name, val.Size, formatXUnionMemberList(r.Members), r.Name)
-	r.OptTypeExpr = fmt.Sprintf(`const $fidl.XUnionType<%s>(
+	r.OptTypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
 encodedSize: %v,
 members: %s,
 ctor: %s._ctor,

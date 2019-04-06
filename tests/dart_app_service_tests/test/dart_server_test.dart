@@ -12,15 +12,15 @@ void main() {
     const String server =
         'fuchsia-pkg://fuchsia.com/echo_server_async_dart#meta/echo_server_async_dart.cmx';
 
-    var context = new StartupContext.fromStartupInfo();
+    var context = StartupContext.fromStartupInfo();
 
-    final Services services = new Services();
+    final Services services = Services();
     final LaunchInfo launchInfo =
-        new LaunchInfo(url: server, directoryRequest: services.request());
+        LaunchInfo(url: server, directoryRequest: services.request());
 
     await context.launcher.createComponent(launchInfo, null);
 
-    var echo = new EchoProxy();
+    var echo = EchoProxy();
     echo.ctrl
         .bind(await services.connectToServiceByName<Echo>(Echo.$serviceName));
 

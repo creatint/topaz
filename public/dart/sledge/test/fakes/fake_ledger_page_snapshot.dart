@@ -24,7 +24,7 @@ class FakeLedgerPageSnapshot extends ledger.PageSnapshotProxy {
 
   @override
   ProxyController<FakeLedgerPageSnapshot> get ctrl =>
-      new _FakeProxyController<FakeLedgerPageSnapshot>();
+      _FakeProxyController<FakeLedgerPageSnapshot>();
 
   @override
   void getEntries(

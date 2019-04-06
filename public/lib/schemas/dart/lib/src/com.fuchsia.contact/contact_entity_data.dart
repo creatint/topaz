@@ -45,9 +45,9 @@ class ContactEntityData {
     List<PhoneNumberEntityData> phoneNumbers,
   })  : assert(id != null && id.isNotEmpty),
         assert(displayName != null && displayName.isNotEmpty),
-        emailAddresses = new List<EmailEntityData>.unmodifiable(
+        emailAddresses = List<EmailEntityData>.unmodifiable(
             emailAddresses ?? <EmailEntityData>[]),
-        phoneNumbers = new List<PhoneNumberEntityData>.unmodifiable(
+        phoneNumbers = List<PhoneNumberEntityData>.unmodifiable(
             phoneNumbers ?? <PhoneNumberEntityData>[]);
 
   /// The primary email is the first entry in the list of emails

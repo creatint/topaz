@@ -132,7 +132,7 @@ void main(List<String> args) {
 
 class ViewForwarder extends XiClient implements XiRpcHandler {
   final Socket _socket;
-  final SocketReader _reader = new SocketReader();
+  final SocketReader _reader = SocketReader();
   final String viewId;
   final XiClient core;
 
@@ -153,13 +153,13 @@ class ViewForwarder extends XiClient implements XiRpcHandler {
   @override
   void send(String data) {
     final List<int> ints = utf8.encode('$data\n');
-    final Uint8List bytes = new Uint8List.fromList(ints);
+    final Uint8List bytes = Uint8List.fromList(ints);
     final ByteData buffer = bytes.buffer.asByteData();
 
     final WriteResult result = _reader.socket.write(buffer);
 
     if (result.status != ZX.OK) {
-      StateError error = new StateError('ERROR WRITING: $result');
+      StateError error = StateError('ERROR WRITING: $result');
       streamController
         ..addError(error)
         ..close();
@@ -171,7 +171,7 @@ class ViewForwarder extends XiClient implements XiRpcHandler {
     final ReadResult result = _reader.socket.read(1000);
 
     if (result.status != ZX.OK) {
-      StateError error = new StateError('Socket read error: ${result.status}');
+      StateError error = StateError('Socket read error: ${result.status}');
       streamController
         ..addError(error)
         ..close();

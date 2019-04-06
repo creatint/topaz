@@ -15,18 +15,18 @@ class Resource {
 
   Resource._create(this.session, ui_gfx.ResourceArgs resource)
       : id = session.nextResourceId() {
-    session.enqueue(new ui_gfx.Command.withCreateResource(
-        new ui_gfx.CreateResourceCmd(id: id, resource: resource)));
+    session.enqueue(ui_gfx.Command.withCreateResource(
+        ui_gfx.CreateResourceCmd(id: id, resource: resource)));
   }
 
   Resource._import(this.session, EventPair token, ui_gfx.ImportSpec spec)
       : id = session.nextResourceId() {
-    session.enqueue(new ui_gfx.Command.withImportResource(
-        new ui_gfx.ImportResourceCmd(id: id, token: token, spec: spec)));
+    session.enqueue(ui_gfx.Command.withImportResource(
+        ui_gfx.ImportResourceCmd(id: id, token: token, spec: spec)));
   }
 }
 
-ui_gfx.Value vector1(double val) => new ui_gfx.Value.withVector1(val);
+ui_gfx.Value vector1(double val) => ui_gfx.Value.withVector1(val);
 
 class Node extends Resource {
   Node._create(Session session, ui_gfx.ResourceArgs resource)
@@ -37,24 +37,24 @@ class Node extends Resource {
 
   void setRotation(double x, double y, double z, double w) {
     final ui_gfx.Quaternion quaternion =
-        new ui_gfx.Quaternion(x: x, y: y, z: z, w: w);
+        ui_gfx.Quaternion(x: x, y: y, z: z, w: w);
     setRotationValue(
-        new ui_gfx.QuaternionValue(value: quaternion, variableId: 0));
+        ui_gfx.QuaternionValue(value: quaternion, variableId: 0));
   }
 
   void setRotationValue(ui_gfx.QuaternionValue rotation) {
-    session.enqueue(new ui_gfx.Command.withSetRotation(
-        new ui_gfx.SetRotationCmd(id: id, value: rotation)));
+    session.enqueue(ui_gfx.Command.withSetRotation(
+        ui_gfx.SetRotationCmd(id: id, value: rotation)));
   }
 
   void setTranslation(double x, double y, double z) {
-    final ui_gfx.Vec3 vec3 = new ui_gfx.Vec3(x: x, y: y, z: z);
-    setTranslationValue(new ui_gfx.Vector3Value(value: vec3, variableId: 0));
+    final ui_gfx.Vec3 vec3 = ui_gfx.Vec3(x: x, y: y, z: z);
+    setTranslationValue(ui_gfx.Vector3Value(value: vec3, variableId: 0));
   }
 
   void setTranslationValue(ui_gfx.Vector3Value vec3) {
-    session.enqueue(new ui_gfx.Command.withSetTranslation(
-        new ui_gfx.SetTranslationCmd(id: id, value: vec3)));
+    session.enqueue(ui_gfx.Command.withSetTranslation(
+        ui_gfx.SetTranslationCmd(id: id, value: vec3)));
   }
 }
 
@@ -67,13 +67,13 @@ class ContainerNode extends Node {
       : super._import(session, token, spec);
 
   void addChild(Node child) {
-    session.enqueue(new ui_gfx.Command.withAddChild(
-        new ui_gfx.AddChildCmd(nodeId: id, childId: child.id)));
+    session.enqueue(ui_gfx.Command.withAddChild(
+        ui_gfx.AddChildCmd(nodeId: id, childId: child.id)));
   }
 
   void addPart(Node part) {
-    session.enqueue(new ui_gfx.Command.withAddPart(
-        new ui_gfx.AddPartCmd(nodeId: id, partId: part.id)));
+    session.enqueue(ui_gfx.Command.withAddPart(
+        ui_gfx.AddPartCmd(nodeId: id, partId: part.id)));
   }
 }
 
@@ -98,13 +98,13 @@ class ShapeNode extends Node {
                 const ui_gfx.ShapeNodeArgs()));
 
   void setMaterial(Material material) {
-    session.enqueue(new ui_gfx.Command.withSetMaterial(
-        new ui_gfx.SetMaterialCmd(nodeId: id, materialId: material.id)));
+    session.enqueue(ui_gfx.Command.withSetMaterial(
+        ui_gfx.SetMaterialCmd(nodeId: id, materialId: material.id)));
   }
 
   void setShape(Shape shape) {
-    session.enqueue(new ui_gfx.Command.withSetShape(
-        new ui_gfx.SetShapeCmd(nodeId: id, shapeId: shape.id)));
+    session.enqueue(ui_gfx.Command.withSetShape(
+        ui_gfx.SetShapeCmd(nodeId: id, shapeId: shape.id)));
   }
 }
 
@@ -116,17 +116,17 @@ class Material extends Resource {
                 const ui_gfx.MaterialArgs()));
 
   void setColor(double red, double green, double blue, double alpha) {
-    final ui_gfx.ColorRgba color = new ui_gfx.ColorRgba(
+    final ui_gfx.ColorRgba color = ui_gfx.ColorRgba(
         red: (red * 255).round(),
         green: (green * 255).round(),
         blue: (blue * 255).round(),
         alpha: (alpha * 255).round());
-    setColorValue(new ui_gfx.ColorRgbaValue(value: color, variableId: 0));
+    setColorValue(ui_gfx.ColorRgbaValue(value: color, variableId: 0));
   }
 
   void setColorValue(ui_gfx.ColorRgbaValue color) {
-    session.enqueue(new ui_gfx.Command.withSetColor(
-        new ui_gfx.SetColorCmd(materialId: id, color: color)));
+    session.enqueue(ui_gfx.Command.withSetColor(
+        ui_gfx.SetColorCmd(materialId: id, color: color)));
   }
 }
 
@@ -144,7 +144,7 @@ class RoundedRectangle extends Shape {
           double topRightRadius,
           double bottomLeftRadius,
           double bottomRightRadius) =>
-      new RoundedRectangle.fromValues(
+      RoundedRectangle.fromValues(
           session,
           vector1(width),
           vector1(height),
@@ -161,7 +161,7 @@ class RoundedRectangle extends Shape {
       ui_gfx.Value topRightRadius,
       ui_gfx.Value bottomLeftRadius,
       ui_gfx.Value bottomRightRadius) {
-    final ui_gfx.RoundedRectangleArgs rect = new ui_gfx.RoundedRectangleArgs(
+    final ui_gfx.RoundedRectangleArgs rect = ui_gfx.RoundedRectangleArgs(
         width: width,
         height: height,
         topLeftRadius: topLeftRadius,
@@ -169,8 +169,8 @@ class RoundedRectangle extends Shape {
         bottomLeftRadius: bottomLeftRadius,
         bottomRightRadius: bottomRightRadius);
 
-    return new RoundedRectangle._create(
-        session, new ui_gfx.ResourceArgs.withRoundedRectangle(rect));
+    return RoundedRectangle._create(
+        session, ui_gfx.ResourceArgs.withRoundedRectangle(rect));
   }
 
   RoundedRectangle._create(Session session, ui_gfx.ResourceArgs resource)

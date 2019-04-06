@@ -37,7 +37,7 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
       {ChildViewConnectionCallback onAvailable,
       ChildViewConnectionCallback onUnavailable})
       : this.fromViewHolderToken(
-            new EventPair(viewOwner?.passChannel()?.passHandle()),
+            EventPair(viewOwner?.passChannel()?.passHandle()),
             onAvailable: onAvailable,
             onUnavailable: onUnavailable);
 
@@ -55,12 +55,12 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
       InterfaceRequest<ServiceProvider> childServices,
       ChildViewConnectionCallback onAvailable,
       ChildViewConnectionCallback onUnavailable}) {
-    final Services services = new Services();
+    final Services services = Services();
     final LaunchInfo launchInfo =
-        new LaunchInfo(url: url, directoryRequest: services.request());
+        LaunchInfo(url: url, directoryRequest: services.request());
     try {
       launcher.createComponent(launchInfo, controller);
-      return new ChildViewConnection.connect(services,
+      return ChildViewConnection.connect(services,
           childServices: childServices,
           onAvailable: onAvailable,
           onUnavailable: onUnavailable);
@@ -73,14 +73,14 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
       {InterfaceRequest<ServiceProvider> childServices,
       ChildViewConnectionCallback onAvailable,
       ChildViewConnectionCallback onUnavailable}) {
-    final app.ViewProviderProxy viewProvider = new app.ViewProviderProxy();
+    final app.ViewProviderProxy viewProvider = app.ViewProviderProxy();
     services.connectToService(viewProvider.ctrl);
     try {
-      EventPairPair viewTokens = new EventPairPair();
+      EventPairPair viewTokens = EventPairPair();
       assert(viewTokens.status == ZX.OK);
 
       viewProvider.createView(viewTokens.second, childServices, null);
-      return new ChildViewConnection.fromViewHolderToken(viewTokens.first,
+      return ChildViewConnection.fromViewHolderToken(viewTokens.first,
           onAvailable: onAvailable, onUnavailable: onUnavailable);
     } finally {
       viewProvider.ctrl.close();
@@ -123,11 +123,11 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
     assert(!_available);
     assert(_sceneHost == null);
 
-    final EventPairPair sceneTokens = new EventPairPair();
+    final EventPairPair sceneTokens = EventPairPair();
     assert(sceneTokens.status == ZX.OK);
 
     // Analyzer doesn't know Handle must be dart:zircon's Handle
-    _sceneHost = new ui.SceneHost(sceneTokens.first.passHandle());
+    _sceneHost = ui.SceneHost(sceneTokens.first.passHandle());
     _viewKey = nextGlobalViewKey();
     globalViewContainer.addChild2(
         _viewKey, _viewHolderToken, sceneTokens.second);
@@ -147,7 +147,7 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
     assert(_sceneHost != null);
     assert(ViewContainerListenerImpl.instance.getConnectionForKey(_viewKey) ==
         this);
-    final EventPairPair viewTokens = new EventPairPair();
+    final EventPairPair viewTokens = EventPairPair();
     assert(viewTokens.status == ZX.OK);
     ViewContainerListenerImpl.instance.removeConnectionForKey(_viewKey);
     _viewHolderToken = viewTokens.first;
@@ -231,12 +231,12 @@ class ChildViewConnection implements ViewContainerListenerDelegate {
       return null;
     }
 
-    SizeF size = new SizeF(width: width, height: height);
-    InsetF inset = new InsetF(
+    SizeF size = SizeF(width: width, height: height);
+    InsetF inset = InsetF(
         top: insetTop, right: insetRight, bottom: insetBottom, left: insetLeft);
-    ViewLayout viewLayout = new ViewLayout(size: size, inset: inset);
-    final customFocusBehavior = new CustomFocusBehavior(allowFocus: focusable);
-    return _currentViewProperties = new ViewProperties(
+    ViewLayout viewLayout = ViewLayout(size: size, inset: inset);
+    final customFocusBehavior = CustomFocusBehavior(allowFocus: focusable);
+    return _currentViewProperties = ViewProperties(
       viewLayout: viewLayout,
       customFocusBehavior: customFocusBehavior,
     );
@@ -383,8 +383,8 @@ class _RenderChildView extends RenderBox {
         _width, _height, 0.0, 0.0, 0.0, 0.0, _focusable);
     assert(() {
       if (globalViewContainer == null) {
-        _debugErrorMessage ??= new TextPainter(
-            text: const TextSpan(
+        _debugErrorMessage ??= TextPainter(
+            text: TextSpan(
                 text:
                     'Child views are supported only when running in Scenic.'));
         _debugErrorMessage.layout(minWidth: size.width, maxWidth: size.width);
@@ -400,7 +400,7 @@ class _RenderChildView extends RenderBox {
   void paint(PaintingContext context, Offset offset) {
     assert(needsCompositing);
     if (_connection?._available == true) {
-      context.addLayer(new ChildSceneLayer(
+      context.addLayer(ChildSceneLayer(
         offset: offset,
         width: _width,
         height: _height,
@@ -411,7 +411,7 @@ class _RenderChildView extends RenderBox {
     assert(() {
       if (globalViewContainer == null) {
         context.canvas.drawRect(
-            offset & size, new Paint()..color = const Color(0xFF0000FF));
+            offset & size, Paint()..color = Color(0xFF0000FF));
         _debugErrorMessage.paint(context.canvas, offset);
       }
       return true;
@@ -422,7 +422,7 @@ class _RenderChildView extends RenderBox {
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
     super.debugFillProperties(description);
     description.add(
-      new DiagnosticsProperty<ChildViewConnection>(
+      DiagnosticsProperty<ChildViewConnection>(
         'connection',
         connection,
       ),
@@ -477,11 +477,11 @@ class ChildSceneLayer extends Layer {
   void debugFillProperties(DiagnosticPropertiesBuilder description) {
     super.debugFillProperties(description);
     description
-      ..add(new DiagnosticsProperty<Offset>('offset', offset))
-      ..add(new DoubleProperty('width', width))
-      ..add(new DoubleProperty('height', height))
-      ..add(new DiagnosticsProperty<ui.SceneHost>('sceneHost', sceneHost))
-      ..add(new DiagnosticsProperty<bool>('hitTestable', hitTestable));
+      ..add(DiagnosticsProperty<Offset>('offset', offset))
+      ..add(DoubleProperty('width', width))
+      ..add(DoubleProperty('height', height))
+      ..add(DiagnosticsProperty<ui.SceneHost>('sceneHost', sceneHost))
+      ..add(DiagnosticsProperty<bool>('hitTestable', hitTestable));
   }
 
   @override
@@ -496,7 +496,7 @@ class ChildSceneLayer extends Layer {
 class ChildView extends LeafRenderObjectWidget {
   /// Creates a widget that is replaced by content from another process.
   ChildView({this.connection, this.hitTestable = true, this.focusable = true})
-      : super(key: new GlobalObjectKey(connection));
+      : super(key: GlobalObjectKey(connection));
 
   /// A connection to the child whose content will replace this widget.
   final ChildViewConnection connection;
@@ -513,7 +513,7 @@ class ChildView extends LeafRenderObjectWidget {
 
   @override
   _RenderChildView createRenderObject(BuildContext context) {
-    return new _RenderChildView(
+    return _RenderChildView(
       connection: connection,
       hitTestable: hitTestable,
       focusable: focusable,

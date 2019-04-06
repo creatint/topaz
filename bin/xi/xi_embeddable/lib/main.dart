@@ -45,7 +45,7 @@ void main() {
   }).catchError(
       (err, trace) => log.severe('failed to get link or agent', err, trace));
 
-  runApp(new EmbeddedEditor(
+  runApp(EmbeddedEditor(
     client: client,
     debugBackground: kDrawDebugBackground,
   ));

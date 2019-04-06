@@ -17,29 +17,29 @@ import 'fake_vmo.dart';
 List<ledger.Entry> convertToEntries(final List<KeyValue> changedEntries) {
   final List<ledger.Entry> convertedEntries = <ledger.Entry>[];
   for (final keyValue in changedEntries) {
-    convertedEntries.add(new ledger.Entry(
+    convertedEntries.add(ledger.Entry(
         key: keyValue.key,
-        value: new lib$fuchsia_mem.Buffer(
-            vmo: new FakeVmo(keyValue.value), size: keyValue.value.length),
-        priority: new ledger.Priority(0)));
+        value: lib$fuchsia_mem.Buffer(
+            vmo: FakeVmo(keyValue.value), size: keyValue.value.length),
+        priority: ledger.Priority(0)));
   }
   return convertedEntries;
 }
 
 class FakeLedgerPage extends ledger.PageProxy {
   StorageState _storageState;
-  final Change _modification = new Change();
+  final Change _modification = Change();
   dynamic _watcher;
 
   FakeLedgerPage() {
-    _storageState = new StorageState(onChange);
+    _storageState = StorageState(onChange);
   }
 
   StorageState get storageState => _storageState;
 
   @override
   void putNew(Uint8List key, Uint8List value) {
-    _modification.changedEntries.add(new KeyValue(key, value));
+    _modification.changedEntries.add(KeyValue(key, value));
   }
 
   @override
@@ -78,7 +78,7 @@ class FakeLedgerPage extends ledger.PageProxy {
 
   void onChange(Change change) {
     _watcher.onChange(
-        new ledger.PageChange(
+        ledger.PageChange(
             timestamp: null,
             changedEntries: convertToEntries(change.changedEntries),
             deletedKeys: change.deletedKeys),

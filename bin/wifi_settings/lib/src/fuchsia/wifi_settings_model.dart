@@ -21,10 +21,10 @@ const int _kConnectionScanInterval = 3;
 /// All subclasses must connect the [wlan.WlanProxy] in their constructor
 class WifiSettingsModel extends Model {
   /// How often to poll the wlan for wifi information.
-  final Duration _updatePeriod = const Duration(seconds: 3);
+  final Duration _updatePeriod = Duration(seconds: 3);
 
   /// How often to poll the wlan for available wifi networks.
-  final Duration _scanPeriod = const Duration(seconds: 40);
+  final Duration _scanPeriod = Duration(seconds: 40);
 
   final wlan.WlanProxy _wlanProxy = wlan.WlanProxy();
 

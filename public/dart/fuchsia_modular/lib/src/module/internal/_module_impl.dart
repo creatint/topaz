@@ -139,7 +139,7 @@ class ModuleImpl implements Module {
     }
 
     final moduleController = modular.ModuleControllerProxy();
-    final viewOwner = new InterfacePair<deprecated.ViewOwner>();
+    final viewOwner = InterfacePair<deprecated.ViewOwner>();
     final status = await _getContext().embedModule(
         name, intent, moduleController.ctrl.request(), viewOwner.passRequest());
 

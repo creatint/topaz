@@ -42,15 +42,15 @@ IntentEntityData _decode(String data) {
   try {
     Map<String, dynamic> decodedJson = json.decode(data);
     if (!decodedJson.containsKey('action') && !decodedJson.containsKey('handler')) {
-      throw new Exception('Invalid IntentEntityData: data does not contain action'
+      throw Exception('Invalid IntentEntityData: data does not contain action'
           ' or handler.');
     }
 
     IntentEntityData entity;
     if (decodedJson.containsKey('action')) {
-      entity = new IntentEntityData.fromAction(decodedJson['action']);
+      entity = IntentEntityData.fromAction(decodedJson['action']);
     } else {
-      entity = new IntentEntityData.fromHandler(decodedJson['handler']);
+      entity = IntentEntityData.fromHandler(decodedJson['handler']);
     }
     entity.parameters.addAll(decodedJson['parameters'].cast<String, String>());
     return entity;

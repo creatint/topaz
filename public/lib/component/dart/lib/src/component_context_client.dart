@@ -16,9 +16,9 @@ import 'package:meta/meta.dart';
 class ComponentContextClient {
   /// The underlying [Proxy] used to send client requests to the
   /// [fidl.ComponentContextProxy] service.
-  final fidl.ComponentContextProxy proxy = new fidl.ComponentContextProxy();
+  final fidl.ComponentContextProxy proxy = fidl.ComponentContextProxy();
 
-  final EntityResolverClient _entityResolver = new EntityResolverClient();
+  final EntityResolverClient _entityResolver = EntityResolverClient();
 
   // Keep track of agent controllers created to close the channels onTerminate
   final List<fidl.AgentControllerProxy> _agentControllers =
@@ -35,11 +35,11 @@ class ComponentContextClient {
 
   /// A future that completes when the [proxy] is bound.
   Future<Null> get bound => _bind.future;
-  final Completer<Null> _bind = new Completer<Null>();
+  final Completer<Null> _bind = Completer<Null>();
 
   /// See [fidl.ComponentContext#createEntityWithData].
   Future<String> createEntityWithData(List<fidl.TypeToDataEntry> typeToData) {
-    Completer<String> completer = new Completer<String>();
+    Completer<String> completer = Completer<String>();
 
     // ignore: unawaited_futures
     proxy.ctrl.error.then((ProxyError err) {
@@ -53,7 +53,7 @@ class ComponentContextClient {
         if (value != null) {
           completer.complete(value);
         } else {
-          completer.completeError(new Exception('entity reference is null'));
+          completer.completeError(Exception('entity reference is null'));
         }
       }
     }
@@ -74,7 +74,7 @@ class ComponentContextClient {
     }
 
     Completer<EntityResolverClient> completer =
-        new Completer<EntityResolverClient>();
+        Completer<EntityResolverClient>();
 
     try {
       await bound;
@@ -116,7 +116,7 @@ class ComponentContextClient {
       {@required String name,
       @required MessageReceiverCallback onMessage,
       @required MessageQueueErrorCallback onConnectionError}) {
-    var mq = new MessageQueueClient(
+    var mq = MessageQueueClient(
         onMessage: onMessage, onConnectionError: onConnectionError);
     proxy.obtainMessageQueue(name, mq.newRequest());
     return mq;
@@ -126,7 +126,7 @@ class ComponentContextClient {
   MessageSenderClient getMessageSender(
       {@required String queueToken,
       @required MessageSenderErrorCallback onConnectionError}) {
-    var sender = new MessageSenderClient(onConnectionError: onConnectionError);
+    var sender = MessageSenderClient(onConnectionError: onConnectionError);
     proxy.getMessageSender(queueToken, sender.newRequest());
     return sender;
   }
@@ -134,12 +134,12 @@ class ComponentContextClient {
   /// Connect to an agent
   Future<fidl.ServiceProviderProxy> connectToAgent(String url) {
     Completer<fidl.ServiceProviderProxy> serviceCompleter =
-        new Completer<fidl.ServiceProviderProxy>();
+        Completer<fidl.ServiceProviderProxy>();
 
     // Connect to the agent and save off the agent controller proxy to be
     // closed on terminate
     fidl.ServiceProviderProxy serviceProviderProxy =
-        new fidl.ServiceProviderProxy();
+        fidl.ServiceProviderProxy();
     serviceProviderProxy.ctrl.error.then((ProxyError err) {
       if (!serviceCompleter.isCompleted) {
         serviceCompleter.completeError(err);
@@ -147,7 +147,7 @@ class ComponentContextClient {
     });
 
     fidl.AgentControllerProxy agentControllerProxy =
-        new fidl.AgentControllerProxy();
+        fidl.AgentControllerProxy();
     _agentControllers.add(agentControllerProxy);
     agentControllerProxy.ctrl.error.then((ProxyError err) {
       if (!serviceCompleter.isCompleted) {
@@ -172,7 +172,7 @@ class ComponentContextClient {
 
   /// See [fidl.ComponentContext#getPackageName].
   Future<String> getPackageName() {
-    Completer<String> completer = new Completer<String>();
+    Completer<String> completer = Completer<String>();
     try {
       proxy.getPackageName(completer.complete);
     } on Exception catch (err, stackTrace) {

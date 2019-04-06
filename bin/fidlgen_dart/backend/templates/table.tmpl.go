@@ -41,7 +41,7 @@ class {{ .Name }} extends $fidl.Table {
     };
   }
 
-  static {{ .Name }} _ctor(Map<int, dynamic> argv) => new {{ .Name }}._(argv);
+  static {{ .Name }} _ctor(Map<int, dynamic> argv) => {{ .Name }}._(argv);
 }
 
 // See FIDL-308:

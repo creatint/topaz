@@ -38,7 +38,7 @@ void main() {
 }
 
 void _testSimpleMessage() {
-  LoggerStub logger = new LoggerStub();
+  LoggerStub logger = LoggerStub();
   setupLogger(
     logWriter: logger.writeLogMessage,
   );
@@ -55,7 +55,7 @@ void _testSimpleMessage() {
 }
 
 void _constructorOptions1() {
-  LoggerStub logger = new LoggerStub();
+  LoggerStub logger = LoggerStub();
   setupLogger(
     logWriter: logger.writeLogMessage,
     name: 'LOGGER_NAME',
@@ -80,7 +80,7 @@ void _constructorOptions1() {
 }
 
 void _constructorOptions2() {
-  LoggerStub logger = new LoggerStub();
+  LoggerStub logger = LoggerStub();
   setupLogger(
     logWriter: logger.writeLogMessage,
     level: Level.WARNING,
@@ -110,7 +110,7 @@ void _testTooManyTags() {
   final List<String> stdoutLines = <String>[];
   runZoned<void>(
     () {
-      LoggerStub logger = new LoggerStub();
+      LoggerStub logger = LoggerStub();
       setupLogger(
         logWriter: logger.writeLogMessage,
         level: Level.WARNING,
@@ -134,7 +134,7 @@ void _testTooManyTags() {
           stdoutLines[0], equals('WARNING: Logger initialized with > 3 tags.'));
       expect(stdoutLines[1], equals('WARNING: Later tags will be ignored.'));
     },
-    zoneSpecification: new ZoneSpecification(
+    zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         stdoutLines.add(line);
       },
@@ -146,7 +146,7 @@ void _testTagTooLong() {
   final List<String> stdoutLines = <String>[];
   runZoned<void>(
     () {
-      LoggerStub logger = new LoggerStub();
+      LoggerStub logger = LoggerStub();
       setupLogger(
         logWriter: logger.writeLogMessage,
         level: Level.WARNING,
@@ -169,7 +169,7 @@ void _testTagTooLong() {
           equals('WARNING: Logger tags limited to 63 characters.'));
       expect(stdoutLines[1], startsWith('WARNING: Tag "'));
     },
-    zoneSpecification: new ZoneSpecification(
+    zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         stdoutLines.add(line);
       },
@@ -178,7 +178,7 @@ void _testTagTooLong() {
 }
 
 void _testInfoLevels() {
-  LoggerStub logger = new LoggerStub();
+  LoggerStub logger = LoggerStub();
   setupLogger(
     logWriter: logger.writeLogMessage,
     level: Level.INFO,
@@ -203,7 +203,7 @@ void _testInfoLevels() {
 }
 
 void _testDefaultLevels() {
-  LoggerStub logger = new LoggerStub();
+  LoggerStub logger = LoggerStub();
   setupLogger(
     logWriter: logger.writeLogMessage,
   );

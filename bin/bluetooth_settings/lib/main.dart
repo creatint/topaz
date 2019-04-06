@@ -13,11 +13,11 @@ import 'src/bluetooth_settings.dart';
 void main() {
   setupLogger();
 
-  Widget app = new MaterialApp(
-    home: new Container(
-      child: new ScopedModel<BluetoothSettingsModel>(
-        model: new BluetoothSettingsModel(),
-        child: const BluetoothSettings(),
+  Widget app = MaterialApp(
+    home: Container(
+      child: ScopedModel<BluetoothSettingsModel>(
+        model: BluetoothSettingsModel(),
+        child: BluetoothSettings(),
       ),
     ),
   );

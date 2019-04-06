@@ -157,7 +157,7 @@ Future<SizedVmo> urlToVmo(String url) async {
     }
     HandleResult result = System.vmoCreate(response.bodyBytes.lengthInBytes);
     if (result.status == 0 && result.handle != null) {
-      SizedVmo vmo = new SizedVmo(
+      SizedVmo vmo = SizedVmo(
         result.handle,
         response.bodyBytes.lengthInBytes,
       );
@@ -172,7 +172,7 @@ Future<SizedVmo> urlToVmo(String url) async {
     String modifiedUrl =
         url.startsWith('file://') ? url.substring('file://'.length) : url;
     try {
-      return new SizedVmo.fromFile(modifiedUrl);
+      return SizedVmo.fromFile(modifiedUrl);
       // ignore: avoid_catching_errors
     } on ZxStatusException catch (e) {
       log.severe('Caught exception reading \'$modifiedUrl\' (\'$url\')! $e');
@@ -190,8 +190,8 @@ Future<SuggestionDisplayImage> createSuggestionDisplayImage({
   if (image == null) {
     return null;
   }
-  return new SuggestionDisplayImage(
-    image: new EncodedImage(vmo: image, size: image.size),
+  return SuggestionDisplayImage(
+    image: EncodedImage(vmo: image, size: image.size),
     imageType: imageType,
   );
 }

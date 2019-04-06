@@ -15,13 +15,13 @@ class LastOneWinsFleetFactory<T> {
   const LastOneWinsFleetFactory();
 
   Fleet<LastOneWinsValue<T>> newFleet(int count) {
-    return new Fleet<LastOneWinsValue<T>>(
-        count, (index) => new LastOneWinsValue<T>());
+    return Fleet<LastOneWinsValue<T>>(
+        count, (index) => LastOneWinsValue<T>());
   }
 }
 
 const LastOneWinsFleetFactory<bool> boolLastOneWinsFleetFactory =
-    const LastOneWinsFleetFactory<bool>();
+    LastOneWinsFleetFactory<bool>();
 
 class FalseChecker extends Checker<LastOneWinsValue<bool>> {
   @override
@@ -42,7 +42,7 @@ void main() async {
         b.value = false;
       })
       ..synchronize([0, 1])
-      ..addChecker(() => new FalseChecker());
+      ..addChecker(() => FalseChecker());
     await fleet.testAllOrders();
   });
 
@@ -51,7 +51,7 @@ void main() async {
       ..runInTransaction(0, (LastOneWinsValue<bool> b) async {
         b.value = true;
       })
-      ..addChecker(() => new FalseChecker());
-    expect(fleet.testAllOrders(), throwsA(new TypeMatcher<TestFailure>()));
+      ..addChecker(() => FalseChecker());
+    expect(fleet.testAllOrders(), throwsA(TypeMatcher<TestFailure>()));
   });
 }

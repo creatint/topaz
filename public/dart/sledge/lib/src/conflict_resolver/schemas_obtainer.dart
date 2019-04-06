@@ -36,7 +36,7 @@ Future<Set<KeyValue>> _getSchemaKeyValues(ledger.PageSnapshot snapshot) async {
       sledge_storage.prefixForType(sledge_storage.KeyValueType.schema);
   final List<KeyValue> kvs =
       await getEntriesFromSnapshotWithPrefix(snapshot, schemaPrefix);
-  return new Set.from(kvs);
+  return Set.from(kvs);
 }
 
 /// Returns a map between the hash of the individual schemas and the schemas.
@@ -46,7 +46,7 @@ Map<Uint8List, Schema> createSchemaMap(Set<KeyValue> schemaKeyValues) {
     final schemaHash = getSublistView(schemaKeyValue.key,
         start: sledge_storage.typePrefixLength);
     String jsonString = utf8.decode(schemaKeyValue.value);
-    map[schemaHash] = new Schema.fromJson(json.decode(jsonString));
+    map[schemaHash] = Schema.fromJson(json.decode(jsonString));
   }
   return map;
 }

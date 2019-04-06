@@ -26,10 +26,10 @@ class StartupContext {
 
   StartupContext();
 
-  final EnvironmentProxy environment = new EnvironmentProxy();
-  final LauncherProxy launcher = new LauncherProxy();
-  final ServiceProviderProxy environmentServices = new ServiceProviderProxy();
-  final Outgoing outgoingServices = new Outgoing();
+  final EnvironmentProxy environment = EnvironmentProxy();
+  final LauncherProxy launcher = LauncherProxy();
+  final ServiceProviderProxy environmentServices = ServiceProviderProxy();
+  final Outgoing outgoingServices = Outgoing();
 
   factory StartupContext.fromStartupInfo() {
     if (_context != null) {
@@ -37,13 +37,13 @@ class StartupContext {
     }
     initialTrace = StackTrace.current;
 
-    final StartupContext context = new StartupContext();
+    final StartupContext context = StartupContext();
 
     final Handle environmentHandle = MxStartupInfo.takeEnvironment();
     if (environmentHandle != null) {
       context.environment
         ..ctrl.bind(
-            new InterfaceHandle<Environment>(new Channel(environmentHandle)))
+            InterfaceHandle<Environment>(Channel(environmentHandle)))
         ..getLauncher(context.launcher.ctrl.request())
         ..getServices(context.environmentServices.ctrl.request());
     }
@@ -90,9 +90,9 @@ void connectToService<T>(
 /// Deprecated! Use package:fuchsia_services/services.dart instead
 InterfaceHandle<T> connectToServiceByName<T>(
     ServiceProvider serviceProvider, String serviceName) {
-  final ChannelPair pair = new ChannelPair();
+  final ChannelPair pair = ChannelPair();
   serviceProvider.connectToService(serviceName, pair.first);
-  return new InterfaceHandle<T>(pair.second);
+  return InterfaceHandle<T>(pair.second);
 }
 
 typedef ServiceConnector<T> = void Function(InterfaceRequest<T> request);
@@ -103,7 +103,7 @@ typedef _ServiceConnectorThunk = void Function(Channel channel);
 
 /// Deprecated! Use package:fuchsia_services/services.dart instead
 class ServiceProviderImpl extends ServiceProvider {
-  final ServiceProviderBinding _binding = new ServiceProviderBinding();
+  final ServiceProviderBinding _binding = ServiceProviderBinding();
 
   void bind(InterfaceRequest<ServiceProvider> interfaceRequest) {
     _binding.bind(this, interfaceRequest);
@@ -120,7 +120,7 @@ class ServiceProviderImpl extends ServiceProvider {
 
   void addServiceForName<T>(ServiceConnector<T> connector, String serviceName) {
     _connectorThunks[serviceName] = (Channel channel) {
-      connector(new InterfaceRequest<T>(channel));
+      connector(InterfaceRequest<T>(channel));
     };
   }
 
@@ -130,7 +130,7 @@ class ServiceProviderImpl extends ServiceProvider {
     if (connectorThunk != null) {
       connectorThunk(channel);
     } else if (defaultConnector != null) {
-      defaultConnector(serviceName, new InterfaceRequest<dynamic>(channel));
+      defaultConnector(serviceName, InterfaceRequest<dynamic>(channel));
     } else {
       channel.close();
     }
@@ -160,10 +160,10 @@ class Services {
   }
 
   InterfaceHandle<T> connectToServiceByName<T>(String serviceName) {
-    final ChannelPair pair = new ChannelPair();
+    final ChannelPair pair = ChannelPair();
     _proxy.open(
         _openFlags, _openMode, serviceName, InterfaceRequest<Node>(pair.first));
-    return new InterfaceHandle<T>(pair.second);
+    return InterfaceHandle<T>(pair.second);
   }
 
   void close() {

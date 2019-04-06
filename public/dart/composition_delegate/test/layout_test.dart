@@ -7,8 +7,8 @@ import 'package:test/test.dart';
 
 void main() {
   CompositionDelegate setupCompositionDelegate() {
-    CompositionDelegate compDelegate = new CompositionDelegate(
-        layoutContext: new LayoutContext(size: Size(1280, 800)));
+    CompositionDelegate compDelegate = CompositionDelegate(
+        layoutContext: LayoutContext(size: Size(1280, 800)));
     return compDelegate;
   }
 

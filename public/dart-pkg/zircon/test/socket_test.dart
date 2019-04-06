@@ -12,7 +12,7 @@ import 'package:zircon/zircon.dart';
 /// Helper method to turn a [String] into a [ByteData] containing the
 /// text of the string encoded as UTF-8.
 ByteData utf8Bytes(final String text) {
-  return new ByteData.view(new Uint8List.fromList(utf8.encode(text)).buffer);
+  return ByteData.view(Uint8List.fromList(utf8.encode(text)).buffer);
 }
 
 void main() {
@@ -32,10 +32,10 @@ void main() {
     expect(pair.first.isValid, isFalse);
     expect(pair.second.isValid, isTrue);
     final WriteResult firstResult =
-        System.socketWrite(pair.first, new ByteData(1), 0);
+        System.socketWrite(pair.first, ByteData(1), 0);
     expect(firstResult.status, equals(ZX.ERR_BAD_HANDLE));
     final WriteResult secondResult =
-        System.socketWrite(pair.second, new ByteData(1), 0);
+        System.socketWrite(pair.second, ByteData(1), 0);
     expect(secondResult.status, equals(ZX.ERR_PEER_CLOSED));
   });
 
@@ -99,7 +99,7 @@ void main() {
 
   test('async wait socket read', () async {
     final HandlePairResult pair = System.socketCreate();
-    final Completer<int> completer = new Completer<int>();
+    final Completer<int> completer = Completer<int>();
     pair.first.asyncWait(ZX.SOCKET_READABLE, (int status, int pending) {
       completer.complete(status);
     });
@@ -114,7 +114,7 @@ void main() {
 
   test('async wait socket closed', () async {
     final HandlePairResult pair = System.socketCreate();
-    final Completer<int> completer = new Completer<int>();
+    final Completer<int> completer = Completer<int>();
     pair.first.asyncWait(ZX.SOCKET_PEER_CLOSED, (int status, int pending) {
       completer.complete(status);
     });

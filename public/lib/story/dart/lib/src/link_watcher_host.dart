@@ -16,7 +16,7 @@ export 'package:fidl_fuchsia_modular/fidl.dart';
 /// Hosts a [LinkWatcherImpl] and manages the underlying [binding].
 class LinkWatcherHost {
   /// The [Binding] that connects the [impl] to client requests.
-  final fidl.LinkWatcherBinding binding = new fidl.LinkWatcherBinding();
+  final fidl.LinkWatcherBinding binding = fidl.LinkWatcherBinding();
 
   /// Callback for when the Link content value updates.
   final LinkWatcherNotifyCallback onNotify;
@@ -29,7 +29,7 @@ class LinkWatcherHost {
   LinkWatcherHost({
     @required this.onNotify,
   }) : assert(onNotify != null) {
-    impl = new LinkWatcherImpl(
+    impl = LinkWatcherImpl(
       onNotify: onNotify,
     );
 
@@ -45,12 +45,12 @@ class LinkWatcherHost {
   /// Async version of binding.wrap()
   Future<InterfaceHandle<fidl.LinkWatcher>> wrap() {
     if (_wrap != null) {
-      Exception err = new Exception(
+      Exception err = Exception(
           'failing due to rebind attempt on an active connection');
       _wrap.completeError(err);
       return _wrap.future;
     } else {
-      _wrap = new Completer<InterfaceHandle<fidl.LinkWatcher>>();
+      _wrap = Completer<InterfaceHandle<fidl.LinkWatcher>>();
     }
 
     InterfaceHandle<fidl.LinkWatcher> handle;
@@ -64,7 +64,7 @@ class LinkWatcherHost {
     // TODO: binding.wrap should use exceptions instead of a null value for
     // failure modes.
     if (handle == null) {
-      Exception err = new Exception('failed to wrap LinkWatcherImpl');
+      Exception err = Exception('failed to wrap LinkWatcherImpl');
       _wrap.completeError(err);
     }
 
@@ -79,7 +79,7 @@ class LinkWatcherHost {
   }
 
   void _handleConnectionError() {
-    Exception err = new Exception('binding connection failed');
+    Exception err = Exception('binding connection failed');
 
     if (_wrap != null && !_wrap.isCompleted) {
       _wrap.completeError(err);

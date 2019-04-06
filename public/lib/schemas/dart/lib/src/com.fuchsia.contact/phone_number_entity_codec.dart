@@ -38,7 +38,7 @@ PhoneNumberEntityData _decode(String data) {
 
   try {
     Map<String, String> decodedJson = json.decode(data);
-    return new PhoneNumberEntityData(
+    return PhoneNumberEntityData(
       number: decodedJson['number'],
       label: decodedJson['label'] ?? '',
     );

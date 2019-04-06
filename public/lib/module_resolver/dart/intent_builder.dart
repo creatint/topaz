@@ -15,18 +15,18 @@ class IntentBuilder {
 
   // Creates a new intent builder with both an action and a handler.
   IntentBuilder({String action, String handler})
-      : _intent = new Intent(
+      : _intent = Intent(
             action: action, handler: handler, parameters: <IntentParameter>[]);
 
   // Creates a new intent builder where the intent's action is set to the
   // provided name.
   IntentBuilder.action(String name)
-      : _intent = new Intent(action: name, parameters: <IntentParameter>[]);
+      : _intent = Intent(action: name, parameters: <IntentParameter>[]);
 
   // Creates a new intent builder where the intent's handler is set to the
   // provided handler string.
   IntentBuilder.handler(String handler)
-      : _intent = new Intent(
+      : _intent = Intent(
             action: '', handler: handler, parameters: <IntentParameter>[]);
 
   // Converts |value| to a JSON object and adds it to the Intent. For typed
@@ -35,15 +35,15 @@ class IntentBuilder {
     String jsonString = json.encode(value);
     var jsonList = Uint8List.fromList(utf8.encode(jsonString));
     var data = fuchsia_mem.Buffer(
-      vmo: new SizedVmo.fromUint8List(jsonList),
+      vmo: SizedVmo.fromUint8List(jsonList),
       size: jsonList.length,
     );
-    _addParameter(name, new IntentParameterData.withJson(data));
+    _addParameter(name, IntentParameterData.withJson(data));
   }
 
   // Adds a parameter that containts an entity reference to the intent.
   void addParameterFromEntityReference(String name, String reference) {
-    _addParameter(name, new IntentParameterData.withEntityReference(reference));
+    _addParameter(name, IntentParameterData.withEntityReference(reference));
   }
 
   // The intent being built.
@@ -55,6 +55,6 @@ class IntentBuilder {
 
   void _addParameter(String name, IntentParameterData parameterData) {
     _addParameterFromIntentParameter(
-        new IntentParameter(name: name, data: parameterData));
+        IntentParameter(name: name, data: parameterData));
   }
 }

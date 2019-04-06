@@ -22,19 +22,19 @@ void main() {
 
   setUp(() {
     /// Set up a regular tree
-    tree = new SurfaceTree();
-    grandparent = new Surface(surfaceId: 'grandparent');
-    parent = new Surface(surfaceId: 'parent');
-    child = new Surface(surfaceId: 'child');
+    tree = SurfaceTree();
+    grandparent = Surface(surfaceId: 'grandparent');
+    parent = Surface(surfaceId: 'parent');
+    child = Surface(surfaceId: 'child');
 
     /// Set up a tree with relationships
-    depParent = new Surface(
+    depParent = Surface(
       surfaceId: parent.surfaceId,
     );
-    depChild = new Surface(
+    depChild = Surface(
       surfaceId: child.surfaceId,
     );
-    independent = new Surface(surfaceId: 'independent');
+    independent = Surface(surfaceId: 'independent');
     // make tree with dependency relationships:
     // gp <-dep- parent <-dep- child <-indep- independent
     depTree = SurfaceTree()

@@ -30,7 +30,7 @@ Future<void> main(List<String> args) async {
   try {
     options = _argParser.parse(args);
     if (!options.rest.isNotEmpty) {
-      throw new Exception('Must specify input.dart');
+      throw Exception('Must specify input.dart');
     }
   } on Exception catch (error) {
     print('ERROR: $error\n');
@@ -58,16 +58,16 @@ Future<void> main(List<String> args) async {
 
 Future createManifest(
     String packageManifestFilename, String dataDir, String output) async {
-  List<String> packages = await new File('$output-packages').readAsLines();
+  List<String> packages = await File('$output-packages').readAsLines();
 
   // Make sure the 'main' package is the last (convention with package loader).
   packages.remove('main');
   packages.add('main');
 
-  final IOSink packageManifest = new File(packageManifestFilename).openWrite();
+  final IOSink packageManifest = File(packageManifestFilename).openWrite();
 
   final String kernelListFilename = '$packageManifestFilename.dilplist';
-  final IOSink kernelList = new File(kernelListFilename).openWrite();
+  final IOSink kernelList = File(kernelListFilename).openWrite();
   for (String package in packages) {
     final String filenameInPackage = '$package.dilp';
     final String filenameInBuild = '$output-$package.dilp';
@@ -78,12 +78,12 @@ Future createManifest(
   await kernelList.close();
 
   final String frameworkVersionFilename = '$packageManifestFilename.frameworkversion';
-  final IOSink frameworkVersion = new File(frameworkVersionFilename).openWrite();
+  final IOSink frameworkVersion = File(frameworkVersionFilename).openWrite();
   for (String package in ['collection', 'flutter', 'meta', 'typed_data', 'vector_math']) {
     Digest digest;
     if (packages.contains(package)) {
       final filenameInBuild = '$output-$package.dilp';
-      final bytes = await new File(filenameInBuild).readAsBytes();
+      final bytes = await File(filenameInBuild).readAsBytes();
       digest = sha256.convert(bytes);
     }
     frameworkVersion.write('$package=$digest\n');

@@ -38,7 +38,7 @@ EmailEntityData _decode(String data) {
   assert(data.isNotEmpty);
   try {
     Map<String, String> decodedJson = json.decode(data);
-    return new EmailEntityData(
+    return EmailEntityData(
       value: decodedJson['value'],
       label: decodedJson['label'] ?? '',
     );

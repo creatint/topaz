@@ -8,7 +8,7 @@ import 'package:lib.app.dart/app.dart';
 import 'package:fidl_fuchsia_examples_hello/fidl.dart';
 
 class _HelloImpl extends Hello {
-  final HelloBinding _binding = new HelloBinding();
+  final HelloBinding _binding = HelloBinding();
 
   void bind(InterfaceRequest<Hello> request) {
     _binding.bind(this, request);
@@ -21,8 +21,8 @@ class _HelloImpl extends Hello {
 }
 
 void main(List<String> args) {
-  StartupContext context = new StartupContext.fromStartupInfo();
+  StartupContext context = StartupContext.fromStartupInfo();
 
   context.outgoingServices
-      .addServiceForName(new _HelloImpl().bind, Hello.$serviceName);
+      .addServiceForName(_HelloImpl().bind, Hello.$serviceName);
 }

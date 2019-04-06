@@ -109,7 +109,7 @@ Future<PortForwarder> _dummyPortForwardingFunction(
   String interface = '',
   String configFile,
 ]) async {
-  return new _DummyPortForwarder(remotePort, remotePort);
+  return _DummyPortForwarder(remotePort, remotePort);
 }
 
 /// Utility class for creating connections to the Fuchsia Device.
@@ -144,7 +144,7 @@ class FuchsiaDriver {
       await FuchsiaDriver._init();
       return FuchsiaRemoteConnection
           // ignore: invalid_use_of_visible_for_testing_member
-          .connectWithSshCommandRunner(new _DummySshCommandRunner());
+          .connectWithSshCommandRunner(_DummySshCommandRunner());
     }
     return FuchsiaRemoteConnection.connect();
   }

@@ -22,7 +22,7 @@ void main() {
         SizedVmo.fromUint8List(Uint8List.fromList(str.codeUnits));
 
     _ReadOnlyFile file = _ReadOnlyFile()
-      ..vmoFile = VmoFile.readOnly(new Vmo(sizedVmo.handle), mode)
+      ..vmoFile = VmoFile.readOnly(Vmo(sizedVmo.handle), mode)
       ..proxy = FileProxy();
     expect(
         file.vmoFile

@@ -15,16 +15,16 @@ import 'package:lib.app.dart/logging.dart';
 import 'package:lib.module_resolver.dart/intent_builder.dart';
 import 'package:lib.proposal.dart/proposal.dart';
 
-final ProposalPublisherProxy _proposalPublisher = new ProposalPublisherProxy();
-final StartupContext _context = new StartupContext.fromStartupInfo();
+final ProposalPublisherProxy _proposalPublisher = ProposalPublisherProxy();
+final StartupContext _context = StartupContext.fromStartupInfo();
 
 final ble.CentralDelegateBinding _delegateBinding =
-    new ble.CentralDelegateBinding();
-final ble.CentralProxy _central = new ble.CentralProxy();
+    ble.CentralDelegateBinding();
+final ble.CentralProxy _central = ble.CentralProxy();
 
 const String kEddystoneUuid = '0000feaa-0000-1000-8000-00805f9b34fb';
 
-final Set<String> proposed = new Set<String>();
+final Set<String> proposed = Set<String>();
 
 Future<Null> proposeUrl(String url) async {
   // TODO(jamuraa): resolve this URL for a title or more info?
@@ -38,8 +38,8 @@ Future<Null> proposeUrl(String url) async {
     details: 'Eddystone nearby webpage detected',
     color: 0xFF0000FF,
     actions: <Action>[
-      new Action.withCreateStory(
-        new CreateStory(intent: new IntentBuilder.handler(url).intent),
+      Action.withCreateStory(
+        CreateStory(intent: IntentBuilder.handler(url).intent),
       )
     ],
   ));
@@ -55,13 +55,13 @@ String decodeEddystoneURL(Iterable<int> encoded) {
   if (encoded.length < 2) {
     return null;
   }
-  const Map<int, String> prefixes = const {
+  const Map<int, String> prefixes = {
     0: 'http://www.',
     1: 'https://www.',
     2: 'http://',
     3: 'https://',
   };
-  const Map<int, String> expansions = const {
+  const Map<int, String> expansions = {
     0: '.com/',
     1: '.org/',
     2: '.edu/',
@@ -82,12 +82,12 @@ String decodeEddystoneURL(Iterable<int> encoded) {
     log.warning('Eddystone-URL has invalid scheme: ${encoded.first}');
     return null;
   }
-  StringBuffer buffer = new StringBuffer(decoded);
+  StringBuffer buffer = StringBuffer(decoded);
   for (final int c in encoded.skip(1)) {
     if ((c < 0x20) || (c > 0x7F)) {
       buffer.write(expansions[c]);
     } else {
-      buffer.write(new String.fromCharCode(c));
+      buffer.write(String.fromCharCode(c));
     }
   }
   return buffer.toString();
@@ -98,13 +98,13 @@ class EddystoneScanner implements ble.CentralDelegate {
 
   void start(ble.Central central) {
     ble.ScanFilter filter =
-        const ble.ScanFilter(serviceUuids: const [kEddystoneUuid]);
+        const ble.ScanFilter(serviceUuids: [kEddystoneUuid]);
     log.info('BLE starting scan for Eddystone beacons');
     central.startScan(filter, (bt.Status status) {
       if (status.error != null) {
         log.warning(
             'BLE scan start failed: ${status.error.description}, retry in $_delayMinutes mins');
-        new Timer(new Duration(minutes: _delayMinutes), () => start(_central));
+        Timer(Duration(minutes: _delayMinutes), () => start(_central));
         _delayMinutes *= 2;
         if (_delayMinutes > 60) {
           _delayMinutes = 60;
@@ -165,7 +165,7 @@ Future<Null> main(List<dynamic> args) async {
   connectToService(_context.environmentServices, _proposalPublisher.ctrl);
   connectToService(_context.environmentServices, _central.ctrl);
 
-  var scanner = new EddystoneScanner();
+  var scanner = EddystoneScanner();
   _central.setDelegate(_delegateBinding.wrap(scanner));
 
   scanner.start(_central);

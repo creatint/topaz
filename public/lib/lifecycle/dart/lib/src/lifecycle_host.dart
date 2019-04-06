@@ -17,7 +17,7 @@ export 'package:lib.app.dart/app.dart' show ServiceProviderImpl;
 /// Hosts a [LifecycleImpl] and manages the underlying [binding] connection.
 class LifecycleHost {
   /// The underlying [Binding] that connects the [impl] to client requests.
-  final fidl.LifecycleBinding binding = new fidl.LifecycleBinding();
+  final fidl.LifecycleBinding binding = fidl.LifecycleBinding();
 
   /// Callback for when the system starts to shutdown this process.
   final LifecycleTerminateCallback onTerminate;
@@ -30,7 +30,7 @@ class LifecycleHost {
   LifecycleHost({
     @required this.onTerminate,
   }) : assert(onTerminate != null) {
-    impl = new LifecycleImpl(
+    impl = LifecycleImpl(
       onTerminate: _handleTerminate,
     );
 
@@ -55,11 +55,11 @@ class LifecycleHost {
     // Do not create an error by rebinding if, for some reason, this method has been called already.
     if (_addService != null) {
       Exception err =
-          new Exception('#addService() should only be called once.');
+          Exception('#addService() should only be called once.');
       _addService.completeError(err);
       return _addService.future;
     } else {
-      _addService = new Completer<Null>();
+      _addService = Completer<Null>();
     }
 
     startupContext.outgoingServices.addServiceForName(
@@ -88,7 +88,7 @@ class LifecycleHost {
   }
 
   void _handleConnectionError() {
-    Exception err = new Exception('binding connection failed');
+    Exception err = Exception('binding connection failed');
 
     if (_addService != null && !_addService.isCompleted) {
       _addService.completeError(err);

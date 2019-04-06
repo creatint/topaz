@@ -150,7 +150,7 @@ class SurfaceTree extends Iterable<Surface> {
     } else {
       log.warning('node $startNodeId not found in tree, '
           'returning empty spanningTree');
-      return new SurfaceTree();
+      return SurfaceTree();
     }
     // find the topmost point of the connected tree where the relationship holds
     // (excluding the kRoot, which is not a valid Surface)
@@ -161,7 +161,7 @@ class SurfaceTree extends Iterable<Surface> {
       startNode = startNode.parentNode;
     }
     // then return all the descendents who satisfy condition
-    SurfaceTree spanTree = new SurfaceTree()..add(surface: startNode.surface);
+    SurfaceTree spanTree = SurfaceTree()..add(surface: startNode.surface);
     __copyTreeWithConditional(
         current: startNode, tree: spanTree, condition: condition);
     return spanTree;

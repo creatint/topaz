@@ -18,9 +18,9 @@ class FakeLedgerObjectsFactory implements LedgerObjectsFactory {
 
   @override
   ledger.PageWatcherBinding newPageWatcherBinding() =>
-      new FakePageWatcherBinding();
+      FakePageWatcherBinding();
 
   @override
   ledger.PageSnapshotProxy newPageSnapshotProxy() =>
-      new FakeLedgerPageSnapshot(_fakeLedgerPage);
+      FakeLedgerPageSnapshot(_fakeLedgerPage);
 }

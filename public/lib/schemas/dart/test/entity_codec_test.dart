@@ -9,16 +9,16 @@ import 'package:lib.schemas.dart/entity_codec.dart';
 
 void main() {
   group('EntityCodec<T> streaming transform', () {
-    final EntityCodec<BasicExample> codec = new EntityCodec<BasicExample>(
+    final EntityCodec<BasicExample> codec = EntityCodec<BasicExample>(
       type: 'com.example.basic',
       encode: (BasicExample value) => value.name,
-      decode: (String data) => new BasicExample(data),
+      decode: (String data) => BasicExample(data),
     );
 
     test('stream.transform(codec)', () async {
       List<String> list = <String>['foo', 'bar', 'baz'];
 
-      Stream<String> stream = new Stream<String>.fromIterable(list);
+      Stream<String> stream = Stream<String>.fromIterable(list);
       List<String> results = await stream
           .transform(codec.decoder)
           .map((BasicExample e) => e.name)

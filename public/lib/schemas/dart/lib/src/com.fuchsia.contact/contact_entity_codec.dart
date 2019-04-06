@@ -25,8 +25,8 @@ class ContactEntityCodec extends EntityCodec<ContactEntityData> {
 /// Encodes [ContactEntityData] into a [String]
 String _encode(ContactEntityData contact) {
   Map<String, Object> data = <String, Object>{};
-  EmailEntityCodec emailCodec = new EmailEntityCodec();
-  PhoneNumberEntityCodec phoneCodec = new PhoneNumberEntityCodec();
+  EmailEntityCodec emailCodec = EmailEntityCodec();
+  PhoneNumberEntityCodec phoneCodec = PhoneNumberEntityCodec();
 
   data['id'] = contact.id;
   data['displayName'] = contact.displayName;
@@ -49,9 +49,9 @@ ContactEntityData _decode(String data) {
 
   try {
     Map<String, dynamic> decodedJson = json.decode(data);
-    EmailEntityCodec emailCodec = new EmailEntityCodec();
-    PhoneNumberEntityCodec phoneNumberCodec = new PhoneNumberEntityCodec();
-    return new ContactEntityData(
+    EmailEntityCodec emailCodec = EmailEntityCodec();
+    PhoneNumberEntityCodec phoneNumberCodec = PhoneNumberEntityCodec();
+    return ContactEntityData(
       id: decodedJson['id'],
       displayName: decodedJson['displayName'],
       givenName: decodedJson['givenName'] ?? '',

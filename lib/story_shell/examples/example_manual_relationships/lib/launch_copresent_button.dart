@@ -17,7 +17,7 @@ class CopresentLauncher extends StatefulWidget {
 
   @override
   CopresentLauncherState createState() =>
-      new CopresentLauncherState(_moduleContext, _generateChildId);
+      CopresentLauncherState(_moduleContext, _generateChildId);
 }
 
 /// Copresent Launch State
@@ -37,13 +37,13 @@ class CopresentLauncherState extends State<CopresentLauncher> {
       (math.pow(2, _copresentEmphasisExp) * 10.0).roundToDouble() / 10.0;
 
   @override
-  Widget build(BuildContext context) => new Container(
+  Widget build(BuildContext context) => Container(
         alignment: FractionalOffset.center,
-        constraints: const BoxConstraints(maxWidth: 200.0),
-        child: new Column(
+        constraints: BoxConstraints(maxWidth: 200.0),
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new Slider(
+            Slider(
               min: -1.6,
               max: 1.6,
               value: _copresentEmphasisExp,
@@ -51,18 +51,18 @@ class CopresentLauncherState extends State<CopresentLauncher> {
               onChanged: (double value) =>
                   setState(() => _copresentEmphasisExp = value),
             ),
-            new StartModuleButton(
+            StartModuleButton(
               _moduleContext,
-              new SurfaceRelation(
+              SurfaceRelation(
                 emphasis: _emphasis,
                 arrangement: SurfaceArrangement.copresent,
               ),
               'Copresent',
               _generateChildId,
             ),
-            new StartModuleButton(
+            StartModuleButton(
               _moduleContext,
-              new SurfaceRelation(
+              SurfaceRelation(
                 emphasis: _emphasis,
                 arrangement: SurfaceArrangement.copresent,
                 dependency: SurfaceDependency.dependent,

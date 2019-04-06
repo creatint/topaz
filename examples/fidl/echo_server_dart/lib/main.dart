@@ -9,7 +9,7 @@ import 'package:lib.app.dart/app.dart';
 bool quiet = false;
 
 class _EchoImpl extends Echo {
-  final EchoBinding _binding = new EchoBinding();
+  final EchoBinding _binding = EchoBinding();
 
   void bind(InterfaceRequest<Echo> request) {
     _binding.bind(this, request);
@@ -29,8 +29,8 @@ _EchoImpl _echo;
 
 void main(List<String> args) {
   quiet = args.contains('-q');
-  _context = new StartupContext.fromStartupInfo();
-  _echo = new _EchoImpl();
+  _context = StartupContext.fromStartupInfo();
+  _echo = _EchoImpl();
   _context.outgoingServices
       .addServiceForName<Echo>(_echo.bind, Echo.$serviceName);
 }

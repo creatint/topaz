@@ -7,7 +7,7 @@ import 'dart:developer' show Timeline;
 
 import 'package:lib.widgets/model.dart';
 
-const Duration _kPlaceholderDuration = const Duration(milliseconds: 2700);
+const Duration _kPlaceholderDuration = Duration(milliseconds: 2700);
 
 /// A model for handling the transition of placeholders to Surfaces.
 /// This implementation does not do a crossfade as labelling nodes non-shadow

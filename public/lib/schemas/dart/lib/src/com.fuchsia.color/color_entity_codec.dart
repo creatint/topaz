@@ -33,5 +33,5 @@ ColorEntityData _decode(String data) {
   assert(data.isNotEmpty);
 
   final int value = parseInt(data);
-  return new ColorEntityData(value: value);
+  return ColorEntityData(value: value);
 }

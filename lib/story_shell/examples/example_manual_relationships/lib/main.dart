@@ -18,11 +18,11 @@ import 'grouping.dart';
 import 'launch_copresent_button.dart';
 import 'start_module_button.dart';
 
-final StartupContext _context = new StartupContext.fromStartupInfo();
+final StartupContext _context = StartupContext.fromStartupInfo();
 
 /// This is used for keeping the reference around.
-ModuleImpl _module = new ModuleImpl();
-ModuleContextProxy _moduleContext = new ModuleContextProxy();
+ModuleImpl _module = ModuleImpl();
+ModuleContextProxy _moduleContext = ModuleContextProxy();
 int _childId = 0;
 
 String _generateChildId() {
@@ -51,30 +51,30 @@ class _ModuleControllerWrapper {
 
 /// Starts a predefined test container
 void startContainerInShell() {
-  IntentBuilder intentBuilder = new IntentBuilder.handler(
+  IntentBuilder intentBuilder = IntentBuilder.handler(
       'fuchsia-pkg://fuchsia.com/example_manual_relationships#meta/example_manual_relationships.cmx');
 
-  const List<double> leftRect = const <double>[0.0, 0.0, 0.5, 1.0];
-  const List<double> trRect = const <double>[0.5, 0.0, 0.5, 0.5];
-  const List<double> brRect = const <double>[0.5, 0.5, 0.5, 0.5];
-  LayoutEntry left = new LayoutEntry(
-      nodeName: 'left', rectangle: new Float32List.fromList(leftRect));
-  LayoutEntry tr = new LayoutEntry(
-      nodeName: 'top_right', rectangle: new Float32List.fromList(trRect));
-  LayoutEntry br = new LayoutEntry(
-      nodeName: 'bottom_right', rectangle: new Float32List.fromList(brRect));
+  const List<double> leftRect = <double>[0.0, 0.0, 0.5, 1.0];
+  const List<double> trRect = <double>[0.5, 0.0, 0.5, 0.5];
+  const List<double> brRect = <double>[0.5, 0.5, 0.5, 0.5];
+  LayoutEntry left = LayoutEntry(
+      nodeName: 'left', rectangle: Float32List.fromList(leftRect));
+  LayoutEntry tr = LayoutEntry(
+      nodeName: 'top_right', rectangle: Float32List.fromList(trRect));
+  LayoutEntry br = LayoutEntry(
+      nodeName: 'bottom_right', rectangle: Float32List.fromList(brRect));
   ContainerLayout main =
-      new ContainerLayout(surfaces: <LayoutEntry>[left, tr, br]);
+      ContainerLayout(surfaces: <LayoutEntry>[left, tr, br]);
   List<ContainerLayout> layouts = <ContainerLayout>[main];
-  ContainerRelationEntry rootLeft = const ContainerRelationEntry(
+  ContainerRelationEntry rootLeft = ContainerRelationEntry(
       nodeName: 'left',
       parentNodeName: 'test',
-      relationship: const SurfaceRelation());
-  ContainerRelationEntry rootTr = const ContainerRelationEntry(
+      relationship: SurfaceRelation());
+  ContainerRelationEntry rootTr = ContainerRelationEntry(
       nodeName: 'top_right',
       parentNodeName: 'test',
-      relationship: const SurfaceRelation());
-  ContainerRelationEntry rootBr = const ContainerRelationEntry(
+      relationship: SurfaceRelation());
+  ContainerRelationEntry rootBr = ContainerRelationEntry(
       nodeName: 'bottom_right',
       parentNodeName: 'test',
       relationship:
@@ -85,11 +85,11 @@ void startContainerInShell() {
     rootBr
   ];
   ContainerNode leftNode =
-      new ContainerNode(nodeName: 'left', intent: intentBuilder.intent);
+      ContainerNode(nodeName: 'left', intent: intentBuilder.intent);
   ContainerNode trNode =
-      new ContainerNode(nodeName: 'top_right', intent: intentBuilder.intent);
+      ContainerNode(nodeName: 'top_right', intent: intentBuilder.intent);
   ContainerNode brNode =
-      new ContainerNode(nodeName: 'bottom_right', intent: intentBuilder.intent);
+      ContainerNode(nodeName: 'bottom_right', intent: intentBuilder.intent);
   List<ContainerNode> nodes = <ContainerNode>[leftNode, trNode, brNode];
 
   _moduleContext.startContainerInShell(
@@ -110,10 +110,10 @@ class LaunchContainerButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: const RaisedButton(
-        child: const Center(
-          child: const Text('Launch Container'),
+      padding: EdgeInsets.all(16.0),
+      child: RaisedButton(
+        child: Center(
+          child: Text('Launch Container'),
         ),
         onPressed: (startContainerInShell),
       ),
@@ -130,33 +130,33 @@ class ChildController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Row(
+    return Row(
       children: <Widget>[
-        new Text('${_controller.name} '),
-        new Expanded(
-          child: new Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: new ButtonTheme(
-              padding: const EdgeInsets.all(1.0),
-              child: new RaisedButton(
-                child: const Text(
+        Text('${_controller.name} '),
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(2.0),
+            child: ButtonTheme(
+              padding: EdgeInsets.all(1.0),
+              child: RaisedButton(
+                child: Text(
                   'Focus',
-                  style: const TextStyle(fontSize: 10.0),
+                  style: TextStyle(fontSize: 10.0),
                 ),
                 onPressed: _controller.focus,
               ),
             ),
           ),
         ),
-        new Expanded(
-          child: new Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: new ButtonTheme(
-              padding: const EdgeInsets.all(1.0),
-              child: new RaisedButton(
-                child: const Text(
+        Expanded(
+          child: Padding(
+            padding: EdgeInsets.all(2.0),
+            child: ButtonTheme(
+              padding: EdgeInsets.all(1.0),
+              child: RaisedButton(
+                child: Text(
                   'Dismiss',
-                  style: const TextStyle(fontSize: 10.0),
+                  style: TextStyle(fontSize: 10.0),
                 ),
                 onPressed: _controller.defocus,
               ),
@@ -172,21 +172,21 @@ class ChildController extends StatelessWidget {
 class MainWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    DateTime now = new DateTime.now().toLocal();
-    return new Scaffold(
-      body: new Center(
-        child: new Container(
-          constraints: const BoxConstraints(maxWidth: 200.0),
-          child: new ListView(
+    DateTime now = DateTime.now().toLocal();
+    return Scaffold(
+      body: Center(
+        child: Container(
+          constraints: BoxConstraints(maxWidth: 200.0),
+          child: ListView(
             children: <Widget>[
-              new Grouping(
+              Grouping(
                 children: <Widget>[
-                  new Text(
+                  Text(
                       "Module ${now.minute}:${now.second.toString().padLeft(2, '0')}"),
-                  new Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: new RaisedButton(
-                      child: const Text('Close'),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: RaisedButton(
+                      child: Text('Close'),
                       onPressed: () {
                         // NOTE(mesch): There used to be code here that calls
                         // ModuleContext.Done(), but that method no longer
@@ -197,7 +197,7 @@ class MainWidget extends StatelessWidget {
                   ),
                 ],
               ),
-              new Grouping(
+              Grouping(
                 children: <Widget>[
                   CopresentLauncher(_moduleContext, _generateChildId),
                   const Divider(),
@@ -228,7 +228,7 @@ class MainWidget extends StatelessWidget {
 
 /// Module related Services: Lifecycle and ModuleContext
 class ModuleImpl implements Lifecycle {
-  final LifecycleBinding _lifecycleBinding = new LifecycleBinding();
+  final LifecycleBinding _lifecycleBinding = LifecycleBinding();
 
   ModuleImpl() {
     log.info('ModuleImpl::initialize call');
@@ -262,11 +262,11 @@ void main() {
   );
 
   Color randomColor =
-      new Color(0xFF000000 + new math.Random().nextInt(0xFFFFFF));
+      Color(0xFF000000 + math.Random().nextInt(0xFFFFFF));
 
-  runApp(new MaterialApp(
+  runApp(MaterialApp(
     title: 'Manual Module',
-    home: new MainWidget(),
-    theme: new ThemeData(canvasColor: randomColor),
+    home: MainWidget(),
+    theme: ThemeData(canvasColor: randomColor),
   ));
 }

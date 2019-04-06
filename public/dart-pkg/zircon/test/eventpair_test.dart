@@ -38,7 +38,7 @@ void main() {
 
     test('async wait peer closed', () async {
       final HandlePairResult pair = System.eventpairCreate();
-      final Completer<int> completer = new Completer<int>();
+      final Completer<int> completer = Completer<int>();
       pair.first.asyncWait(EventPair.PEER_CLOSED, (int status, int pending) {
         completer.complete(status);
       });

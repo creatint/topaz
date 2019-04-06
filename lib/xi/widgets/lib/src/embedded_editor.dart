@@ -24,12 +24,12 @@ class EmbeddedEditor extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<EmbeddedEditor> createState() => new EmbeddedEditorState();
+  State<EmbeddedEditor> createState() => EmbeddedEditorState();
 }
 
 class EmbeddedEditorState extends State<EmbeddedEditor>
     implements XiRpcHandler {
-  final Document _document = new Document();
+  final Document _document = Document();
 
   EmbeddedEditorState();
 
@@ -43,15 +43,15 @@ class EmbeddedEditorState extends State<EmbeddedEditor>
   /// Uses a [MaterialApp] as the root of the Xi UI hierarchy.
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
+    return MaterialApp(
       title: 'Xi',
-      home: new Material(
+      home: Material(
         // required for the debug background to render correctly
         type: MaterialType.transparency,
         child: Container(
-          constraints: new BoxConstraints.expand(),
+          constraints: BoxConstraints.expand(),
           color: Colors.white,
-          child: new Editor(
+          child: Editor(
               document: _document, debugBackground: widget.debugBackground),
         ),
       ),

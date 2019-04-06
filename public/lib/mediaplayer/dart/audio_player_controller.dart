@@ -53,15 +53,15 @@ class AudioPlayerController {
   /// every HTTP/S request issued to the URI.
   void open(Uri uri, {HttpHeaders headers}) {
     if (uri == null) {
-      throw new ArgumentError.notNull('uri');
+      throw ArgumentError.notNull('uri');
     }
     if (uri.isScheme('FILE')) {
       if (headers != null) {
-        throw new ArgumentError.value(headers,
+        throw ArgumentError.value(headers,
             'headers', 'Not valid for FILE URIs.');
       }
     } else if (!uri.isScheme('HTTP') && !uri.isScheme('HTTPS')) {
-      throw new ArgumentError.value(uri,
+      throw ArgumentError.value(uri,
           'uri', 'Only HTTP/S and FILE protocols are supported.');
     }
 
@@ -107,7 +107,7 @@ class AudioPlayerController {
       _player.ctrl.onConnectionError = null;
     }
 
-    _player = new PlayerProxy();
+    _player = PlayerProxy();
 
     _playing = false;
     _ended = false;
@@ -137,7 +137,7 @@ class AudioPlayerController {
   void _setSource(Uri uri, HttpHeaders headers) {
     if (uri.isScheme('FILE')) {
       _player.setFileSource(
-          new Channel.fromFile(uri.toFilePath()));
+          Channel.fromFile(uri.toFilePath()));
     } else {
       _player.setHttpSource(uri.toString(), _convertHeaders(headers));
     }
@@ -148,7 +148,7 @@ class AudioPlayerController {
     if (headers != null) {
       headers.forEach((name, values) {
         for (String value in values) {
-          HttpHeader header = new HttpHeader(name: name, value: value);
+          HttpHeader header = HttpHeader(name: name, value: value);
           result.add(header);
         }
       });
@@ -185,7 +185,7 @@ class AudioPlayerController {
 
   /// Gets the duration of the content.
   Duration get duration =>
-      new Duration(microseconds: _durationNanoseconds ~/ 1000);
+      Duration(microseconds: _durationNanoseconds ~/ 1000);
 
   /// Gets current playback progress.
   Duration get progress {
@@ -193,7 +193,7 @@ class AudioPlayerController {
       return Duration.zero;
     }
 
-    return new Duration(
+    return Duration(
         microseconds:
             _progressNanoseconds.clamp(0, _durationNanoseconds) ~/ 1000);
   }
@@ -216,7 +216,7 @@ class AudioPlayerController {
       return 0;
     }
 
-    int microseconds = (new DateTime.now()).microsecondsSinceEpoch -
+    int microseconds = (DateTime.now()).microsecondsSinceEpoch -
         _progressBarMicrosecondsSinceEpoch;
     int referenceNanoseconds = microseconds * 1000 + _progressBarReferenceTime;
     return _timelineFunction(referenceNanoseconds);
@@ -265,7 +265,7 @@ class AudioPlayerController {
       return;
     }
 
-    seek(new Duration(
+    seek(Duration(
         microseconds: (normalizedPosition * durationInMicroseconds).round()));
   }
 
@@ -290,7 +290,7 @@ class AudioPlayerController {
       tl.TimelineFunction oldTimelineFunction = _timelineFunction;
 
       _timelineFunction =
-          new tl.TimelineFunction.fromFidl(status.timelineFunction);
+          tl.TimelineFunction.fromFidl(status.timelineFunction);
 
       prepare = oldTimelineFunction != _timelineFunction;
     }
@@ -305,7 +305,7 @@ class AudioPlayerController {
     _problem = status.problem;
 
     if (status.metadata != null) {
-      _metadata = new Map.fromIterable(status.metadata.properties,
+      _metadata = Map.fromIterable(status.metadata.properties,
           key: (property) => property.label,
           value: (property) => property.value);
     } else {
@@ -351,7 +351,7 @@ class AudioPlayerController {
 
   /// Called when the connection to the NetMediaPlayer fails.
   void _handleConnectionError() {
-    _problem = const Problem(type: problemConnectionFailed);
+    _problem = Problem(type: problemConnectionFailed);
 
     if (updateCallback != null) {
       scheduleMicrotask(() {
@@ -370,7 +370,7 @@ class AudioPlayerController {
     // TODO(dalesat): Fix once we're given access to presentation time.
     // https://fuchsia.atlassian.net/browse/US-130
     _progressBarMicrosecondsSinceEpoch =
-        (new DateTime.now()).microsecondsSinceEpoch;
+        (DateTime.now()).microsecondsSinceEpoch;
     _progressBarReferenceTime = _timelineFunction.referenceTime;
     _progressBarReady = true;
   }

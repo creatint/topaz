@@ -22,7 +22,7 @@ void main() {
 
   DemoModel model = DemoModel();
 
-  runApp(new ScopedModel<DemoModel>(
+  runApp(ScopedModel<DemoModel>(
     model: model,
     child: MessagesDemo(),
   ));

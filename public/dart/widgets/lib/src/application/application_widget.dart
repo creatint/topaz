@@ -42,7 +42,7 @@ class ApplicationWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _ApplicationWidgetState createState() => new _ApplicationWidgetState();
+  _ApplicationWidgetState createState() => _ApplicationWidgetState();
 }
 
 class _ApplicationWidgetState extends State<ApplicationWidget> {
@@ -73,7 +73,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => new ChildView(
+  Widget build(BuildContext context) => ChildView(
         connection: _connection,
         hitTestable: widget.hitTestable,
         focusable: widget.focusable,
@@ -85,11 +85,11 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   }
 
   void _launchApp() {
-    _applicationController = new ComponentControllerProxy();
+    _applicationController = ComponentControllerProxy();
 
-    Services incomingServices = new Services();
+    Services incomingServices = Services();
     widget.launcher.createComponent(
-      new LaunchInfo(
+      LaunchInfo(
           url: widget.url, directoryRequest: incomingServices.request()),
       _applicationController.ctrl.request(),
     );

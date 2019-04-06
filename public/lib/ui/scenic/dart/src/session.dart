@@ -23,7 +23,7 @@ typedef SessionPresentCallback = void Function(PresentationInfo info);
 
 class Session {
   int _nextResourceId = 1;
-  final ui_scenic.SessionProxy _session = new ui_scenic.SessionProxy();
+  final ui_scenic.SessionProxy _session = ui_scenic.SessionProxy();
   List<ui_scenic.Command> _commands = <ui_scenic.Command>[];
 
   Session.fromScenic(ui_scenic.ScenicProxy scenic) {
@@ -35,15 +35,15 @@ class Session {
   }
 
   factory Session.fromServiceProvider(ServiceProvider serviceProvider) {
-    final ui_scenic.ScenicProxy scenic = new ui_scenic.ScenicProxy();
+    final ui_scenic.ScenicProxy scenic = ui_scenic.ScenicProxy();
     connectToService(serviceProvider, scenic.ctrl);
-    return new Session.fromScenic(scenic);
+    return Session.fromScenic(scenic);
   }
 
   bool get hasEnqueuedCommands => _commands.isNotEmpty;
 
   void enqueue(gfx.Command command) {
-    _commands.add(new ui_scenic.Command.withGfx(command));
+    _commands.add(ui_scenic.Command.withGfx(command));
   }
 
   Future<PresentationInfo> present(int presentationTime) async {

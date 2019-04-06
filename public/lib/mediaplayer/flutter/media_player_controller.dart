@@ -48,7 +48,7 @@ class MediaPlayerController extends AudioPlayerController
   @override
   void onMediaPlayerCreated(PlayerProxy player) {
     if (!_wasActive) {
-      final EventPairPair viewTokens = new EventPairPair();
+      final EventPairPair viewTokens = EventPairPair();
       assert(viewTokens.status == ZX.OK);
       player.createView2(viewTokens.first);
 
@@ -71,7 +71,7 @@ class MediaPlayerController extends AudioPlayerController
   @override
   void addListener(VoidCallback listener) {
     if (_disposed) {
-      throw new StateError('Object disposed');
+      throw StateError('Object disposed');
     }
 
     _listeners.add(listener);
@@ -80,7 +80,7 @@ class MediaPlayerController extends AudioPlayerController
   @override
   void removeListener(VoidCallback listener) {
     if (_disposed) {
-      throw new StateError('Object disposed');
+      throw StateError('Object disposed');
     }
 
     _listeners.remove(listener);
@@ -114,7 +114,7 @@ class MediaPlayerController extends AudioPlayerController
 
     _hideTimer?.cancel();
 
-    _hideTimer = new Timer(overlayAutoHideDuration, () {
+    _hideTimer = Timer(overlayAutoHideDuration, () {
       _hideTimer = null;
       if (!shouldShowControlOverlay) {
         _notifyListeners();
@@ -128,7 +128,7 @@ class MediaPlayerController extends AudioPlayerController
 
   /// The duration to show the control overlay when [brieflyShowControlOverlay]
   /// is called. The default is 3 seconds.
-  Duration overlayAutoHideDuration = const Duration(seconds: 3);
+  Duration overlayAutoHideDuration = Duration(seconds: 3);
 
   /// Gets the physical size of the video.
   Size get videoPhysicalSize => hasVideo ? _videoSize : Size.zero;
@@ -146,7 +146,7 @@ class MediaPlayerController extends AudioPlayerController
     double ratio =
         pixelAspectRatio.width.toDouble() / pixelAspectRatio.height.toDouble();
 
-    _videoSize = new Size(
+    _videoSize = Size(
         videoSize.width.toDouble() * ratio, videoSize.height.toDouble());
 
     scheduleMicrotask(_notifyListeners);

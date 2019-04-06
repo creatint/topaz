@@ -32,7 +32,7 @@ export 'package:lib.widgets/model.dart'
 /// Function signature for GetPresentationMode callback
 typedef GetPresentationModeCallback = void Function(PresentationMode mode);
 
-const Duration _kCobaltTimerTimeout = const Duration(seconds: 20);
+const Duration _kCobaltTimerTimeout = Duration(seconds: 20);
 const int _kSessionShellLoginTimeMetricId = 14;
 
 // This class is extends the Presentation protocol and implements and PresentationModeListener.

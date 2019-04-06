@@ -22,7 +22,7 @@ class DemoModel extends Model {
     'Hello!',
     'This is pretending to be a messaging app.',
     'Press "+" to open a compose view',
-    'Then press "send" to add a new message.',
+    'Then press "send" to add a message.',
   ];
 
   final _sessionManagerProxy = XiSessionManagerProxy();

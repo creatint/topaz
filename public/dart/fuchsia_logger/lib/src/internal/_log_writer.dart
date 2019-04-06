@@ -20,7 +20,7 @@ final _lineNumberRegex = RegExp(r'\.dart:(\d+)');
 /// The base class for which log writers will inherit from. This class is
 /// used to pipe logs from the onRecord stream
 abstract class LogWriter {
-  List<String> _globalTags = const [];
+  List<String> _globalTags = [];
 
   StreamController<LogMessage> _controller;
 

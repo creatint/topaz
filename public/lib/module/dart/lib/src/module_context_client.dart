@@ -60,11 +60,11 @@ class EmbeddedModule {
 /// TODO(SO-1125): implement all methods for ModuleContextClient
 class ModuleContextClient {
   ComponentContextClient _componentContext;
-  final OngoingActivityProxy _ongoingActivityProxy = new OngoingActivityProxy();
+  final OngoingActivityProxy _ongoingActivityProxy = OngoingActivityProxy();
 
   /// The underlying [Proxy] used to send client requests to the
   /// [fidl.ModuleContext] service.
-  final fidl.ModuleContextProxy proxy = new fidl.ModuleContextProxy();
+  final fidl.ModuleContextProxy proxy = fidl.ModuleContextProxy();
   final List<LinkClient> _links = <LinkClient>[];
 
   /// Constructor.
@@ -76,7 +76,7 @@ class ModuleContextClient {
       ..onUnbind = _handleUnbind;
   }
 
-  final Completer<Null> _bind = new Completer<Null>();
+  final Completer<Null> _bind = Completer<Null>();
 
   /// A future that completes when the [proxy] is bound.
   Future<Null> get bound => _bind.future;
@@ -98,7 +98,7 @@ class ModuleContextClient {
     // client is.
     _links.add(linkClient);
 
-    Completer<Null> completer = new Completer<Null>();
+    Completer<Null> completer = Completer<Null>();
 
     try {
       await bound;
@@ -139,11 +139,11 @@ class ModuleContextClient {
     if (_componentContext != null) {
       return _componentContext;
     } else {
-      _componentContext = new ComponentContextClient();
+      _componentContext = ComponentContextClient();
     }
 
     Completer<ComponentContextClient> completer =
-        new Completer<ComponentContextClient>();
+        Completer<ComponentContextClient>();
 
     // ignore: unawaited_futures
     proxy.ctrl.error.then((ProxyError err) {
@@ -185,10 +185,10 @@ class ModuleContextClient {
     assert(surfaceRelation != null);
 
     Completer<ModuleControllerClient> completer =
-        new Completer<ModuleControllerClient>();
+        Completer<ModuleControllerClient>();
 
     // TODO(): map results and reuse for subsequent calls, see getLink.
-    ModuleControllerClient controller = new ModuleControllerClient();
+    ModuleControllerClient controller = ModuleControllerClient();
 
     // ignore: unawaited_futures
     proxy.ctrl.error.then((ProxyError err) {
@@ -210,11 +210,11 @@ class ModuleContextClient {
           completer.complete(controller);
           break;
         case fidl.StartModuleStatus.noModulesFound:
-          completer.completeError(new ResolutionException('no modules found'));
+          completer.completeError(ResolutionException('no modules found'));
           break;
         default:
           completer.completeError(
-              new ResolutionException('unknown status: $status'));
+              ResolutionException('unknown status: $status'));
       }
     }
 
@@ -241,9 +241,9 @@ class ModuleContextClient {
     assert(name != null && name.isNotEmpty);
     assert(intent != null);
 
-    Completer<EmbeddedModule> completer = new Completer<EmbeddedModule>();
-    InterfacePair<ViewOwner> viewOwner = new InterfacePair<ViewOwner>();
-    ModuleControllerClient controller = new ModuleControllerClient();
+    Completer<EmbeddedModule> completer = Completer<EmbeddedModule>();
+    InterfacePair<ViewOwner> viewOwner = InterfacePair<ViewOwner>();
+    ModuleControllerClient controller = ModuleControllerClient();
 
     void handleIntentStatus(fidl.StartModuleStatus status) {
       log.fine('resolved "$name" with status "$status"');
@@ -257,19 +257,19 @@ class ModuleContextClient {
             value: EventPair(viewOwner.passHandle().passChannel().passHandle()),
           ));
 
-          EmbeddedModule result = new EmbeddedModule(
+          EmbeddedModule result = EmbeddedModule(
             controller: controller,
             connection: connection,
-            view: new ChildView(connection: connection),
+            view: ChildView(connection: connection),
           );
           completer.complete(result);
           break;
         case fidl.StartModuleStatus.noModulesFound:
-          completer.completeError(new ResolutionException('no modules found'));
+          completer.completeError(ResolutionException('no modules found'));
           break;
         default:
           completer.completeError(
-              new ResolutionException('unknown status: $status'));
+              ResolutionException('unknown status: $status'));
       }
     }
 
@@ -304,7 +304,7 @@ class ModuleContextClient {
 
   /// See [fidl.ModuleContext#getStoryId].
   Future<String> getStoryId() async {
-    Completer<String> completer = new Completer<String>();
+    Completer<String> completer = Completer<String>();
     try {
       await bound;
 
@@ -324,7 +324,7 @@ class ModuleContextClient {
 
   /// See [fidl:ModuleContext#active].
   Future<Null> active() async {
-    Completer<Null> completer = new Completer<Null>();
+    Completer<Null> completer = Completer<Null>();
     try {
       await bound;
 
@@ -345,7 +345,7 @@ class ModuleContextClient {
 
   /// See [fidl:ModuleContext#done]
   Future<void> done() async {
-    Completer completer = new Completer();
+    Completer completer = Completer();
     try {
       await bound;
 
@@ -368,7 +368,7 @@ class ModuleContextClient {
   Future<void> requestStoryVisibilityState(
       fidl.StoryVisibilityState state) async {
     log.fine('requestStoryVisibilityState requesting state $state');
-    Completer completer = new Completer();
+    Completer completer = Completer();
     try {
       await bound;
 
@@ -392,7 +392,7 @@ class ModuleContextClient {
       OngoingActivityType type) async {
     await bound;
     Completer<OngoingActivityProxy> completer =
-        new Completer<OngoingActivityProxy>();
+        Completer<OngoingActivityProxy>();
 
     try {
       if (!_ongoingActivityProxy.ctrl.isBound) {

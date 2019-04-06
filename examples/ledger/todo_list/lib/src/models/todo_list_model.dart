@@ -47,7 +47,7 @@ class TodoListModel extends Model {
     final snapshot = ledger.PageSnapshotProxy();
     await _page.getSnapshotNew(
       snapshot.ctrl.request(),
-      new Uint8List(0),
+      Uint8List(0),
       _pageWatcherBinding.wrap(_PageWatcher(this)),
     );
     _readItems(snapshot);
@@ -82,7 +82,7 @@ class TodoListModel extends Model {
   }
 
   Uint8List _makeKey() {
-    Uint8List key = new Uint8List(16);
+    Uint8List key = Uint8List(16);
     for (int i = 0; i < 16; i++) {
       key[i] = _random.nextInt(256);
     }

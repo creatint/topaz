@@ -17,7 +17,7 @@ import 'src/widgets/todo_list_module_screen.dart';
 void main() {
   setupLogger(name: 'Todo List');
 
-  final model = new TodoListModel()..connect(_getComponentContext());
+  final model = TodoListModel()..connect(_getComponentContext());
 
   // We don't support intents in this module so explicitly ignore them.
   Module().registerIntentHandler(NoopIntentHandler());
@@ -26,7 +26,7 @@ void main() {
 
   runApp(
     MaterialApp(
-      home: new ScopedModel<TodoListModel>(
+      home: ScopedModel<TodoListModel>(
         model: model,
         child: TodoListModuleScreen(
           onNewItem: model.addItem,

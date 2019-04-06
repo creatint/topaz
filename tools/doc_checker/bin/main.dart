@@ -35,7 +35,7 @@ void reportError(Error error) {
       case ErrorType.invalidUri:
         return 'Invalid URI';
       default:
-        throw new UnsupportedError('Unknown error type $type');
+        throw UnsupportedError('Unknown error type $type');
     }
   }
 
@@ -66,7 +66,7 @@ class Error {
 }
 
 Future<Null> main(List<String> args) async {
-  final ArgParser parser = new ArgParser()
+  final ArgParser parser = ArgParser()
     ..addFlag(
       _optionHelp,
       help: 'Displays this help message.',
@@ -91,7 +91,7 @@ Future<Null> main(List<String> args) async {
 
   final String docsDir = path.canonicalize(options[_optionRootDir]);
 
-  final List<String> docs = new Directory(docsDir)
+  final List<String> docs = Directory(docsDir)
       .listSync(recursive: true)
       .where((FileSystemEntity entity) =>
           path.extension(entity.path) == '.md' &&
@@ -102,7 +102,7 @@ Future<Null> main(List<String> args) async {
       .toList();
 
   final String readme = path.join(docsDir, 'README.md');
-  final Graph graph = new Graph();
+  final Graph graph = Graph();
   final List<Error> errors = <Error>[];
   final List<Link<String>> linksToVerify = [];
 
@@ -113,12 +113,12 @@ Future<Null> main(List<String> args) async {
     if (doc == readme) {
       graph.root = node;
     }
-    for (String link in new LinkScraper().scrape(doc)) {
+    for (String link in LinkScraper().scrape(doc)) {
       Uri uri;
       try {
         uri = Uri.parse(link);
       } on FormatException {
-        errors.add(new Error(ErrorType.invalidUri, label, link));
+        errors.add(Error(ErrorType.invalidUri, label, link));
         continue;
       }
       if (uri.hasScheme) {
@@ -130,16 +130,16 @@ Future<Null> main(List<String> args) async {
             final uriRelPath = uri.pathSegments.sublist(1).join('/');
             if (path.isWithin(options[_optionRootDir], uriRelPath)) {
               shouldTestLink = false;
-              errors.add(new Error(
+              errors.add(Error(
                   ErrorType.convertHttpToPath, label, uri.toString()));
             } else if (!validProjects.contains(uri.pathSegments[0])) {
               shouldTestLink = false;
               errors.add(
-                  new Error(ErrorType.obsoleteProject, label, uri.toString()));
+                  Error(ErrorType.obsoleteProject, label, uri.toString()));
             }
           }
           if (shouldTestLink) {
-            linksToVerify.add(new Link(uri, label));
+            linksToVerify.add(Link(uri, label));
           }
         }
         continue;
@@ -159,10 +159,10 @@ Future<Null> main(List<String> args) async {
           graph.addEdge(from: node, to: graph.getNode(relativeLocation));
         } else {
           errors.add(
-              new Error(ErrorType.unknownLocalFile, label, relativeLocation));
+              Error(ErrorType.unknownLocalFile, label, relativeLocation));
         }
       } else {
-        errors.add(new Error(ErrorType.convertPathToHttp, label, location));
+        errors.add(Error(ErrorType.convertPathToHttp, label, location));
       }
     }
   }
@@ -171,7 +171,7 @@ Future<Null> main(List<String> args) async {
   await verifyLinks(linksToVerify, (Link<String> link, bool isValid) {
     if (!isValid) {
       errors.add(
-          new Error(ErrorType.brokenLink, link.payload, link.uri.toString()));
+          Error(ErrorType.brokenLink, link.payload, link.uri.toString()));
     }
   });
 
@@ -180,7 +180,7 @@ Future<Null> main(List<String> args) async {
     ..addAll(
         graph.orphans..removeWhere((Node node) => node.label == 'navbar.md'));
   for (Node node in unreachable) {
-    errors.add(new Error.forProject(ErrorType.unreachablePage, node.label));
+    errors.add(Error.forProject(ErrorType.unreachablePage, node.label));
   }
 
   errors
@@ -188,7 +188,7 @@ Future<Null> main(List<String> args) async {
     ..forEach(reportError);
 
   if (options[_optionDotFile].isNotEmpty) {
-    graph.export('fuchsia_docs', new File(options[_optionDotFile]).openWrite());
+    graph.export('fuchsia_docs', File(options[_optionDotFile]).openWrite());
   }
 
   if (errors.isNotEmpty) {

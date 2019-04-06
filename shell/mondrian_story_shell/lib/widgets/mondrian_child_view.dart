@@ -21,20 +21,20 @@ class MondrianChildView extends StatelessWidget {
   final Surface surface;
 
   @override
-  Widget build(BuildContext context) => new AnimatedBuilder(
+  Widget build(BuildContext context) => AnimatedBuilder(
         animation: surface,
         builder: (BuildContext context, Widget child) =>
             surface.transitionModel.opacity != 1.0
-                ? new Stack(
+                ? Stack(
                     children: <Widget>[
-                      new ChildView(
+                      ChildView(
                         connection: surface.connection,
                         hitTestable: interactable,
                       ),
-                      new BreathingPlaceholder()
+                      BreathingPlaceholder()
                     ],
                   )
-                : new ChildView(
+                : ChildView(
                     connection: surface.connection,
                     hitTestable: interactable,
                   ),
@@ -52,7 +52,7 @@ class MondrianChildView extends StatelessWidget {
       try {
         String parseString = hexColorString.replaceAll('#', '');
         int colorInt = int.parse(parseString, radix: 16);
-        placeholderColor = new Color(colorInt).withOpacity(1.0);
+        placeholderColor = Color(colorInt).withOpacity(1.0);
       } on FormatException {
         log.fine('hexColorString conversion error for string $hexColorString');
       }

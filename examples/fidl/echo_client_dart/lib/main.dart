@@ -15,14 +15,14 @@ void main(List<String> args) {
     server = args[1];
   }
 
-  _context = new StartupContext.fromStartupInfo();
+  _context = StartupContext.fromStartupInfo();
 
-  final Services services = new Services();
+  final Services services = Services();
   final LaunchInfo launchInfo =
-      new LaunchInfo(url: server, directoryRequest: services.request());
+      LaunchInfo(url: server, directoryRequest: services.request());
   _context.launcher.createComponent(launchInfo, null);
 
-  _echo = new EchoProxy();
+  _echo = EchoProxy();
   _echo.ctrl.bind(services.connectToServiceByName<Echo>(Echo.$serviceName));
 
   _echo.echoString('hello', (String response) {

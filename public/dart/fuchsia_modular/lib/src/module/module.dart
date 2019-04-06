@@ -41,7 +41,7 @@ abstract class Module {
   /// a default relation is used. Note, [surfaceRelation] is an optional
   /// parameter so a default value will be provided:
   /// ```
-  /// modular.SurfaceRelation surfaceRelation = const modular.SurfaceRelation(
+  /// modular.SurfaceRelation surfaceRelation = modular.SurfaceRelation(
   ///    arrangement: modular.SurfaceArrangement.copresent,
   ///    dependency: modular.SurfaceDependency.dependent,
   ///    emphasis: 0.5,

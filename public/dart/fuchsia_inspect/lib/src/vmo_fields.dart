@@ -77,46 +77,46 @@ class BlockType {
   const BlockType._(this.value, this.name);
 
   /// Empty block, ready to be used.
-  static const BlockType free = const BlockType._(0, 'free');
+  static const BlockType free = BlockType._(0, 'free');
 
   /// In transition toward being used.
-  static const BlockType reserved = const BlockType._(1, 'reserved');
+  static const BlockType reserved = BlockType._(1, 'reserved');
 
   /// One block to rule them all. Index 0.
-  static const BlockType header = const BlockType._(2, 'header');
+  static const BlockType header = BlockType._(2, 'header');
 
   /// An entry in the Inspect tree, which may hold child Values: Nodes,
   /// Metrics, or Properties.
-  static const BlockType nodeValue = const BlockType._(3, 'nodeValue');
+  static const BlockType nodeValue = BlockType._(3, 'nodeValue');
 
   /// An int Metric.
-  static const BlockType intValue = const BlockType._(4, 'intValue');
+  static const BlockType intValue = BlockType._(4, 'intValue');
 
   /// A uint Metric.
-  static const BlockType uintValue = const BlockType._(5, 'uintValue');
+  static const BlockType uintValue = BlockType._(5, 'uintValue');
 
   /// A double Metric.
-  static const BlockType doubleValue = const BlockType._(6, 'doubleValue');
+  static const BlockType doubleValue = BlockType._(6, 'doubleValue');
 
   /// The header of a string or byte-vector Property.
-  static const BlockType propertyValue = const BlockType._(7, 'propertyValue');
+  static const BlockType propertyValue = BlockType._(7, 'propertyValue');
 
   /// The contents of a string Property (in a singly linked list, if necessary).
-  static const BlockType extent = const BlockType._(8, 'extent');
+  static const BlockType extent = BlockType._(8, 'extent');
 
   /// The name of a Value (Property, Metric, or Node) stored as utf8.
   ///
   /// Name must be contained in this one block. This may truncate utf8 strings
   /// in the middle of a multibyte character.
-  static const BlockType nameUtf8 = const BlockType._(9, 'nameUtf8');
+  static const BlockType nameUtf8 = BlockType._(9, 'nameUtf8');
 
   /// A property that's been deleted but still has live children.
-  static const BlockType tombstone = const BlockType._(10, 'tombstone');
+  static const BlockType tombstone = BlockType._(10, 'tombstone');
 
   /// *_VALUE type, for internal use.
   ///
   /// Not valid if written to VMO.
-  static const BlockType anyValue = const BlockType._(11, 'anyValue');
+  static const BlockType anyValue = BlockType._(11, 'anyValue');
 }
 
 /// Order defines the block size: 1 << (order + 4).

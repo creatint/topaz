@@ -36,7 +36,7 @@ FilterEntityData _decode(String data) {
     return null;
   }
 
-  FilterEntityData filter = new FilterEntityData();
+  FilterEntityData filter = FilterEntityData();
   try {
     Map<String, String> decoded = json.decode(data).cast<String, String>();
     filter.prefix = decoded['prefix'];

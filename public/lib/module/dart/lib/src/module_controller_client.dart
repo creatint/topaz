@@ -14,7 +14,7 @@ export 'package:fidl_fuchsia_modular/fidl.dart' show ModuleState;
 class ModuleControllerClient {
   /// The underlying [fidl.ModuleControllerProxy] used to send client requests
   /// to the [fidl.ModuleController] service.
-  final fidl.ModuleControllerProxy proxy = new fidl.ModuleControllerProxy();
+  final fidl.ModuleControllerProxy proxy = fidl.ModuleControllerProxy();
 
   /// Constructor.
   ModuleControllerClient() {
@@ -25,7 +25,7 @@ class ModuleControllerClient {
       ..onUnbind = _handleUnbind;
   }
 
-  final Completer<Null> _bind = new Completer<Null>();
+  final Completer<Null> _bind = Completer<Null>();
 
   /// A future that completes when the [proxy] is bound.
   Future<Null> get bound => _bind.future;
@@ -49,7 +49,7 @@ class ModuleControllerClient {
 
   /// Focus the module.
   Future<Null> focus() async {
-    Completer<Null> completer = new Completer<Null>();
+    Completer<Null> completer = Completer<Null>();
 
     // ignore: unawaited_futures
     proxy.ctrl.error.then((ProxyError err) {
@@ -70,7 +70,7 @@ class ModuleControllerClient {
 
   /// Defocus the module.
   Future<Null> defocus() async {
-    Completer<Null> completer = new Completer<Null>();
+    Completer<Null> completer = Completer<Null>();
 
     // ignore: unawaited_futures
     proxy.ctrl.error.then((ProxyError err) {
@@ -91,7 +91,7 @@ class ModuleControllerClient {
 
   /// Stop the module.
   Future<Null> stop() async {
-    Completer<Null> completer = new Completer<Null>();
+    Completer<Null> completer = Completer<Null>();
 
     // ignore: unawaited_futures
     proxy.ctrl.error.then((ProxyError err) {

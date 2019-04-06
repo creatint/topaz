@@ -44,7 +44,7 @@ class SurfaceProperties {
     } else if (str == 'null') {
       return null;
     } else {
-      throw new ArgumentError.value(str);
+      throw ArgumentError.value(str);
     }
   }
 }

@@ -26,7 +26,7 @@ class {{ .Name }} extends $fidl.Enum {
   {{- range .Doc }}
   ///{{ . -}}
   {{- end }}
-  static const {{ $.Name }} {{ .Name }} = const {{ $.Name }}._({{ .Value }});
+  static const {{ $.Name }} {{ .Name }} = {{ $.Name }}._({{ .Value }});
 {{- end }}
 
   const {{ .Name }}._(this.value);
@@ -34,13 +34,13 @@ class {{ .Name }} extends $fidl.Enum {
   @override
   final int value;
 
-  static const Map<String, {{ .Name }}> valuesMap = const {
+  static const Map<String, {{ .Name }}> valuesMap = {
   {{- range .Members }}
     r'{{ .Name }}': {{ .Name }},
   {{- end }}
   };
 
-  static const List<{{ .Name }}> values = const [
+  static const List<{{ .Name }}> values = [
     {{- range .Members }}
     {{ .Name }},
     {{- end }}
@@ -60,7 +60,7 @@ class {{ .Name }} extends $fidl.Enum {
     }
   }
 
-  static {{ .Name }} _ctor(int v) => new {{ .Name }}(v);
+  static {{ .Name }} _ctor(int v) => {{ .Name }}(v);
 }
 
 const $fidl.EnumType<{{ .Name }}> {{ .TypeSymbol }} = {{ .TypeExpr }};

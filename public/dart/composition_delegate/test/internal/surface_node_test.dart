@@ -39,18 +39,18 @@ void main() {
     //  |  child  | |  sibling  |           |  cousin  |
     //  +---------+ +-----------+           +----------+
     //
-    uncle = new SurfaceNode(surface: new Surface(surfaceId: 'uncle'));
-    cousin = new SurfaceNode(surface: new Surface(surfaceId: 'cousin'));
-    sibling = new SurfaceNode(surface: new Surface(surfaceId: 'sibling'));
-    child = new SurfaceNode(surface: new Surface(surfaceId: 'child'));
+    uncle = SurfaceNode(surface: Surface(surfaceId: 'uncle'));
+    cousin = SurfaceNode(surface: Surface(surfaceId: 'cousin'));
+    sibling = SurfaceNode(surface: Surface(surfaceId: 'sibling'));
+    child = SurfaceNode(surface: Surface(surfaceId: 'child'));
 
-    aunt = new SurfaceNode(
-        surface: new Surface(surfaceId: 'aunt'), childNodes: [cousin]);
-    parent = new SurfaceNode(
-        surface: new Surface(surfaceId: 'parent'),
+    aunt = SurfaceNode(
+        surface: Surface(surfaceId: 'aunt'), childNodes: [cousin]);
+    parent = SurfaceNode(
+        surface: Surface(surfaceId: 'parent'),
         childNodes: [child, sibling]);
-    grandparent = new SurfaceNode(
-        surface: new Surface(surfaceId: 'grandparent'),
+    grandparent = SurfaceNode(
+        surface: Surface(surfaceId: 'grandparent'),
         childNodes: [parent, uncle, aunt]);
     detachedParent = <SurfaceNode>[grandparent, uncle, aunt, cousin];
 

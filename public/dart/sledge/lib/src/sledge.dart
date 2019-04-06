@@ -29,9 +29,9 @@ import 'uint8list_ops.dart';
 
 /// The interface to the Sledge library.
 class Sledge {
-  final ledger.LedgerProxy _ledgerProxy = new ledger.LedgerProxy();
+  final ledger.LedgerProxy _ledgerProxy = ledger.LedgerProxy();
   final ledger.PageProxy _pageProxy;
-  final ConnectionId _connectionId = new ConnectionId.random();
+  final ConnectionId _connectionId = ConnectionId.random();
 
   // Cache to get document by documentId.prefix.
   final Map<Uint8List, Future<Document>> _documentByPrefix =
@@ -46,17 +46,17 @@ class Sledge {
 
   /// Default constructor.
   factory Sledge(ComponentContext componentContext, [SledgePageId pageId]) {
-    fidl.InterfacePair<ledger.Ledger> ledgerPair = new fidl.InterfacePair();
+    fidl.InterfacePair<ledger.Ledger> ledgerPair = fidl.InterfacePair();
     componentContext.getLedger(ledgerPair.passRequest());
-    return new Sledge._(ledgerPair.passHandle(), pageId);
+    return Sledge._(ledgerPair.passHandle(), pageId);
   }
 
   /// Internal constructor
   Sledge._(fidl.InterfaceHandle<ledger.Ledger> ledgerHandle,
       [SledgePageId pageId])
-      : _pageProxy = new ledger.PageProxy(),
-        _ledgerObjectsFactory = new LedgerObjectsFactoryImpl() {
-    pageId ??= new SledgePageId();
+      : _pageProxy = ledger.PageProxy(),
+        _ledgerObjectsFactory = LedgerObjectsFactoryImpl() {
+    pageId ??= SledgePageId();
 
     // The initialization sequence consists of:
     // 1/ Obtaining a LedgerProxy from the LedgerHandle.
@@ -72,30 +72,30 @@ class Sledge {
 
     _ledgerProxy.getPage(pageId.id, _pageProxy.ctrl.request());
     _modificationQueue =
-        new ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
+        ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
     _subscribtion = _subscribe();
   }
 
   /// Constructor that takes a new-style binding of ComponentContext
   factory Sledge.forAsync(modular_async.ComponentContext componentContext,
       [SledgePageId pageId]) {
-    final pair = new ChannelPair();
-    componentContext.getLedger(new fidl.InterfaceRequest(pair.first));
-    return new Sledge._(new fidl.InterfaceHandle(pair.second), pageId);
+    final pair = ChannelPair();
+    componentContext.getLedger(fidl.InterfaceRequest(pair.first));
+    return Sledge._(fidl.InterfaceHandle(pair.second), pageId);
   }
 
   /// Convenience factory for modules.
   factory Sledge.fromModule(final ModuleContext moduleContext,
       [SledgePageId pageId]) {
-    ComponentContextProxy componentContextProxy = new ComponentContextProxy();
+    ComponentContextProxy componentContextProxy = ComponentContextProxy();
     moduleContext.getComponentContext(componentContextProxy.ctrl.request());
-    return new Sledge(componentContextProxy, pageId);
+    return Sledge(componentContextProxy, pageId);
   }
 
   /// Convenience constructor for tests.
   Sledge.testing(this._pageProxy, this._ledgerObjectsFactory) {
     _modificationQueue =
-        new ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
+        ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
     _subscribtion = _subscribe();
   }
 
@@ -123,7 +123,7 @@ class Sledge {
   /// Execution of the transaction does not continue past this point.
   void abortAndRollback() {
     if (currentTransaction == null) {
-      throw new StateError('No transaction started.');
+      throw StateError('No transaction started.');
     }
     currentTransaction.abortAndRollback();
   }
@@ -179,7 +179,7 @@ class Sledge {
     // Select the changes that concern documents.
     final documentChange = splittedChange[sledge_storage
             .prefixForType(sledge_storage.KeyValueType.document)] ??
-        new Change();
+        Change();
     // Split the changes according to the document they belong to.
     final splittedDocumentChange =
         documentChange.splitByPrefix(DocumentId.prefixLength);
@@ -195,12 +195,12 @@ class Sledge {
   Subscription _subscribe() {
     assert(_modificationQueue.currentTransaction == null,
         '`_subscribe` must be called before any transaction can start.');
-    return new Subscription(_pageProxy, _ledgerObjectsFactory, _applyChange);
+    return Subscription(_pageProxy, _ledgerObjectsFactory, _applyChange);
   }
 
   void _verifyThatTransactionHasStarted() {
     if (currentTransaction == null) {
-      throw new StateError('No transaction started.');
+      throw StateError('No transaction started.');
     }
   }
 }

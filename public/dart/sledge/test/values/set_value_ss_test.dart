@@ -16,11 +16,11 @@ class SetFleetFactory<E> {
 
   // Returns Fleet of [count] SetValues.
   Fleet<SetValue<E>> newFleet(int count) {
-    return new Fleet<SetValue<E>>(count, (index) => new SetValue<E>());
+    return Fleet<SetValue<E>>(count, (index) => SetValue<E>());
   }
 }
 
-const SetFleetFactory<int> intSetFleetFactory = const SetFleetFactory<int>();
+const SetFleetFactory<int> intSetFleetFactory = SetFleetFactory<int>();
 
 void main() async {
   setupLogger();

@@ -17,13 +17,13 @@ class BluetoothSettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      new ScopedModelDescendant<BluetoothSettingsModel>(
+      ScopedModelDescendant<BluetoothSettingsModel>(
           builder: (
         BuildContext context,
         Widget child,
         BluetoothSettingsModel model,
       ) =>
-              new LayoutBuilder(
+              LayoutBuilder(
                   builder: (BuildContext context, BoxConstraints constraints) =>
                       Material(
                           child: _buildBluetoothSettings(

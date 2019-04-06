@@ -639,7 +639,7 @@ void main() {
         _validateExpectedDirents(expectedDirents, response);
       });
 
-      test('readdir works when new node is added', () async {
+      test('readdir works when node is added', () async {
         PseudoDir dir = PseudoDir();
         PseudoDir subDir = PseudoDir();
         var file1 = PseudoFile.readOnlyStr(() => 'file1');
@@ -663,7 +663,7 @@ void main() {
         _validateExpectedDirents(expectedDirents, response);
       });
 
-      test('readdir works when new node is added and only first node was read',
+      test('readdir works when node is added and only first node was read',
           () async {
         PseudoDir dir = PseudoDir();
         PseudoDir subDir = PseudoDir();

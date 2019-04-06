@@ -13,11 +13,11 @@ void main() {
   final Display display = Display();
   setupLogger();
 
-  Widget app = new MaterialApp(
-    home: new Container(
-      child: new ScopedModel<DisplayPolicyBrightnessModel>(
-        model: new DisplayPolicyBrightnessModel(display),
-        child: const DisplaySettings(),
+  Widget app = MaterialApp(
+    home: Container(
+      child: ScopedModel<DisplayPolicyBrightnessModel>(
+        model: DisplayPolicyBrightnessModel(display),
+        child: DisplaySettings(),
       ),
     ),
   );

@@ -23,7 +23,7 @@ class SystemInfoModel extends Model {
   List<scpi.DvfsOpp> _bigClusterOpps;
   List<scpi.DvfsOpp> _smallClusterOpps;
 
-  static const Duration _systemInformationUpdatePeriod = const Duration(seconds: 4);
+  static const Duration _systemInformationUpdatePeriod = Duration(seconds: 4);
 
   final scpi.SystemControllerProxy _systemControllerProxy = scpi.SystemControllerProxy();
 

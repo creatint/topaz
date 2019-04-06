@@ -14,16 +14,16 @@ import 'package:zircon/zircon.dart';
 /// provideStartupContext(startupContext);
 class TestStartupContext implements StartupContext {
   @override
-  MockEnvironmentProxy environment = new MockEnvironmentProxy();
+  MockEnvironmentProxy environment = MockEnvironmentProxy();
 
   @override
-  TestServiceProvider environmentServices = new TestServiceProvider();
+  TestServiceProvider environmentServices = TestServiceProvider();
 
   @override
-  final MockLauncherProxy launcher = new MockLauncherProxy();
+  final MockLauncherProxy launcher = MockLauncherProxy();
 
   @override
-  final MockOutgoing outgoingServices = new MockOutgoing();
+  final MockOutgoing outgoingServices = MockOutgoing();
 
   @override
   void close() {
@@ -35,12 +35,12 @@ class TestStartupContext implements StartupContext {
 }
 
 class TestServiceProvider implements ServiceProviderProxy {
-  final ServiceProviderImpl _testServices = new ServiceProviderImpl();
+  final ServiceProviderImpl _testServices = ServiceProviderImpl();
   final Set<String> _serviceNames = <String>{};
 
   void _withTestService<T>(ServiceConnector<T> connector, String serviceName) {
     if (_serviceNames.contains(serviceName)) {
-      throw new TestEnvironmentException('Duplicate $serviceName provided');
+      throw TestEnvironmentException('Duplicate $serviceName provided');
     }
     _serviceNames.add(serviceName);
     _testServices.addServiceForName(connector, serviceName);
@@ -48,12 +48,12 @@ class TestServiceProvider implements ServiceProviderProxy {
 
   @override
   MockProxyController<ServiceProvider> ctrl =
-      new MockProxyController<ServiceProvider>();
+      MockProxyController<ServiceProvider>();
 
   @override
   void connectToService(String serviceName, Channel channel) {
     if (!_serviceNames.contains(serviceName)) {
-      throw new TestEnvironmentException(
+      throw TestEnvironmentException(
           'No service provider for $serviceName in test environment.');
     }
 

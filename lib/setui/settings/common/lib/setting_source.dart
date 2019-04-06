@@ -15,7 +15,7 @@ class SettingSource<T> implements SettingListener {
   T _value;
 
   final StreamController<T> _streamController =
-      new StreamController<T>.broadcast();
+      StreamController<T>.broadcast();
 
   StreamSubscription<T> addListener(void callback(T value)) =>
       _streamController.stream.listen(callback);

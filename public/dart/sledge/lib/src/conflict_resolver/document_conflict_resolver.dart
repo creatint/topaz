@@ -13,7 +13,7 @@ import '../schema/schema.dart';
 Map<DocumentId, List<ledger.DiffEntry>> documentChangeMap(
     List<ledger.DiffEntry> diffs, Map<Uint8List, Schema> map) {
   // TODO: implement.
-  throw new UnimplementedError(
+  throw UnimplementedError(
       'The method `documentChangeMap` is not yet implemented.');
   return <DocumentId, List<ledger.DiffEntry>>{};
 }

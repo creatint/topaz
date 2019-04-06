@@ -40,7 +40,7 @@ String _encode(StreetLocationEntityData data) {
 /// Decodes [String] into a structured [StreetLocationEntityCodec].
 StreetLocationEntityData _decode(String data) {
   if (data == null || data.isEmpty || data == 'null') {
-    throw new FormatException('Entity data is null: "$data"');
+    throw FormatException('Entity data is null: "$data"');
   }
 
   // TODO(MS-1428): use a schema to validate decoded value.
@@ -57,10 +57,10 @@ StreetLocationEntityData _decode(String data) {
   } catch (err, stackTrace) {
     log.warning(
         'Exception occured during JSON destructuring: \n$err\n$stackTrace');
-    throw new FormatException('Invalid JSON data: "$map"');
+    throw FormatException('Invalid JSON data: "$map"');
   }
 
-  return new StreetLocationEntityData(
+  return StreetLocationEntityData(
     streetAddress: streetAddress,
     locality: locality,
   );

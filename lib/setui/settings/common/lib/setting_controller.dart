@@ -33,7 +33,7 @@ class SettingController<T> {
         return SettingType.connectivity;
     }
 
-    throw new Exception('Undefined setting type!');
+    throw Exception('Undefined setting type!');
   }
 
   Future<void> mutate(Mutation mutation, MutationHandles handles) async {

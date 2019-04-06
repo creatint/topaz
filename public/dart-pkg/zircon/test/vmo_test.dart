@@ -13,13 +13,13 @@ void main() {
   group('test vmo', () {
     test('fromFile', () {
       const String fuchsia = 'Fuchsia';
-      File f = new File('tmp/testdata')
+      File f = File('tmp/testdata')
         ..createSync()
         ..writeAsStringSync(fuchsia);
       String readFuchsia = f.readAsStringSync();
       expect(readFuchsia, equals(fuchsia));
 
-      SizedVmo fileVmo = new SizedVmo.fromFile('tmp/testdata');
+      SizedVmo fileVmo = SizedVmo.fromFile('tmp/testdata');
       Uint8List fileData = fileVmo.map();
       String fileString = utf8.decode(fileData.sublist(0, fileVmo.size));
       expect(fileString, equals(fuchsia));
@@ -27,8 +27,8 @@ void main() {
 
     test('duplicate', () {
       const String fuchsia = 'Fuchsia';
-      Uint8List data = new Uint8List.fromList(fuchsia.codeUnits);
-      SizedVmo vmo = new SizedVmo.fromUint8List(data);
+      Uint8List data = Uint8List.fromList(fuchsia.codeUnits);
+      SizedVmo vmo = SizedVmo.fromUint8List(data);
       final Vmo duplicate =
           vmo.duplicate(ZX.RIGHTS_BASIC | ZX.RIGHT_READ | ZX.RIGHT_MAP);
       expect(duplicate.isValid, isTrue);

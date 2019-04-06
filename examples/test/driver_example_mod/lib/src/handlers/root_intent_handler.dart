@@ -12,40 +12,40 @@ import '../driver_example_model.dart';
 class RootIntentHandler extends IntentHandler {
   @override
   void handleIntent(Intent intent) async {
-    DriverExampleModel model = new DriverExampleModel();
+    DriverExampleModel model = DriverExampleModel();
     runApp(
-      new ScopedModel<DriverExampleModel>(
+      ScopedModel<DriverExampleModel>(
         model: model,
-        child: new MaterialApp(
-          home: new Scaffold(
-            body: new ScopedModelDescendant<DriverExampleModel>(
+        child: MaterialApp(
+          home: Scaffold(
+            body: ScopedModelDescendant<DriverExampleModel>(
               builder: (BuildContext context, Widget child,
                   DriverExampleModel model) {
                 return Column(
                   children: <Widget>[
-                    new Center(
-                      child: new Directionality(
+                    Center(
+                      child: Directionality(
                         textDirection: TextDirection.ltr,
-                        child: new Text(
+                        child: Text(
                             'This counter has a value of: ${model.count}'),
                       ),
                     ),
-                    new Row(
+                    Row(
                       children: <Widget>[
-                        new FlatButton(
-                          child: const Text('+1'),
+                        FlatButton(
+                          child: Text('+1'),
                           onPressed: () => model.increment(),
                         ),
-                        new FlatButton(
-                          child: const Text('-1'),
+                        FlatButton(
+                          child: Text('-1'),
                           onPressed: () => model.decrement(),
                         ),
-                        new FlatButton(
-                          child: const Text('+5'),
+                        FlatButton(
+                          child: Text('+5'),
                           onPressed: () => model.increment(by: 5),
                         ),
-                        new FlatButton(
-                          child: const Text('-5'),
+                        FlatButton(
+                          child: Text('-5'),
                           onPressed: () => model.decrement(by: 5),
                         ),
                       ],

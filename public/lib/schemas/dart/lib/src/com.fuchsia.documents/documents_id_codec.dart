@@ -29,5 +29,5 @@ String _encode(DocumentsIdEntityData data) {
 
 /// Decodes [String] into a structured [DocumentsIdEntityData].
 DocumentsIdEntityData _decode(String data) {
-  return new DocumentsIdEntityData(id: data);
+  return DocumentsIdEntityData(id: data);
 }

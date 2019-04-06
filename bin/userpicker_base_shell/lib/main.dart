@@ -31,12 +31,12 @@ BaseShellWidget<UserPickerBaseShellModel> _baseShellWidget;
 
 void main() {
   setupLogger(name: 'userpicker_base_shell');
-  StartupContext startupContext = new StartupContext.fromStartupInfo();
+  StartupContext startupContext = StartupContext.fromStartupInfo();
 
   // Connect to Cobalt
-  cobalt.LoggerProxy logger = new cobalt.LoggerProxy();
+  cobalt.LoggerProxy logger = cobalt.LoggerProxy();
 
-  cobalt.LoggerFactoryProxy loggerFactory = new cobalt.LoggerFactoryProxy();
+  cobalt.LoggerFactoryProxy loggerFactory = cobalt.LoggerFactoryProxy();
   StartupContext.fromStartupInfo().incoming.connectToService(loggerFactory);
 
   SizedVmo configVmo = SizedVmo.fromFile(_kCobaltConfigBinProtoPath);
@@ -52,18 +52,18 @@ void main() {
   });
   loggerFactory.ctrl.close();
 
-  NetstackProxy netstackProxy = new NetstackProxy();
+  NetstackProxy netstackProxy = NetstackProxy();
   StartupContext.fromStartupInfo().incoming.connectToService(netstackProxy);
 
-  NetstackModel netstackModel = new NetstackModel(netstack: netstackProxy)
+  NetstackModel netstackModel = NetstackModel(netstack: netstackProxy)
     ..start();
 
-  _OverlayModel wifiInfoOverlayModel = new _OverlayModel();
+  _OverlayModel wifiInfoOverlayModel = _OverlayModel();
 
   final AuthenticationOverlayModel authModel = AuthenticationOverlayModel();
 
   UserPickerBaseShellModel userPickerBaseShellModel =
-      new UserPickerBaseShellModel(
+      UserPickerBaseShellModel(
     onBaseShellStopped: () {
       netstackProxy.ctrl.close();
       netstackModel.dispose();
@@ -77,13 +77,13 @@ void main() {
     logger: logger,
   );
 
-  Widget mainWidget = new Stack(
+  Widget mainWidget = Stack(
     fit: StackFit.passthrough,
     children: <Widget>[
-      new UserPickerBaseShellScreen(
+      UserPickerBaseShellScreen(
         launcher: startupContext.launcher,
       ),
-      new ScopedModel<AuthenticationOverlayModel>(
+      ScopedModel<AuthenticationOverlayModel>(
         model: authModel,
         child: AuthenticationOverlay(),
       ),
@@ -93,21 +93,21 @@ void main() {
   Widget app = mainWidget;
 
   List<OverlayEntry> overlays = <OverlayEntry>[
-    new OverlayEntry(
-      builder: (BuildContext context) => new MediaQuery(
-            data: const MediaQueryData(),
-            child: new FocusScope(
-              node: new FocusScopeNode(),
+    OverlayEntry(
+      builder: (BuildContext context) => MediaQuery(
+            data: MediaQueryData(),
+            child: FocusScope(
+              node: FocusScopeNode(),
               autofocus: true,
               child: app,
             ),
           ),
     ),
-    new OverlayEntry(
-      builder: (BuildContext context) => new ScopedModel<_OverlayModel>(
+    OverlayEntry(
+      builder: (BuildContext context) => ScopedModel<_OverlayModel>(
             model: wifiInfoOverlayModel,
-            child: new _WifiInfo(
-              wifiWidget: new ApplicationWidget(
+            child: _WifiInfo(
+              wifiWidget: ApplicationWidget(
                 url:
                     'fuchsia-pkg://fuchsia.com/wifi_settings#meta/wifi_settings.cmx',
                 launcher: startupContext.launcher,
@@ -117,19 +117,19 @@ void main() {
     ),
   ];
 
-  _baseShellWidget = new BaseShellWidget<UserPickerBaseShellModel>(
+  _baseShellWidget = BaseShellWidget<UserPickerBaseShellModel>(
     startupContext: startupContext,
     baseShellModel: userPickerBaseShellModel,
-    authenticationUiContext: new AuthenticationUiContextImpl(
+    authenticationUiContext: AuthenticationUiContextImpl(
         onStartOverlay: authModel.onStartOverlay,
         onStopOverlay: authModel.onStopOverlay),
-    child: new LayoutBuilder(
+    child: LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) =>
           (constraints.biggest == Size.zero)
               ? const Offstage()
-              : new ScopedModel<NetstackModel>(
+              : ScopedModel<NetstackModel>(
                   model: netstackModel,
-                  child: new Overlay(initialEntries: overlays),
+                  child: Overlay(initialEntries: overlays),
                 ),
     ),
   );
@@ -146,32 +146,32 @@ class _WifiInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) =>
-      new ScopedModelDescendant<_OverlayModel>(
+      ScopedModelDescendant<_OverlayModel>(
         builder: (
           BuildContext context,
           Widget child,
           _OverlayModel model,
         ) =>
-            new Offstage(
+            Offstage(
               offstage: !model.showing,
-              child: new Stack(
+              child: Stack(
                 children: <Widget>[
-                  new Listener(
+                  Listener(
                     behavior: HitTestBehavior.opaque,
                     onPointerDown: (PointerDownEvent event) {
                       model.showing = false;
                     },
                   ),
-                  new Center(
-                    child: new FractionallySizedBox(
+                  Center(
+                    child: FractionallySizedBox(
                       widthFactor: 0.75,
                       heightFactor: 0.75,
-                      child: new Container(
-                        margin: const EdgeInsets.all(8.0),
-                        child: new PhysicalModel(
+                      child: Container(
+                        margin: EdgeInsets.all(8.0),
+                        child: PhysicalModel(
                           color: Colors.grey[900],
                           elevation: _kIndicatorElevation,
-                          borderRadius: new BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(8.0),
                           child: wifiWidget,
                         ),
                       ),

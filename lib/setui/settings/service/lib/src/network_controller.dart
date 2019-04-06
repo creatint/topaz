@@ -27,10 +27,10 @@ class NetworkController extends SetUiSettingController {
 
 /// STOPSHIP(brycelee): re-enable once Migration is complete
 // /// How often to poll the wlan for wifi information.
-// const Duration _statusPeriod = const Duration(seconds: 3);
+// const Duration _statusPeriod = Duration(seconds: 3);
 
 // /// How often to poll the wlan for available wifi networks.
-// const Duration _scanPeriod = const Duration(seconds: 40);
+// const Duration _scanPeriod = Duration(seconds: 40);
 
 // const int _scanTimeout = 25;
 

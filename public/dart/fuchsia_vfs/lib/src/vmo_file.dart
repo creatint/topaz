@@ -54,7 +54,7 @@ class VmoFile extends PseudoFile {
         return null;
       }
 
-      return NodeInfo.withVmofile(new Vmofile(
+      return NodeInfo.withVmofile(Vmofile(
           vmo: duplicatedVmo, offset: 0, length: _vmo.getSize().size));
     }
 

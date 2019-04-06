@@ -23,6 +23,6 @@ class FakePageWatcherBinding extends ledger.PageWatcherBinding {
   @override
   fidl.InterfaceHandle<ledger.PageWatcher> wrap(
       ledger.PageWatcher pageWatcher) {
-    return new FakePageWatcherInterfaceHandle(pageWatcher);
+    return FakePageWatcherInterfaceHandle(pageWatcher);
   }
 }

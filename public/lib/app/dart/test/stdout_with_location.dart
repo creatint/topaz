@@ -26,7 +26,7 @@ void _testLogToStdoutWithLocation() async {
       expect(logOutput.length, equals(1));
       expect(logOutput[0], matches('\\[INFO:TEST:$_fileName\\(\\d+\\)\\] foo'));
     },
-    zoneSpecification: new ZoneSpecification(
+    zoneSpecification: ZoneSpecification(
       print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
         logOutput.add(line);
       },

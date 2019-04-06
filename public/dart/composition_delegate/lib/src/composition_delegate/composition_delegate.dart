@@ -34,13 +34,13 @@ class CompositionDelegate {
 
   /// The default LayoutContext
   static const LayoutContext defaultContext =
-      const LayoutContext(size: const Size(1280, 800));
+      LayoutContext(size: Size(1280, 800));
 
   /// Constructor
   CompositionDelegate({
     this.layoutContext = defaultContext,
   })  : _hiddenSurfaces = <String>{},
-        _surfaceTree = new SurfaceTree();
+        _surfaceTree = SurfaceTree();
 
   /// Add a Surface to the tree. [parentId] is an optional paramater used when
   /// this surface has a parent-child relationship with a [Surface] that is
@@ -169,7 +169,7 @@ class CompositionDelegate {
 
   List<Layer> _splitEvenly(
       List<Layer> layout, SurfaceTree spanningTree, int spanningTreeSize) {
-    Layer layer = new Layer();
+    Layer layer = Layer();
     int surfaceIndex = 0;
     double splitSize = layoutContext.size.width / spanningTreeSize;
     for (Surface surface in spanningTree) {

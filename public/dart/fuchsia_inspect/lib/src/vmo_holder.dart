@@ -15,7 +15,7 @@ class VmoHolder {
   VmoHolder(this.size) {
     HandleResult result = System.vmoCreate(size);
     if (result.status != ZX.OK) {
-      throw new ZxStatusException(
+      throw ZxStatusException(
           result.status, getStringForStatus(result.status));
     }
     _vmo = Vmo(result.handle);
@@ -36,7 +36,7 @@ class VmoHolder {
   void write(int offset, ByteData data) {
     int status = _vmo.write(data, offset);
     if (status != ZX.OK) {
-      throw new ZxStatusException(status, getStringForStatus(status));
+      throw ZxStatusException(status, getStringForStatus(status));
     }
   }
 
@@ -44,7 +44,7 @@ class VmoHolder {
   ByteData read(int offset, int size) {
     ReadResult result = _vmo.read(size, offset);
     if (result.status != ZX.OK) {
-      throw new ZxStatusException(
+      throw ZxStatusException(
           result.status, getStringForStatus(result.status));
     }
     return result.bytes;

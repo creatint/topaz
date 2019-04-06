@@ -31,5 +31,5 @@ StatusEntityData _decode(String data) {
   assert(data != null);
   assert(data.isNotEmpty);
 
-  return new StatusEntityData(value: data);
+  return StatusEntityData(value: data);
 }

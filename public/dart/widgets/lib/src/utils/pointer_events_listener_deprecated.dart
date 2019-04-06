@@ -13,7 +13,7 @@ import 'package:fidl_fuchsia_ui_policy/fidl.dart';
 class PointerEventsListener implements PointerCaptureListenerHack {
   // Holds the fidl binding to receive pointer events.
   final PointerCaptureListenerHackBinding _pointerCaptureListenerBinding =
-      new PointerCaptureListenerHackBinding();
+      PointerCaptureListenerHackBinding();
 
   // Holds the last [PointerEvent] mapped to its pointer id. This is used to
   // determine the correct [PointerDataPacket] to generate at boundary condition
@@ -64,7 +64,7 @@ class PointerEventsListener implements PointerCaptureListenerHack {
   }
 
   PointerEvent _clone(PointerEvent event, [PointerEventPhase phase]) {
-    return new PointerEvent(
+    return PointerEvent(
         buttons: event.buttons,
         deviceId: event.deviceId,
         eventTime: event.eventTime,
@@ -91,7 +91,7 @@ class PointerEventsListener implements PointerCaptureListenerHack {
     Timeline.startSync('PointerEventsListener.onPointerEvent');
     final packet = _getPacket(event);
     if (packet != null) {
-      _originalCallback(new ui.PointerDataPacket(data: [packet]));
+      _originalCallback(ui.PointerDataPacket(data: [packet]));
     }
     Timeline.finishSync();
   }
@@ -179,10 +179,10 @@ class PointerEventsListener implements PointerCaptureListenerHack {
     }
 
     // Convert from PointerEvent to PointerData.
-    final data = new ui.PointerData(
+    final data = ui.PointerData(
       buttons: event.buttons,
       device: event.pointerId,
-      timeStamp: new Duration(microseconds: event.eventTime ~/ 1000),
+      timeStamp: Duration(microseconds: event.eventTime ~/ 1000),
       change: _changeFromPointerEvent(event),
       kind: _kindFromPointerEvent(event),
       physicalX: event.x * ui.window.devicePixelRatio,

@@ -29,13 +29,13 @@ class LedgerTestInstanceProvider {
 Future<LedgerTestInstanceProvider> newLedgerTestInstanceProvider() async {
   String server =
       'fuchsia-pkg://fuchsia.com/ledger_test_instance_provider#meta/ledger_test_instance_provider.cmx';
-  final Services services = new Services();
+  final Services services = Services();
   final LaunchInfo launchInfo =
-      new LaunchInfo(url: server, directoryRequest: services.request());
-  final context = new StartupContext.fromStartupInfo();
-  final ComponentControllerProxy controller = new ComponentControllerProxy();
+      LaunchInfo(url: server, directoryRequest: services.request());
+  final context = StartupContext.fromStartupInfo();
+  final ComponentControllerProxy controller = ComponentControllerProxy();
   await context.launcher.createComponent(launchInfo, controller.ctrl.request());
-  return new LedgerTestInstanceProvider(services, controller);
+  return LedgerTestInstanceProvider(services, controller);
 }
 
 /// Sledge subclass that makes sure the ComponentControllerProxy does not get GCed.
@@ -54,12 +54,12 @@ class _SledgeForTesting extends Sledge {
 Future<Sledge> newSledgeForTesting(
     {SledgePageId pageId,
     LedgerTestInstanceProvider ledgerInstanceProvider}) async {
-  pageId ??= new SledgePageId('');
+  pageId ??= SledgePageId('');
   ledgerInstanceProvider ??= await newLedgerTestInstanceProvider();
   fidl.InterfaceHandle<ledger.Ledger> ledgerHandle =
       await ledgerInstanceProvider.services
           .connectToServiceByName<ledger.Ledger>(ledger.Ledger.$serviceName);
-  final sledge = new _SledgeForTesting(
+  final sledge = _SledgeForTesting(
       ledgerHandle, pageId, ledgerInstanceProvider._controller);
   return sledge;
 }

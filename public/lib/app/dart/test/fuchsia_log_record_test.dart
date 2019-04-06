@@ -28,7 +28,7 @@ void main() {
 }
 
 void _testSimpleMessage() {
-  LoggerStub logger = new LoggerStub();
+  LoggerStub logger = LoggerStub();
   setupLogger(
     logWriter: logger.writeLogMessage,
   );
@@ -40,7 +40,7 @@ void _testSimpleMessage() {
 
   int now = Platform.isFuchsia
       ? System.clockGet(_zxClockMonotonic)
-      : new DateTime.now().microsecondsSinceEpoch * 1000;
+      : DateTime.now().microsecondsSinceEpoch * 1000;
 
   expect(underTest.systemTime, lessThanOrEqualTo(now));
   expect(underTest.systemTime, greaterThanOrEqualTo(now - _lookBackTimeGap));
@@ -59,13 +59,13 @@ void _testSimpleMessage() {
 }
 
 void _testMessageWithException() {
-  LoggerStub logger = new LoggerStub();
+  LoggerStub logger = LoggerStub();
   setupLogger(
     logWriter: logger.writeLogMessage,
   );
   expect(logger.logMessages.isEmpty, true);
 
-  Exception exception = new Exception('cause');
+  Exception exception = Exception('cause');
   log.infoT('hello',
       tag: 'tag', error: exception, stackTrace: StackTrace.current);
   expect(logger.logMessages.length, equals(1));
@@ -73,7 +73,7 @@ void _testMessageWithException() {
 
   int now = Platform.isFuchsia
       ? System.clockGet(_zxClockMonotonic)
-      : new DateTime.now().microsecondsSinceEpoch * 1000;
+      : DateTime.now().microsecondsSinceEpoch * 1000;
 
   expect(underTest.systemTime, lessThanOrEqualTo(now));
   expect(underTest.systemTime, greaterThanOrEqualTo(now - _lookBackTimeGap));

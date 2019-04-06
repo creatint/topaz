@@ -46,7 +46,7 @@ class LogMessage {
   /// The time that this message was created
   final int systemTime = Platform.isFuchsia
       ? System.clockGet(_zxClockMonotonic)
-      : new DateTime.now().microsecondsSinceEpoch * 1000;
+      : DateTime.now().microsecondsSinceEpoch * 1000;
 
   /// The default constructor
   LogMessage({

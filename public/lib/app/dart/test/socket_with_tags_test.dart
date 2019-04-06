@@ -26,7 +26,7 @@ void main() {
 }
 
 void _testlogToSocketWithTags() {
-  MockSocket mockSocket = new MockSocket();
+  MockSocket mockSocket = MockSocket();
   setupLogger(
     name: 'TEST',
     level: Level.ALL,

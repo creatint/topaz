@@ -26,7 +26,7 @@ void main() {
       SurfaceRelation(arrangement: SurfaceArrangement.sequential);
 
   setUp(() {
-    graph = new SurfaceGraph();
+    graph = SurfaceGraph();
   });
 
   test('getCopresentSpanningTree with one surface in the graph', () {
