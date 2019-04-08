@@ -6,17 +6,15 @@
 
 #include <fcntl.h>
 #include <hid/usages.h>
-
 #include <iomanip>
-
 #include "lib/component/cpp/connect.h"
 #include "lib/fidl/cpp/clone.h"
 #include "lib/fidl/cpp/optional.h"
 #include "lib/fsl/io/fd.h"
-#include "src/lib/fxl/logging.h"
-#include "lib/media/timeline/timeline.h"
 #include "lib/media/timeline/type_converters.h"
 #include "lib/ui/scenic/cpp/view_token_pair.h"
+#include "src/lib/fxl/logging.h"
+#include "src/lib/fxl/time/time_delta.h"
 #include "src/lib/url/gurl.h"
 #include "third_party/skia/include/core/SkColor.h"
 #include "third_party/skia/include/core/SkPath.h"
@@ -73,8 +71,9 @@ MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
   pixel_aspect_ratio_.width = 1;
   pixel_aspect_ratio_.height = 1;
 
-  player_ = startup_context()
-                ->ConnectToEnvironmentService<fuchsia::media::playback::Player>();
+  player_ =
+      startup_context()
+          ->ConnectToEnvironmentService<fuchsia::media::playback::Player>();
   player_.events().OnStatusChanged =
       [this](fuchsia::media::playback::PlayerStatus status) {
         HandleStatusChanged(status);
@@ -104,7 +103,7 @@ MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
   }
 
   // These are for calculating frame rate.
-  frame_time_ = media::Timeline::local_now();
+  frame_time_ = zx::clock::get_monotonic().get();
   prev_frame_time_ = frame_time_;
 }
 
@@ -288,7 +287,7 @@ void MediaPlayerView::OnSceneInvalidated(
     return;
 
   prev_frame_time_ = frame_time_;
-  frame_time_ = media::Timeline::local_now();
+  frame_time_ = zx::clock::get_monotonic().get();
 
   // Log the frame rate every five seconds.
   if (state_ == State::kPlaying &&
@@ -444,7 +443,7 @@ float MediaPlayerView::progress() const {
   }
 
   // Apply the timeline function to the current time.
-  int64_t position = timeline_function_(media::Timeline::local_now());
+  int64_t position = timeline_function_(zx::clock::get_monotonic().get());
 
   if (position < 0) {
     position = 0;
