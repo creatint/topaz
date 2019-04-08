@@ -103,7 +103,11 @@ class AppModel extends Model {
     storyManager = StoryManager(
       context: _sessionShellContext,
       puppetMaster: _puppetMaster,
-    )..advertise(startupContext);
+    )
+      ..advertise(startupContext)
+      ..addListener(() {
+        _packageProposer.focusedStoryId = storyManager.focusedStoryId;
+      });
 
     _storyProvider.watch(
       _storyProviderWatcherBinding.wrap(StoryProviderWatcherImpl(storyManager)),

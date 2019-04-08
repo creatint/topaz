@@ -15,6 +15,7 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart'
         QueryResponse,
         SetFocusState,
         StoryCommand,
+        SurfaceArrangement,
         SurfaceRelation,
         UserInput;
 import 'package:fuchsia_modular/module.dart';
@@ -25,6 +26,9 @@ import 'package:fuchsia_services/services.dart';
 class PackageProposer extends QueryHandler {
   final _proposalPublisherProxy = ProposalPublisherProxy();
   final _queryHandlerBinding = QueryHandlerBinding();
+
+  /// Holds the currently focused story id. Set by [AppModel].
+  String focusedStoryId;
 
   /// Starts the proposal process.
   void start() {
@@ -60,7 +64,14 @@ class PackageProposer extends QueryHandler {
               .map((FileSystemEntity fileSystemEntity) =>
                   Uri.parse(fileSystemEntity.path).pathSegments.last)
               .where((String package) => package.contains(query.text))
-              .map((package) => _createPackageProposal(package, query.text)));
+              .map((package) {
+            return focusedStoryId == null
+                ? [_createPackageProposal(package, query.text)]
+                : [
+                    _createPackageProposal(package, query.text),
+                    _createPackageProposal(package, query.text, focusedStoryId)
+                  ];
+          }).expand((proposal) => proposal));
         }
       }
     }
@@ -68,20 +79,24 @@ class PackageProposer extends QueryHandler {
     return QueryResponse(proposals: proposals);
   }
 
-  Future<Proposal> _createPackageProposal(String package, String query) async {
+  Future<Proposal> _createPackageProposal(String package, String query,
+      [String focusedStory]) async {
     final fullPackageName = package.startsWith('fuchsia-pkg://')
         ? package
         : 'fuchsia-pkg://fuchsia.com/$package#meta/$package.cmx';
     final addMod = AddMod(
       intent: Intent(action: '', handler: fullPackageName),
-      surfaceParentModName: [],
-      modName: ['root'],
-      surfaceRelation: SurfaceRelation(),
+      surfaceParentModName: focusedStory == null ? [] : ['root'],
+      modName: [focusedStory == null ? 'root' : fullPackageName],
+      surfaceRelation: SurfaceRelation(
+        arrangement: SurfaceArrangement.copresent,
+      ),
     );
 
     return Proposal(
-      id: package,
-      headline: 'open $package',
+      id: focusedStory == null ? 'open_$package' : 'add_$package',
+      storyName: focusedStory,
+      headline: focusedStory == null ? 'open $package' : 'add $package',
       confidence:
           package == query ? 0.9 : package.startsWith(query) ? 0.7 : 0.5,
       details: package,

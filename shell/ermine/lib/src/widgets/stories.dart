@@ -43,8 +43,8 @@ class Stories extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           itemCount: stories.length + 1,
           onPageChanged: (index) {
-            onChangeStory(index);
             storyManager.onChangeFocus(index);
+            onChangeStory(index);
           },
           itemBuilder: (context, index) {
             final story = index == 0 ? null : stories.elementAt(index - 1);

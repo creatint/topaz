@@ -153,10 +153,9 @@ class StoryManager extends ChangeNotifier {
   /// Called when the user swipes to another story.
   void onChangeFocus(int index) {
     // Stories are displayed from second screen onwards, first is empty.
-    if (index > 0) {
-      focusedStoryId = _storyIds[index - 1];
-      _focusController.set(focusedStoryId);
-    }
+    focusedStoryId = index > 0 ? _storyIds[index - 1] : null;
+    _focusController.set(focusedStoryId);
+    notifyListeners();
   }
 
   /// toggles fullscreen mode
