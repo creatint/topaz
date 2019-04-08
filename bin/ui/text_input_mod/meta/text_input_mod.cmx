@@ -9,7 +9,6 @@
             "fuchsia.logger.LogSink",
             "fuchsia.cobalt.LoggerFactory",
             "fuchsia.modular.ContextWriter",
-            "fuchsia.ui.viewsv1.ViewManager",
             "fuchsia.ui.scenic.Scenic",
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.policy.Presenter",

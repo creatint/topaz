@@ -27,7 +27,6 @@
             "fuchsia.ui.input.ImeVisibilityService",
             "fuchsia.ui.scenic.Scenic",
             "fuchsia.ui.policy.Presenter",
-            "fuchsia.ui.viewsv1.ViewManager",
             "fuchsia.modular.ComponentContext"
         ],
         "system": [
