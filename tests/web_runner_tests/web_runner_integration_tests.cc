@@ -4,13 +4,13 @@
 
 #include <fuchsia/sys/cpp/fidl.h>
 #include <gtest/gtest.h>
-#include <lib/component/cpp/environment_services_helper.h>
 #include <lib/fit/function.h>
+#include <lib/gtest/real_loop_fixture.h>
 #include <src/lib/fxl/logging.h>
 #include <src/lib/fxl/strings/string_printf.h>
-#include <lib/gtest/real_loop_fixture.h>
 #include <zircon/status.h>
 
+#include "lib/sys/cpp/service_directory.h"
 #include "topaz/tests/web_runner_tests/chromium_context.h"
 #include "topaz/tests/web_runner_tests/test_server.h"
 
@@ -38,7 +38,7 @@ TEST(WebRunnerIntegrationTest, Smoke) {
       fxl::StringPrintf("http://localhost:%d/foo.html", server.port());
 
   fuchsia::sys::LauncherSyncPtr launcher;
-  component::GetEnvironmentServices()->ConnectToService(launcher.NewRequest());
+  sys::ServiceDirectory::CreateFromNamespace()->Connect(launcher.NewRequest());
 
   fuchsia::sys::ComponentControllerSyncPtr controller;
   launcher->CreateComponent(std::move(launch_info), controller.NewRequest());
@@ -88,8 +88,7 @@ class MockNavigationEventObserver
 
 class ChromiumAppTest : public gtest::RealLoopFixture {
  protected:
-  ChromiumAppTest()
-      : chromium_(component::StartupContext::CreateFromStartupInfo().get()) {}
+  ChromiumAppTest() : chromium_(sys::ComponentContext::Create().get()) {}
 
   ChromiumContext* chromium() { return &chromium_; }
 

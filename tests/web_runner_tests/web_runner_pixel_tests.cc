@@ -2,28 +2,29 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include <iomanip>
-#include <map>
-#include <string>
-#include <vector>
-
 #include <fuchsia/sys/cpp/fidl.h>
 #include <fuchsia/ui/app/cpp/fidl.h>
 #include <fuchsia/ui/policy/cpp/fidl.h>
 #include <fuchsia/ui/scenic/cpp/fidl.h>
 #include <fuchsia/ui/views/cpp/fidl.h>
 #include <gtest/gtest.h>
-#include <lib/component/cpp/startup_context.h>
 #include <lib/fdio/spawn.h>
 #include <lib/fit/function.h>
 #include <lib/fsl/vmo/vector.h>
-#include <src/lib/fxl/logging.h>
-#include <src/lib/fxl/strings/string_printf.h>
 #include <lib/gtest/real_loop_fixture.h>
+#include <lib/sys/cpp/component_context.h>
+#include <lib/sys/cpp/service_directory.h>
 #include <lib/ui/scenic/cpp/view_token_pair.h>
 #include <lib/zx/time.h>
 #include <src/lib/files/file.h>
+#include <src/lib/fxl/logging.h>
+#include <src/lib/fxl/strings/string_printf.h>
 #include <zircon/status.h>
+
+#include <iomanip>
+#include <map>
+#include <string>
+#include <vector>
 
 #include "topaz/tests/web_runner_tests/chromium_context.h"
 #include "topaz/tests/web_runner_tests/test_server.h"
@@ -104,9 +105,8 @@ void Input(std::vector<const char*> args) {
 // screenshot utilities.
 class PixelTest : public gtest::RealLoopFixture {
  protected:
-  PixelTest() : context_(component::StartupContext::CreateFromStartupInfo()) {
-    scenic_ =
-        context_->ConnectToEnvironmentService<fuchsia::ui::scenic::Scenic>();
+  PixelTest() : context_(sys::ComponentContext::Create()) {
+    scenic_ = context_->svc()->Connect<fuchsia::ui::scenic::Scenic>();
     scenic_.set_error_handler([](zx_status_t status) {
       FAIL() << "Lost connection to Scenic: " << zx_status_get_string(status);
     });
@@ -122,15 +122,14 @@ class PixelTest : public gtest::RealLoopFixture {
     FXL_CHECK(WaitForBlank());
   }
 
-  component::StartupContext* context() { return context_.get(); }
+  sys::ComponentContext* context() { return context_.get(); }
 
   // Gets a view token for presentation by |RootPresenter|. See also
   // garnet/examples/ui/hello_base_view
   fuchsia::ui::views::ViewToken CreatePresentationViewToken() {
     auto [view_token, view_holder_token] = scenic::NewViewTokenPair();
 
-    auto presenter =
-        context_->ConnectToEnvironmentService<fuchsia::ui::policy::Presenter>();
+    auto presenter = context_->svc()->Connect<fuchsia::ui::policy::Presenter>();
     presenter.set_error_handler([](zx_status_t status) {
       FAIL() << "presenter: " << zx_status_get_string(status);
     });
@@ -214,7 +213,7 @@ class PixelTest : public gtest::RealLoopFixture {
   }
 
  private:
-  std::unique_ptr<component::StartupContext> context_;
+  std::unique_ptr<sys::ComponentContext> context_;
   fuchsia::sys::ComponentControllerPtr runner_ctrl_;
   fuchsia::ui::scenic::ScenicPtr scenic_;
 };
@@ -238,17 +237,20 @@ TEST_F(WebRunnerPixelTest, Static) {
     }
   });
 
-  component::Services services;
   fuchsia::sys::ComponentControllerPtr controller;
+  fuchsia::sys::LauncherPtr launcher;
+  context()->svc()->Connect(launcher.NewRequest());
 
-  context()->launcher()->CreateComponent(
+  zx::channel request;
+  auto services = sys::ServiceDirectory::CreateWithRequest(&request);
+  launcher->CreateComponent(
       {.url =
            fxl::StringPrintf("http://localhost:%d/static.html", server.port()),
-       .directory_request = services.NewRequest()},
+       .directory_request = std::move(request)},
       controller.NewRequest());
 
   // Present the view.
-  services.ConnectToService<fuchsia::ui::app::ViewProvider>()->CreateView(
+  services->Connect<fuchsia::ui::app::ViewProvider>()->CreateView(
       CreatePresentationViewToken().value, nullptr, nullptr);
 
   ExpectSolidColor(kTargetColor);

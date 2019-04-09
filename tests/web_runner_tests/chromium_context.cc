@@ -9,23 +9,20 @@
 #include <src/lib/fxl/logging.h>
 #include <zircon/status.h>
 
-ChromiumContext::ChromiumContext(component::StartupContext* startup_context) {
+ChromiumContext::ChromiumContext(sys::ComponentContext* component_context) {
   auto chromium_context_provider =
-      startup_context
-          ->ConnectToEnvironmentService<chromium::web::ContextProvider>();
+      component_context->svc()->Connect<chromium::web::ContextProvider>();
   chromium_context_provider.set_error_handler([](zx_status_t status) {
     FAIL() << "chromium_context_provider: " << zx_status_get_string(status);
   });
 
-  zx_handle_t incoming_service_clone = fdio_service_clone(
-      startup_context->incoming_services()->directory().get());
-  FXL_CHECK(incoming_service_clone != ZX_HANDLE_INVALID);
+  auto incoming_service_clone = component_context->svc()->CloneChannel();
+  FXL_CHECK(incoming_service_clone.is_valid());
   chromium::web::CreateContextParams params;
-  params.set_service_directory(fidl::InterfaceHandle<fuchsia::io::Directory>(
-      zx::channel(incoming_service_clone)));
+  params.set_service_directory(std::move(incoming_service_clone));
 
   chromium_context_provider->Create(std::move(params),
-                                     chromium_context_.NewRequest());
+                                    chromium_context_.NewRequest());
   chromium_context_.set_error_handler([](zx_status_t status) {
     FAIL() << "chromium_context_: " << zx_status_get_string(status);
   });

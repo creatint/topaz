@@ -6,7 +6,7 @@
 #define TOPAZ_TESTS_WEB_RUNNER_TESTS_CHROMIUM_CONTEXT_H_
 
 #include <chromium/web/cpp/fidl.h>
-#include <lib/component/cpp/startup_context.h>
+#include <lib/sys/cpp/component_context.h>
 
 // This sub-fixture uses chromium.web FIDL services to interact with Chromium.
 //
@@ -14,7 +14,7 @@
 // https://chromium.googlesource.com/chromium/src/+/master/fuchsia/engine/test/webrunner_browser_test.h
 class ChromiumContext {
  public:
-  ChromiumContext(component::StartupContext* startup_context);
+  ChromiumContext(sys::ComponentContext* component_context);
   void Navigate(const std::string& url);
 
   chromium::web::Frame* frame() { return chromium_frame_.get(); }

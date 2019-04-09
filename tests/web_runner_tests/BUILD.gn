@@ -21,7 +21,7 @@ source_set("chromium_context") {
   ]
 
   public_deps = [
-    "//garnet/public/lib/component/cpp",
+    "//sdk/lib/sys/cpp",
     "//topaz/runtime/chromium:chromium.web",
   ]
 }
@@ -50,10 +50,10 @@ executable("web_runner_integration_tests") {
   deps = [
     ":chromium_context",
     ":test_server",
-    "//garnet/public/lib/component/cpp/testing",
-    "//src/lib/fxl",
     "//garnet/public/lib/gtest",
     "//sdk/fidl/fuchsia.sys",
+    "//sdk/lib/sys/cpp/testing:unit",
+    "//src/lib/fxl",
     "//third_party/googletest:gtest_main",
     "//zircon/public/lib/fit",
   ]
@@ -69,7 +69,6 @@ executable("web_runner_pixel_tests") {
   deps = [
     ":chromium_context",
     ":test_server",
-    "//garnet/public/lib/component/cpp",
     "//garnet/public/lib/fsl",
     "//garnet/public/lib/gtest",
     "//sdk/fidl/fuchsia.sys",
@@ -77,6 +76,7 @@ executable("web_runner_pixel_tests") {
     "//sdk/fidl/fuchsia.ui.policy",
     "//sdk/fidl/fuchsia.ui.scenic",
     "//sdk/fidl/fuchsia.ui.views",
+    "//sdk/lib/sys/cpp",
     "//sdk/lib/ui/scenic/cpp",
     "//third_party/googletest:gtest_main",
     "//zircon/public/lib/fit",
@@ -94,6 +94,7 @@ package("web_runner_tests") {
   tests = [
     {
       name = "web_runner_integration_tests"
+
       # FLK-148
       # environments = basic_envs
       # This does not seem to flake on NUCs.
