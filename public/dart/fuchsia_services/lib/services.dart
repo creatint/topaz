@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 /// The base-level functionality required by any component on Fuchsia.
-export 'src/environment_service_connection.dart';
 export 'src/incoming.dart';
 export 'src/outgoing.dart';
 export 'src/service_provider_impl.dart';
