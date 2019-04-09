@@ -45,7 +45,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
                blink::Settings settings,
                fml::RefPtr<const blink::DartSnapshot> isolate_snapshot,
                fml::RefPtr<const blink::DartSnapshot> shared_snapshot,
-               zx::eventpair view_token, UniqueFDIONS fdio_ns,
+               fuchsia::ui::views::ViewToken view_token, UniqueFDIONS fdio_ns,
                fidl::InterfaceRequest<fuchsia::io::Directory> directory_request)
     : delegate_(delegate),
       thread_label_(std::move(thread_label)),
@@ -69,17 +69,6 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   fidl::InterfaceHandle<fuchsia::ui::scenic::SessionListener> session_listener;
   auto session_listener_request = session_listener.NewRequest();
   scenic->CreateSession(session.NewRequest(), session_listener.Bind());
-
-#ifndef SCENIC_VIEWS2
-  fuchsia::ui::viewsv1::ViewManagerPtr view_manager;
-  svc->Connect(view_manager.NewRequest());
-
-  zx::eventpair import_token, export_token;
-  if (zx::eventpair::create(0u, &import_token, &export_token) != ZX_OK) {
-    FML_DLOG(ERROR) << "Could not create event pair.";
-    return;
-  }
-#endif
 
   // Grab the parent environment services. The platform view may want to access
   // some of these services.
@@ -130,11 +119,6 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
                              std::move(on_session_metrics_change_callback),
                          on_session_size_change_hint_callback =
                              std::move(on_session_size_change_hint_callback),
-#ifndef SCENIC_VIEWS2
-                         view_manager = view_manager.Unbind(),
-                         view_token = std::move(view_token),
-                         export_token = std::move(export_token),
-#endif
                          accessibility_context_writer =
                              std::move(accessibility_context_writer),
                          vsync_handle =
@@ -148,11 +132,6 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
             std::move(on_session_listener_error_callback),
             std::move(on_session_metrics_change_callback),
             std::move(on_session_size_change_hint_callback),
-#ifndef SCENIC_VIEWS2
-            std::move(view_manager),  // view manager
-            std::move(view_token),    // view token
-            std::move(export_token),  // export token
-#endif
             std::move(
                 accessibility_context_writer),  // accessibility context writer
             vsync_handle                        // vsync handle
@@ -181,14 +160,9 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   {
     TRACE_DURATION("flutter", "CreateCompositorContext");
     compositor_context = std::make_unique<flutter::CompositorContext>(
-        thread_label_,  // debug label
-#ifndef SCENIC_VIEWS2
-        std::move(import_token),  // import token (scenic node we attach our
-                                  // tree to)
-#else
+        thread_label_,          // debug label
         std::move(view_token),  // scenic view we attach our tree to
-#endif
-        std::move(session),                    // scenic session
+        std::move(session),     // scenic session
         std::move(on_session_error_callback),  // session did encounter error
         vsync_event_.get()                     // vsync event handle
     );
@@ -267,20 +241,11 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   // Shell has been created. Before we run the engine, setup the isolate
   // configurator.
   {
-#ifndef SCENIC_VIEWS2
-    auto view_container =
-        static_cast<PlatformView*>(shell_->GetPlatformView().get())
-            ->TakeViewContainer();
-#endif
-
     fuchsia::sys::EnvironmentPtr environment;
     svc->Connect(environment.NewRequest());
 
     isolate_configurator_ = std::make_unique<IsolateConfigurator>(
-        std::move(fdio_ns),  //
-#ifndef SCENIC_VIEWS2
-        std::move(view_container),  //
-#endif
+        std::move(fdio_ns),              //
         std::move(environment),          //
         directory_request.TakeChannel()  //
     );
@@ -404,7 +369,7 @@ static void CreateCompilationTrace(Dart_Isolate isolate) {
 
 void Engine::OnMainIsolateStart() {
   if (!isolate_configurator_ ||
-      !isolate_configurator_->ConfigureCurrentIsolate(this)) {
+      !isolate_configurator_->ConfigureCurrentIsolate()) {
     FML_LOG(ERROR) << "Could not configure some native embedder bindings for a "
                       "new root isolate.";
   }
@@ -474,31 +439,6 @@ void Engine::OnSessionSizeChangeHint(float width_change_factor,
                                                       height_change_factor);
         }
       });
-}
-
-// |mozart::NativesDelegate|
-void Engine::OfferServiceProvider(
-    fidl::InterfaceHandle<fuchsia::sys::ServiceProvider> service_provider,
-    std::vector<std::string> services) {
-#ifndef SCENIC_VIEWS2
-  if (!shell_) {
-    return;
-  }
-
-  shell_->GetTaskRunners().GetPlatformTaskRunner()->PostTask(
-      fml::MakeCopyable([platform_view = shell_->GetPlatformView(),       //
-                         service_provider = std::move(service_provider),  //
-                         services = std::move(services)                   //
-  ]() mutable {
-        if (platform_view) {
-          reinterpret_cast<flutter::PlatformView*>(platform_view.get())
-              ->OfferServiceProvider(std::move(service_provider),
-                                     std::move(services));
-        }
-      }));
-#else
-                                // TODO(SCN-840): Remove OfferServiceProvider.
-#endif
 }
 
 #if !defined(DART_PRODUCT)

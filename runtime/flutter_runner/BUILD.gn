@@ -128,16 +128,17 @@ template("flutter_runner") {
     ]
 
     deps = [
+             "//garnet/public/lib/vulkan",
              "//sdk/fidl/fuchsia.accessibility",
              "//sdk/fidl/fuchsia.fonts",
+             "//sdk/fidl/fuchsia.modular",
              "//sdk/fidl/fuchsia.ui.app",
              "//sdk/fidl/fuchsia.ui.input",
-             "//sdk/fidl/fuchsia.ui.viewsv1",
-             "//garnet/public/lib/vulkan",
-             "//sdk/fidl/fuchsia.modular",
+             "//sdk/fidl/fuchsia.ui.scenic",
+             "//sdk/fidl/fuchsia.ui.views",
+             "//sdk/lib/ui/scenic/cpp",
              "//sdk/lib/sys/cpp",
              "//sdk/lib/vfs/cpp",
-             "//sdk/lib/ui/scenic/cpp",
              "//third_party/dart/runtime/bin:libdart_builtin${product_suffix}",
              "//third_party/icu",
              "//third_party/rapidjson",
@@ -145,7 +146,6 @@ template("flutter_runner") {
              "//third_party/tonic",
              "//third_party/zlib:minizip",
              "//topaz/public/dart-pkg/fuchsia",
-             "//topaz/public/lib/ui/flutter/sdk_ext",
              "//topaz/runtime/dart/utils",
              "//topaz/runtime/dart/utils:inlines",
              "//topaz/runtime/dart/utils:files",
@@ -158,10 +158,6 @@ template("flutter_runner") {
              "//zircon/public/lib/trace-provider",
              "//zircon/public/lib/zx",
            ] + extra_deps + flutter_deps
-
-    if (scenic_use_views2) {
-      defines += [ "SCENIC_VIEWS2" ]
-    }
 
     # The flags below are needed so that Dart's CPU profiler can walk the
     # C++ stack.

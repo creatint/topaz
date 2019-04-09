@@ -6,6 +6,7 @@
 #define TOPAZ_RUNTIME_FLUTTER_RUNNER_COMPOSITOR_CONTEXT_H_
 
 #include <fuchsia/ui/scenic/cpp/fidl.h>
+#include <fuchsia/ui/views/cpp/fidl.h>
 #include <lib/fit/function.h>
 
 #include "flutter/flow/compositor_context.h"
@@ -20,11 +21,7 @@ namespace flutter {
 class CompositorContext final : public flow::CompositorContext {
  public:
   CompositorContext(std::string debug_label,
-#ifndef SCENIC_VIEWS2
-                    zx::eventpair import_token,
-#else
-                    zx::eventpair view_token,
-#endif
+                    fuchsia::ui::views::ViewToken view_token,
                     fidl::InterfaceHandle<fuchsia::ui::scenic::Session> session,
                     fit::closure session_error_callback,
                     zx_handle_t vsync_event_handle);
@@ -41,8 +38,7 @@ class CompositorContext final : public flow::CompositorContext {
 
   // |flow::CompositorContext|
   std::unique_ptr<ScopedFrame> AcquireFrame(
-      GrContext* gr_context,
-      SkCanvas* canvas,
+      GrContext* gr_context, SkCanvas* canvas,
       flow::ExternalViewEmbedder* view_embedder,
       const SkMatrix& root_surface_transformation,
       bool instrumentation_enabled) override;

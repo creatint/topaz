@@ -198,13 +198,6 @@ From [//garnet/bin/ui/scenic/BUILD.gn:12](https://fuchsia.googlesource.com/garne
 
 From [//garnet/lib/magma/gnbuild/magma.gni:6](https://fuchsia.googlesource.com/garnet/+/6dd381288512e11bfda06566bf15d5a6cc69a390/lib/magma/gnbuild/magma.gni#6)
 
-### scenic_use_views2
-Temporary flag, switches Flutter to using Scenic's new View API.
-
-**Current value (from the default):** `false`
-
-From [//garnet/bin/ui/scenic/config.gni:7](https://fuchsia.googlesource.com/garnet/+/6dd381288512e11bfda06566bf15d5a6cc69a390/bin/ui/scenic/config.gni#7)
-
 ### shell_dart_version
 
 **Current value (from the default):** `""`

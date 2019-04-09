@@ -25,10 +25,7 @@ sdk://fidl/fuchsia.sys
 sdk://fidl/fuchsia.ui.gfx
 sdk://fidl/fuchsia.ui.input
 sdk://fidl/fuchsia.ui.policy
-sdk://fidl/fuchsia.ui.scenic
-sdk://fidl/fuchsia.ui.vectorial
 sdk://fidl/fuchsia.ui.views
-sdk://fidl/fuchsia.ui.viewsv1
 sdk://fidl/fuchsia.ui.viewsv1token
 sdk://tools/dart_kernel_compiler
 sdk://tools/fidlgen_dart

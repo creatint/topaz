@@ -10,6 +10,8 @@
 
 #include <trace/event.h>
 
+#include "flutter/fml/logging.h"
+#include "flutter/lib/ui/compositing/scene_host.h"
 #include "flutter/lib/ui/window/pointer_data.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
@@ -21,16 +23,15 @@
 
 namespace flutter {
 
-#ifdef SCENIC_VIEWS2
 namespace {
 
-inline fuchsia::ui::gfx::vec3 Add(
-    const fuchsia::ui::gfx::vec3& a, const fuchsia::ui::gfx::vec3& b) {
+inline fuchsia::ui::gfx::vec3 Add(const fuchsia::ui::gfx::vec3& a,
+                                  const fuchsia::ui::gfx::vec3& b) {
   return {.x = a.x + b.x, .y = a.y + b.y, .z = a.z + b.z};
 }
 
-inline fuchsia::ui::gfx::vec3 Subtract(
-    const fuchsia::ui::gfx::vec3& a, const fuchsia::ui::gfx::vec3& b) {
+inline fuchsia::ui::gfx::vec3 Subtract(const fuchsia::ui::gfx::vec3& a,
+                                       const fuchsia::ui::gfx::vec3& b) {
   return {.x = a.x - b.x, .y = a.y - b.y, .z = a.z - b.z};
 }
 
@@ -55,13 +56,12 @@ inline fuchsia::ui::gfx::vec3 Max(const fuchsia::ui::gfx::vec3& v,
           .z = std::max(v.z, min_val)};
 }
 
-}
-#endif  // SCENIC_VIEWS2
+}  // end namespace
 
-constexpr char kFlutterPlatformChannel[] = "flutter/platform";
-constexpr char kTextInputChannel[] = "flutter/textinput";
-constexpr char kKeyEventChannel[] = "flutter/keyevent";
-constexpr char kAccessibilityChannel[] = "flutter/accessibility";
+static constexpr char kFlutterPlatformChannel[] = "flutter/platform";
+static constexpr char kTextInputChannel[] = "flutter/textinput";
+static constexpr char kKeyEventChannel[] = "flutter/keyevent";
+static constexpr char kAccessibilityChannel[] = "flutter/accessibility";
 
 // FL(77): Terminate engine if Fuchsia system FIDL connections have error.
 template <class T>
@@ -88,11 +88,6 @@ PlatformView::PlatformView(
     fit::closure session_listener_error_callback,
     OnMetricsUpdate session_metrics_did_change_callback,
     OnSizeChangeHint session_size_change_hint_callback,
-#ifndef SCENIC_VIEWS2
-    fidl::InterfaceHandle<fuchsia::ui::viewsv1::ViewManager>
-        view_manager_handle,
-    zx::eventpair view_token, zx::eventpair export_token,
-#endif
     fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
         accessibility_context_writer,
     zx_handle_t vsync_event_handle)
@@ -103,10 +98,6 @@ PlatformView::PlatformView(
           std::move(session_listener_error_callback)),
       metrics_changed_callback_(std::move(session_metrics_did_change_callback)),
       size_change_hint_callback_(std::move(session_size_change_hint_callback)),
-#ifndef SCENIC_VIEWS2
-      view_manager_(view_manager_handle.Bind()),
-      view_listener_(this),
-#endif
       ime_client_(this),
       context_writer_bridge_(std::move(accessibility_context_writer)),
       semantics_bridge_(this, &metrics_),
@@ -114,30 +105,11 @@ PlatformView::PlatformView(
       vsync_event_handle_(vsync_event_handle) {
   // Register all error handlers.
   SetInterfaceErrorHandler(session_listener_binding_, "SessionListener");
-#ifndef SCENIC_VIEWS2
-  SetInterfaceErrorHandler(view_manager_, "View Manager");
-  SetInterfaceErrorHandler(view_, "View");
-#endif
   SetInterfaceErrorHandler(ime_, "Input Method Editor");
   SetInterfaceErrorHandler(text_sync_service_, "Text Sync Service");
   SetInterfaceErrorHandler(clipboard_, "Clipboard");
   SetInterfaceErrorHandler(parent_environment_service_provider_,
                            "Parent Environment Service Provider");
-
-#ifndef SCENIC_VIEWS2
-  // Create the view.
-  view_manager_->CreateView2(view_.NewRequest(),           // view
-                             std::move(view_token),        // view token
-                             view_listener_.NewBinding(),  // view listener
-                             std::move(export_token),      // export token
-                             debug_label_                  // diagnostic label
-  );
-
-  // Get the view container. This will need to be returned to the isolate
-  // configurator so that it can setup Mozart bindings later.
-  view_->GetContainer(view_container_.NewRequest());
-#endif
-
   // Access the clipboard.
   parent_environment_service_provider_ =
       parent_environment_service_provider_handle.Bind();
@@ -152,54 +124,26 @@ PlatformView::PlatformView(
   // Finally! Register the native platform message handlers.
   RegisterPlatformMessageHandlers();
 
-  // TODO(SCN-975): Re-enable.
+  // TODO(SCN-975): Re-enable.  Likely that Engine should clone the ViewToken
+  // and pass the clone in here.
   //   view_->GetToken(std::bind(&PlatformView::ConnectSemanticsProvider, this,
   //                             std::placeholders::_1));
 }
 
 PlatformView::~PlatformView() = default;
 
-#ifndef SCENIC_VIEWS2
-void PlatformView::OfferServiceProvider(
-    fidl::InterfaceHandle<fuchsia::sys::ServiceProvider> service_provider,
-    std::vector<std::string> services) {
-  view_->OfferServiceProvider(std::move(service_provider), std::move(services));
-}
-#endif
-
 void PlatformView::RegisterPlatformMessageHandlers() {
   platform_message_handlers_[kFlutterPlatformChannel] =
-      std::bind(&PlatformView::HandleFlutterPlatformChannelPlatformMessage,  //
-                this,                                                        //
-                std::placeholders::_1);
+      std::bind(&PlatformView::HandleFlutterPlatformChannelPlatformMessage,
+                this, std::placeholders::_1);
   platform_message_handlers_[kTextInputChannel] =
-      std::bind(&PlatformView::HandleFlutterTextInputChannelPlatformMessage,  //
-                this,                                                         //
-                std::placeholders::_1);
+      std::bind(&PlatformView::HandleFlutterTextInputChannelPlatformMessage,
+                this, std::placeholders::_1);
   platform_message_handlers_[kAccessibilityChannel] =
-      std::bind(&PlatformView::HandleAccessibilityChannelPlatformMessage,  //
-                this,                                                      //
+      std::bind(&PlatformView::HandleAccessibilityChannelPlatformMessage, this,
                 std::placeholders::_1);
 }
 
-#ifndef SCENIC_VIEWS2
-fidl::InterfaceHandle<fuchsia::ui::viewsv1::ViewContainer>
-PlatformView::TakeViewContainer() {
-  return std::move(view_container_);
-}
-#endif
-
-#ifndef SCENIC_VIEWS2
-// |fuchsia::ui::viewsv1::ViewListener|
-void PlatformView::OnPropertiesChanged(
-    fuchsia::ui::viewsv1::ViewProperties properties,
-    OnPropertiesChangedCallback callback) {
-  if (properties.view_layout) {
-    UpdateViewportMetrics(*properties.view_layout);
-  }
-  callback();
-}
-#else
 void PlatformView::OnPropertiesChanged(
     const fuchsia::ui::gfx::ViewProperties& view_properties) {
   fuchsia::ui::gfx::BoundingBox layout_box =
@@ -217,7 +161,6 @@ void PlatformView::OnPropertiesChanged(
 
   FlushViewportMetrics();
 }
-#endif
 
 // TODO(SCN-975): Re-enable.
 // void PlatformView::ConnectSemanticsProvider(
@@ -225,20 +168,6 @@ void PlatformView::OnPropertiesChanged(
 //   semantics_bridge_.SetupEnvironment(
 //       token.value, parent_environment_service_provider_.get());
 // }
-
-#ifndef SCENIC_VIEWS2
-void PlatformView::UpdateViewportMetrics(
-    const fuchsia::ui::viewsv1::ViewLayout& layout) {
-  metrics_.size.width = layout.size.width;
-  metrics_.size.height = layout.size.height;
-  metrics_.padding.left = layout.inset.left;
-  metrics_.padding.top = layout.inset.top;
-  metrics_.padding.right = layout.inset.right;
-  metrics_.padding.bottom = layout.inset.bottom;
-
-  FlushViewportMetrics();
-}
-#endif
 
 void PlatformView::UpdateViewportMetrics(
     const fuchsia::ui::gfx::Metrics& metrics) {
@@ -376,60 +305,28 @@ void PlatformView::OnScenicEvent(
             break;
           }
           case fuchsia::ui::gfx::Event::Tag::kViewPropertiesChanged: {
-#ifdef SCENIC_VIEWS2
             OnPropertiesChanged(
                 std::move(event.gfx().view_properties_changed().properties));
-#endif
             break;
           }
-          case fuchsia::ui::gfx::Event::Tag::kImportUnbound:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
-                   "(fuchsia.ui.gfx.ImportUnboundEvent).";
-            break;
           case fuchsia::ui::gfx::Event::Tag::kViewConnected:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
-                   "(fuchsia.ui.gfx.ViewConnectedEvent).";
+            OnChildViewConnected(event.gfx().view_connected().view_holder_id);
             break;
           case fuchsia::ui::gfx::Event::Tag::kViewDisconnected:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
-                   "(fuchsia.ui.gfx.ViewDisconnectedEvent).";
-            break;
-          case fuchsia::ui::gfx::Event::Tag::kViewHolderConnected:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
-                   "(fuchsia.ui.gfx.kViewHolderConnected).";
-            break;
-          case fuchsia::ui::gfx::Event::Tag::kViewHolderDisconnected:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
-                   "(fuchsia.ui.gfx.ViewHolderDisconnectedEvent).";
-            break;
-          case fuchsia::ui::gfx::Event::Tag::kViewAttachedToScene:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
-                   "(fuchsia.ui.gfx.ViewAttachedToScene).";
-            break;
-          case fuchsia::ui::gfx::Event::Tag::kViewDetachedFromScene:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
-                   "(fuchsia.ui.gfx.ViewDetachedFromScene).";
+            OnChildViewDisconnected(
+                event.gfx().view_disconnected().view_holder_id);
             break;
           case fuchsia::ui::gfx::Event::Tag::kViewStateChanged:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event "
-                   "(fuchsia.ui.gfx.ViewStateChanged).";
+            OnChildViewStateChanged(
+                event.gfx().view_state_changed().view_holder_id,
+                event.gfx().view_state_changed().state.is_rendering);
             break;
           case fuchsia::ui::gfx::Event::Tag::Invalid:
-            DEBUG_CHECK(false, LOG_TAG,
-                        "Flutter PlatformView::OnScenicEvent: Got "
-                        "an invalid GFX event.");
+            FML_DCHECK(false) << "Flutter PlatformView::OnScenicEvent: Got "
+                                 "an invalid GFX event.";
             break;
           default:
-            FML_LOG(WARNING)
-                << "Flutter PlatformView::OnScenicEvent: Unhandled GFX event";
+            // We don't care about some event types, so not handling them is OK.
             break;
         }
         break;
@@ -447,18 +344,37 @@ void PlatformView::OnScenicEvent(
             OnHandleKeyboardEvent(event.input().keyboard());
             break;
           }
-          default: {
-            FML_LOG(WARNING) << "Flutter PlatformView::OnScenicEvent: "
-                                "Unhandled input event.";
+          case fuchsia::ui::input::InputEvent::Tag::Invalid: {
+            FML_DCHECK(false)
+                << "Flutter PlatformView::OnScenicEvent: Got an invalid INPUT "
+                   "event.";
           }
         }
         break;
       default: {
-        FML_LOG(WARNING)
-            << "Flutter PlatformView::OnScenicEvent: Unhandled Scenic event.";
+        break;
       }
     }
   }
+}
+
+void PlatformView::OnChildViewConnected(scenic::ResourceId view_holder_id) {
+  task_runners_.GetUITaskRunner()->PostTask([view_holder_id]() {
+    blink::SceneHost::OnViewConnected(view_holder_id);
+  });
+}
+
+void PlatformView::OnChildViewDisconnected(scenic::ResourceId view_holder_id) {
+  task_runners_.GetUITaskRunner()->PostTask([view_holder_id]() {
+    blink::SceneHost::OnViewDisconnected(view_holder_id);
+  });
+}
+
+void PlatformView::OnChildViewStateChanged(scenic::ResourceId view_holder_id,
+                                           bool state) {
+  task_runners_.GetUITaskRunner()->PostTask([view_holder_id, state]() {
+    blink::SceneHost::OnViewStateChanged(view_holder_id, state);
+  });
 }
 
 static blink::PointerData::Change GetChangeFromPointerEventPhase(

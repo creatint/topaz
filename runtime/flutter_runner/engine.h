@@ -6,22 +6,21 @@
 #define TOPAZ_RUNTIME_FLUTTER_RUNNER_ENGINE_H_
 
 #include <fuchsia/io/cpp/fidl.h>
-#include <fuchsia/ui/viewsv1/cpp/fidl.h>
+#include <fuchsia/ui/gfx/cpp/fidl.h>
+#include <fuchsia/ui/views/cpp/fidl.h>
 #include <lib/async-loop/cpp/loop.h>
 #include <lib/sys/cpp/service_directory.h>
 #include <lib/zx/event.h>
-#include <lib/zx/eventpair.h>
 
 #include "flutter/fml/macros.h"
 #include "flutter/shell/common/shell.h"
 #include "isolate_configurator.h"
-#include "lib/ui/flutter/sdk_ext/src/natives.h"
 
 namespace flutter {
 
 // Represents an instance of running Flutter engine along with the threads
 // that host the same.
-class Engine final : public mozart::NativesDelegate {
+class Engine final {
  public:
   class Delegate {
    public:
@@ -32,7 +31,7 @@ class Engine final : public mozart::NativesDelegate {
          std::shared_ptr<sys::ServiceDirectory> svc, blink::Settings settings,
          fml::RefPtr<const blink::DartSnapshot> isolate_snapshot,
          fml::RefPtr<const blink::DartSnapshot> shared_snapshot,
-         zx::eventpair view_token, UniqueFDIONS fdio_ns,
+         fuchsia::ui::views::ViewToken view_token, UniqueFDIONS fdio_ns,
          fidl::InterfaceRequest<fuchsia::io::Directory> directory_request);
   ~Engine();
 
@@ -63,11 +62,6 @@ class Engine final : public mozart::NativesDelegate {
   void OnSessionMetricsDidChange(const fuchsia::ui::gfx::Metrics& metrics);
   void OnSessionSizeChangeHint(float width_change_factor,
                                float height_change_factor);
-
-  // |mozart::NativesDelegate|
-  void OfferServiceProvider(
-      fidl::InterfaceHandle<fuchsia::sys::ServiceProvider> service_provider,
-      std::vector<std::string> services);
 
   FML_DISALLOW_COPY_AND_ASSIGN(Engine);
 };

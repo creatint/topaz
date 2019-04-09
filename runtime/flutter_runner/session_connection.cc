@@ -13,25 +13,17 @@
 namespace flutter {
 
 SessionConnection::SessionConnection(
-    std::string debug_label,
-#ifndef SCENIC_VIEWS2
-    zx::eventpair import_token,
-#else
-    zx::eventpair view_token,
-#endif
+    std::string debug_label, fuchsia::ui::views::ViewToken view_token,
     fidl::InterfaceHandle<fuchsia::ui::scenic::Session> session,
     fit::closure session_error_callback, zx_handle_t vsync_event_handle)
     : debug_label_(std::move(debug_label)),
       session_wrapper_(session.Bind(), nullptr),
-#ifdef SCENIC_VIEWS2
-      root_view_(&session_wrapper_, std::move(view_token), debug_label),
-#endif
+      root_view_(&session_wrapper_, std::move(view_token.value), debug_label),
       root_node_(&session_wrapper_),
       surface_producer_(
           std::make_unique<VulkanSurfaceProducer>(&session_wrapper_)),
       scene_update_context_(&session_wrapper_, surface_producer_.get()),
       vsync_event_handle_(vsync_event_handle) {
-
   session_wrapper_.set_error_handler(
       [callback = std::move(session_error_callback)](zx_status_t status) {
         callback();
@@ -39,14 +31,11 @@ SessionConnection::SessionConnection(
 
   session_wrapper_.SetDebugName(debug_label_);
 
-#ifndef SCENIC_VIEWS2
-  root_node_.Bind(std::move(import_token));
-#else
-  root_view_.AddChild(root_node_);
-  // TODO: move this into BaseView or ChildView
-  root_node_.SetTranslation(0.f, 0.f, 0.1f);
-#endif
+  // TODO(SCN-975): Re-enable.
+  //   view_->GetToken(std::bind(&PlatformView::ConnectSemanticsProvider, this,
+  //                             std::placeholders::_1));
 
+  root_view_.AddChild(root_node_);
   root_node_.SetEventMask(fuchsia::ui::gfx::kMetricsEventMask |
                           fuchsia::ui::gfx::kSizeChangeHintEventMask);
 

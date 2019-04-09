@@ -6,7 +6,6 @@
 
 #include "dart-pkg/fuchsia/sdk_ext/fuchsia.h"
 #include "dart-pkg/zircon/sdk_ext/handle.h"
-#include "lib/ui/flutter/sdk_ext/src/natives.h"
 #include "src/lib/fxl/logging.h"
 #include "third_party/dart/runtime/include/dart_api.h"
 #include "third_party/tonic/converter/dart_converter.h"
@@ -17,25 +16,15 @@ namespace flutter {
 
 IsolateConfigurator::IsolateConfigurator(
     UniqueFDIONS fdio_ns,
-#ifndef SCENIC_VIEWS2
-    fidl::InterfaceHandle<fuchsia::ui::viewsv1::ViewContainer> view_container,
     fidl::InterfaceHandle<fuchsia::sys::Environment> environment,
-#else
-    fidl::InterfaceHandle<fuchsia::sys::Environment> environment,
-#endif
     zx::channel directory_request)
     : fdio_ns_(std::move(fdio_ns)),
-#ifndef SCENIC_VIEWS2
-      view_container_(std::move(view_container)),
-#endif
       environment_(std::move(environment)),
-      directory_request_(std::move(directory_request)) {
-}
+      directory_request_(std::move(directory_request)) {}
 
 IsolateConfigurator::~IsolateConfigurator() = default;
 
-bool IsolateConfigurator::ConfigureCurrentIsolate(
-    mozart::NativesDelegate* natives_delegate) {
+bool IsolateConfigurator::ConfigureCurrentIsolate() {
   if (used_) {
     return false;
   }
@@ -44,7 +33,6 @@ bool IsolateConfigurator::ConfigureCurrentIsolate(
   BindFuchsia();
   BindZircon();
   BindDartIO();
-  BindScenic(natives_delegate);
 
   // This is now owned by the Dart bindings. So relinquish our ownership of the
   // handle.
@@ -99,35 +87,6 @@ void IsolateConfigurator::BindDartIO() {
   result = Dart_Invoke(namespace_type, tonic::ToDart("_setupNamespace"),
                        1, namespace_args);
   FXL_CHECK(!tonic::LogIfError(result));
-}
-
-void IsolateConfigurator::BindScenic(
-    mozart::NativesDelegate* natives_delegate) {
-  Dart_Handle mozart_internal =
-      Dart_LookupLibrary(tonic::ToDart("dart:mozart.internal"));
-  FXL_CHECK(!tonic::LogIfError(mozart_internal));
-
-  Dart_Handle result = Dart_SetNativeResolver(mozart_internal,        //
-                                              mozart::NativeLookup,   //
-                                              mozart::NativeSymbol);  //
-  FXL_CHECK(!tonic::LogIfError(result));
-
-  result = Dart_SetField(
-      mozart_internal,            //
-      tonic::ToDart("_context"),  //
-      tonic::DartConverter<uint64_t>::ToDart(reinterpret_cast<intptr_t>(
-          static_cast<mozart::NativesDelegate*>(natives_delegate))));
-  FXL_CHECK(!tonic::LogIfError(result));
-
-#ifndef SCENIC_VIEWS2
-  result = Dart_SetField(mozart_internal,                  //
-                         tonic::ToDart("_viewContainer"),  //
-                         tonic::ToDart(zircon::dart::Handle::Create(
-                             view_container_.TakeChannel().release())));
-  FXL_CHECK(!tonic::LogIfError(result));
-#else
-  // TODO(SCN-840): Remove remaining references to _viewContainer.
-#endif
 }
 
 }  // namespace flutter
