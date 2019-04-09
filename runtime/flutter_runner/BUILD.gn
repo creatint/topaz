@@ -4,10 +4,12 @@
 
 assert(is_fuchsia)
 
+import("//build/package.gni")
 import("//build/test/test_package.gni")
 import("//build/testing/environments.gni")
 import("//build/vulkan/config.gni")
 import("//garnet/bin/ui/scenic/config.gni")
+import("//topaz/runtime/flutter_runner/prebuilt_framework.gni")
 import("$flutter_root/shell/gpu/gpu.gni")
 
 shell_gpu_configuration("fuchsia_gpu_configuration") {
@@ -166,9 +168,11 @@ template("flutter_runner") {
       "-fno-omit-frame-pointer",
     ]
 
-    # This flag is needed so that the call to dladdr() in Dart's native symbol
-    # resolver can report good symbol information for the CPU profiler.
-    ldflags = [ "-rdynamic" ]
+    if (!invoker.product) {
+      # This flag is needed so that the call to dladdr() in Dart's native symbol
+      # resolver can report good symbol information for the CPU profiler.
+      ldflags = [ "-rdynamic" ]
+    }
   }
 }
 
@@ -209,8 +213,6 @@ flutter_runner("jit_product") {
     "//third_party/dart/runtime/platform:libdart_platform_jit_product",
   ]
 }
-
-import("//build/package.gni")
 
 observatory_target =
     "//third_party/dart/runtime/observatory:observatory_archive"
@@ -276,7 +278,6 @@ template("jit_runner") {
 
     deps = [
       ":jit${product_suffix}",
-      "//topaz/runtime/flutter_runner/kernel:framework_shim_kernel",
       snapshot_framework_label,
       snapshot_label,
     ]
@@ -329,15 +330,31 @@ template("jit_runner") {
         dest = "framework_isolate_core_snapshot_instructions.bin"
       },
       {
-        path = rebase_path(
-                "$snapshot_gen_dir/framework_shim.dilpmanifest.frameworkversion")
-        dest = "runner.frameworkversion"
-      },
-      {
         path = rebase_path("//third_party/icu/common/icudtl.dat")
         dest = "icudtl.dat"
       },
     ]
+
+    if (prebuilt_framework_path == "") {
+      deps += [ "//topaz/runtime/flutter_runner/kernel:framework_shim_kernel" ]
+      resources += [
+        {
+          path = rebase_path(
+                  "$snapshot_gen_dir/framework_shim.dilpmanifest.frameworkversion")
+          dest = "runner.frameworkversion"
+        },
+      ]
+    } else {
+      deps +=
+          [ "//topaz/runtime/flutter_runner/kernel:extract_prebuilt_framework" ]
+      resources += [
+        {
+          path = rebase_path(
+                  "$snapshot_gen_dir/data/$prebuilt_framework_name/app.frameworkversion")
+          dest = "runner.frameworkversion"
+        },
+      ]
+    }
 
     if (!product) {
       resources += [
