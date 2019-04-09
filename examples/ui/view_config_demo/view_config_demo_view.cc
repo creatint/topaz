@@ -63,10 +63,12 @@ void ViewConfigDemoView::OnSceneInvalidated(
 // Return the first locale ID in the given view config, or "[none]" if the
 // config is invalid.
 const std::string GetFirstLocale(const ViewConfig& view_config) {
-  if (view_config.has_intl_profile() &&
-      !view_config.intl_profile().locales.empty()) {
-    return view_config.intl_profile().locales[0].id;
-  }
+  // TODO(I18N-7): Restore after converting fuchsia.intl.Profile to FIDL table.
+
+//  if (view_config.has_intl_profile() &&
+//      !view_config.intl_profile().locales().empty()) {
+//    return view_config.intl_profile().locales()[0].id;
+//  }
   return "[none]";
 }
 
