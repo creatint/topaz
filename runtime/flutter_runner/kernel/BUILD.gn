@@ -157,6 +157,7 @@ dart_tool("extract_far") {
   main_dart = "extract_far.dart"
 
   force_prebuilt_dart = true
+  disable_analysis = true
 
   source_dir = "."
   sources = [
