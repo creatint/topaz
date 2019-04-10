@@ -15,6 +15,6 @@ void main() {
     var vmo = FakeVmo(512);
     var writer = VmoWriter(vmo);
     var inspect = Inspect.internal(writer);
-    expect(inspect.rootNode, isNotNull);
+    expect(inspect.root, isNotNull);
   });
 }

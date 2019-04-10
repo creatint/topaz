@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:fuchsia_inspect/inspect.dart';
+import 'package:fuchsia_inspect/inspect.dart' as inspect;
 import 'package:fuchsia_modular/module.dart';
 import 'package:fuchsia_services/services.dart';
 
@@ -13,6 +13,7 @@ class RootIntentHandler extends IntentHandler {
   @override
   void handleIntent(Intent intent) {
     var context = StartupContext.fromStartupInfo();
-    runApp(InspectExampleApp(Inspect(context)));
+    var inspectNode = inspect.Inspect(context).root;
+    runApp(InspectExampleApp(inspectNode));
   }
 }

@@ -4,3 +4,4 @@
 
 /// The Inspect API for Dart.
 export 'src/inspect.dart';
+export 'src/node.dart';

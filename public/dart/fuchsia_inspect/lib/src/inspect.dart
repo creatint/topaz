@@ -14,7 +14,7 @@ const int _defaultVmoSizeBytes = 256 * 1024;
 class Inspect {
   final VmoWriter _writer;
 
-  Node _rootNode;
+  Node _root;
 
   /// Initializes a VMO with [vmoSize] and publishes the Inspect data on the
   /// component's (as provided by its [context]) out/ directory.
@@ -29,9 +29,9 @@ class Inspect {
   /// injection of fakes for testing.
   @visibleForTesting
   Inspect.internal(this._writer) {
-    _rootNode = Node(_writer.rootNode, _writer);
+    _root = Node(_writer.rootNode, _writer);
   }
 
   /// The root [Node] of this Inspect tree.
-  Node get rootNode => _rootNode;
+  Node get root => _root;
 }

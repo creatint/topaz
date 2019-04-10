@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:fuchsia_inspect/inspect.dart';
+import 'package:fuchsia_inspect/inspect.dart' as inspect;
 
 /// A Flutter app that demonstrates usage of the [Inspect] API.
 class InspectExampleApp extends StatelessWidget {
   static const _appColor = Colors.blue;
 
-  final Inspect _inspect;
+  final inspect.Node _inspect;
 
   InspectExampleApp(this._inspect) {
     _initMetrics();
@@ -28,7 +28,7 @@ class InspectExampleApp extends StatelessWidget {
 
   /// Initializes the [Inspect] metrics for this widget.
   void _initMetrics() {
-    _inspect.rootNode.createStringProperty('app-color').value = '$_appColor';
+    _inspect.createStringProperty('app-color').value = '$_appColor';
   }
 }
 
