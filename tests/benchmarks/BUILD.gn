@@ -4,18 +4,38 @@
 
 import("//build/package.gni")
 
+executable("topaz_benchmarks_bin") {
+  output_name = "topaz_benchmarks"
+
+  sources = [
+    "benchmarks.cc",
+    "gfx_benchmarks.cc",
+    "gfx_benchmarks.h",
+  ]
+
+  deps = [
+    "//garnet/testing/benchmarking:benchmarking",
+    "//garnet/testing/benchmarking:is_vulkan_supported",
+  ]
+}
+
 # Builds "benchmarks.sh" into a package that runs all Topaz benchmarks
 # on CI.
 package("topaz_benchmarks") {
   testonly = true
+
+  deps = [
+    ":topaz_benchmarks_bin",
+  ]
+
   binaries = [
     {
-      name = rebase_path("topaz_benchmarks.sh")
+      name = rebase_path("benchmarks.sh")
       dest = "benchmarks.sh"
     },
     {
-      name = rebase_path("topaz_gfx_benchmarks.sh")
-      dest = "gfx_benchmarks.sh"
+      shell = true
+      name = "topaz_benchmarks"
     },
   ]
 }
