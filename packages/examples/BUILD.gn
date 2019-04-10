@@ -23,6 +23,7 @@ group("all") {
     "//topaz/packages/examples:dart",
     "//topaz/packages/examples:dart_sdk",
     "//topaz/packages/examples:fidl",
+    "//topaz/packages/examples:flutter_gallery",
     "//topaz/packages/examples:inspect",
     "//topaz/packages/examples:misc",
     "//topaz/packages/examples:modular",
@@ -131,5 +132,12 @@ group("inspect") {
   testonly = true
   public_deps = [
     "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod",
+  ]
+}
+
+group("flutter_gallery") {
+  testonly = true
+  public_deps = [
+    "//third_party/dart-pkg/git/flutter/examples/flutter_gallery",
   ]
 }
