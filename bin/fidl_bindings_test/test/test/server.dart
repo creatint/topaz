@@ -6,26 +6,30 @@ import 'dart:async';
 
 import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
 import 'package:fidl_fuchsia_io/fidl_async.dart';
-import 'package:fidl_fuchsia_sys/fidl_async.dart'
-    show ComponentControllerProxy, LaunchInfo;
+import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 
 const _kServerName =
     'fuchsia-pkg://fuchsia.com/fidl_bindings_test_server#meta/fidl_bindings_test_server.cmx';
-
-StartupContext _context = StartupContext.fromStartupInfo();
 
 class TestServerInstance {
   final TestServerProxy proxy = TestServerProxy();
   final ComponentControllerProxy controller = ComponentControllerProxy();
 
   Future<void> start() async {
+    // Create and connect to a Launcher service
+    final launcherProxy = LauncherProxy();
+    StartupContext.fromStartupInfo().incoming.connectToService(launcherProxy);
+
     final dirProxy = DirectoryProxy();
     final launchInfo = LaunchInfo(
         url: _kServerName,
         directoryRequest: dirProxy.ctrl.request().passChannel());
-    await _context.launcher
-        .createComponent(launchInfo, controller.ctrl.request());
+    // Use the launcher services launch echo server via launchInfo
+    await launcherProxy.createComponent(launchInfo, controller.ctrl.request());
+    // Close connection to launcher service
+    launcherProxy.ctrl.close();
+
     Incoming(dirProxy).connectToService(proxy);
   }
 

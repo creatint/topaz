@@ -101,7 +101,10 @@ Future<void> _startAppAsRootView(
   final launchInfo = LaunchInfo(
       url: _testAppUrl,
       directoryRequest: directory.ctrl.request().passChannel());
-  await context.launcher.createComponent(launchInfo, controllerRequest);
+  final launcher = LauncherProxy();
+  context.incoming.connectToService(launcher);
+  await launcher.createComponent(launchInfo, controllerRequest);
+  launcher.ctrl.close();
 
   final viewProvider = ViewProviderProxy();
   final incoming = Incoming(directory);
@@ -129,7 +132,10 @@ Future<void> _startDevBasemgr(
     '--enable_presenter',
     '--run_base_shell_with_test_runner=false'
   ]);
-  await context.launcher.createComponent(launchInfo, controllerRequest);
+  final launcher = LauncherProxy();
+  context.incoming.connectToService(launcher);
+  await launcher.createComponent(launchInfo, controllerRequest);
+  launcher.ctrl.close();
 }
 
 // Starts the basemgr configured to launch the Ermine session shell. This
@@ -141,7 +147,10 @@ Future<void> _startErmine(
 
   final launchInfo =
       LaunchInfo(url: _basemgrUrl, arguments: ['--session_shell=$_ermineUrl']);
-  await context.launcher.createComponent(launchInfo, controllerRequest);
+  final launcher = LauncherProxy();
+  context.incoming.connectToService(launcher);
+  await launcher.createComponent(launchInfo, controllerRequest);
+  launcher.ctrl.close();
 }
 
 // Blank can manifest as invalid screenshots or blackness.

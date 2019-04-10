@@ -19,6 +19,8 @@ Future<void> _startBasemgr(
     InterfaceRequest<ComponentController> controllerRequest,
     String rootModUrl) async {
   final context = StartupContext.fromStartupInfo();
+  final launcher = LauncherProxy();
+  context.incoming.connectToService(launcher);
 
   final launchInfo = LaunchInfo(url: _basemgrUrl, arguments: [
     '--base_shell=fuchsia-pkg://fuchsia.com/dev_base_shell#meta/dev_base_shell.cmx',
@@ -29,7 +31,8 @@ Future<void> _startBasemgr(
     '--enable_presenter',
     '--run_base_shell_with_test_runner=false'
   ]);
-  await context.launcher.createComponent(launchInfo, controllerRequest);
+  await launcher.createComponent(launchInfo, controllerRequest);
+  launcher.ctrl.close();
 }
 
 void main() {

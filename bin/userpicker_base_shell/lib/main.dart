@@ -14,6 +14,7 @@ import 'package:lib.widgets/application.dart';
 import 'package:lib.widgets/model.dart';
 import 'package:meta/meta.dart';
 import 'package:zircon/zircon.dart';
+import 'package:fidl_fuchsia_sys/fidl_async.dart';
 
 import 'authentication_overlay.dart';
 import 'authentication_overlay_model.dart';
@@ -32,12 +33,14 @@ BaseShellWidget<UserPickerBaseShellModel> _baseShellWidget;
 void main() {
   setupLogger(name: 'userpicker_base_shell');
   StartupContext startupContext = StartupContext.fromStartupInfo();
+  final launcherProxy = LauncherProxy();
+  startupContext.incoming.connectToService(launcherProxy);
 
   // Connect to Cobalt
   cobalt.LoggerProxy logger = cobalt.LoggerProxy();
 
   cobalt.LoggerFactoryProxy loggerFactory = cobalt.LoggerFactoryProxy();
-  StartupContext.fromStartupInfo().incoming.connectToService(loggerFactory);
+  startupContext.incoming.connectToService(loggerFactory);
 
   SizedVmo configVmo = SizedVmo.fromFile(_kCobaltConfigBinProtoPath);
   cobalt.ProjectProfile profile = cobalt.ProjectProfile(
@@ -53,17 +56,15 @@ void main() {
   loggerFactory.ctrl.close();
 
   NetstackProxy netstackProxy = NetstackProxy();
-  StartupContext.fromStartupInfo().incoming.connectToService(netstackProxy);
+  startupContext.incoming.connectToService(netstackProxy);
 
-  NetstackModel netstackModel = NetstackModel(netstack: netstackProxy)
-    ..start();
+  NetstackModel netstackModel = NetstackModel(netstack: netstackProxy)..start();
 
   _OverlayModel wifiInfoOverlayModel = _OverlayModel();
 
   final AuthenticationOverlayModel authModel = AuthenticationOverlayModel();
 
-  UserPickerBaseShellModel userPickerBaseShellModel =
-      UserPickerBaseShellModel(
+  UserPickerBaseShellModel userPickerBaseShellModel = UserPickerBaseShellModel(
     onBaseShellStopped: () {
       netstackProxy.ctrl.close();
       netstackModel.dispose();
@@ -81,7 +82,7 @@ void main() {
     fit: StackFit.passthrough,
     children: <Widget>[
       UserPickerBaseShellScreen(
-        launcher: startupContext.launcher,
+        launcher: launcherProxy,
       ),
       ScopedModel<AuthenticationOverlayModel>(
         model: authModel,
@@ -110,7 +111,7 @@ void main() {
               wifiWidget: ApplicationWidget(
                 url:
                     'fuchsia-pkg://fuchsia.com/wifi_settings#meta/wifi_settings.cmx',
-                launcher: startupContext.launcher,
+                launcher: launcherProxy,
               ),
             ),
           ),
@@ -145,8 +146,7 @@ class _WifiInfo extends StatelessWidget {
   const _WifiInfo({@required this.wifiWidget}) : assert(wifiWidget != null);
 
   @override
-  Widget build(BuildContext context) =>
-      ScopedModelDescendant<_OverlayModel>(
+  Widget build(BuildContext context) => ScopedModelDescendant<_OverlayModel>(
         builder: (
           BuildContext context,
           Widget child,

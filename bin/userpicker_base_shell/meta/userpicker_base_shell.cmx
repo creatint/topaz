@@ -3,6 +3,9 @@
         "data": "data/userpicker_base_shell"
     },
     "sandbox": {
+        "dev": [
+            "misc"
+        ],
         "services": [
             "fuchsia.cobalt.LoggerFactory",
             "fuchsia.fonts.Provider",
@@ -11,12 +14,14 @@
             "fuchsia.modular.ContextWriter",
             "fuchsia.net.Connectivity",
             "fuchsia.netstack.Netstack",
+            "fuchsia.sys.Launcher",
             "fuchsia.sys.Environment",
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.policy.Presenter",
             "fuchsia.ui.scenic.Scenic"
         ],
-        "dev": [ "misc" ],
-        "system": [ "data/sysui" ]
+        "system": [
+            "data/sysui"
+        ]
     }
 }

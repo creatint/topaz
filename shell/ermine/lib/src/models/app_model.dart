@@ -22,6 +22,7 @@ import 'package:fidl_fuchsia_shell_ermine/fidl_async.dart' show AskBarProxy;
 import 'package:fidl_fuchsia_sys/fidl_async.dart'
     show
         ComponentControllerProxy,
+        LauncherProxy,
         LaunchInfo,
         ServiceList,
         ServiceProviderBinding;
@@ -137,8 +138,10 @@ class AppModel extends Model {
 
   void _loadAskBar() {
     final dirProxy = DirectoryProxy();
+    final launcherProxy = LauncherProxy();
+    startupContext.incoming.connectToService(launcherProxy);
 
-    startupContext.launcher.createComponent(
+    launcherProxy.createComponent(
       LaunchInfo(
         url: _kErmineAskModuleUrl,
         directoryRequest: dirProxy.ctrl.request().passChannel(),

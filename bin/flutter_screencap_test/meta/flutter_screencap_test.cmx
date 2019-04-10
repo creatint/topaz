@@ -20,6 +20,7 @@
         ],
         "services": [
             "fuchsia.sys.Environment",
+            "fuchsia.sys.Launcher",
             "fuchsia.ui.policy.Presenter",
             "fuchsia.ui.scenic.Scenic"
         ]

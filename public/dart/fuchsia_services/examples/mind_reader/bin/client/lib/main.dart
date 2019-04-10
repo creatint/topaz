@@ -46,7 +46,6 @@ Future<void> _run(String thoughtToExpose) async {
     log.info('Exposing ThoughtLeakerImpl with the thought "$thoughtToExpose"');
   }
 
-  
   /// A [DirectoryProxy] who's channels will facilitate the connection between
   /// this client component and the launched server component we're about to
   /// launch. This client component is looking for service under /in/svc/
@@ -67,13 +66,16 @@ Future<void> _run(String thoughtToExpose) async {
     additionalServices: serviceList,
   );
 
+  final launcherProxy = LauncherProxy();
+  context.incoming.connectToService(launcherProxy);
+
   // Launch the component and wait for it to start. We pass a
   // [ComponentControllerProxy] here to tie the lifecycle of our component to
   // the one we are launching. If we were to pass null the launched process
   // would live on after this process dies. Note: you can keep a reference to
   // the proxy and close it when you want if your process was longer lived.
-  await context.launcher
-      .createComponent(launchInfo, ComponentControllerProxy().ctrl.request());
+  await launcherProxy.createComponent(
+      launchInfo, ComponentControllerProxy().ctrl.request());
 
   // Now that the component has launched we attempt to connect to the mind
   // reader service which is exposed to us by the child.

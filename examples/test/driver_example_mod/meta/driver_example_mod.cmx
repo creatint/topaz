@@ -9,6 +9,7 @@
             "fuchsia.modular.Clipboard",
             "fuchsia.modular.ContextWriter",
             "fuchsia.modular.ModuleContext",
+            "fuchsia.sys.Launcher",
             "fuchsia.sys.Environment",
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.policy.Presenter",

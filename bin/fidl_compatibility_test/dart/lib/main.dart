@@ -28,8 +28,9 @@ class EchoImpl extends Echo {
         url: forwardToServer,
         directoryRequest: dirProxy.ctrl.request().passChannel());
     final controller = ComponentControllerProxy();
-    await context.launcher
-        .createComponent(launchInfo, controller.ctrl.request());
+    final launcher = LauncherProxy();
+    context.incoming.connectToService(launcher);
+    await launcher.createComponent(launchInfo, controller.ctrl.request());
     final echo = EchoProxy();
     Incoming(dirProxy).connectToService(echo);
 
@@ -59,10 +60,11 @@ class EchoImpl extends Echo {
           url: forwardToServer,
           directoryRequest: dirProxy.ctrl.request().passChannel());
       final controller = ComponentControllerProxy();
-      await context.launcher
-          .createComponent(launchInfo, controller.ctrl.request());
+      final launcher = LauncherProxy();
+      context.incoming.connectToService(launcher);
+      await launcher.createComponent(launchInfo, controller.ctrl.request());
       final echo = EchoProxy();
-      Incoming(dirProxy).connectToService(echo);
+       Incoming(dirProxy).connectToService(echo);
       // Keep echo around until we process the expected event.
       proxies[forwardToServer] = echo;
       echo.echoEvent.listen((Struct val) {
@@ -76,7 +78,6 @@ class EchoImpl extends Echo {
   @override
   Stream<Struct> get echoEvent => _echoEventStreamController.stream;
 }
-
 
 void main(List<String> args) {
   final EchoBinding echoBinding = EchoBinding();

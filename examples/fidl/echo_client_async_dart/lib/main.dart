@@ -37,8 +37,14 @@ Future<void> main(List<String> args) async {
   // Creates a new instance of the component described by launchInfo.
   final componentController = ComponentControllerProxy();
 
-  await context.launcher
-      .createComponent(launchInfo, componentController.ctrl.request());
+  // Create and connect to a Launcher service
+  final launcherProxy = LauncherProxy();
+  context.incoming.connectToService(launcherProxy);
+  // Use the launcher services launch echo server via launchInfo
+  await launcherProxy.createComponent(
+      launchInfo, componentController.ctrl.request());
+  // Close our launcher connection since we no longer need the launcher service.
+  launcherProxy.ctrl.close();
 
   // Bind. We bind EchoProxy, a generated proxy class, to the remote Echo
   // service.

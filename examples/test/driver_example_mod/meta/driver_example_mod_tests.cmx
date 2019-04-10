@@ -24,6 +24,7 @@
         ],
         "services": [
             "fuchsia.net.SocketProvider",
+            "fuchsia.sys.Launcher",
             "fuchsia.sys.Environment"
         ]
     }
