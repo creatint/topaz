@@ -39,3 +39,4 @@ shas are provided for reference only. Code can be checked out with:
 * topaz/public/lib/mod: 75067a620790d76515c3824321eca335a6aa6bab
 * topaz/public/lib/app_driver: 0196bf704f
 * topaz/public/lib/fuchsia_driver: b34f97387
+* topaz/public/lib/decomposition: b34f97387
