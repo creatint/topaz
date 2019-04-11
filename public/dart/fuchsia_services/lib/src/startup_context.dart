@@ -17,12 +17,6 @@ import 'outgoing.dart';
 abstract class StartupContext {
   static StartupContext _startupContext;
 
-  /// The connection to the [fidl_sys.Launcher] proxy.
-  ///
-  /// Deprecated! instead connect to [fidl_sys.Launcher] via [incoming]
-  // TODO(MS-2334): remove launcher from this class
-  final fidl_sys.Launcher launcher;
-
   /// The [fidl_sys.ServiceProvider] which can be used to connect to the
   /// services exposed to the component on launch.
   //  TODO(MF-167): Remove from this class
