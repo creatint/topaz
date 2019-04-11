@@ -78,14 +78,22 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
       return;
     }
 
+    // Creates a new instance of the component described by launchInfo.
+    final componentController = ComponentControllerProxy();
+
+    // Create and connect to a Launcher service
+    final launcherProxy = LauncherProxy();
+    StartupContext.fromStartupInfo().incoming.connectToService(launcherProxy);
+
+    // Use the launcher services launch echo server via launchInfo
     final LaunchInfo launchInfo = LaunchInfo(
         url: 'fuchsia-pkg://fuchsia.com/xi_core#meta/xi_core.cmx',
         directoryRequest: _dirProxy.ctrl.request().passChannel());
+    await launcherProxy.createComponent(
+        launchInfo, componentController.ctrl.request());
 
-    //TODO: should explicitly control the lifecycle of the component instead of passing null
-    await StartupContext.fromStartupInfo()
-        .launcher
-        .createComponent(launchInfo, null);
+    // Close launcher connection since we no longer need the launcher service.
+    launcherProxy.ctrl.close();
 
     Incoming(_dirProxy).connectToService(_jsonProxy);
 

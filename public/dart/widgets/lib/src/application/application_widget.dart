@@ -19,6 +19,7 @@ class ApplicationWidget extends StatefulWidget {
   /// The application to launch.
   final String url;
 
+  // TODO: This class should be responsible to close the launcher connection
   /// The [Launcher] used to launch the application.
   final Launcher launcher;
 
@@ -89,8 +90,7 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
 
     Services incomingServices = Services();
     widget.launcher.createComponent(
-      LaunchInfo(
-          url: widget.url, directoryRequest: incomingServices.request()),
+      LaunchInfo(url: widget.url, directoryRequest: incomingServices.request()),
       _applicationController.ctrl.request(),
     );
 
