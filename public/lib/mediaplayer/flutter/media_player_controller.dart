@@ -5,12 +5,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:fidl_fuchsia_math/fidl.dart' as geom;
-import 'package:fidl_fuchsia_media_playback/fidl.dart';
-import 'package:fidl_fuchsia_sys/fidl.dart';
+import 'package:fidl_fuchsia_math/fidl_async.dart' as geom;
+import 'package:fidl_fuchsia_media_playback/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
 import 'package:lib.mediaplayer.dart/audio_player_controller.dart';
@@ -31,7 +31,7 @@ class MediaPlayerController extends AudioPlayerController
   bool _wasActive;
 
   /// Constructs a MediaPlayerController.
-  MediaPlayerController(ServiceProvider services) : super(services) {
+  MediaPlayerController(Incoming services) : super(services) {
     updateCallback = _notifyListeners;
     _close(); // Initialize stuff.
   }
@@ -146,8 +146,8 @@ class MediaPlayerController extends AudioPlayerController
     double ratio =
         pixelAspectRatio.width.toDouble() / pixelAspectRatio.height.toDouble();
 
-    _videoSize = Size(
-        videoSize.width.toDouble() * ratio, videoSize.height.toDouble());
+    _videoSize =
+        Size(videoSize.width.toDouble() * ratio, videoSize.height.toDouble());
 
     scheduleMicrotask(_notifyListeners);
   }

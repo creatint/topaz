@@ -5,11 +5,10 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:fidl_fuchsia_media_playback/fidl.dart';
-import 'package:fidl_fuchsia_net_oldhttp/fidl.dart';
-import 'package:fidl_fuchsia_sys/fidl.dart';
-import 'package:fidl_fuchsia_math/fidl.dart' as geom;
-import 'package:lib.app.dart/app.dart';
+import 'package:fidl_fuchsia_media_playback/fidl_async.dart';
+import 'package:fidl_fuchsia_net_oldhttp/fidl_async.dart';
+import 'package:fidl_fuchsia_math/fidl_async.dart' as geom;
+import 'package:fuchsia_services/services.dart';
 import 'package:lib.mediaplayer.dart/timeline.dart' as tl;
 import 'package:zircon/zircon.dart';
 
@@ -18,7 +17,7 @@ typedef UpdateCallback = void Function();
 
 /// Controller for audio-only playback.
 class AudioPlayerController {
-  ServiceProvider _services;
+  Incoming _services;
 
   PlayerProxy _player;
 
@@ -40,7 +39,7 @@ class AudioPlayerController {
   double _deferredNormalizedSeek;
 
   /// Constructs a AudioPlayerController.
-  AudioPlayerController(ServiceProvider services) {
+  AudioPlayerController(Incoming services) {
     _services = services;
     _close(); // Initialize stuff.
   }
@@ -57,12 +56,12 @@ class AudioPlayerController {
     }
     if (uri.isScheme('FILE')) {
       if (headers != null) {
-        throw ArgumentError.value(headers,
-            'headers', 'Not valid for FILE URIs.');
+        throw ArgumentError.value(
+            headers, 'headers', 'Not valid for FILE URIs.');
       }
     } else if (!uri.isScheme('HTTP') && !uri.isScheme('HTTPS')) {
-      throw ArgumentError.value(uri,
-          'uri', 'Only HTTP/S and FILE protocols are supported.');
+      throw ArgumentError.value(
+          uri, 'uri', 'Only HTTP/S and FILE protocols are supported.');
     }
 
     if (_active) {
@@ -104,7 +103,6 @@ class AudioPlayerController {
 
     if (_player != null) {
       _player.ctrl.close();
-      _player.ctrl.onConnectionError = null;
     }
 
     _player = PlayerProxy();
@@ -124,22 +122,24 @@ class AudioPlayerController {
 
   /// Creates a local player.
   void _createLocalPlayer(Uri uri, HttpHeaders headers) {
-    connectToService(_services, _player.ctrl);
-    _player.onStatusChanged = _handleStatusChanged;
+    _services.connectToService(_player);
+    _player.onStatusChanged.listen(_handleStatusChanged);
 
     onMediaPlayerCreated(_player);
 
-    _player.ctrl.onConnectionError = _handleConnectionError;
     _setSource(uri, headers);
   }
 
   // Sets the source uri on the media player.
   void _setSource(Uri uri, HttpHeaders headers) {
     if (uri.isScheme('FILE')) {
-      _player.setFileSource(
-          Channel.fromFile(uri.toFilePath()));
+      _player
+          .setFileSource(Channel.fromFile(uri.toFilePath()))
+          .catchError(_handleConnectionError);
     } else {
-      _player.setHttpSource(uri.toString(), _convertHeaders(headers));
+      _player
+          .setHttpSource(uri.toString(), _convertHeaders(headers))
+          .catchError(_handleConnectionError);
     }
   }
 
@@ -184,8 +184,7 @@ class AudioPlayerController {
   Map<String, String> get metadata => _metadata;
 
   /// Gets the duration of the content.
-  Duration get duration =>
-      Duration(microseconds: _durationNanoseconds ~/ 1000);
+  Duration get duration => Duration(microseconds: _durationNanoseconds ~/ 1000);
 
   /// Gets current playback progress.
   Duration get progress {
@@ -229,10 +228,10 @@ class AudioPlayerController {
     }
 
     if (_ended) {
-      _player.seek(0);
+      _player.seek(0).catchError(_handleConnectionError);
     }
 
-    _player.play();
+    _player.play().catchError(_handleConnectionError);
   }
 
   /// Pauses playback.
@@ -241,7 +240,7 @@ class AudioPlayerController {
       return;
     }
 
-    _player.pause();
+    _player.pause().catchError(_handleConnectionError);
   }
 
   /// Seeks to a position expressed as a Duration.
@@ -252,7 +251,7 @@ class AudioPlayerController {
 
     int positionNanoseconds = (position.inMicroseconds * 1000).round();
 
-    _player.seek(positionNanoseconds);
+    _player.seek(positionNanoseconds).catchError(_handleConnectionError);
   }
 
   /// Seeks to a position expressed as a normalized value in the range 0.0 to
@@ -289,8 +288,7 @@ class AudioPlayerController {
     if (status.timelineFunction != null) {
       tl.TimelineFunction oldTimelineFunction = _timelineFunction;
 
-      _timelineFunction =
-          tl.TimelineFunction.fromFidl(status.timelineFunction);
+      _timelineFunction = tl.TimelineFunction.fromFidl(status.timelineFunction);
 
       prepare = oldTimelineFunction != _timelineFunction;
     }
@@ -350,7 +348,7 @@ class AudioPlayerController {
   }
 
   /// Called when the connection to the NetMediaPlayer fails.
-  void _handleConnectionError() {
+  void _handleConnectionError(Object _) {
     _problem = Problem(type: problemConnectionFailed);
 
     if (updateCallback != null) {

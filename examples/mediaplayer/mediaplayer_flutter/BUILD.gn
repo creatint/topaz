@@ -20,7 +20,9 @@ flutter_app("mediaplayer_flutter") {
         "//third_party/dart-pkg/git/flutter/packages/flutter",
         "//topaz/public/dart/fidl",
         "//topaz/public/dart/fuchsia",
-        "//topaz/public/lib/app/dart",
+        "//topaz/public/dart/fuchsia_logger",
+        "//topaz/public/dart/fuchsia_modular",
+        "//topaz/public/dart/fuchsia_services",
         "//topaz/public/lib/mediaplayer/flutter",
       ]
     },

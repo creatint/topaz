@@ -5,48 +5,22 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_media/fidl.dart' as media;
-import 'package:fidl_fuchsia_media_playback/fidl.dart' as playback;
-import 'package:fidl_fuchsia_modular/fidl.dart';
+import 'package:fidl_fuchsia_media/fidl_async.dart' as media;
+import 'package:fidl_fuchsia_media_playback/fidl_async.dart' as playback;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fuchsia/fuchsia.dart';
-import 'package:lib.app.dart/app.dart';
+import 'package:fuchsia_logger/logger.dart';
+import 'package:fuchsia_modular/module.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:lib.mediaplayer.flutter/media_player.dart';
 import 'package:lib.mediaplayer.flutter/media_player_controller.dart';
 
 import 'asset.dart';
 import 'config.dart';
 
-final StartupContext _context = StartupContext.fromStartupInfo();
+final _context = StartupContext.fromStartupInfo();
 final MediaPlayerController _controller =
-    MediaPlayerController(_context.environmentServices);
-
-ModuleImpl _module = ModuleImpl();
-
-void _log(String msg) {
-  print('[mediaplayer_flutter Module] $msg');
-}
-
-/// An implementation of the [Lifecycle] interface, which controls the lifetime
-/// of the module.
-class ModuleImpl implements Lifecycle {
-  final LifecycleBinding _lifecycleBinding = LifecycleBinding();
-
-  /// Binds an [InterfaceRequest] for a [Lifecycle] interface to this object.
-  void bindLifecycle(InterfaceRequest<Lifecycle> request) {
-    _lifecycleBinding.bind(this, request);
-  }
-
-  /// Implementation of Lifecycle.Terminate method.
-  @override
-  void terminate() {
-    _log('ModuleImpl::Terminate call');
-    _lifecycleBinding.close();
-    exit(0);
-  }
-}
+    MediaPlayerController(_context.incoming);
 
 const List<String> _configFileNames = <String>[
   '/data/mediaplayer_flutter.config',
@@ -237,16 +211,10 @@ class _PlaybackScreenState extends State<_PlaybackScreen> {
           Colors.white,
           20.0,
           columnChildren);
-      _addLabel(
-          metadata[media.metadataLabelArtist] ?? _leafAssetToPlay.artist,
-          Colors.grey[600],
-          15.0,
-          columnChildren);
-      _addLabel(
-          metadata[media.metadataLabelAlbum] ?? _leafAssetToPlay.album,
-          Colors.grey[800],
-          15.0,
-          columnChildren);
+      _addLabel(metadata[media.metadataLabelArtist] ?? _leafAssetToPlay.artist,
+          Colors.grey[600], 15.0, columnChildren);
+      _addLabel(metadata[media.metadataLabelAlbum] ?? _leafAssetToPlay.album,
+          Colors.grey[800], 15.0, columnChildren);
     }
 
     _addProblem(columnChildren);
@@ -390,15 +358,11 @@ class _ChooserScreenState extends State<_ChooserScreen> {
 }
 
 Future<Null> main() async {
-  _log('Module started');
+  setupLogger(name: 'mediaplayer_flutter Module');
+  log.fine('Module started');
 
-  /// Add [ModuleImpl] to this application's outgoing ServiceProvider.
-  _context.outgoingServices.addServiceForName(
-    (InterfaceRequest<Lifecycle> request) {
-      _module.bindLifecycle(request);
-    },
-    Lifecycle.$serviceName,
-  );
+  // explicitly opt out of intents
+  Module().registerIntentHandler(NoopIntentHandler());
 
   await _readConfig();
 
@@ -413,8 +377,7 @@ Future<Null> main() async {
 
   runApp(MaterialApp(
     title: 'Media Player',
-    home:
-        _assets.length == 1 ? const _PlaybackScreen() : _ChooserScreen(),
+    home: _assets.length == 1 ? const _PlaybackScreen() : _ChooserScreen(),
     routes: <String, WidgetBuilder>{
       '/play': (BuildContext context) => const _PlaybackScreen()
     },
