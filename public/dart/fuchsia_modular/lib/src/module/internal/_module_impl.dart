@@ -60,7 +60,7 @@ class ModuleImpl implements Module {
   }
 
   @override
-  Future<modular.ModuleController> addModuleToStory({
+  Future<modular.ModuleControllerProxy> addModuleToStory({
     @required String name,
     @required modular.Intent intent,
     modular.SurfaceRelation surfaceRelation = const modular.SurfaceRelation(
