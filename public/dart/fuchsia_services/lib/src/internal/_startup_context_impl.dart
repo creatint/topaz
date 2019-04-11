@@ -22,6 +22,13 @@ import '../startup_context.dart';
 class StartupContextImpl implements StartupContext {
   static const String _serviceRootPath = '/svc';
 
+  /// The connection to the [fidl_sys.Launcher] proxy.
+  ///
+  /// Deprecated! instead connect to [fidl_sys.Launcher] via [incoming]
+  // TODO(MS-2334): remove launcher from this class
+  @override
+  final fidl_sys.Launcher launcher;
+
   /// The [fidl_sys.ServiceProvider] which can be used to connect to the
   /// services exposed to the component on launch.
   //  TODO(MF-167): Remove from this class
@@ -49,6 +56,7 @@ class StartupContextImpl implements StartupContext {
   StartupContextImpl(
       {@required this.incoming,
       @required this.outgoing,
+      this.launcher,
       this.environmentServices})
       : assert(incoming != null),
         assert(outgoing != null);
@@ -77,6 +85,7 @@ class StartupContextImpl implements StartupContext {
         incoming: incomingServices,
         outgoing: _getOutgoingFromHandle(outgoingServicesHandle),
         environmentServices: _getServiceProvider(incomingServices),
+        launcher: _getLauncher(incomingServices),
       );
     }
 
@@ -85,6 +94,7 @@ class StartupContextImpl implements StartupContext {
       incoming: Incoming(directoryProxy),
       outgoing: Outgoing(),
       environmentServices: fidl_sys.ServiceProviderProxy(),
+      launcher: fidl_sys.LauncherProxy(),
     );
   }
 
@@ -120,6 +130,7 @@ class StartupContextImpl implements StartupContext {
       incoming: incomingSvc,
       outgoing: _getOutgoingFromChannel(dirRequestChannel),
       environmentServices: _getServiceProvider(incomingSvc),
+      launcher: _getLauncher(incomingSvc),
     );
   }
 
@@ -149,6 +160,17 @@ class StartupContextImpl implements StartupContext {
     final serviceProviderProxy = fidl_sys.ServiceProviderProxy();
     environmentProxy.getServices(serviceProviderProxy.ctrl.request());
     return serviceProviderProxy;
+  }
+
+  static fidl_sys.Launcher _getLauncher(Incoming incomingServices) {
+    final launcherProxy = fidl_sys.LauncherProxy();
+
+    // TODO(MS-2334): Use launcher from incoming instead of env
+    // incomingServices.connectToService(
+    //  launcherProxy.ctrl.$serviceName, launcherProxy.ctrl.request().passChannel());
+
+    _getEnvironment(incomingServices).getLauncher(launcherProxy.ctrl.request());
+    return launcherProxy;
   }
 
   static fidl_sys.EnvironmentProxy _getEnvironment(Incoming incomingServices) {
