@@ -99,7 +99,7 @@ class StoryManager extends ChangeNotifier {
         _storyMap[storyInfo.id].fullscreen =
             storyVisibilityState == StoryVisibilityState.immersive;
       }
-    } else {
+    } else if (storyState != StoryState.stopping) {
       final storyController = StoryControllerProxy();
       await _storyProvider.getController(
         storyInfo.id,
