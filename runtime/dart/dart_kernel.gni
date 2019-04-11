@@ -149,7 +149,7 @@ template("dart_kernel") {
     if (is_debug) {
       args += [ "--embed-sources" ]
     } else {
-      args += [ "--no-embed-sources" ]
+      args += [ "--no-embed-sources", "-Ddart.vm.product=true" ]
     }
 
     if (defined(invoker.gen_bytecode) && invoker.gen_bytecode) {
