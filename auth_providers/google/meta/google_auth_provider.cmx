@@ -4,7 +4,6 @@
     },
     "sandbox": {
         "services": [
-            "chromium.web.ContextProvider",
             "fuchsia.fonts.Provider",
             "fuchsia.media.Audio",
             "fuchsia.net.SocketProvider",
@@ -16,7 +15,8 @@
             "fuchsia.ui.input.ImeVisibilityService",
             "fuchsia.ui.scenic.Scenic",
             "fuchsia.logger.LogSink",
-            "fuchsia.tracelink.Registry"
+            "fuchsia.tracelink.Registry",
+            "fuchsia.web.ContextProvider"
         ]
     }
 }

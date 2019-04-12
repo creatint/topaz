@@ -10,10 +10,10 @@
 #ifndef TOPAZ_AUTH_PROVIDERS_GOOGLE_GOOGLE_AUTH_PROVIDER_IMPL_H_
 #define TOPAZ_AUTH_PROVIDERS_GOOGLE_GOOGLE_AUTH_PROVIDER_IMPL_H_
 
-#include <chromium/web/cpp/fidl.h>
 #include <fuchsia/auth/cpp/fidl.h>
 #include <fuchsia/auth/testing/cpp/fidl.h>
 #include <fuchsia/ui/views/cpp/fidl.h>
+#include <fuchsia/web/cpp/fidl.h>
 #include <lib/fit/function.h>
 
 #include "lib/callback/cancellable.h"
@@ -25,14 +25,14 @@
 
 namespace google_auth_provider {
 
-using chromium::web::NavigationEvent;
 using fuchsia::auth::AssertionJWTParams;
 using fuchsia::auth::AttestationJWTParams;
 using fuchsia::auth::AttestationSigner;
 using fuchsia::auth::AuthenticationUIContext;
+using fuchsia::web::NavigationState;
 
 class GoogleAuthProviderImpl
-    : chromium::web::NavigationEventObserver,
+    : fuchsia::web::NavigationEventListener,
       fuchsia::auth::AuthProvider,
       fuchsia::auth::testing::LegacyAuthCredentialInjector {
  public:
@@ -86,9 +86,9 @@ class GoogleAuthProviderImpl
       std::vector<std::string> scopes,
       GetAppAccessTokenFromAssertionJWTCallback callback) override;
 
-  // |chromium::Web::NavigationEventObserver|
+  // |fuchsia::web::NavigationEventListener|
   void OnNavigationStateChanged(
-      NavigationEvent change,
+      NavigationState change,
       OnNavigationStateChangedCallback callback) override;
 
   // |fuchsia::auth::testing::LegacyAuthCredentialInjector|
@@ -113,7 +113,7 @@ class GoogleAuthProviderImpl
   void GetUserProfile(fidl::StringPtr credential, fidl::StringPtr access_token);
 
   // Launches and connects to a Chromium frame, binding |this| as a
-  // |NavigationEventObserver| to process any changes in the URL, and returning
+  // |NavigationEventListener| to process any changes in the URL, and returning
   // a |fuchsia::ui::views::ViewHolderToken| token for the view's ViewHolder.
   fuchsia::ui::views::ViewHolderToken SetupChromium();
 
@@ -149,12 +149,12 @@ class GoogleAuthProviderImpl
   const Settings settings_;
   fuchsia::sys::ComponentControllerPtr web_view_controller_;
   fuchsia::auth::AuthenticationUIContextPtr auth_ui_context_;
-  chromium::web::ContextPtr chromium_context_;
-  chromium::web::FramePtr chromium_frame_;
+  fuchsia::web::ContextPtr web_context_;
+  fuchsia::web::FramePtr web_frame_;
   GetPersistentCredentialCallback get_persistent_credential_callback_;
 
-  fidl::BindingSet<chromium::web::NavigationEventObserver>
-      navigation_event_observer_bindings_;
+  fidl::BindingSet<fuchsia::web::NavigationEventListener>
+      navigation_event_listener_bindings_;
   fidl::BindingSet<fuchsia::auth::testing::LegacyAuthCredentialInjector>
       injector_bindings_;
   fidl::Binding<fuchsia::auth::AuthProvider> binding_;

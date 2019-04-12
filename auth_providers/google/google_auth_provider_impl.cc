@@ -157,9 +157,10 @@ void GoogleAuthProviderImpl::GetPersistentCredential(
   if (!view_holder_token.value) {
     return;
   }
-  chromium::web::NavigationControllerPtr controller;
-  chromium_frame_->GetNavigationController(controller.NewRequest());
-  controller->LoadUrl(url, chromium::web::LoadUrlParams());
+  fuchsia::web::NavigationControllerPtr controller;
+  web_frame_->GetNavigationController(controller.NewRequest());
+  controller->LoadUrl(url, fuchsia::web::LoadUrlParams(),
+                      [](fuchsia::web::NavigationController_LoadUrl_Result) {});
   FX_LOGF(INFO, NULL, "Loading URL: %s", url.c_str());
 
   auth_ui_context_ = auth_ui_context.Bind();
@@ -417,15 +418,15 @@ void GoogleAuthProviderImpl::GetAppAccessTokenFromAssertionJWT(
 }
 
 void GoogleAuthProviderImpl::OnNavigationStateChanged(
-    NavigationEvent change, OnNavigationStateChangedCallback callback) {
+    NavigationState change, OnNavigationStateChangedCallback callback) {
   // Not all events change the URL, those that don't can be ignored.
-  if (change.url.is_null()) {
+  if (!change.has_url()) {
     callback();
     return;
   }
 
   std::string auth_code;
-  AuthProviderStatus status = ParseAuthCodeFromUrl(change.url.get(), auth_code);
+  AuthProviderStatus status = ParseAuthCodeFromUrl(change.url(), auth_code);
 
   // If either an error occured or the user successfully received an auth code
   // we need to close the browser instance.
@@ -603,7 +604,7 @@ void GoogleAuthProviderImpl::GetUserProfile(fidl::StringPtr credential,
 fuchsia::ui::views::ViewHolderToken GoogleAuthProviderImpl::SetupChromium() {
   // Connect to the Chromium service and create a new frame.
   auto context_provider =
-      context_->ConnectToEnvironmentService<chromium::web::ContextProvider>();
+      context_->ConnectToEnvironmentService<fuchsia::web::ContextProvider>();
 
   fidl::InterfaceHandle<fuchsia::io::Directory> incoming_service_clone =
       fidl::InterfaceHandle<fuchsia::io::Directory>(
@@ -614,21 +615,20 @@ fuchsia::ui::views::ViewHolderToken GoogleAuthProviderImpl::SetupChromium() {
     return fuchsia::ui::views::ViewHolderToken();
   }
 
-  chromium::web::CreateContextParams params;
+  fuchsia::web::CreateContextParams params;
   params.set_service_directory(std::move(incoming_service_clone));
-  context_provider->Create(std::move(params), chromium_context_.NewRequest());
-  chromium_context_->CreateFrame(chromium_frame_.NewRequest());
+  context_provider->Create(std::move(params), web_context_.NewRequest());
+  web_context_->CreateFrame(web_frame_.NewRequest());
 
-  // Bind ourselves as a NavigationEventObserver on this frame.
-  chromium::web::NavigationEventObserverPtr navigation_event_observer;
-  navigation_event_observer_bindings_.AddBinding(
-      this, navigation_event_observer.NewRequest());
-  chromium_frame_->SetNavigationEventObserver(
-      std::move(navigation_event_observer));
+  // Bind ourselves as a NavigationEventListener on this frame.
+  fuchsia::web::NavigationEventListenerPtr navigation_event_listener;
+  navigation_event_listener_bindings_.AddBinding(
+      this, navigation_event_listener.NewRequest());
+  web_frame_->SetNavigationEventListener(std::move(navigation_event_listener));
 
   // And create a view for the frame.
   auto [view_token, view_holder_token] = scenic::NewViewTokenPair();
-  chromium_frame_->CreateView(std::move(view_token));
+  web_frame_->CreateView(std::move(view_token));
 
   return std::move(view_holder_token);
 }
@@ -656,8 +656,8 @@ void GoogleAuthProviderImpl::ReleaseResources() {
     auth_ui_context_ = nullptr;
   }
   // Release all smart pointers for Chromium resources.
-  chromium_frame_ = nullptr;
-  chromium_context_ = nullptr;
+  web_frame_ = nullptr;
+  web_context_ = nullptr;
 }
 
 void GoogleAuthProviderImpl::ExposeCredentialInjectorInterface() {
