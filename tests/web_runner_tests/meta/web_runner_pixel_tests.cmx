@@ -2,7 +2,6 @@
     "facets": {
         "fuchsia.test": {
             "injected-services": {
-                "chromium.web.ContextProvider": "fuchsia-pkg://fuchsia.com/chromium#meta/chromium.cmx",
                 "fuchsia.fonts.Provider": "fuchsia-pkg://fuchsia.com/fonts#meta/fonts.cmx",
                 "fuchsia.sysmem.Allocator": "fuchsia-pkg://fuchsia.com/sysmem_connector#meta/sysmem_connector.cmx",
                 "fuchsia.ui.input.ImeService": "fuchsia-pkg://fuchsia.com/ime_service#meta/ime_service.cmx",
@@ -10,7 +9,8 @@
                 "fuchsia.ui.input.InputDeviceRegistry": "fuchsia-pkg://fuchsia.com/root_presenter#meta/root_presenter.cmx",
                 "fuchsia.ui.policy.Presenter": "fuchsia-pkg://fuchsia.com/root_presenter#meta/root_presenter.cmx",
                 "fuchsia.ui.scenic.Scenic": "fuchsia-pkg://fuchsia.com/scenic#meta/scenic.cmx",
-                "fuchsia.vulkan.loader.Loader": "fuchsia-pkg://fuchsia.com/vulkan_loader#meta/vulkan_loader.cmx"
+                "fuchsia.vulkan.loader.Loader": "fuchsia-pkg://fuchsia.com/vulkan_loader#meta/vulkan_loader.cmx",
+                "fuchsia.web.ContextProvider": "fuchsia-pkg://fuchsia.com/chromium#meta/chromium.cmx"
             },
             "system-services": [
                 "fuchsia.net.SocketProvider",
@@ -26,7 +26,6 @@
             "shell-commands"
         ],
         "services": [
-            "chromium.web.ContextProvider",
             "fuchsia.fonts.Provider",
             "fuchsia.net.SocketProvider",
             "fuchsia.netstack.Netstack",
@@ -38,7 +37,8 @@
             "fuchsia.ui.input.ImeVisibilityService",
             "fuchsia.ui.input.InputDeviceRegistry",
             "fuchsia.ui.policy.Presenter",
-            "fuchsia.ui.scenic.Scenic"
+            "fuchsia.ui.scenic.Scenic",
+            "fuchsia.web.ContextProvider"
         ]
     }
 }

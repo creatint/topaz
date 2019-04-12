@@ -6,12 +6,12 @@ import("//build/package.gni")
 import("//build/test/test_package.gni")
 import("//build/testing/environments.gni")
 
-source_set("chromium_context") {
+source_set("web_context") {
   testonly = true
 
   sources = [
-    "chromium_context.cc",
-    "chromium_context.h",
+    "web_context.cc",
+    "web_context.h",
   ]
 
   deps = [
@@ -21,8 +21,8 @@ source_set("chromium_context") {
   ]
 
   public_deps = [
+    "//sdk/fidl/fuchsia.web",
     "//sdk/lib/sys/cpp",
-    "//topaz/runtime/chromium:chromium.web",
   ]
 }
 
@@ -48,8 +48,8 @@ executable("web_runner_integration_tests") {
   ]
 
   deps = [
-    ":chromium_context",
     ":test_server",
+    ":web_context",
     "//garnet/public/lib/gtest",
     "//sdk/fidl/fuchsia.sys",
     "//sdk/lib/sys/cpp/testing:unit",
@@ -67,8 +67,8 @@ executable("web_runner_pixel_tests") {
   ]
 
   deps = [
-    ":chromium_context",
     ":test_server",
+    ":web_context",
     "//garnet/public/lib/fsl",
     "//garnet/public/lib/gtest",
     "//sdk/fidl/fuchsia.sys",
