@@ -14,6 +14,7 @@ import 'package:fidl_fuchsia_ui_views/fidl_async.dart' as views;
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
+import 'package:fuchsia_services/services.dart';
 import 'package:zircon/zircon.dart';
 
 class ChromiumWebView {
@@ -29,13 +30,20 @@ class ChromiumWebView {
 
   ChildViewConnection _childViewConnection;
 
-  ChromiumWebView(
-    this.serviceProvider, {
+  ChromiumWebView({
+    this.serviceProvider,
     web.LogLevel javascriptLogLevel = web.LogLevel.none,
   }) {
     final contextProviderProxyRequest = _contextProvider.ctrl.request();
-    serviceProvider.connectToService(_contextProvider.ctrl.$serviceName,
-        contextProviderProxyRequest.passChannel());
+    if (serviceProvider != null) {
+      serviceProvider.connectToService(_contextProvider.ctrl.$serviceName,
+          contextProviderProxyRequest.passChannel());
+    } else {
+      StartupContext.fromStartupInfo()
+          .incoming
+          .connectToServiceByNameWithChannel(_contextProvider.ctrl.$serviceName,
+              contextProviderProxyRequest.passChannel());
+    }
     if (!Directory('/svc').existsSync()) {
       log.shout('no /svc directory');
       return;

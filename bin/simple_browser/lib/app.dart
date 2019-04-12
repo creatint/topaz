@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:fuchsia_services/services.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 import 'package:webview/webview.dart';
 import 'src/blocs/browser_bloc.dart';
@@ -19,9 +18,7 @@ class AppState extends State<App> {
   ChromiumWebView _webView;
 
   AppState() {
-    _webView = ChromiumWebView(
-      StartupContext.fromStartupInfo().environmentServices,
-    );
+    _webView = ChromiumWebView();
     _browserBloc = BrowserBloc(webView: _webView);
   }
 
