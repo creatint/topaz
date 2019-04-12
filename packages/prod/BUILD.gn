@@ -69,7 +69,6 @@ group("all") {
     "//topaz/packages/prod:skottie_viewer",
     "//topaz/packages/prod:system_dashboard",
     "//topaz/packages/prod:term",
-    "//topaz/packages/prod:text_input_mod",
     "//topaz/packages/prod:userpicker_base_shell",
     "//topaz/packages/prod:web_runner",
     "//topaz/packages/prod:wifi_settings",
@@ -81,13 +80,6 @@ group("google_auth_provider") {
   testonly = true
   public_deps = [
     "//topaz/auth_providers/google:google_auth_provider",
-  ]
-}
-
-group("text_input_mod") {
-  testonly = true
-  public_deps = [
-    "//topaz/bin/ui/text_input_mod",
   ]
 }
 
