@@ -100,6 +100,7 @@ class AskModel extends ChangeNotifier {
       ..jump(0.8)
       ..target = 1.0;
     controller.clear();
+    onQuery('');
   }
 
   void hide() {
@@ -163,10 +164,6 @@ class AskModel extends ChangeNotifier {
   }
 
   void onQuery(String query) {
-    if (query?.isEmpty ?? true) {
-      return;
-    }
-
     _suggestions = <Suggestion>[];
 
     final queryListenerBinding = QueryListenerBinding();
