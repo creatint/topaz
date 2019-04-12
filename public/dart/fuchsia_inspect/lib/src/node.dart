@@ -8,14 +8,25 @@ import 'vmo_writer.dart';
 
 /// A node in the [Inspect] tree that can have associated key-values (KVs).
 class Node {
+  // TODO(CF-602): Refactor this to hide implementation details like this index
+  // and the public constructor below (since client code should only create
+  // Nodes using [createChild].
   /// The VMO index of this node.
-  final int _index;
+  @visibleForTesting
+  final int index;
 
   /// The writer for the VMO that backs this node.
   final VmoWriter _writer;
 
   /// Creates a [Node] with the VMO [index] and [writer].
-  Node(this._index, this._writer);
+  Node(this.index, this._writer);
+
+  /// Creates a child [Node] with [name].
+  ///
+  /// This method is not idempotent: calling it multiple times with the same
+  /// [name] will create multiple children with the same name.
+  Node createChild(String name) =>
+      Node(_writer.createNode(index, name), _writer);
 
   /// Creates a [StringProperty] with [name] on this node.
   ///
@@ -23,7 +34,7 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [StringProperty]s.
   StringProperty createStringProperty(String name) =>
-      StringProperty(name, _index, _writer);
+      StringProperty(name, index, _writer);
 }
 
 /// A VMO-backed key-value pair with a string key and string value.

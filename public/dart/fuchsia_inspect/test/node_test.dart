@@ -22,6 +22,20 @@ void main() {
     node = Node(writer.rootNode, writer);
   });
 
+  test('Child nodes have unique indices from their parents', () {
+    var childNode = node.createChild('banana');
+
+    expect(childNode, isNotNull);
+    expect(childNode.index, isNot(node.index));
+  });
+
+  test('Child nodes have unique indices from their siblings', () {
+    var child1 = node.createChild('thing1');
+    var child2 = node.createChild('thing2');
+
+    expect(child1.index, isNot(child2.index));
+  });
+
   test('String properties are written to the VMO when the value is set', () {
     var property = node.createStringProperty('color')..value = 'fuchsia';
 

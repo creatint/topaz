@@ -9,9 +9,9 @@ import 'package:fuchsia_inspect/inspect.dart' as inspect;
 class InspectExampleApp extends StatelessWidget {
   static const _appColor = Colors.blue;
 
-  final inspect.Node _inspect;
+  final inspect.Node _inspectNode;
 
-  InspectExampleApp(this._inspect) {
+  InspectExampleApp(this._inspectNode) {
     _initMetrics();
   }
 
@@ -22,20 +22,25 @@ class InspectExampleApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: _appColor,
       ),
-      home: _InspectHomePage(title: 'Hello Inspect!'),
+      home: _InspectHomePage(
+          title: 'Hello Inspect!',
+          inspectNode: _inspectNode.createChild('home-page')),
     );
   }
 
   /// Initializes the [Inspect] metrics for this widget.
   void _initMetrics() {
-    _inspect.createStringProperty('app-color').value = '$_appColor';
+    _inspectNode.createStringProperty('app-color').value = '$_appColor';
   }
 }
 
 class _InspectHomePage extends StatefulWidget {
   final String title;
+  final inspect.Node inspectNode;
 
-  _InspectHomePage({Key key, this.title}) : super(key: key);
+  _InspectHomePage({Key key, this.title, this.inspectNode}) : super(key: key) {
+    inspectNode.createStringProperty('title').value = title;
+  }
 
   @override
   _InspectHomePageState createState() => _InspectHomePageState();
