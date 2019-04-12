@@ -44,8 +44,8 @@ class Tiler extends StatelessWidget {
 /// Defines a model to hold a tree of [TileModel]s. The leaf nodes are tiles
 /// of type [TileType.content], branches can be [TileType.column] or
 /// [TileType.row]. The member [root] holds the reference to the root tile.
-class TilerModel extends ChangeNotifier {
-  TileModel root;
+class TilerModel<T> extends ChangeNotifier {
+  TileModel<T> root;
 
   /// Initializes the [TilerModel] to start layout in supplied [direction].
   TilerModel({this.root}) {
@@ -55,7 +55,7 @@ class TilerModel extends ChangeNotifier {
   }
 
   /// Returns the tile next to [tile] in the given [direction].
-  TileModel navigate(AxisDirection direction, TileModel tile) {
+  TileModel<T> navigate(AxisDirection direction, TileModel<T> tile) {
     assert(tile != null);
 
     switch (direction) {
@@ -74,9 +74,9 @@ class TilerModel extends ChangeNotifier {
 
   /// Returns a new tile after splitting the supplied [tile] in the [direction].
   /// The [tile] is split such that new tile has supplied [flex].
-  TileModel split({
+  TileModel<T> split({
     @required TileModel tile,
-    Object content,
+    T content,
     AxisDirection direction = AxisDirection.right,
     double flex = 0.5,
   }) {
@@ -85,13 +85,13 @@ class TilerModel extends ChangeNotifier {
 
     final parent = tile.parent;
 
-    final newTile = TileModel(
+    final newTile = TileModel<T>(
       type: TileType.content,
       content: content,
       flex: flex,
     );
 
-    final newParent = TileModel(
+    final newParent = TileModel<T>(
       type: _isHorizontal(direction) ? TileType.column : TileType.row,
       tiles: axisDirectionIsReversed(direction)
           ? [newTile, tile]
@@ -124,14 +124,14 @@ class TilerModel extends ChangeNotifier {
 
   /// Adds a new tile with [content] next to currently focused tile in the
   /// [direction] specified.
-  TileModel add({
-    TileModel nearTile,
-    Object content,
+  TileModel<T> add({
+    TileModel<T> nearTile,
+    T content,
     AxisDirection direction = AxisDirection.right,
   }) {
     assert(direction != null);
 
-    final tile = TileModel(
+    final tile = TileModel<T>(
       type: TileType.content,
       content: content,
     );
@@ -150,14 +150,14 @@ class TilerModel extends ChangeNotifier {
 
   /// Removes (deletes) currently focused tile. Focus switches to the tile
   /// preceding it.
-  void remove(TileModel tile) {
+  void remove(TileModel<T> tile) {
     assert(tile != null);
     _remove(tile);
 
     notifyListeners();
   }
 
-  void _initialize(TileModel tile, [TileModel parent]) {
+  void _initialize(TileModel<T> tile, [TileModel<T> parent]) {
     assert(tile != null);
     tile.parent = parent;
     for (final child in tile.tiles) {
@@ -165,7 +165,7 @@ class TilerModel extends ChangeNotifier {
     }
   }
 
-  void _remove(TileModel tile) {
+  void _remove(TileModel<T> tile) {
     if (tile == root) {
       root = null;
     } else {
@@ -196,9 +196,9 @@ class TilerModel extends ChangeNotifier {
     }
   }
 
-  void _insert(TileModel focus, TileModel tile, AxisDirection direction) {
+  void _insert(TileModel<T> focus, TileModel<T> tile, AxisDirection direction) {
     if (focus == root) {
-      root = TileModel(
+      root = TileModel<T>(
         type: _isHorizontal(direction) ? TileType.column : TileType.row,
         tiles: [root],
       );
@@ -224,7 +224,7 @@ class TilerModel extends ChangeNotifier {
   /// Returns the tile next to [tile] in a column or row. If [tile] is the last
   /// tile in the parent, it returns the next ancestor column or row. This is
   /// usefule for finding the tile to the right or below the given [tile].
-  TileModel _next(TileModel tile, TileType type) {
+  TileModel<T> _next(TileModel<T> tile, TileType type) {
     if (tile == null || tile.parent == null) {
       return null;
     }
@@ -241,7 +241,7 @@ class TilerModel extends ChangeNotifier {
   /// Returns the tile previous to [tile] in a column or row. If [tile] is the
   /// last tile in the parent, it returns the previous ancestor column or row.
   /// This is useful for finding the tile to the left or above the given [tile].
-  TileModel _previous(TileModel tile, TileType type) {
+  TileModel<T> _previous(TileModel<T> tile, TileType type) {
     if (tile == null || tile.parent == null) {
       return null;
     }
@@ -256,7 +256,7 @@ class TilerModel extends ChangeNotifier {
   }
 
   /// Returns the leaf tile node given a [tile] using depth first search.
-  TileModel _first(TileModel tile) {
+  TileModel<T> _first(TileModel<T> tile) {
     if (tile == null || tile.type == TileType.content) {
       return tile;
     }
@@ -264,7 +264,7 @@ class TilerModel extends ChangeNotifier {
   }
 
   /// Returns the leaf tile node given a [tile] using depth last search.
-  TileModel _last(TileModel tile) {
+  TileModel<T> _last(TileModel<T> tile) {
     if (tile == null || tile.type == TileType.content) {
       return tile;
     }
