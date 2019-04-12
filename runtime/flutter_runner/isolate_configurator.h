@@ -11,7 +11,7 @@
 #include "flutter/fml/macros.h"
 #include "unique_fdio_ns.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // Contains all the information necessary to configure a new root isolate. This
 // is a single use item. The lifetime of this object must extend past that of
@@ -44,6 +44,6 @@ class IsolateConfigurator final {
   FML_DISALLOW_COPY_AND_ASSIGN(IsolateConfigurator);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_ISOLATE_CONFIGURATOR_H_

@@ -32,7 +32,7 @@
 #include "service_provider_dir.h"
 #include "task_observers.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 constexpr char kDataKey[] = "data";
 constexpr char kTmpPath[] = "/tmp";
@@ -90,7 +90,7 @@ Application::Application(
 
   // LaunchInfo::arguments optional.
   if (auto& arguments = launch_info.arguments) {
-    settings_ = shell::SettingsFromCommandLine(
+    settings_ = flutter::SettingsFromCommandLine(
         fml::CommandLineFromIterators(arguments->begin(), arguments->end()));
   }
 
@@ -321,7 +321,7 @@ Application::~Application() = default;
 
 const std::string& Application::GetDebugLabel() const { return debug_label_; }
 
-class FileInNamespaceBuffer final : public blink::DartSnapshotBuffer {
+class FileInNamespaceBuffer final : public flutter::DartSnapshotBuffer {
  public:
   FileInNamespaceBuffer(int namespace_fd, const char* path, bool executable)
       : address_(nullptr), size_(0) {
@@ -381,7 +381,7 @@ class FileInNamespaceBuffer final : public blink::DartSnapshotBuffer {
   FML_DISALLOW_COPY_AND_ASSIGN(FileInNamespaceBuffer);
 };
 
-std::unique_ptr<blink::DartSnapshotBuffer> CreateWithContentsOfFile(
+std::unique_ptr<flutter::DartSnapshotBuffer> CreateWithContentsOfFile(
     int namespace_fd, const char* file_path, bool executable) {
   TRACE_DURATION("flutter", "LoadFile", "path", file_path);
   auto source = std::make_unique<FileInNamespaceBuffer>(namespace_fd, file_path,
@@ -390,15 +390,15 @@ std::unique_ptr<blink::DartSnapshotBuffer> CreateWithContentsOfFile(
 }
 
 void Application::AttemptVMLaunchWithCurrentSettings(
-    const blink::Settings& settings) {
-  if (!blink::DartVM::IsRunningPrecompiledCode()) {
+    const flutter::Settings& settings) {
+  if (!flutter::DartVM::IsRunningPrecompiledCode()) {
     // We will be initializing the VM lazily in this case.
     return;
   }
 
   // Compare flutter_aot_app in flutter_app.gni.
-  fml::RefPtr<blink::DartSnapshot> vm_snapshot =
-      fml::MakeRefCounted<blink::DartSnapshot>(
+  fml::RefPtr<flutter::DartSnapshot> vm_snapshot =
+      fml::MakeRefCounted<flutter::DartSnapshot>(
           CreateWithContentsOfFile(
               application_assets_directory_.get() /* /pkg/data */,
               "vm_snapshot_data.bin", false),
@@ -406,7 +406,7 @@ void Application::AttemptVMLaunchWithCurrentSettings(
               application_assets_directory_.get() /* /pkg/data */,
               "vm_snapshot_instructions.bin", true));
 
-  isolate_snapshot_ = fml::MakeRefCounted<blink::DartSnapshot>(
+  isolate_snapshot_ = fml::MakeRefCounted<flutter::DartSnapshot>(
       CreateWithContentsOfFile(
           application_assets_directory_.get() /* /pkg/data */,
           "isolate_snapshot_data.bin", false),
@@ -414,7 +414,7 @@ void Application::AttemptVMLaunchWithCurrentSettings(
           application_assets_directory_.get() /* /pkg/data */,
           "isolate_snapshot_instructions.bin", true));
 
-  shared_snapshot_ = fml::MakeRefCounted<blink::DartSnapshot>(
+  shared_snapshot_ = fml::MakeRefCounted<flutter::DartSnapshot>(
       CreateWithContentsOfFile(
           application_assets_directory_.get() /* /pkg/data */,
           "shared_snapshot_data.bin", false),
@@ -422,7 +422,7 @@ void Application::AttemptVMLaunchWithCurrentSettings(
           application_assets_directory_.get() /* /pkg/data */,
           "shared_snapshot_instructions.bin", true));
 
-  auto vm = blink::DartVMRef::Create(settings_,               //
+  auto vm = flutter::DartVMRef::Create(settings_,               //
                                      std::move(vm_snapshot),  //
                                      isolate_snapshot_,       //
                                      shared_snapshot_         //
@@ -506,4 +506,4 @@ void Application::WriteProfileToTrace() const {
 }
 #endif  // !defined(DART_PRODUCT)
 
-}  // namespace flutter
+}  // namespace flutter_runner

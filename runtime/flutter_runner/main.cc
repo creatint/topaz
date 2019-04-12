@@ -13,7 +13,7 @@
 #include "topaz/runtime/dart/utils/tempfs.h"
 
 int main(int argc, char const* argv[]) {
-  std::unique_ptr<async::Loop> loop(flutter::MakeObservableLoop(true));
+  std::unique_ptr<async::Loop> loop(flutter_runner::MakeObservableLoop(true));
 
   fbl::unique_ptr<trace::TraceProvider> provider;
   {
@@ -29,7 +29,7 @@ int main(int argc, char const* argv[]) {
 
   FML_DLOG(INFO) << "Flutter application services initialized.";
 
-  flutter::Runner runner(loop.get());
+  flutter_runner::Runner runner(loop.get());
 
   loop->Run();
 

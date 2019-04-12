@@ -6,7 +6,7 @@
 
 #include <map>
 
-namespace flutter {
+namespace flutter_runner {
 
 thread_local std::map<intptr_t, fit::closure> tTaskObservers;
 
@@ -27,4 +27,4 @@ void CurrentMessageLoopRemoveAfterTaskObserver(intptr_t key) {
   tTaskObservers.erase(key);
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

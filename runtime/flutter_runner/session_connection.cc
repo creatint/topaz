@@ -10,7 +10,7 @@
 #include "vsync_recorder.h"
 #include "vsync_waiter.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 SessionConnection::SessionConnection(
     std::string debug_label, fuchsia::ui::views::ViewToken view_token,
@@ -94,7 +94,7 @@ void SessionConnection::PresentSession() {
 }
 
 void SessionConnection::ToggleSignal(zx_handle_t handle, bool set) {
-  const auto signal = flutter::VsyncWaiter::SessionPresentSignal;
+  const auto signal = VsyncWaiter::SessionPresentSignal;
   auto status = zx_object_signal(handle,            // handle
                                  set ? 0 : signal,  // clear mask
                                  set ? signal : 0   // set mask
@@ -104,4 +104,4 @@ void SessionConnection::ToggleSignal(zx_handle_t handle, bool set) {
   }
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

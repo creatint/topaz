@@ -5,7 +5,7 @@
 #ifndef TOPAZ_RUNTIME_FLUTTER_RUNNER_LOGGING_H_
 #define TOPAZ_RUNTIME_FLUTTER_RUNNER_LOGGING_H_
 
-namespace flutter {
+namespace flutter_runner {
 
 // Use to mark logs published via the syslog API.
 #define LOG_TAG "flutter-runner"

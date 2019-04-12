@@ -18,7 +18,7 @@
 
 #include "lib/fidl/cpp/binding_set.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // A directory-like object which dynamically creates Service nodes
 // for any file lookup. It also exposes service provider interface.
@@ -65,6 +65,6 @@ class ServiceProviderDir : public vfs::Directory {
    ServiceProviderDir& operator=(const ServiceProviderDir&) = delete;
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_SERVICE_PROVIDER_DIR_H_

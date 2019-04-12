@@ -16,7 +16,7 @@
 #include "flutter/shell/common/shell.h"
 #include "isolate_configurator.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // Represents an instance of running Flutter engine along with the threads
 // that host the same.
@@ -28,9 +28,9 @@ class Engine final {
   };
 
   Engine(Delegate& delegate, std::string thread_label,
-         std::shared_ptr<sys::ServiceDirectory> svc, blink::Settings settings,
-         fml::RefPtr<const blink::DartSnapshot> isolate_snapshot,
-         fml::RefPtr<const blink::DartSnapshot> shared_snapshot,
+         std::shared_ptr<sys::ServiceDirectory> svc, flutter::Settings settings,
+         fml::RefPtr<const flutter::DartSnapshot> isolate_snapshot,
+         fml::RefPtr<const flutter::DartSnapshot> shared_snapshot,
          fuchsia::ui::views::ViewToken view_token, UniqueFDIONS fdio_ns,
          fidl::InterfaceRequest<fuchsia::io::Directory> directory_request);
   ~Engine();
@@ -46,10 +46,10 @@ class Engine final {
  private:
   Delegate& delegate_;
   const std::string thread_label_;
-  blink::Settings settings_;
+  flutter::Settings settings_;
   std::array<std::unique_ptr<async::Loop>, 3> host_loops_;
   std::unique_ptr<IsolateConfigurator> isolate_configurator_;
-  std::unique_ptr<shell::Shell> shell_;
+  std::unique_ptr<flutter::Shell> shell_;
   zx::event vsync_event_;
   fml::WeakPtrFactory<Engine> weak_factory_;
 
@@ -66,6 +66,6 @@ class Engine final {
   FML_DISALLOW_COPY_AND_ASSIGN(Engine);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_ENGINE_H_

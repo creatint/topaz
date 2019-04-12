@@ -12,7 +12,7 @@
 #include "third_party/tonic/dart_state.h"
 #include "third_party/tonic/logging/dart_error.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 IsolateConfigurator::IsolateConfigurator(
     UniqueFDIONS fdio_ns,
@@ -89,4 +89,4 @@ void IsolateConfigurator::BindDartIO() {
   FXL_CHECK(!tonic::LogIfError(result));
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

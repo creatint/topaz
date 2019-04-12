@@ -19,7 +19,7 @@
 #include "lib/fidl/cpp/binding_set.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // Publishes the |fuchsia::sys::Runner| service and runs applications on
 // their own threads.
@@ -79,6 +79,6 @@ class Runner final : public fuchsia::sys::Runner {
   FML_DISALLOW_COPY_AND_ASSIGN(Runner);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_RUNNER_H_

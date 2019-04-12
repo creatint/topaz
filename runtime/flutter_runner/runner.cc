@@ -22,7 +22,7 @@
 #include "topaz/runtime/dart/utils/vmo.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 namespace {
 
@@ -74,7 +74,7 @@ static void SetProcessName() {
 #else
   stream << "io.flutter.runner.";
 #endif
-  if (blink::DartVM::IsRunningPrecompiledCode()) {
+  if (flutter::DartVM::IsRunningPrecompiledCode()) {
     stream << "aot";
   } else {
     stream << "jit";
@@ -223,4 +223,4 @@ void Runner::SetupTraceObserver() {
 }
 #endif  // !defined(DART_PRODUCT)
 
-}  // namespace flutter
+}  // namespace flutter_runner

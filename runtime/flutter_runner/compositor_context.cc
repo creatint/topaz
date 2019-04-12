@@ -6,7 +6,7 @@
 
 #include "flutter/flow/layers/layer_tree.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 class ScopedFrame final : public flow::CompositorContext::ScopedFrame {
  public:
@@ -84,11 +84,12 @@ CompositorContext::AcquireFrame(GrContext* gr_context, SkCanvas* canvas,
   // TODO: The AcquireFrame interface is too broad and must be refactored to get
   // rid of the context and canvas arguments as those seem to be only used for
   // colorspace correctness purposes on the mobile shells.
-  return std::make_unique<flutter::ScopedFrame>(*this,                        //
-                                                root_surface_transformation,  //
-                                                instrumentation_enabled,      //
-                                                session_connection_           //
+  return std::make_unique<flutter_runner::ScopedFrame>(
+      *this,                        //
+      root_surface_transformation,  //
+      instrumentation_enabled,      //
+      session_connection_           //
   );
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

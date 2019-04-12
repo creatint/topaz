@@ -8,9 +8,9 @@
 
 #include "flutter/fml/task_runner.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 fml::RefPtr<fml::TaskRunner> CreateFMLTaskRunner(
     async_dispatcher_t* dispatcher);
 
-}  // namespace flutter
+}  // namespace flutter_runner

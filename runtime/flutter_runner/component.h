@@ -27,7 +27,7 @@
 
 #include "unique_fdio_ns.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // Represents an instance of a Flutter application that contains one of more
 // Flutter engine instances.
@@ -57,7 +57,7 @@ class Application final : public Engine::Delegate,
 #endif  // !defined(DART_PRODUCT)
 
  private:
-  blink::Settings settings_;
+  flutter::Settings settings_;
   TerminationCallback termination_callback_;
   const std::string debug_label_;
   UniqueFDIONS fdio_ns_ = UniqueFDIONSCreate();
@@ -73,8 +73,8 @@ class Application final : public Engine::Delegate,
   std::shared_ptr<sys::ServiceDirectory> runner_incoming_services_;
   fidl::BindingSet<fuchsia::ui::app::ViewProvider> shells_bindings_;
 
-  fml::RefPtr<blink::DartSnapshot> isolate_snapshot_;
-  fml::RefPtr<blink::DartSnapshot> shared_snapshot_;
+  fml::RefPtr<flutter::DartSnapshot> isolate_snapshot_;
+  fml::RefPtr<flutter::DartSnapshot> shared_snapshot_;
   std::set<std::unique_ptr<Engine>> shell_holders_;
   std::pair<bool, uint32_t> last_return_code_;
 
@@ -100,11 +100,11 @@ class Application final : public Engine::Delegate,
   // |flutter::Engine::Delegate|
   void OnEngineTerminate(const Engine* holder) override;
 
-  void AttemptVMLaunchWithCurrentSettings(const blink::Settings& settings);
+  void AttemptVMLaunchWithCurrentSettings(const flutter::Settings& settings);
 
   FML_DISALLOW_COPY_AND_ASSIGN(Application);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_COMPONENT_H_

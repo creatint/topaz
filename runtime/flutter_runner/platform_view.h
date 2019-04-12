@@ -25,7 +25,7 @@
 #include "semantics_bridge.h"
 #include "surface.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 using OnMetricsUpdate = fit::function<void(const fuchsia::ui::gfx::Metrics&)>;
 using OnSizeChangeHint =
@@ -37,12 +37,12 @@ using OnSizeChangeHint =
 // The PlatformView implements SessionListener and gets Session events but it
 // does *not* actually own the Session itself; that is owned by the Compositor
 // thread.
-class PlatformView final : public shell::PlatformView,
+class PlatformView final : public flutter::PlatformView,
                            private fuchsia::ui::scenic::SessionListener,
                            public fuchsia::ui::input::InputMethodEditorClient {
  public:
   PlatformView(PlatformView::Delegate& delegate, std::string debug_label,
-               blink::TaskRunners task_runners,
+               flutter::TaskRunners task_runners,
                fidl::InterfaceHandle<fuchsia::sys::ServiceProvider>
                    parent_environment_service_provider,
                fidl::InterfaceRequest<fuchsia::ui::scenic::SessionListener>
@@ -54,7 +54,7 @@ class PlatformView final : public shell::PlatformView,
                    accessibility_context_writer,
                zx_handle_t vsync_event_handle);
   PlatformView(PlatformView::Delegate& delegate, std::string debug_label,
-               blink::TaskRunners task_runners,
+               flutter::TaskRunners task_runners,
                fidl::InterfaceHandle<fuchsia::sys::ServiceProvider>
                    parent_environment_service_provider,
                fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
@@ -85,7 +85,7 @@ class PlatformView final : public shell::PlatformView,
   // view to the accessibility manager.
   SemanticsBridge semantics_bridge_;
   std::unique_ptr<Surface> surface_;
-  blink::LogicalMetrics metrics_;
+  flutter::LogicalMetrics metrics_;
   fuchsia::ui::gfx::Metrics scenic_metrics_;
   // last_text_state_ is the last state of the text input as reported by the IME
   // or initialized by Flutter. We set it to null if Flutter doesn't want any
@@ -96,7 +96,7 @@ class PlatformView final : public shell::PlatformView,
   std::map<
       std::string /* channel */,
       fit::function<void(
-          fml::RefPtr<blink::PlatformMessage> /* message */)> /* handler */>
+          fml::RefPtr<flutter::PlatformMessage> /* message */)> /* handler */>
       platform_message_handlers_;
   zx_handle_t vsync_event_handle_ = 0;
 
@@ -140,38 +140,38 @@ class PlatformView final : public shell::PlatformView,
   // field focused.
   void DeactivateIme();
 
-  // |shell::PlatformView|
-  std::unique_ptr<shell::VsyncWaiter> CreateVSyncWaiter() override;
+  // |flutter::PlatformView|
+  std::unique_ptr<flutter::VsyncWaiter> CreateVSyncWaiter() override;
 
-  // |shell::PlatformView|
-  std::unique_ptr<shell::Surface> CreateRenderingSurface() override;
+  // |flutter::PlatformView|
+  std::unique_ptr<flutter::Surface> CreateRenderingSurface() override;
 
-  // |shell::PlatformView|
+  // |flutter::PlatformView|
   void HandlePlatformMessage(
-      fml::RefPtr<blink::PlatformMessage> message) override;
+      fml::RefPtr<flutter::PlatformMessage> message) override;
 
-  // |shell::PlatformView|
+  // |flutter::PlatformView|
   void UpdateSemantics(
-      blink::SemanticsNodeUpdates update,
-      blink::CustomAccessibilityActionUpdates actions) override;
+      flutter::SemanticsNodeUpdates update,
+      flutter::CustomAccessibilityActionUpdates actions) override;
 
   // Channel handler for kAccessibilityChannel. This is currently not
   // being used, but it is necessary to handle accessibility messages
   // that are sent by Flutter when semantics is enabled.
   void HandleAccessibilityChannelPlatformMessage(
-      fml::RefPtr<blink::PlatformMessage> message);
+      fml::RefPtr<flutter::PlatformMessage> message);
 
   // Channel handler for kFlutterPlatformChannel
   void HandleFlutterPlatformChannelPlatformMessage(
-      fml::RefPtr<blink::PlatformMessage> message);
+      fml::RefPtr<flutter::PlatformMessage> message);
 
   // Channel handler for kTextInputChannel
   void HandleFlutterTextInputChannelPlatformMessage(
-      fml::RefPtr<blink::PlatformMessage> message);
+      fml::RefPtr<flutter::PlatformMessage> message);
 
   FML_DISALLOW_COPY_AND_ASSIGN(PlatformView);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_PLATFORM_VIEW_H_

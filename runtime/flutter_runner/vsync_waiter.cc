@@ -9,12 +9,12 @@
 
 #include "vsync_recorder.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 VsyncWaiter::VsyncWaiter(std::string debug_label,
                          zx_handle_t session_present_handle,
-                         blink::TaskRunners task_runners)
-    : shell::VsyncWaiter(task_runners),
+                         flutter::TaskRunners task_runners)
+    : flutter::VsyncWaiter(task_runners),
       debug_label_(std::move(debug_label)),
       session_wait_(session_present_handle, SessionPresentSignal),
       weak_factory_(this) {
@@ -84,4 +84,4 @@ void VsyncWaiter::FireCallbackNow() {
   FireCallback(previous_vsync, next_vsync);
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

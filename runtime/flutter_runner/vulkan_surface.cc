@@ -15,7 +15,7 @@
 #include "third_party/skia/include/gpu/GrContext.h"
 #include "topaz/runtime/dart/utils/inlines.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 namespace {
 
@@ -491,4 +491,4 @@ void VulkanSurface::OnHandleReady(async_dispatcher_t* dispatcher,
   Reset();
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

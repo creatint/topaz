@@ -10,7 +10,7 @@
 #include "flutter/fml/macros.h"
 #include "vulkan_surface.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 class VulkanSurfacePool final {
  public:
@@ -93,4 +93,4 @@ class VulkanSurfacePool final {
   FML_DISALLOW_COPY_AND_ASSIGN(VulkanSurfacePool);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner

@@ -8,7 +8,7 @@
 
 #include "task_observers.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 namespace {
 
@@ -33,4 +33,4 @@ async::Loop* MakeObservableLoop(bool attachToThread) {
                                             kDetachedLoopConfig));
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

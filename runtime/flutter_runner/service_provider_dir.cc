@@ -8,7 +8,7 @@
 #include <lib/fdio/directory.h>
 #include <zircon/status.h>
 
-namespace flutter {
+namespace flutter_runner {
 
 ServiceProviderDir::ServiceProviderDir() : root_(new vfs::PseudoDir()) {}
 
@@ -63,4 +63,4 @@ zx_status_t ServiceProviderDir::Lookup(const std::string& name,
   return ZX_OK;
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

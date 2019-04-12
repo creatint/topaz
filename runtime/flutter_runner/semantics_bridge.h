@@ -18,7 +18,7 @@
 
 #include "flutter/shell/common/platform_view.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // Connects the Flutter PlatformView to the Fuchsia accessibility manager and
 // provides a way to push semantic tree updates to the manager. Also provides
@@ -26,8 +26,8 @@ namespace flutter {
 // on nodes on the screen.
 class SemanticsBridge final : public fuchsia::accessibility::SemanticsProvider {
  public:
-  SemanticsBridge(shell::PlatformView* platform_view,
-                  blink::LogicalMetrics* metrics);
+  SemanticsBridge(flutter::PlatformView* platform_view,
+                  flutter::LogicalMetrics* metrics);
   ~SemanticsBridge() = default;
 
   // Store the associated PlatformView's view_id and
@@ -41,7 +41,7 @@ class SemanticsBridge final : public fuchsia::accessibility::SemanticsProvider {
   // node format to send to the accessibility manager. The update is split into
   // three manager calls, one to send updated nodes, one to send deleted node
   // ids, and one to finalize the update.
-  void UpdateSemantics(const blink::SemanticsNodeUpdates& update);
+  void UpdateSemantics(const flutter::SemanticsNodeUpdates& update);
 
  private:
   // |fuchsia::accessibility::SemanticsProvider|
@@ -78,18 +78,18 @@ class SemanticsBridge final : public fuchsia::accessibility::SemanticsProvider {
   bool environment_set_ = false;
   // We keep a reference to the associated PlatformView to call
   // SemanticsActions.
-  shell::PlatformView* platform_view_;
+  flutter::PlatformView* platform_view_;
   // Metrics is needed to scale Scenic view space into local
   // Flutter space when performing hit-tests. This is converted into
   // a transform matrix that is applied to this semantic tree's root node
   // transform matrix when sent to the manager.
-  blink::LogicalMetrics* metrics_;
+  flutter::LogicalMetrics* metrics_;
 
   // Disallow copy and assignment.
   SemanticsBridge(const SemanticsBridge&) = delete;
   SemanticsBridge& operator=(const SemanticsBridge&) = delete;
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_SEMANTICS_BRIDGE_H_

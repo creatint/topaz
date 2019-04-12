@@ -7,11 +7,11 @@
 
 #include <lib/async-loop/cpp/loop.h>
 
-namespace flutter {
+namespace flutter_runner {
 
 // Creates a loop which allows task observers to be attached to it.
 async::Loop* MakeObservableLoop(bool attachToThread);
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_LOOP_H_

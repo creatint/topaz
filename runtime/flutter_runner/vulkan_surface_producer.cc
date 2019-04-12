@@ -18,7 +18,7 @@
 #include "third_party/skia/include/gpu/vk/GrVkBackendContext.h"
 #include "third_party/skia/include/gpu/vk/GrVkTypes.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 namespace {
 
@@ -238,4 +238,4 @@ void VulkanSurfaceProducer::SubmitSurface(
   surface_pool_->SubmitSurface(std::move(surface));
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

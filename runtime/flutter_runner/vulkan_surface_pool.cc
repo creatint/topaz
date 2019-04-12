@@ -11,7 +11,7 @@
 
 #include "third_party/skia/include/gpu/GrContext.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 namespace {
 
@@ -336,4 +336,4 @@ void VulkanSurfacePool::TraceStats() {
   trace_surfaces_reused_ = 0;
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

@@ -20,7 +20,7 @@
 #include "flutter/fml/macros.h"
 #include "vulkan_surface_producer.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // The component residing on the GPU thread that is responsible for
 // maintaining the Scenic session connection and presenting node updates.
@@ -85,6 +85,6 @@ class SessionConnection final {
   FML_DISALLOW_COPY_AND_ASSIGN(SessionConnection);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_SESSION_CONNECTION_H_

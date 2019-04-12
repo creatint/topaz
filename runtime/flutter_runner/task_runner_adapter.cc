@@ -10,7 +10,7 @@
 
 #include "flutter/fml/message_loop_impl.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 class CompatTaskRunner : public fml::TaskRunner {
  public:
@@ -52,4 +52,4 @@ fml::RefPtr<fml::TaskRunner> CreateFMLTaskRunner(
   return fml::MakeRefCounted<CompatTaskRunner>(dispatcher);
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

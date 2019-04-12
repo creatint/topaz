@@ -21,7 +21,7 @@
 #include "topaz/runtime/flutter_runner/logging.h"
 #include "topaz/runtime/flutter_runner/vsync_waiter.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 namespace {
 
@@ -80,7 +80,7 @@ void SetInterfaceErrorHandler(fidl::Binding<T>& binding, std::string name) {
 
 PlatformView::PlatformView(
     PlatformView::Delegate& delegate, std::string debug_label,
-    blink::TaskRunners task_runners,
+    flutter::TaskRunners task_runners,
     fidl::InterfaceHandle<fuchsia::sys::ServiceProvider>
         parent_environment_service_provider_handle,
     fidl::InterfaceRequest<fuchsia::ui::scenic::SessionListener>
@@ -91,7 +91,7 @@ PlatformView::PlatformView(
     fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
         accessibility_context_writer,
     zx_handle_t vsync_event_handle)
-    : shell::PlatformView(delegate, std::move(task_runners)),
+    : flutter::PlatformView(delegate, std::move(task_runners)),
       debug_label_(std::move(debug_label)),
       session_listener_binding_(this, std::move(session_listener_request)),
       session_listener_error_callback_(
@@ -235,7 +235,7 @@ void PlatformView::DidUpdateState(
   document.Accept(writer);
 
   const uint8_t* data = reinterpret_cast<const uint8_t*>(buffer.GetString());
-  DispatchPlatformMessage(fml::MakeRefCounted<blink::PlatformMessage>(
+  DispatchPlatformMessage(fml::MakeRefCounted<flutter::PlatformMessage>(
       kTextInputChannel,                                    // channel
       std::vector<uint8_t>(data, data + buffer.GetSize()),  // message
       nullptr)                                              // response
@@ -271,7 +271,7 @@ void PlatformView::OnAction(fuchsia::ui::input::InputMethodAction action) {
   document.Accept(writer);
 
   const uint8_t* data = reinterpret_cast<const uint8_t*>(buffer.GetString());
-  DispatchPlatformMessage(fml::MakeRefCounted<blink::PlatformMessage>(
+  DispatchPlatformMessage(fml::MakeRefCounted<flutter::PlatformMessage>(
       kTextInputChannel,                                    // channel
       std::vector<uint8_t>(data, data + buffer.GetSize()),  // message
       nullptr)                                              // response
@@ -360,54 +360,54 @@ void PlatformView::OnScenicEvent(
 
 void PlatformView::OnChildViewConnected(scenic::ResourceId view_holder_id) {
   task_runners_.GetUITaskRunner()->PostTask([view_holder_id]() {
-    blink::SceneHost::OnViewConnected(view_holder_id);
+    flutter::SceneHost::OnViewConnected(view_holder_id);
   });
 }
 
 void PlatformView::OnChildViewDisconnected(scenic::ResourceId view_holder_id) {
   task_runners_.GetUITaskRunner()->PostTask([view_holder_id]() {
-    blink::SceneHost::OnViewDisconnected(view_holder_id);
+    flutter::SceneHost::OnViewDisconnected(view_holder_id);
   });
 }
 
 void PlatformView::OnChildViewStateChanged(scenic::ResourceId view_holder_id,
                                            bool state) {
   task_runners_.GetUITaskRunner()->PostTask([view_holder_id, state]() {
-    blink::SceneHost::OnViewStateChanged(view_holder_id, state);
+    flutter::SceneHost::OnViewStateChanged(view_holder_id, state);
   });
 }
 
-static blink::PointerData::Change GetChangeFromPointerEventPhase(
+static flutter::PointerData::Change GetChangeFromPointerEventPhase(
     fuchsia::ui::input::PointerEventPhase phase) {
   switch (phase) {
     case fuchsia::ui::input::PointerEventPhase::ADD:
-      return blink::PointerData::Change::kAdd;
+      return flutter::PointerData::Change::kAdd;
     case fuchsia::ui::input::PointerEventPhase::HOVER:
-      return blink::PointerData::Change::kHover;
+      return flutter::PointerData::Change::kHover;
     case fuchsia::ui::input::PointerEventPhase::DOWN:
-      return blink::PointerData::Change::kDown;
+      return flutter::PointerData::Change::kDown;
     case fuchsia::ui::input::PointerEventPhase::MOVE:
-      return blink::PointerData::Change::kMove;
+      return flutter::PointerData::Change::kMove;
     case fuchsia::ui::input::PointerEventPhase::UP:
-      return blink::PointerData::Change::kUp;
+      return flutter::PointerData::Change::kUp;
     case fuchsia::ui::input::PointerEventPhase::REMOVE:
-      return blink::PointerData::Change::kRemove;
+      return flutter::PointerData::Change::kRemove;
     case fuchsia::ui::input::PointerEventPhase::CANCEL:
-      return blink::PointerData::Change::kCancel;
+      return flutter::PointerData::Change::kCancel;
     default:
-      return blink::PointerData::Change::kCancel;
+      return flutter::PointerData::Change::kCancel;
   }
 }
 
-static blink::PointerData::DeviceKind GetKindFromPointerType(
+static flutter::PointerData::DeviceKind GetKindFromPointerType(
     fuchsia::ui::input::PointerEventType type) {
   switch (type) {
     case fuchsia::ui::input::PointerEventType::TOUCH:
-      return blink::PointerData::DeviceKind::kTouch;
+      return flutter::PointerData::DeviceKind::kTouch;
     case fuchsia::ui::input::PointerEventType::MOUSE:
-      return blink::PointerData::DeviceKind::kMouse;
+      return flutter::PointerData::DeviceKind::kMouse;
     default:
-      return blink::PointerData::DeviceKind::kTouch;
+      return flutter::PointerData::DeviceKind::kTouch;
   }
 }
 
@@ -428,7 +428,7 @@ bool PlatformView::OnHandlePointerEvent(
       PointerTraceHACK(pointer.radius_major, pointer.radius_minor);
   TRACE_FLOW_END("input", "dispatch_event_to_client", trace_id);
 
-  blink::PointerData pointer_data;
+  flutter::PointerData pointer_data;
   pointer_data.Clear();
   pointer_data.time_stamp = pointer.event_time / 1000;
   pointer_data.change = GetChangeFromPointerEventPhase(pointer.phase);
@@ -440,36 +440,36 @@ bool PlatformView::OnHandlePointerEvent(
   pointer_data.buttons = static_cast<uint64_t>(pointer.buttons);
 
   switch (pointer_data.change) {
-    case blink::PointerData::Change::kDown:
+    case flutter::PointerData::Change::kDown:
       down_pointers_.insert(pointer_data.device);
       break;
-    case blink::PointerData::Change::kCancel:
-    case blink::PointerData::Change::kUp:
+    case flutter::PointerData::Change::kCancel:
+    case flutter::PointerData::Change::kUp:
       down_pointers_.erase(pointer_data.device);
       break;
-    case blink::PointerData::Change::kMove:
+    case flutter::PointerData::Change::kMove:
       if (down_pointers_.count(pointer_data.device) == 0) {
-        pointer_data.change = blink::PointerData::Change::kHover;
+        pointer_data.change = flutter::PointerData::Change::kHover;
       }
       break;
-    case blink::PointerData::Change::kAdd:
+    case flutter::PointerData::Change::kAdd:
       if (down_pointers_.count(pointer_data.device) != 0) {
         FML_DLOG(ERROR) << "Received add event for down pointer.";
       }
       break;
-    case blink::PointerData::Change::kRemove:
+    case flutter::PointerData::Change::kRemove:
       if (down_pointers_.count(pointer_data.device) != 0) {
         FML_DLOG(ERROR) << "Received remove event for down pointer.";
       }
       break;
-    case blink::PointerData::Change::kHover:
+    case flutter::PointerData::Change::kHover:
       if (down_pointers_.count(pointer_data.device) != 0) {
         FML_DLOG(ERROR) << "Received hover event for down pointer.";
       }
       break;
   }
 
-  auto packet = std::make_unique<blink::PointerDataPacket>(1);
+  auto packet = std::make_unique<flutter::PointerDataPacket>(1);
   packet->SetPointerData(0, pointer_data);
   DispatchPointerDataPacket(std::move(packet));
   return true;
@@ -505,7 +505,7 @@ bool PlatformView::OnHandleKeyboardEvent(
   document.Accept(writer);
 
   const uint8_t* data = reinterpret_cast<const uint8_t*>(buffer.GetString());
-  DispatchPlatformMessage(fml::MakeRefCounted<blink::PlatformMessage>(
+  DispatchPlatformMessage(fml::MakeRefCounted<flutter::PlatformMessage>(
       kKeyEventChannel,                                     // channel
       std::vector<uint8_t>(data, data + buffer.GetSize()),  // data
       nullptr)                                              // response
@@ -549,23 +549,23 @@ void PlatformView::DeactivateIme() {
   }
 }
 
-// |shell::PlatformView|
-std::unique_ptr<shell::VsyncWaiter> PlatformView::CreateVSyncWaiter() {
-  return std::make_unique<flutter::VsyncWaiter>(
+// |flutter::PlatformView|
+std::unique_ptr<flutter::VsyncWaiter> PlatformView::CreateVSyncWaiter() {
+  return std::make_unique<flutter_runner::VsyncWaiter>(
       debug_label_, vsync_event_handle_, task_runners_);
 }
 
-// |shell::PlatformView|
-std::unique_ptr<shell::Surface> PlatformView::CreateRenderingSurface() {
+// |flutter::PlatformView|
+std::unique_ptr<flutter::Surface> PlatformView::CreateRenderingSurface() {
   // This platform does not repeatly lose and gain a surface connection. So the
   // surface is setup once during platform view setup and and returned to the
   // shell on the initial (and only) |NotifyCreated| call.
   return std::move(surface_);
 }
 
-// |shell::PlatformView|
+// |flutter::PlatformView|
 void PlatformView::HandlePlatformMessage(
-    fml::RefPtr<blink::PlatformMessage> message) {
+    fml::RefPtr<flutter::PlatformMessage> message) {
   if (!message) {
     return;
   }
@@ -575,16 +575,16 @@ void PlatformView::HandlePlatformMessage(
         << "Platform view received message on channel '" << message->channel()
         << "' with no registed handler. And empty response will be generated. "
            "Please implement the native message handler.";
-    shell::PlatformView::HandlePlatformMessage(std::move(message));
+    flutter::PlatformView::HandlePlatformMessage(std::move(message));
     return;
   }
   found->second(std::move(message));
 }
 
-// |shell::PlatformView|
+// |flutter::PlatformView|
 void PlatformView::UpdateSemantics(
-    blink::SemanticsNodeUpdates update,
-    blink::CustomAccessibilityActionUpdates actions) {
+    flutter::SemanticsNodeUpdates update,
+    flutter::CustomAccessibilityActionUpdates actions) {
   // TODO(MI4-1262): Figure out if the context_writer_bridge should be removed
   // as it is unused.
   // context_writer_bridge_.UpdateSemantics(update);
@@ -593,13 +593,13 @@ void PlatformView::UpdateSemantics(
 
 // Channel handler for kAccessibilityChannel
 void PlatformView::HandleAccessibilityChannelPlatformMessage(
-    fml::RefPtr<blink::PlatformMessage> message) {
+    fml::RefPtr<flutter::PlatformMessage> message) {
   FML_DCHECK(message->channel() == kAccessibilityChannel);
 }
 
 // Channel handler for kFlutterPlatformChannel
 void PlatformView::HandleFlutterPlatformChannelPlatformMessage(
-    fml::RefPtr<blink::PlatformMessage> message) {
+    fml::RefPtr<flutter::PlatformMessage> message) {
   FML_DCHECK(message->channel() == kFlutterPlatformChannel);
   const auto& data = message->data();
   rapidjson::Document document;
@@ -614,7 +614,7 @@ void PlatformView::HandleFlutterPlatformChannelPlatformMessage(
     return;
   }
 
-  fml::RefPtr<blink::PlatformMessageResponse> response = message->response();
+  fml::RefPtr<flutter::PlatformMessageResponse> response = message->response();
   if (method->value == "Clipboard.setData") {
     auto text = root["args"]["text"].GetString();
     clipboard_->Push(text);
@@ -640,7 +640,7 @@ void PlatformView::HandleFlutterPlatformChannelPlatformMessage(
 
 // Channel handler for kTextInputChannel
 void PlatformView::HandleFlutterTextInputChannelPlatformMessage(
-    fml::RefPtr<blink::PlatformMessage> message) {
+    fml::RefPtr<flutter::PlatformMessage> message) {
   FML_DCHECK(message->channel() == kTextInputChannel);
   const auto& data = message->data();
   rapidjson::Document document;
@@ -729,4 +729,4 @@ void PlatformView::HandleFlutterTextInputChannelPlatformMessage(
   }
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

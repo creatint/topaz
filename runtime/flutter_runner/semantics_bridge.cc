@@ -10,7 +10,7 @@
 
 #include "topaz/runtime/flutter_runner/logging.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // Helper function to convert SkRect, Flutter semantics node bounding box
 // format to fuchsia::ui::gfx::BoundingBox, the Fidl equivalent.
@@ -37,7 +37,7 @@ fuchsia::ui::gfx::mat4 WrapSkMatrix(SkMatrix44& args) {
 
 // Helper function to convert Flutter SemanticsNode to fuchsia Fidl
 // accessibility node format.
-fuchsia::accessibility::Node SerializeNode(blink::SemanticsNode node,
+fuchsia::accessibility::Node SerializeNode(flutter::SemanticsNode node,
                                            float scale) {
   fuchsia::accessibility::Node s_node = fuchsia::accessibility::Node();
   s_node.node_id = node.id;
@@ -63,8 +63,8 @@ fuchsia::accessibility::Node SerializeNode(blink::SemanticsNode node,
   return s_node;
 }
 
-SemanticsBridge::SemanticsBridge(shell::PlatformView* platform_view,
-                                 blink::LogicalMetrics* metrics)
+SemanticsBridge::SemanticsBridge(flutter::PlatformView* platform_view,
+                                 flutter::LogicalMetrics* metrics)
     : binding_(this), platform_view_(platform_view), metrics_(metrics) {
   root_.set_error_handler([this](zx_status_t status) {
     FX_LOG(INFO, LOG_TAG, "A11y bridge disconnected from a11y manager");
@@ -104,13 +104,13 @@ void SemanticsBridge::SetupEnvironment(
 }
 
 void SemanticsBridge::UpdateSemantics(
-    const blink::SemanticsNodeUpdates& update) {
+    const flutter::SemanticsNodeUpdates& update) {
   fidl::VectorPtr<int32_t> delete_nodes;
   fidl::VectorPtr<fuchsia::accessibility::Node> update_nodes;
   for (auto it = update.begin(); it != update.end(); ++it) {
-    blink::SemanticsNode node = it->second;
+    flutter::SemanticsNode node = it->second;
     // We delete nodes that are hidden from the screen.
-    if (node.HasFlag(blink::SemanticsFlags::kIsHidden)) {
+    if (node.HasFlag(flutter::SemanticsFlags::kIsHidden)) {
       delete_nodes.push_back(node.id);
     } else {
       update_nodes.push_back(SerializeNode(node, (float)metrics_->scale));
@@ -134,15 +134,15 @@ void SemanticsBridge::PerformAccessibilityAction(
   switch (action) {
     case fuchsia::accessibility::Action::GAIN_ACCESSIBILITY_FOCUS:
       platform_view_->DispatchSemanticsAction(
-          node_id, blink::SemanticsAction::kDidGainAccessibilityFocus, args);
+          node_id, flutter::SemanticsAction::kDidGainAccessibilityFocus, args);
       break;
     case fuchsia::accessibility::Action::LOSE_ACCESSIBILITY_FOCUS:
       platform_view_->DispatchSemanticsAction(
-          node_id, blink::SemanticsAction::kDidLoseAccessibilityFocus, args);
+          node_id, flutter::SemanticsAction::kDidLoseAccessibilityFocus, args);
       break;
     case fuchsia::accessibility::Action::TAP:
       platform_view_->DispatchSemanticsAction(
-          node_id, blink::SemanticsAction::kTap, args);
+          node_id, flutter::SemanticsAction::kTap, args);
       break;
     default:
       FX_LOG(ERROR, LOG_TAG, "Accessibility action not supported");
@@ -175,4 +175,4 @@ void SemanticsBridge::OnAccessibilityToggle(bool enabled) {
   platform_view_->SetSemanticsEnabled(false);
 }
 
-}  // namespace flutter
+}  // namespace flutter_runner

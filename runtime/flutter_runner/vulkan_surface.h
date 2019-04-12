@@ -21,7 +21,7 @@
 #include "lib/ui/scenic/cpp/resources.h"
 #include "third_party/skia/include/core/SkSurface.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // A |VkImage| and its relevant metadata.
 struct VulkanImage {
@@ -203,4 +203,4 @@ class VulkanSurface final
   FML_DISALLOW_COPY_AND_ASSIGN(VulkanSurface);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner

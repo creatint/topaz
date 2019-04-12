@@ -11,7 +11,7 @@
 #include "flutter/fml/time/time_point.h"
 #include "lib/ui/scenic/cpp/session.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 struct VsyncInfo {
   fml::TimePoint presentation_time;
@@ -44,6 +44,6 @@ class VsyncRecorder {
   VsyncRecorder& operator=(const VsyncRecorder&) = delete;
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_VSYNC_RECORDER_H_

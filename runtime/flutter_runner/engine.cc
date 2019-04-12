@@ -21,10 +21,10 @@
 #include "platform_view.h"
 #include "task_runner_adapter.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 static void UpdateNativeThreadLabelNames(const std::string& label,
-                                         const blink::TaskRunners& runners) {
+                                         const flutter::TaskRunners& runners) {
   auto set_thread_name = [](fml::RefPtr<fml::TaskRunner> runner,
                             std::string prefix, std::string suffix) {
     if (!runner) {
@@ -42,9 +42,9 @@ static void UpdateNativeThreadLabelNames(const std::string& label,
 
 Engine::Engine(Delegate& delegate, std::string thread_label,
                std::shared_ptr<sys::ServiceDirectory> svc,
-               blink::Settings settings,
-               fml::RefPtr<const blink::DartSnapshot> isolate_snapshot,
-               fml::RefPtr<const blink::DartSnapshot> shared_snapshot,
+               flutter::Settings settings,
+               fml::RefPtr<const flutter::DartSnapshot> isolate_snapshot,
+               fml::RefPtr<const flutter::DartSnapshot> shared_snapshot,
                fuchsia::ui::views::ViewToken view_token, UniqueFDIONS fdio_ns,
                fidl::InterfaceRequest<fuchsia::io::Directory> directory_request)
     : delegate_(delegate),
@@ -107,7 +107,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
       };
 
   // Setup the callback that will instantiate the platform view.
-  shell::Shell::CreateCallback<shell::PlatformView> on_create_platform_view =
+  flutter::Shell::CreateCallback<flutter::PlatformView> on_create_platform_view =
       fml::MakeCopyable([debug_label = thread_label_,
                          parent_environment_service_provider =
                              std::move(parent_environment_service_provider),
@@ -122,8 +122,8 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
                          accessibility_context_writer =
                              std::move(accessibility_context_writer),
                          vsync_handle =
-                             vsync_event_.get()](shell::Shell& shell) mutable {
-        return std::make_unique<flutter::PlatformView>(
+                             vsync_event_.get()](flutter::Shell& shell) mutable {
+        return std::make_unique<flutter_runner::PlatformView>(
             shell,                                           // delegate
             debug_label,                                     // debug label
             shell.GetTaskRunners(),                          // task runners
@@ -159,7 +159,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   std::unique_ptr<flow::CompositorContext> compositor_context;
   {
     TRACE_DURATION("flutter", "CreateCompositorContext");
-    compositor_context = std::make_unique<flutter::CompositorContext>(
+    compositor_context = std::make_unique<flutter_runner::CompositorContext>(
         thread_label_,          // debug label
         std::move(view_token),  // scenic view we attach our tree to
         std::move(session),     // scenic session
@@ -169,10 +169,10 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   }
 
   // Setup the callback that will instantiate the rasterizer.
-  shell::Shell::CreateCallback<shell::Rasterizer> on_create_rasterizer =
+  flutter::Shell::CreateCallback<flutter::Rasterizer> on_create_rasterizer =
       fml::MakeCopyable([compositor_context = std::move(compositor_context)](
-                            shell::Shell& shell) mutable {
-        return std::make_unique<shell::Rasterizer>(
+                            flutter::Shell& shell) mutable {
+        return std::make_unique<flutter::Rasterizer>(
             shell.GetTaskRunners(),        // task runners
             std::move(compositor_context)  // compositor context
         );
@@ -180,7 +180,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
   // Get the task runners from the managed threads. The current thread will be
   // used as the "platform" thread.
-  const blink::TaskRunners task_runners(
+  const flutter::TaskRunners task_runners(
       thread_label_,  // Dart thread labels
       CreateFMLTaskRunner(async_get_default_dispatcher()),  // platform
       CreateFMLTaskRunner(host_loops_[0]->dispatcher()),    // gpu
@@ -209,19 +209,19 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
         });
       });
 
-  auto vm = blink::DartVMRef::Create(settings_);
+  auto vm = flutter::DartVMRef::Create(settings_);
 
   if (!isolate_snapshot) {
     isolate_snapshot = vm->GetVMData()->GetIsolateSnapshot();
   }
 
   if (!shared_snapshot) {
-    shared_snapshot = blink::DartSnapshot::Empty();
+    shared_snapshot = flutter::DartSnapshot::Empty();
   }
 
   {
     TRACE_DURATION("flutter", "CreateShell");
-    shell_ = shell::Shell::Create(
+    shell_ = flutter::Shell::Create(
         task_runners,                 // host task runners
         settings_,                    // shell launch settings
         std::move(isolate_snapshot),  // isolate snapshot
@@ -256,7 +256,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   shell_->GetPlatformView()->NotifyCreated();
 
   // Launch the engine in the appropriate configuration.
-  auto run_configuration = shell::RunConfiguration::InferFromSettings(
+  auto run_configuration = flutter::RunConfiguration::InferFromSettings(
       settings_, task_runners.GetIOTaskRunner());
 
   auto on_run_failure = [weak = weak_factory_.GetWeakPtr()]() {
@@ -286,7 +286,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
             sk_make_sp<txt::FuchsiaFontManager>(std::move(sync_font_provider)));
 
         if (engine->Run(std::move(run_configuration)) ==
-            shell::Engine::RunStatus::Failure) {
+            flutter::Engine::RunStatus::Failure) {
           on_run_failure();
         }
       }));
@@ -413,7 +413,7 @@ void Engine::OnSessionMetricsDidChange(
       [rasterizer = shell_->GetRasterizer(), metrics]() {
         if (rasterizer) {
           auto compositor_context =
-              reinterpret_cast<flutter::CompositorContext*>(
+              reinterpret_cast<flutter_runner::CompositorContext*>(
                   rasterizer->compositor_context());
 
           compositor_context->OnSessionMetricsDidChange(metrics);
@@ -432,7 +432,7 @@ void Engine::OnSessionSizeChangeHint(float width_change_factor,
        height_change_factor]() {
         if (rasterizer) {
           auto compositor_context =
-              reinterpret_cast<flutter::CompositorContext*>(
+              reinterpret_cast<CompositorContext*>(
                   rasterizer->compositor_context());
 
           compositor_context->OnSessionSizeChangeHint(width_change_factor,
@@ -453,4 +453,4 @@ void Engine::WriteProfileToTrace() const {
 }
 #endif  // !defined(DART_PRODUCT)
 
-}  // namespace flutter
+}  // namespace flutter_runner

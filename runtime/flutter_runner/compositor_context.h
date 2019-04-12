@@ -14,7 +14,7 @@
 #include "flutter/fml/macros.h"
 #include "session_connection.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 // Holds composition specific state and bindings specific to composition on
 // Fuchsia.
@@ -46,6 +46,6 @@ class CompositorContext final : public flow::CompositorContext {
   FML_DISALLOW_COPY_AND_ASSIGN(CompositorContext);
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
 
 #endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_COMPOSITOR_CONTEXT_H_

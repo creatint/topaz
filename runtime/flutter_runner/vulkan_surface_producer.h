@@ -21,7 +21,7 @@
 #include "topaz/runtime/flutter_runner/vulkan_surface.h"
 #include "topaz/runtime/flutter_runner/vulkan_surface_pool.h"
 
-namespace flutter {
+namespace flutter_runner {
 
 class VulkanSurfaceProducer final
     : public flow::SceneUpdateContext::SurfaceProducer,
@@ -101,4 +101,4 @@ class VulkanSurfaceProducer final
   VulkanSurfaceProducer& operator=(const VulkanSurfaceProducer&) = delete;
 };
 
-}  // namespace flutter
+}  // namespace flutter_runner
