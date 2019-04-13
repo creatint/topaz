@@ -12,12 +12,20 @@ dart_library("fuchsia_scenic_flutter") {
 
   source_dir = "lib"
 
+  # TODO(BLD-445): fix analysis errors in fuchsia_scenic_flutter
+  sources_required = false
+
   sources = [
     "child_view.dart",
     "child_view_connection.dart",
     "src/child_scene_layer.dart",
     "src/child_view.dart",
     "src/child_view_connection.dart",
+    # "view_container.dart",
+    # "src/view_container.dart",
+    # "src/view_container_listener_impl.dart",
+    # "src/internal/_mozart.dart",
+    # "src/internal/fakes/mozart_fakes.dart",
   ]
 
   deps = [

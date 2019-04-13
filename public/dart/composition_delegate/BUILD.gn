@@ -11,6 +11,13 @@ dart_library("dart") {
   sdk_category = "partner"
   sources = [
     "composition_delegate.dart",
+    "src/layout/layout_context.dart",
+    "src/layout/layout_types.dart",
+    "src/composition_delegate/composition_delegate.dart",
+    "src/surface/surface_relation.dart",
+    "src/surface/surface.dart",
+    "src/internal/tree/_surface_node.dart",
+    "src/internal/tree/_surface_tree.dart",
   ]
 
   deps = [
