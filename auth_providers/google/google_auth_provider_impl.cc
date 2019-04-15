@@ -172,7 +172,7 @@ void GoogleAuthProviderImpl::GetPersistentCredential(
     return;
   });
 
-  auth_ui_context_->StartOverlay2(std::move(view_holder_token.value));
+  auth_ui_context_->StartOverlay(std::move(view_holder_token));
   ExposeCredentialInjectorInterface();
 }
 

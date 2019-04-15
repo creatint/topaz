@@ -5,7 +5,6 @@
 import 'package:fidl_fuchsia_auth/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:flutter/widgets.dart';
-import 'package:zircon/zircon.dart';
 
 /// Called when an authentication overlay needs to be started.
 typedef OnStartOverlay = void Function(ViewHolderToken viewHolderToken);
@@ -26,14 +25,8 @@ class AuthenticationUiContextImpl extends AuthenticationUiContext {
         _onStopOverlay = onStopOverlay;
 
   @override
-  // ignore: override_on_non_overriding_method
   Future<void> startOverlay(ViewHolderToken viewHolderToken) async  =>
       _onStartOverlay?.call(viewHolderToken);
-
-  @override
-  // ignore: override_on_non_overriding_method
-  Future<void> startOverlay2(EventPair viewHolderToken) async =>
-      await startOverlay(ViewHolderToken(value: viewHolderToken));
 
   @override
   Future<void> stopOverlay() async => _onStopOverlay?.call();
