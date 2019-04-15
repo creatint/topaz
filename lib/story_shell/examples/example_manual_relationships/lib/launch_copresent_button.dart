@@ -1,36 +1,23 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:fidl_fuchsia_modular/fidl.dart';
+import 'package:fidl_fuchsia_modular/fidl_async.dart';
 
 import 'start_module_button.dart';
 
 /// Specify an emphasis and launch a copresented surface
 class CopresentLauncher extends StatefulWidget {
-  final ModuleContext _moduleContext;
-
   final GenerateChildId _generateChildId;
 
   /// CopresentLauncher
-  const CopresentLauncher(this._moduleContext, this._generateChildId, {Key key})
-      : super(key: key);
+  const CopresentLauncher(this._generateChildId, {Key key}) : super(key: key);
 
   @override
-  CopresentLauncherState createState() =>
-      CopresentLauncherState(_moduleContext, _generateChildId);
+  CopresentLauncherState createState() => CopresentLauncherState();
 }
 
 /// Copresent Launch State
 class CopresentLauncherState extends State<CopresentLauncher> {
-  final ModuleContext _moduleContext;
-
-  final GenerateChildId _generateChildId;
-
-  CopresentLauncherState(
-    this._moduleContext,
-    this._generateChildId,
-  ) : super();
-
   double _copresentEmphasisExp = 0.0;
 
   double get _emphasis =>
@@ -52,23 +39,21 @@ class CopresentLauncherState extends State<CopresentLauncher> {
                   setState(() => _copresentEmphasisExp = value),
             ),
             StartModuleButton(
-              _moduleContext,
               SurfaceRelation(
                 emphasis: _emphasis,
                 arrangement: SurfaceArrangement.copresent,
               ),
               'Copresent',
-              _generateChildId,
+              widget._generateChildId,
             ),
             StartModuleButton(
-              _moduleContext,
               SurfaceRelation(
                 emphasis: _emphasis,
                 arrangement: SurfaceArrangement.copresent,
                 dependency: SurfaceDependency.dependent,
               ),
               'Dependent\nCopresent',
-              _generateChildId,
+              widget._generateChildId,
             ),
           ],
         ),
