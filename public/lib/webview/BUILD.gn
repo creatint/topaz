@@ -9,6 +9,7 @@ dart_library("webview") {
 
   sources = [
     "webview.dart",
+    "src/webview.dart",
   ]
 
   deps = [
