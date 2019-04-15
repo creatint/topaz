@@ -22,7 +22,6 @@ group("dart_unittests") {
   testonly = true
   public_deps = [
     "//topaz/bin/dart_fidl_json/test:dart_fidl_json_test($host_toolchain)",
-    "//topaz/bin/settings:settings_tests($host_toolchain)",
     "//topaz/examples/test/flutter_widget_test($host_toolchain)",
     "//topaz/lib/keyboard/flutter:keyboard_test($host_toolchain)",
     "//topaz/lib/setui/common:lib_setui_common_test($host_toolchain)",
