@@ -132,11 +132,6 @@ TEST_F(ChromiumAppTest, CreateAndNavigate) {
         }
       });
 
-  // TODO(NET-2089): Without this (or even if this is moved down below
-  // |FindAndBindPort|), this test flakes about 10% of the time. Reordering the
-  // tests such that this test executes first also deflakes it.
-  sleep(1);
-
   web_runner_tests::TestServer server;
   FXL_CHECK(server.FindAndBindPort());
 
