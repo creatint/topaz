@@ -184,34 +184,22 @@ void main() {
       });
     });
 
-    test('open fails with non empty path', () async {
+    test('open fails', () async {
       var file = _createReadWriteFileStub();
 
-      var proxy = FileProxy();
-      file.open(openRightReadable | openFlagDescribe, 0, '/',
-          _getNodeInterfaceRequest(proxy));
+      var paths = ['', '/', '.', './', './/', './//'];
+      for (var path in paths) {
+        var proxy = FileProxy();
+        file.open(openRightReadable | openFlagDescribe, 0, path,
+            _getNodeInterfaceRequest(proxy));
 
-      await proxy.onOpen.first.then((response) {
-        expect(response.s, ZX.ERR_NOT_DIR);
-        expect(response.info, isNull);
-      }).catchError((err) async {
-        fail(err.toString());
-      });
-    });
-
-    test('open works with empty path', () async {
-      var file = _createReadWriteFileStub();
-
-      var proxy = FileProxy();
-      file.open(openRightReadable | openFlagDescribe, 0, '',
-          _getNodeInterfaceRequest(proxy));
-
-      await proxy.onOpen.first.then((response) {
-        expect(response.s, ZX.OK);
-        expect(response.info, isNotNull);
-      }).catchError((err) async {
-        fail(err.toString());
-      });
+        await proxy.onOpen.first.then((response) {
+          expect(response.s, ZX.ERR_NOT_DIR);
+          expect(response.info, isNull);
+        }).catchError((err) async {
+          fail(err.toString());
+        });
+      }
     });
   });
 

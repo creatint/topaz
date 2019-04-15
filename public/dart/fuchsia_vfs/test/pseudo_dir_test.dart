@@ -722,7 +722,7 @@ void main() {
         PseudoDir dir = _setUpDir();
 
         var proxy = _getProxyForDir(dir);
-        var paths = ['.', '', './', './/', './//'];
+        var paths = ['.', './', './/', './//', './/.//./'];
         for (var path in paths) {
           DirectoryProxy newProxy = DirectoryProxy();
           await proxy.open(0, 0, path,
@@ -743,6 +743,22 @@ void main() {
         for (var path in paths) {
           await _openFileAndAssert(proxy, path, 100, 'file1');
         }
+      });
+
+      test('open fails for empty path', () async {
+        PseudoDir dir = _setUpDir();
+
+        var proxy = _getProxyForDir(dir);
+        var newProxy = DirectoryProxy();
+        await proxy.open(openFlagDescribe, 0, '',
+            InterfaceRequest(newProxy.ctrl.request().passChannel()));
+
+        await newProxy.onOpen.first.then((response) {
+          expect(response.s, isNot(ZX.OK));
+          expect(response.info, isNull);
+        }).catchError((err) async {
+          fail(err.toString());
+        });
       });
 
       test('open file fails for path ending with "/"', () async {

@@ -45,17 +45,12 @@ abstract class Vnode {
   ///
   /// Vnode provides a simplified implementation for non-directory types.
   /// Behavior:
-  /// Bypasses to connect call for empty path and non-directory types.
   /// For directory types, it will throw UnimplementedError error.
   /// For non empty path it will fail with [ERR_NOT_DIR].
   void open(int flags, int mode, String path, InterfaceRequest<Node> request) {
     if (type() == direntTypeDirectory) {
       // dir types should implement this function
       throw UnimplementedError();
-    }
-    if (path == '') {
-      connect(flags, mode, request);
-      return;
     }
     sendErrorEvent(flags, ZX.ERR_NOT_DIR, request);
   }
