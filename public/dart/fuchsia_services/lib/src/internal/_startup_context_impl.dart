@@ -22,12 +22,6 @@ import '../startup_context.dart';
 class StartupContextImpl implements StartupContext {
   static const String _serviceRootPath = '/svc';
 
-  /// The [fidl_sys.ServiceProvider] which can be used to connect to the
-  /// services exposed to the component on launch.
-  //  TODO(MF-167): Remove from this class
-  @override
-  final fidl_sys.ServiceProvider environmentServices;
-
   /// Services that are available to this component.
   ///
   /// These services have been offered to this component by its parent or are
@@ -46,10 +40,7 @@ class StartupContextImpl implements StartupContext {
   ///
   /// This constructor is rarely used directly. Instead, most clients create a
   /// startup context using [StartupContext.fromStartupInfo].
-  StartupContextImpl(
-      {@required this.incoming,
-      @required this.outgoing,
-      this.environmentServices})
+  StartupContextImpl({@required this.incoming, @required this.outgoing})
       : assert(incoming != null),
         assert(outgoing != null);
 
@@ -76,7 +67,6 @@ class StartupContextImpl implements StartupContext {
       return StartupContextImpl(
         incoming: incomingServices,
         outgoing: _getOutgoingFromHandle(outgoingServicesHandle),
-        environmentServices: _getServiceProvider(incomingServices),
       );
     }
 
@@ -84,7 +74,6 @@ class StartupContextImpl implements StartupContext {
     return StartupContextImpl(
       incoming: Incoming(directoryProxy),
       outgoing: Outgoing(),
-      environmentServices: fidl_sys.ServiceProviderProxy(),
     );
   }
 
@@ -119,7 +108,6 @@ class StartupContextImpl implements StartupContext {
     return StartupContextImpl(
       incoming: incomingSvc,
       outgoing: _getOutgoingFromChannel(dirRequestChannel),
-      environmentServices: _getServiceProvider(incomingSvc),
     );
   }
 
@@ -139,24 +127,5 @@ class StartupContextImpl implements StartupContext {
     final outgoingServices = Outgoing()
       ..serve(InterfaceRequest<fidl_io.Node>(directoryRequestChannel));
     return outgoingServices;
-  }
-
-  //  TODO(MF-167): Remove from this class
-  static fidl_sys.ServiceProviderProxy _getServiceProvider(
-      Incoming incomingServices) {
-    final environmentProxy = _getEnvironment(incomingServices);
-
-    final serviceProviderProxy = fidl_sys.ServiceProviderProxy();
-    environmentProxy.getServices(serviceProviderProxy.ctrl.request());
-    return serviceProviderProxy;
-  }
-
-  static fidl_sys.EnvironmentProxy _getEnvironment(Incoming incomingServices) {
-    if (incomingServices == null) {
-      throw ArgumentError.notNull('incomingServices');
-    }
-    final environmentProxy = fidl_sys.EnvironmentProxy();
-    incomingServices.connectToService(environmentProxy);
-    return environmentProxy;
   }
 }

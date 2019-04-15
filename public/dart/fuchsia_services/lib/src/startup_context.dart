@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl_fuchsia_sys/fidl_async.dart' as fidl_sys;
-
 import 'incoming.dart';
 import 'internal/_startup_context_impl.dart';
 import 'outgoing.dart';
@@ -16,11 +14,6 @@ import 'outgoing.dart';
 /// with the framework.
 abstract class StartupContext {
   static StartupContext _startupContext;
-
-  /// The [fidl_sys.ServiceProvider] which can be used to connect to the
-  /// services exposed to the component on launch.
-  //  TODO(MF-167): Remove from this class
-  final fidl_sys.ServiceProvider environmentServices;
 
   /// Services that are available to this component.
   ///
