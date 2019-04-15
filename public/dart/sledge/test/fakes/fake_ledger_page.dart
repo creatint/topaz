@@ -38,35 +38,35 @@ class FakeLedgerPage extends ledger.PageProxy {
   StorageState get storageState => _storageState;
 
   @override
-  void putNew(Uint8List key, Uint8List value) {
+  void put(Uint8List key, Uint8List value) {
     _modification.changedEntries.add(KeyValue(key, value));
   }
 
   @override
-  void deleteNew(Uint8List key) {
+  void delete(Uint8List key) {
     _modification.deletedKeys.add(key);
   }
 
   @override
-  void startTransactionNew() {
+  void startTransaction() {
     assert(_modification.changedEntries.isEmpty);
     assert(_modification.deletedKeys.isEmpty);
   }
 
   @override
-  void commitNew() {
+  void commit() {
     _storageState.applyChange(_modification);
     onChange(_modification);
     _modification.clear();
   }
 
   @override
-  void rollbackNew() {
+  void rollback() {
     _modification.clear();
   }
 
   @override
-  void getSnapshotNew(
+  void getSnapshot(
       Object snapshotRequest, Uint8List keyPrefix, dynamic watcher) {
     if (watcher != null) {
       _watcher = watcher;

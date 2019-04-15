@@ -28,7 +28,7 @@ void saveSchemaToPage(Schema schema, ledger.Page page) {
   final Uint8List value = getUint8ListFromString(jsonString);
   // TODO: handle the case where |value| is larger than the maximum allowed
   // size.
-  page.putNew(
+  page.put(
     key,
     value,
   );

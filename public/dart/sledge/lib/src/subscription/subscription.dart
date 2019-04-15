@@ -24,7 +24,7 @@ class Subscription extends ledger.PageWatcher {
       this._applyChangeCallback)
       : _snapshotProxy = ledgerObjectsFactory.newPageSnapshotProxy(),
         _pageWatcherBinding = ledgerObjectsFactory.newPageWatcherBinding() {
-    _pageProxy.getSnapshotNew(
+    _pageProxy.getSnapshot(
       _snapshotProxy.ctrl.request(),
       Uint8List(0),
       _pageWatcherBinding.wrap(this),

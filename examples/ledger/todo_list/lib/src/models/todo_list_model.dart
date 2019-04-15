@@ -45,7 +45,7 @@ class TodoListModel extends Model {
     await _ledger.getRootPage(_page.ctrl.request());
 
     final snapshot = ledger.PageSnapshotProxy();
-    await _page.getSnapshotNew(
+    await _page.getSnapshot(
       snapshot.ctrl.request(),
       Uint8List(0),
       _pageWatcherBinding.wrap(_PageWatcher(this)),
@@ -62,12 +62,12 @@ class TodoListModel extends Model {
 
   /// Marks the item of the given [id] as done.
   void markItemDone(List<int> id) {
-    _page.deleteNew(id);
+    _page.delete(id);
   }
 
   /// Adds a new todo item with the given [content].
   void addItem(String content) {
-    _page.putNew(_makeKey(), utf8.encode(content));
+    _page.put(_makeKey(), utf8.encode(content));
   }
 
   void _readItems(ledger.PageSnapshotProxy snapshot) {

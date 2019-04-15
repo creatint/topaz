@@ -38,7 +38,7 @@ void saveDocumentToPage(Document document, ledger.Page page) {
   for (Uint8List deletedKey in change.deletedKeys) {
     final Uint8List keyWithDocumentPrefix =
         concatUint8Lists(documentPrefix, deletedKey);
-    page.deleteNew(
+    page.delete(
       keyWithDocumentPrefix,
     );
   }
@@ -47,7 +47,7 @@ void saveDocumentToPage(Document document, ledger.Page page) {
   for (KeyValue kv in change.changedEntries) {
     final Uint8List keyWithDocumentPrefix =
         concatUint8Lists(documentPrefix, kv.key);
-    page.putNew(
+    page.put(
       keyWithDocumentPrefix,
       kv.value,
     );
@@ -56,7 +56,7 @@ void saveDocumentToPage(Document document, ledger.Page page) {
 
 void _deleteKeyValues(List<KeyValue> keyValues, ledger.Page page) {
   for (KeyValue kv in keyValues) {
-    page.deleteNew(
+    page.delete(
       kv.key,
     );
   }

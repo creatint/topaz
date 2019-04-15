@@ -42,10 +42,10 @@ class Transaction {
   Future<bool> saveModification(Modification modification) async {
     // Start Ledger transaction.
     _pageProxy
-      ..startTransactionNew()
+      ..startTransaction()
       // Obtain the snapshot.
       // All the read operations in |modification| will read from that snapshot.
-      ..getSnapshotNew(
+      ..getSnapshot(
         _pageSnapshotProxy.ctrl.request(),
         Uint8List(0),
         null,
@@ -80,7 +80,7 @@ class Transaction {
       }
 
       // Finish the transaction by commiting.
-      _pageProxy.commitNew();
+      _pageProxy.commit();
 
       // Notify the documents that the transaction has been completed.
       _documents
@@ -196,6 +196,6 @@ class Transaction {
     _documents
       ..forEach((Document document) => document.rollbackChange())
       ..clear();
-    _pageProxy.rollbackNew();
+    _pageProxy.rollback();
   }
 }
