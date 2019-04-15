@@ -35,6 +35,8 @@ class StartModuleButton extends StatelessWidget {
         onPressed: () {
           log.fine('starting module with relation $_relation');
           _startChildModule(_relation).catchError((e) {
+            Scaffold.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to start Module, see syslog')));
             log.warning('Failed to start child module', e);
           });
         },
