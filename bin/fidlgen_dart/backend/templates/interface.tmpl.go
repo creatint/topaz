@@ -282,7 +282,7 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
   {{- end }}
 {{- end }}
       default:
-        throw $fidl.FidlError('Unexpected message name for {{ .BindingName }}');
+        throw $fidl.FidlError(r'Unexpected message name for {{ .BindingName }}');
     }
   }
 }
@@ -317,9 +317,9 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
 
 {{- define "AsyncReturn" -}}
 {{- if .HasResponse -}}
-Future<{{ .AsyncResponseType }}>
+$async.Future<{{ .AsyncResponseType }}>
 {{- else -}}
-Future<void>
+$async.Future<void>
 {{- end -}}
 {{- end -}}
 
@@ -420,7 +420,7 @@ abstract class {{ .Name }} extends $fidl.Service {
     {{- end }}
     {{ template "AsyncReturn" . }} {{ .Name }}({{ template "AsyncParams" .Request }})
     {{- if .Transitional }}
-      { return Future.error(UnimplementedError()); }
+      { return $async.Future.error(UnimplementedError()); }
     {{- else }}
       ;
     {{- end }}
@@ -428,9 +428,9 @@ abstract class {{ .Name }} extends $fidl.Service {
     {{- range .Doc }}
     ///{{ . -}}
     {{- end }}
-    Stream<{{ .AsyncResponseType}}> get {{ .Name }}
+    $async.Stream<{{ .AsyncResponseType}}> get {{ .Name }}
     {{- if .Transitional }}
-      { return Stream.empty(); }
+      { return $async.Stream.empty(); }
     {{- else }}
       ;
     {{- end }}
@@ -518,7 +518,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
       _handleEvent($message);
       return;
     }
-    final Completer $completer = ctrl.getCompleter($txid);
+    final $async.Completer $completer = ctrl.getCompleter($txid);
     if ($completer == null) {
       $message.closeHandles();
       return;
@@ -585,7 +585,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
     @override
     {{ template "AsyncReturn" . }} {{ .Name }}({{ template "AsyncParams" .Request }}) async {
       if (!ctrl.isBound) {
-        return Future.error($fidl.FidlStateException('Proxy<${ctrl.$interfaceName}> is closed.'), StackTrace.current);
+        return $async.Future.error($fidl.FidlStateException('Proxy<${ctrl.$interfaceName}> is closed.'), StackTrace.current);
       }
 
       final $fidl.Encoder $encoder = $fidl.Encoder();
@@ -599,22 +599,22 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
       {{- end }}
 
       {{- if .HasResponse }}
-        final $completer = Completer<{{ .AsyncResponseType }}>();
+        final $completer = $async.Completer<{{ .AsyncResponseType }}>();
         ctrl.sendMessageWithResponse($encoder.message, $completer);
         return $completer.future;
       {{- else }}
-        return Future.sync(() {
+        return $async.Future.sync(() {
           ctrl.sendMessage($encoder.message);
         });
       {{- end }}
     }
   {{ else }}
-    final _{{ .Name }}EventStreamController = StreamController<{{ .AsyncResponseType }}>.broadcast();
+    final _{{ .Name }}EventStreamController = $async.StreamController<{{ .AsyncResponseType }}>.broadcast();
     {{- range .Doc }}
     ///{{ . -}}
     {{- end }}
     @override
-    Stream<{{ .AsyncResponseType }}> get {{ .Name }} => _{{ .Name }}EventStreamController.stream;
+    $async.Stream<{{ .AsyncResponseType }}> get {{ .Name }} => _{{ .Name }}EventStreamController.stream;
   {{ end }}
 {{- end }}
 }
@@ -622,7 +622,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
 class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
   {{ .BindingName }}() : super(r"{{ .Name }}")
   {{- if .HasEvents }} {
-    final List<StreamSubscription<dynamic>> $subscriptions = [];
+    final List<$async.StreamSubscription<dynamic>> $subscriptions = [];
     void $unsubscribe() {
       for (final $sub in $subscriptions) {
         $sub.cancel();
@@ -721,7 +721,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
       {{- end }}
     {{- end }}
       default:
-        throw $fidl.FidlError('Unexpected message name for {{ .BindingName }}');
+        throw $fidl.FidlError(r'Unexpected message name for {{ .BindingName }}');
     }
   }
 }
@@ -737,11 +737,11 @@ class {{ .Name }}$TestBase extends {{ .Name }} {
   @override
   {{- if .HasRequest }}
   {{ template "AsyncReturn" . }} {{ .Name }}({{ template "AsyncParams" .Request }}) {
-    return Future.error(UnimplementedError());
+    return $async.Future.error(UnimplementedError());
   }
   {{- else }}
-  Stream<{{ .AsyncResponseType}}> get {{ .Name }} {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<{{ .AsyncResponseType}}> get {{ .Name }} {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
   {{- end }}
 {{- end }}

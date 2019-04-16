@@ -6,13 +6,13 @@
 
 library fidl_test_name_test;
 
-import 'dart:async' show Future, Stream;
-import 'dart:core' hide Error;
+import 'dart:async' as $async;
+import 'dart:core' hide Error, Future, Match, Set, Stream, Type;
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 import './fidl_async.dart';
 
@@ -26,22 +26,22 @@ import './fidl_async.dart';
 
 class SwitchingOrdinals$TestBase extends SwitchingOrdinals {
   @override
-  Future<void> ordinalFive() {
-    return Future.error(UnimplementedError());
+  $async.Future<void> ordinalFive() {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Future<void> onlyGeneratedOrdinal() {
-    return Future.error(UnimplementedError());
+  $async.Future<void> onlyGeneratedOrdinal() {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Stream<void> get eventOrdinalFifteen {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<void> get eventOrdinalFifteen {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
 
   @override
-  Stream<void> get eventOnlyGeneratedOrdinal {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<void> get eventOnlyGeneratedOrdinal {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
 }

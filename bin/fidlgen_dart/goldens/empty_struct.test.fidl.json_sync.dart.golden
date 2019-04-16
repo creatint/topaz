@@ -12,7 +12,7 @@ import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 // These imports improve deduplication by making uses of {fidl.dart},
 // {fidl_async.dart} and {fidl.dart, fidl_async.dart} generate equivalent
@@ -67,15 +67,15 @@ class Empty extends $fidl.Struct {
     return r'Empty' r'(reserved: ' + reserved.toString() + r')';
   }
 
-  static Empty _ctor(List<Object> argv) => new Empty._(argv);
+  static Empty _ctor(List<Object> argv) => Empty._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.StructType<Empty> kEmpty_Type = const $fidl.StructType<Empty>(
+const $fidl.StructType<Empty> kEmpty_Type = $fidl.StructType<Empty>(
   encodedSize: 1,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Uint8Type(), offset: 0),
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
   ctor: Empty._ctor,
 );

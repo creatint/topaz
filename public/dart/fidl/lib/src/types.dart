@@ -954,7 +954,7 @@ class EnumType<T extends Enum> extends FidlType<T> {
 
   @override
   void encode(Encoder encoder, T value, int offset) {
-    type.encode(encoder, value.value, offset);
+    type.encode(encoder, value.$value, offset);
   }
 
   @override

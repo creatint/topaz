@@ -12,7 +12,7 @@ import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 // These imports improve deduplication by making uses of {fidl.dart},
 // {fidl_async.dart} and {fidl.dart, fidl_async.dart} generate equivalent
@@ -41,8 +41,8 @@ import 'fidl_async.dart' as $strongly_connect_async;
 // ignore_for_file: prefer_equal_for_default_values
 
 class ErrorEnun extends $fidl.Enum {
-  factory ErrorEnun(int v) {
-    switch (v) {
+  factory ErrorEnun(int _v) {
+    switch (_v) {
       case 1:
         return errFoo;
       case 2:
@@ -51,29 +51,32 @@ class ErrorEnun extends $fidl.Enum {
         return null;
     }
   }
-  static const ErrorEnun errFoo = const ErrorEnun._(1);
-  static const ErrorEnun errBar = const ErrorEnun._(2);
+  static const ErrorEnun errFoo = ErrorEnun._(1);
+  static const ErrorEnun errBar = ErrorEnun._(2);
 
-  const ErrorEnun._(this.value);
+  const ErrorEnun._(this.$value);
 
   @override
-  final int value;
+  final int $value;
 
-  static const Map<String, ErrorEnun> valuesMap = const {
+  static const Map<String, ErrorEnun> $valuesMap = {
     r'errFoo': errFoo,
     r'errBar': errBar,
   };
 
-  static const List<ErrorEnun> values = const [
+  static const List<ErrorEnun> $values = [
     errFoo,
     errBar,
   ];
 
-  static ErrorEnun valueOf(String name) => valuesMap[name];
+  // TODO: remove, see: FIDL-587
+  static const List<ErrorEnun> values = ErrorEnun.$values;
+
+  static ErrorEnun $valueOf(String name) => $valuesMap[name];
 
   @override
   String toString() {
-    switch (value) {
+    switch ($value) {
       case 1:
         return r'ErrorEnun.errFoo';
       case 2:
@@ -83,12 +86,11 @@ class ErrorEnun extends $fidl.Enum {
     }
   }
 
-  static ErrorEnun _ctor(int v) => new ErrorEnun(v);
+  static ErrorEnun _ctor(int v) => ErrorEnun(v);
 }
 
 const $fidl.EnumType<ErrorEnun> kErrorEnun_Type =
-    const $fidl.EnumType<ErrorEnun>(
-        type: const $fidl.Uint32Type(), ctor: ErrorEnun._ctor);
+    $fidl.EnumType<ErrorEnun>(type: $fidl.Uint32Type(), ctor: ErrorEnun._ctor);
 
 enum WithErrorSyntaxErrorAsPrimitiveResultTag {
   response,
@@ -99,25 +101,28 @@ class WithErrorSyntaxErrorAsPrimitiveResult extends $fidl.Union {
   const WithErrorSyntaxErrorAsPrimitiveResult.withResponse(
       WithErrorSyntaxErrorAsPrimitiveResponse value)
       : _data = value,
-        tag = WithErrorSyntaxErrorAsPrimitiveResultTag.response;
+        _tag = WithErrorSyntaxErrorAsPrimitiveResultTag.response;
 
   const WithErrorSyntaxErrorAsPrimitiveResult.withErr(int value)
       : _data = value,
-        tag = WithErrorSyntaxErrorAsPrimitiveResultTag.err;
+        _tag = WithErrorSyntaxErrorAsPrimitiveResultTag.err;
 
-  WithErrorSyntaxErrorAsPrimitiveResult._(this.tag, Object data) : _data = data;
+  WithErrorSyntaxErrorAsPrimitiveResult._(
+      WithErrorSyntaxErrorAsPrimitiveResultTag tag, Object data)
+      : _tag = tag,
+        _data = data;
 
-  final WithErrorSyntaxErrorAsPrimitiveResultTag tag;
+  final WithErrorSyntaxErrorAsPrimitiveResultTag _tag;
   final _data;
   WithErrorSyntaxErrorAsPrimitiveResponse get response {
-    if (tag != WithErrorSyntaxErrorAsPrimitiveResultTag.response) {
+    if (_tag != WithErrorSyntaxErrorAsPrimitiveResultTag.response) {
       return null;
     }
     return _data;
   }
 
   int get err {
-    if (tag != WithErrorSyntaxErrorAsPrimitiveResultTag.err) {
+    if (_tag != WithErrorSyntaxErrorAsPrimitiveResultTag.err) {
       return null;
     }
     return _data;
@@ -125,24 +130,28 @@ class WithErrorSyntaxErrorAsPrimitiveResult extends $fidl.Union {
 
   @override
   String toString() {
-    switch (tag) {
+    switch (_tag) {
       case WithErrorSyntaxErrorAsPrimitiveResultTag.response:
-        return 'WithErrorSyntaxErrorAsPrimitiveResult.response($response)';
+        return r'WithErrorSyntaxErrorAsPrimitiveResult.response($response)';
       case WithErrorSyntaxErrorAsPrimitiveResultTag.err:
-        return 'WithErrorSyntaxErrorAsPrimitiveResult.err($err)';
+        return r'WithErrorSyntaxErrorAsPrimitiveResult.err($err)';
       default:
         return null;
     }
   }
 
+  WithErrorSyntaxErrorAsPrimitiveResultTag get $tag => _tag;
+  // TODO: remove, see: FIDL-587
+  WithErrorSyntaxErrorAsPrimitiveResultTag get tag => _tag;
+
   @override
-  int get $index => tag.index;
+  int get $index => _tag.index;
 
   @override
   Object get $data => _data;
 
   static WithErrorSyntaxErrorAsPrimitiveResult _ctor(int index, Object data) {
-    return new WithErrorSyntaxErrorAsPrimitiveResult._(
+    return WithErrorSyntaxErrorAsPrimitiveResult._(
         WithErrorSyntaxErrorAsPrimitiveResultTag.values[index], data);
   }
 }
@@ -151,12 +160,12 @@ class WithErrorSyntaxErrorAsPrimitiveResult extends $fidl.Union {
 // ignore: recursive_compile_time_constant
 const $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>
     kWithErrorSyntax_ErrorAsPrimitive_Result_Type =
-    const $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>(
+    $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>(
   encodedSize: 8,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResponse>(
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResponse>(
         type: kWithErrorSyntax_ErrorAsPrimitive_Response_Type, offset: 4),
-    const $fidl.MemberType<int>(type: const $fidl.Uint32Type(), offset: 4),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 4),
   ],
   ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
 );
@@ -170,25 +179,28 @@ class WithErrorSyntaxErrorAsEnumResult extends $fidl.Union {
   const WithErrorSyntaxErrorAsEnumResult.withResponse(
       WithErrorSyntaxErrorAsEnumResponse value)
       : _data = value,
-        tag = WithErrorSyntaxErrorAsEnumResultTag.response;
+        _tag = WithErrorSyntaxErrorAsEnumResultTag.response;
 
   const WithErrorSyntaxErrorAsEnumResult.withErr(ErrorEnun value)
       : _data = value,
-        tag = WithErrorSyntaxErrorAsEnumResultTag.err;
+        _tag = WithErrorSyntaxErrorAsEnumResultTag.err;
 
-  WithErrorSyntaxErrorAsEnumResult._(this.tag, Object data) : _data = data;
+  WithErrorSyntaxErrorAsEnumResult._(
+      WithErrorSyntaxErrorAsEnumResultTag tag, Object data)
+      : _tag = tag,
+        _data = data;
 
-  final WithErrorSyntaxErrorAsEnumResultTag tag;
+  final WithErrorSyntaxErrorAsEnumResultTag _tag;
   final _data;
   WithErrorSyntaxErrorAsEnumResponse get response {
-    if (tag != WithErrorSyntaxErrorAsEnumResultTag.response) {
+    if (_tag != WithErrorSyntaxErrorAsEnumResultTag.response) {
       return null;
     }
     return _data;
   }
 
   ErrorEnun get err {
-    if (tag != WithErrorSyntaxErrorAsEnumResultTag.err) {
+    if (_tag != WithErrorSyntaxErrorAsEnumResultTag.err) {
       return null;
     }
     return _data;
@@ -196,24 +208,28 @@ class WithErrorSyntaxErrorAsEnumResult extends $fidl.Union {
 
   @override
   String toString() {
-    switch (tag) {
+    switch (_tag) {
       case WithErrorSyntaxErrorAsEnumResultTag.response:
-        return 'WithErrorSyntaxErrorAsEnumResult.response($response)';
+        return r'WithErrorSyntaxErrorAsEnumResult.response($response)';
       case WithErrorSyntaxErrorAsEnumResultTag.err:
-        return 'WithErrorSyntaxErrorAsEnumResult.err($err)';
+        return r'WithErrorSyntaxErrorAsEnumResult.err($err)';
       default:
         return null;
     }
   }
 
+  WithErrorSyntaxErrorAsEnumResultTag get $tag => _tag;
+  // TODO: remove, see: FIDL-587
+  WithErrorSyntaxErrorAsEnumResultTag get tag => _tag;
+
   @override
-  int get $index => tag.index;
+  int get $index => _tag.index;
 
   @override
   Object get $data => _data;
 
   static WithErrorSyntaxErrorAsEnumResult _ctor(int index, Object data) {
-    return new WithErrorSyntaxErrorAsEnumResult._(
+    return WithErrorSyntaxErrorAsEnumResult._(
         WithErrorSyntaxErrorAsEnumResultTag.values[index], data);
   }
 }
@@ -222,12 +238,12 @@ class WithErrorSyntaxErrorAsEnumResult extends $fidl.Union {
 // ignore: recursive_compile_time_constant
 const $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>
     kWithErrorSyntax_ErrorAsEnum_Result_Type =
-    const $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>(
+    $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>(
   encodedSize: 8,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<WithErrorSyntaxErrorAsEnumResponse>(
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<WithErrorSyntaxErrorAsEnumResponse>(
         type: kWithErrorSyntax_ErrorAsEnum_Response_Type, offset: 4),
-    const $fidl.MemberType<ErrorEnun>(type: kErrorEnun_Type, offset: 4),
+    $fidl.MemberType<ErrorEnun>(type: kErrorEnun_Type, offset: 4),
   ],
   ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
 );
@@ -263,17 +279,17 @@ class WithErrorSyntaxErrorAsPrimitiveResponse extends $fidl.Struct {
   }
 
   static WithErrorSyntaxErrorAsPrimitiveResponse _ctor(List<Object> argv) =>
-      new WithErrorSyntaxErrorAsPrimitiveResponse._(argv);
+      WithErrorSyntaxErrorAsPrimitiveResponse._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>
     kWithErrorSyntax_ErrorAsPrimitive_Response_Type =
-    const $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>(
+    $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>(
   encodedSize: 1,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Uint8Type(), offset: 0),
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
   ctor: WithErrorSyntaxErrorAsPrimitiveResponse._ctor,
 );
@@ -308,17 +324,17 @@ class WithErrorSyntaxErrorAsEnumResponse extends $fidl.Struct {
   }
 
   static WithErrorSyntaxErrorAsEnumResponse _ctor(List<Object> argv) =>
-      new WithErrorSyntaxErrorAsEnumResponse._(argv);
+      WithErrorSyntaxErrorAsEnumResponse._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>
     kWithErrorSyntax_ErrorAsEnum_Response_Type =
-    const $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>(
+    $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>(
   encodedSize: 1,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Uint8Type(), offset: 0),
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
   ctor: WithErrorSyntaxErrorAsEnumResponse._ctor,
 );
@@ -337,8 +353,7 @@ abstract class WithAndWithoutRequestResponse {
 const int _kWithAndWithoutRequestResponse_NoRequestNoResponse_Ordinal =
     503576693;
 const $fidl.MethodType
-    _kWithAndWithoutRequestResponse_NoRequestNoResponse_Type =
-    const $fidl.MethodType(
+    _kWithAndWithoutRequestResponse_NoRequestNoResponse_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"WithAndWithoutRequestResponse.NoRequestNoResponse",
@@ -348,7 +363,7 @@ const int _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Ordinal =
     1308023765;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Type =
-    const $fidl.MethodType(
+    $fidl.MethodType(
   request: null,
   response: null,
   name: r"WithAndWithoutRequestResponse.NoRequestEmptyResponse",
@@ -358,11 +373,11 @@ const int _kWithAndWithoutRequestResponse_NoRequestWithResponse_Ordinal =
     107534328;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_NoRequestWithResponse_Type =
-    const $fidl.MethodType(
+    $fidl.MethodType(
   request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<String>(
-        type: const $fidl.StringType(maybeElementCount: null, nullable: false),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offset: 16),
   ],
   name: r"WithAndWithoutRequestResponse.NoRequestWithResponse",
@@ -372,10 +387,10 @@ const int _kWithAndWithoutRequestResponse_WithRequestNoResponse_Ordinal =
     432149361;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_WithRequestNoResponse_Type =
-    const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<String>(
-        type: const $fidl.StringType(maybeElementCount: null, nullable: false),
+    $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offset: 16),
   ],
   response: null,
@@ -386,10 +401,10 @@ const int _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Ordinal =
     1995585907;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Type =
-    const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<String>(
-        type: const $fidl.StringType(maybeElementCount: null, nullable: false),
+    $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offset: 16),
   ],
   response: null,
@@ -400,15 +415,15 @@ const int _kWithAndWithoutRequestResponse_WithRequestWithResponse_Ordinal =
     426977568;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_WithRequestWithResponse_Type =
-    const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<String>(
-        type: const $fidl.StringType(maybeElementCount: null, nullable: false),
+    $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offset: 16),
   ],
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<String>(
-        type: const $fidl.StringType(maybeElementCount: null, nullable: false),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offset: 16),
   ],
   name: r"WithAndWithoutRequestResponse.WithRequestWithResponse",
@@ -416,7 +431,7 @@ const $fidl.MethodType
 // onEmptyResponse:  -> ()
 const int _kWithAndWithoutRequestResponse_OnEmptyResponse_Ordinal = 1769985842;
 const $fidl.MethodType _kWithAndWithoutRequestResponse_OnEmptyResponse_Type =
-    const $fidl.MethodType(
+    $fidl.MethodType(
   request: null,
   response: null,
   name: r"WithAndWithoutRequestResponse.OnEmptyResponse",
@@ -424,11 +439,11 @@ const $fidl.MethodType _kWithAndWithoutRequestResponse_OnEmptyResponse_Type =
 // onWithResponse:  -> (String ret)
 const int _kWithAndWithoutRequestResponse_OnWithResponse_Ordinal = 2051478023;
 const $fidl.MethodType _kWithAndWithoutRequestResponse_OnWithResponse_Type =
-    const $fidl.MethodType(
+    $fidl.MethodType(
   request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<String>(
-        type: const $fidl.StringType(maybeElementCount: null, nullable: false),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offset: 16),
   ],
   name: r"WithAndWithoutRequestResponse.OnWithResponse",
@@ -441,14 +456,14 @@ class WithAndWithoutRequestResponseProxy
     extends $fidl.Proxy<WithAndWithoutRequestResponse>
     implements WithAndWithoutRequestResponse {
   WithAndWithoutRequestResponseProxy()
-      : super(new $fidl.ProxyController<WithAndWithoutRequestResponse>(
+      : super($fidl.ProxyController<WithAndWithoutRequestResponse>(
             $serviceName: null,
             $interfaceName: r'WithAndWithoutRequestResponse')) {
     ctrl.onResponse = _handleResponse;
   }
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kWithAndWithoutRequestResponse_OnEmptyResponse_Ordinal:
         final String _name =
@@ -516,7 +531,7 @@ class WithAndWithoutRequestResponseProxy
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Ordinal:
         final String _name =
@@ -612,7 +627,7 @@ class WithAndWithoutRequestResponseProxy
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_NoRequestNoResponse_Ordinal, 0);
     ctrl.sendMessage($encoder.message);
@@ -625,7 +640,7 @@ class WithAndWithoutRequestResponseProxy
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Ordinal, 0);
     Function $zonedCallback;
@@ -645,7 +660,7 @@ class WithAndWithoutRequestResponseProxy
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_NoRequestWithResponse_Ordinal, 0);
     Function $zonedCallback;
@@ -671,7 +686,7 @@ class WithAndWithoutRequestResponseProxy
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_WithRequestNoResponse_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
@@ -688,7 +703,7 @@ class WithAndWithoutRequestResponseProxy
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
@@ -712,7 +727,7 @@ class WithAndWithoutRequestResponseProxy
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_WithRequestWithResponse_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
@@ -742,14 +757,14 @@ class WithAndWithoutRequestResponseProxy
 class WithAndWithoutRequestResponseEvents {
   $fidl.Binding<WithAndWithoutRequestResponse> _binding;
   void onEmptyResponse() {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_OnEmptyResponse_Ordinal, 0);
     _binding.sendMessage($encoder.message);
   }
 
   void onWithResponse(String ret) {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_OnWithResponse_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
@@ -767,12 +782,12 @@ class WithAndWithoutRequestResponseBinding
   }
 
   final WithAndWithoutRequestResponseEvents events =
-      new WithAndWithoutRequestResponseEvents();
+      WithAndWithoutRequestResponseEvents();
 
   Function _noRequestEmptyResponseResponder(
       $fidl.MessageSink $respond, int $txid) {
     return () {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(
           _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Ordinal,
           $txid);
@@ -783,7 +798,7 @@ class WithAndWithoutRequestResponseBinding
   Function _noRequestWithResponseResponder(
       $fidl.MessageSink $respond, int $txid) {
     return (String ret) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(
           _kWithAndWithoutRequestResponse_NoRequestWithResponse_Ordinal, $txid);
       $encoder.alloc(32 - $fidl.kMessageHeaderSize);
@@ -797,7 +812,7 @@ class WithAndWithoutRequestResponseBinding
   Function _withRequestEmptyResponseResponder(
       $fidl.MessageSink $respond, int $txid) {
     return () {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(
           _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Ordinal,
           $txid);
@@ -808,7 +823,7 @@ class WithAndWithoutRequestResponseBinding
   Function _withRequestWithResponseResponder(
       $fidl.MessageSink $respond, int $txid) {
     return (String ret) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(
           _kWithAndWithoutRequestResponse_WithRequestWithResponse_Ordinal,
           $txid);
@@ -822,7 +837,7 @@ class WithAndWithoutRequestResponseBinding
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kWithAndWithoutRequestResponse_NoRequestNoResponse_Ordinal:
         final String _name =
@@ -950,8 +965,8 @@ class WithAndWithoutRequestResponseBinding
         }
         break;
       default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for WithAndWithoutRequestResponseBinding');
+        throw $fidl.FidlError(
+            r'Unexpected message name for WithAndWithoutRequestResponseBinding');
     }
   }
 }
@@ -966,21 +981,20 @@ abstract class WithErrorSyntax {
 // errorAsPrimitive: () -> (WithErrorSyntaxErrorAsPrimitiveResult result)
 const int _kWithErrorSyntax_ErrorAsPrimitive_Ordinal = 2069369145;
 const $fidl.MethodType _kWithErrorSyntax_ErrorAsPrimitive_Type =
-    const $fidl.MethodType(
+    $fidl.MethodType(
   request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResult>(
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResult>(
         type: kWithErrorSyntax_ErrorAsPrimitive_Result_Type, offset: 16),
   ],
   name: r"WithErrorSyntax.ErrorAsPrimitive",
 );
 // errorAsEnum: () -> (WithErrorSyntaxErrorAsEnumResult result)
 const int _kWithErrorSyntax_ErrorAsEnum_Ordinal = 1284890143;
-const $fidl.MethodType _kWithErrorSyntax_ErrorAsEnum_Type =
-    const $fidl.MethodType(
+const $fidl.MethodType _kWithErrorSyntax_ErrorAsEnum_Type = $fidl.MethodType(
   request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<WithErrorSyntaxErrorAsEnumResult>(
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<WithErrorSyntaxErrorAsEnumResult>(
         type: kWithErrorSyntax_ErrorAsEnum_Result_Type, offset: 16),
   ],
   name: r"WithErrorSyntax.ErrorAsEnum",
@@ -989,13 +1003,13 @@ const $fidl.MethodType _kWithErrorSyntax_ErrorAsEnum_Type =
 class WithErrorSyntaxProxy extends $fidl.Proxy<WithErrorSyntax>
     implements WithErrorSyntax {
   WithErrorSyntaxProxy()
-      : super(new $fidl.ProxyController<WithErrorSyntax>(
+      : super($fidl.ProxyController<WithErrorSyntax>(
             $serviceName: null, $interfaceName: r'WithErrorSyntax')) {
     ctrl.onResponse = _handleResponse;
   }
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       default:
         ctrl.proxyError('Unexpected message ordinal: ${$message.ordinal}');
@@ -1015,7 +1029,7 @@ class WithErrorSyntaxProxy extends $fidl.Proxy<WithErrorSyntax>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kWithErrorSyntax_ErrorAsPrimitive_Ordinal:
         final String _name = _kWithErrorSyntax_ErrorAsPrimitive_Type.name;
@@ -1070,7 +1084,7 @@ class WithErrorSyntaxProxy extends $fidl.Proxy<WithErrorSyntax>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kWithErrorSyntax_ErrorAsPrimitive_Ordinal, 0);
     Function $zonedCallback;
     if ((callback == null) || identical(Zone.current, Zone.root)) {
@@ -1095,7 +1109,7 @@ class WithErrorSyntaxProxy extends $fidl.Proxy<WithErrorSyntax>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kWithErrorSyntax_ErrorAsEnum_Ordinal, 0);
     Function $zonedCallback;
     if ((callback == null) || identical(Zone.current, Zone.root)) {
@@ -1117,7 +1131,7 @@ class WithErrorSyntaxProxy extends $fidl.Proxy<WithErrorSyntax>
 class WithErrorSyntaxBinding extends $fidl.Binding<WithErrorSyntax> {
   Function _errorAsPrimitiveResponder($fidl.MessageSink $respond, int $txid) {
     return (WithErrorSyntaxErrorAsPrimitiveResult result) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(
           _kWithErrorSyntax_ErrorAsPrimitive_Ordinal, $txid);
       $encoder.alloc(24 - $fidl.kMessageHeaderSize);
@@ -1130,7 +1144,7 @@ class WithErrorSyntaxBinding extends $fidl.Binding<WithErrorSyntax> {
 
   Function _errorAsEnumResponder($fidl.MessageSink $respond, int $txid) {
     return (WithErrorSyntaxErrorAsEnumResult result) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(
           _kWithErrorSyntax_ErrorAsEnum_Ordinal, $txid);
       $encoder.alloc(24 - $fidl.kMessageHeaderSize);
@@ -1143,7 +1157,7 @@ class WithErrorSyntaxBinding extends $fidl.Binding<WithErrorSyntax> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kWithErrorSyntax_ErrorAsPrimitive_Ordinal:
         final String _name = _kWithErrorSyntax_ErrorAsPrimitive_Type.name;
@@ -1184,8 +1198,8 @@ class WithErrorSyntaxBinding extends $fidl.Binding<WithErrorSyntax> {
         }
         break;
       default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for WithErrorSyntaxBinding');
+        throw $fidl.FidlError(
+            r'Unexpected message name for WithErrorSyntaxBinding');
     }
   }
 }
@@ -1199,35 +1213,34 @@ abstract class OvernetInternalProtocol {
 // methodA: (int a, int b)
 const int _kOvernetInternalProtocol_MethodA_Ordinal = 1993818253;
 const $fidl.MethodType _kOvernetInternalProtocol_MethodA_Type =
-    const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+    $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   response: null,
   name: r"OvernetInternalProtocol.MethodA",
 );
 // eventA:  -> (int a, int b)
 const int _kOvernetInternalProtocol_EventA_Ordinal = 1746007436;
-const $fidl.MethodType _kOvernetInternalProtocol_EventA_Type =
-    const $fidl.MethodType(
+const $fidl.MethodType _kOvernetInternalProtocol_EventA_Type = $fidl.MethodType(
   request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   name: r"OvernetInternalProtocol.EventA",
 );
 // methodB: (int a, int b) -> (int result)
 const int _kOvernetInternalProtocol_MethodB_Ordinal = 952134976;
 const $fidl.MethodType _kOvernetInternalProtocol_MethodB_Type =
-    const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+    $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
   ],
   name: r"OvernetInternalProtocol.MethodB",
 );
@@ -1237,13 +1250,13 @@ typedef void OvernetInternalProtocolEventACallback(int a, int b);
 class OvernetInternalProtocolProxy extends $fidl.Proxy<OvernetInternalProtocol>
     implements OvernetInternalProtocol {
   OvernetInternalProtocolProxy()
-      : super(new $fidl.ProxyController<OvernetInternalProtocol>(
+      : super($fidl.ProxyController<OvernetInternalProtocol>(
             $serviceName: null, $interfaceName: r'OvernetInternalProtocol')) {
     ctrl.onResponse = _handleResponse;
   }
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kOvernetInternalProtocol_EventA_Ordinal:
         final String _name = _kOvernetInternalProtocol_EventA_Type.name;
@@ -1288,7 +1301,7 @@ class OvernetInternalProtocolProxy extends $fidl.Proxy<OvernetInternalProtocol>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kOvernetInternalProtocol_MethodB_Ordinal:
         final String _name = _kOvernetInternalProtocol_MethodB_Type.name;
@@ -1323,7 +1336,7 @@ class OvernetInternalProtocolProxy extends $fidl.Proxy<OvernetInternalProtocol>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kOvernetInternalProtocol_MethodA_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1341,7 +1354,7 @@ class OvernetInternalProtocolProxy extends $fidl.Proxy<OvernetInternalProtocol>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kOvernetInternalProtocol_MethodB_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1368,7 +1381,7 @@ class OvernetInternalProtocolProxy extends $fidl.Proxy<OvernetInternalProtocol>
 class OvernetInternalProtocolEvents {
   $fidl.Binding<OvernetInternalProtocol> _binding;
   void eventA(int a, int b) {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kOvernetInternalProtocol_EventA_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1385,12 +1398,11 @@ class OvernetInternalProtocolBinding
     events._binding = this;
   }
 
-  final OvernetInternalProtocolEvents events =
-      new OvernetInternalProtocolEvents();
+  final OvernetInternalProtocolEvents events = OvernetInternalProtocolEvents();
 
   Function _methodBResponder($fidl.MessageSink $respond, int $txid) {
     return (int result) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(
           _kOvernetInternalProtocol_MethodB_Ordinal, $txid);
       $encoder.alloc(24 - $fidl.kMessageHeaderSize);
@@ -1403,7 +1415,7 @@ class OvernetInternalProtocolBinding
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kOvernetInternalProtocol_MethodA_Ordinal:
         final String _name = _kOvernetInternalProtocol_MethodA_Type.name;
@@ -1447,8 +1459,8 @@ class OvernetInternalProtocolBinding
         }
         break;
       default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for OvernetInternalProtocolBinding');
+        throw $fidl.FidlError(
+            r'Unexpected message name for OvernetInternalProtocolBinding');
     }
   }
 }
@@ -1461,36 +1473,33 @@ abstract class SocketControlProtocol {
 
 // methodA: (int a, int b)
 const int _kSocketControlProtocol_MethodA_Ordinal = 1007842318;
-const $fidl.MethodType _kSocketControlProtocol_MethodA_Type =
-    const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+const $fidl.MethodType _kSocketControlProtocol_MethodA_Type = $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   response: null,
   name: r"SocketControlProtocol.MethodA",
 );
 // eventA:  -> (int a, int b)
 const int _kSocketControlProtocol_EventA_Ordinal = 955483393;
-const $fidl.MethodType _kSocketControlProtocol_EventA_Type =
-    const $fidl.MethodType(
+const $fidl.MethodType _kSocketControlProtocol_EventA_Type = $fidl.MethodType(
   request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   name: r"SocketControlProtocol.EventA",
 );
 // methodB: (int a, int b) -> (int result)
 const int _kSocketControlProtocol_MethodB_Ordinal = 677342235;
-const $fidl.MethodType _kSocketControlProtocol_MethodB_Type =
-    const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+const $fidl.MethodType _kSocketControlProtocol_MethodB_Type = $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
   ],
   name: r"SocketControlProtocol.MethodB",
 );
@@ -1500,13 +1509,13 @@ typedef void SocketControlProtocolEventACallback(int a, int b);
 class SocketControlProtocolProxy extends $fidl.Proxy<SocketControlProtocol>
     implements SocketControlProtocol {
   SocketControlProtocolProxy()
-      : super(new $fidl.ProxyController<SocketControlProtocol>(
+      : super($fidl.ProxyController<SocketControlProtocol>(
             $serviceName: null, $interfaceName: r'SocketControlProtocol')) {
     ctrl.onResponse = _handleResponse;
   }
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kSocketControlProtocol_EventA_Ordinal:
         final String _name = _kSocketControlProtocol_EventA_Type.name;
@@ -1551,7 +1560,7 @@ class SocketControlProtocolProxy extends $fidl.Proxy<SocketControlProtocol>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kSocketControlProtocol_MethodB_Ordinal:
         final String _name = _kSocketControlProtocol_MethodB_Type.name;
@@ -1586,7 +1595,7 @@ class SocketControlProtocolProxy extends $fidl.Proxy<SocketControlProtocol>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kSocketControlProtocol_MethodA_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1604,7 +1613,7 @@ class SocketControlProtocolProxy extends $fidl.Proxy<SocketControlProtocol>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kSocketControlProtocol_MethodB_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1631,7 +1640,7 @@ class SocketControlProtocolProxy extends $fidl.Proxy<SocketControlProtocol>
 class SocketControlProtocolEvents {
   $fidl.Binding<SocketControlProtocol> _binding;
   void eventA(int a, int b) {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kSocketControlProtocol_EventA_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1648,11 +1657,11 @@ class SocketControlProtocolBinding
     events._binding = this;
   }
 
-  final SocketControlProtocolEvents events = new SocketControlProtocolEvents();
+  final SocketControlProtocolEvents events = SocketControlProtocolEvents();
 
   Function _methodBResponder($fidl.MessageSink $respond, int $txid) {
     return (int result) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(
           _kSocketControlProtocol_MethodB_Ordinal, $txid);
       $encoder.alloc(24 - $fidl.kMessageHeaderSize);
@@ -1665,7 +1674,7 @@ class SocketControlProtocolBinding
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kSocketControlProtocol_MethodA_Ordinal:
         final String _name = _kSocketControlProtocol_MethodA_Type.name;
@@ -1709,8 +1718,8 @@ class SocketControlProtocolBinding
         }
         break;
       default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for SocketControlProtocolBinding');
+        throw $fidl.FidlError(
+            r'Unexpected message name for SocketControlProtocolBinding');
     }
   }
 }
@@ -1723,33 +1732,33 @@ abstract class ChannelProtocol {
 
 // methodA: (int a, int b)
 const int _kChannelProtocol_MethodA_Ordinal = 1432785874;
-const $fidl.MethodType _kChannelProtocol_MethodA_Type = const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+const $fidl.MethodType _kChannelProtocol_MethodA_Type = $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   response: null,
   name: r"ChannelProtocol.MethodA",
 );
 // eventA:  -> (int a, int b)
 const int _kChannelProtocol_EventA_Ordinal = 477676034;
-const $fidl.MethodType _kChannelProtocol_EventA_Type = const $fidl.MethodType(
+const $fidl.MethodType _kChannelProtocol_EventA_Type = $fidl.MethodType(
   request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   name: r"ChannelProtocol.EventA",
 );
 // methodB: (int a, int b) -> (int result)
 const int _kChannelProtocol_MethodB_Ordinal = 180770075;
-const $fidl.MethodType _kChannelProtocol_MethodB_Type = const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+const $fidl.MethodType _kChannelProtocol_MethodB_Type = $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
   ],
   name: r"ChannelProtocol.MethodB",
 );
@@ -1759,13 +1768,13 @@ typedef void ChannelProtocolEventACallback(int a, int b);
 class ChannelProtocolProxy extends $fidl.Proxy<ChannelProtocol>
     implements ChannelProtocol {
   ChannelProtocolProxy()
-      : super(new $fidl.ProxyController<ChannelProtocol>(
+      : super($fidl.ProxyController<ChannelProtocol>(
             $serviceName: null, $interfaceName: r'ChannelProtocol')) {
     ctrl.onResponse = _handleResponse;
   }
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kChannelProtocol_EventA_Ordinal:
         final String _name = _kChannelProtocol_EventA_Type.name;
@@ -1810,7 +1819,7 @@ class ChannelProtocolProxy extends $fidl.Proxy<ChannelProtocol>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kChannelProtocol_MethodB_Ordinal:
         final String _name = _kChannelProtocol_MethodB_Type.name;
@@ -1845,7 +1854,7 @@ class ChannelProtocolProxy extends $fidl.Proxy<ChannelProtocol>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kChannelProtocol_MethodA_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1863,7 +1872,7 @@ class ChannelProtocolProxy extends $fidl.Proxy<ChannelProtocol>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kChannelProtocol_MethodB_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1890,7 +1899,7 @@ class ChannelProtocolProxy extends $fidl.Proxy<ChannelProtocol>
 class ChannelProtocolEvents {
   $fidl.Binding<ChannelProtocol> _binding;
   void eventA(int a, int b) {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kChannelProtocol_EventA_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
@@ -1906,11 +1915,11 @@ class ChannelProtocolBinding extends $fidl.Binding<ChannelProtocol> {
     events._binding = this;
   }
 
-  final ChannelProtocolEvents events = new ChannelProtocolEvents();
+  final ChannelProtocolEvents events = ChannelProtocolEvents();
 
   Function _methodBResponder($fidl.MessageSink $respond, int $txid) {
     return (int result) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(_kChannelProtocol_MethodB_Ordinal, $txid);
       $encoder.alloc(24 - $fidl.kMessageHeaderSize);
       final List<$fidl.MemberType> $types =
@@ -1922,7 +1931,7 @@ class ChannelProtocolBinding extends $fidl.Binding<ChannelProtocol> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kChannelProtocol_MethodA_Ordinal:
         final String _name = _kChannelProtocol_MethodA_Type.name;
@@ -1966,8 +1975,8 @@ class ChannelProtocolBinding extends $fidl.Binding<ChannelProtocol> {
         }
         break;
       default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for ChannelProtocolBinding');
+        throw $fidl.FidlError(
+            r'Unexpected message name for ChannelProtocolBinding');
     }
   }
 }
@@ -1980,33 +1989,33 @@ abstract class KitchenSink {
 
 // methodA: (int a, int b)
 const int _kKitchenSink_MethodA_Ordinal = 450577456;
-const $fidl.MethodType _kKitchenSink_MethodA_Type = const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+const $fidl.MethodType _kKitchenSink_MethodA_Type = $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   response: null,
   name: r"KitchenSink.MethodA",
 );
 // eventA:  -> (int a, int b)
 const int _kKitchenSink_EventA_Ordinal = 1795426833;
-const $fidl.MethodType _kKitchenSink_EventA_Type = const $fidl.MethodType(
+const $fidl.MethodType _kKitchenSink_EventA_Type = $fidl.MethodType(
   request: null,
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   name: r"KitchenSink.EventA",
 );
 // methodB: (int a, int b) -> (int result)
 const int _kKitchenSink_MethodB_Ordinal = 1999489700;
-const $fidl.MethodType _kKitchenSink_MethodB_Type = const $fidl.MethodType(
-  request: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 24),
+const $fidl.MethodType _kKitchenSink_MethodB_Type = $fidl.MethodType(
+  request: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
-  response: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int64Type(), offset: 16),
+  response: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
   ],
   name: r"KitchenSink.MethodB",
 );
@@ -2015,13 +2024,13 @@ typedef void KitchenSinkEventACallback(int a, int b);
 
 class KitchenSinkProxy extends $fidl.Proxy<KitchenSink> implements KitchenSink {
   KitchenSinkProxy()
-      : super(new $fidl.ProxyController<KitchenSink>(
+      : super($fidl.ProxyController<KitchenSink>(
             $serviceName: null, $interfaceName: r'KitchenSink')) {
     ctrl.onResponse = _handleResponse;
   }
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kKitchenSink_EventA_Ordinal:
         final String _name = _kKitchenSink_EventA_Type.name;
@@ -2066,7 +2075,7 @@ class KitchenSinkProxy extends $fidl.Proxy<KitchenSink> implements KitchenSink {
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kKitchenSink_MethodB_Ordinal:
         final String _name = _kKitchenSink_MethodB_Type.name;
@@ -2101,7 +2110,7 @@ class KitchenSinkProxy extends $fidl.Proxy<KitchenSink> implements KitchenSink {
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kKitchenSink_MethodA_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types = _kKitchenSink_MethodA_Type.request;
@@ -2118,7 +2127,7 @@ class KitchenSinkProxy extends $fidl.Proxy<KitchenSink> implements KitchenSink {
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kKitchenSink_MethodB_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types = _kKitchenSink_MethodB_Type.request;
@@ -2144,7 +2153,7 @@ class KitchenSinkProxy extends $fidl.Proxy<KitchenSink> implements KitchenSink {
 class KitchenSinkEvents {
   $fidl.Binding<KitchenSink> _binding;
   void eventA(int a, int b) {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kKitchenSink_EventA_Ordinal, 0);
     $encoder.alloc(32 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types = _kKitchenSink_EventA_Type.response;
@@ -2159,11 +2168,11 @@ class KitchenSinkBinding extends $fidl.Binding<KitchenSink> {
     events._binding = this;
   }
 
-  final KitchenSinkEvents events = new KitchenSinkEvents();
+  final KitchenSinkEvents events = KitchenSinkEvents();
 
   Function _methodBResponder($fidl.MessageSink $respond, int $txid) {
     return (int result) {
-      final $fidl.Encoder $encoder = new $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader(_kKitchenSink_MethodB_Ordinal, $txid);
       $encoder.alloc(24 - $fidl.kMessageHeaderSize);
       final List<$fidl.MemberType> $types = _kKitchenSink_MethodB_Type.response;
@@ -2174,7 +2183,7 @@ class KitchenSinkBinding extends $fidl.Binding<KitchenSink> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kKitchenSink_MethodA_Ordinal:
         final String _name = _kKitchenSink_MethodA_Type.name;
@@ -2218,8 +2227,8 @@ class KitchenSinkBinding extends $fidl.Binding<KitchenSink> {
         }
         break;
       default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for KitchenSinkBinding');
+        throw $fidl.FidlError(
+            r'Unexpected message name for KitchenSinkBinding');
     }
   }
 }

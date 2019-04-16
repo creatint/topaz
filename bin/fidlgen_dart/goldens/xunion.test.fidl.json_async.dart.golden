@@ -6,13 +6,14 @@
 
 library fidl_test_name_async;
 
-import 'dart:async';
+import 'dart:async' as $async;
+import 'dart:core' hide Set;
 import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 // These imports improve deduplication by making uses of {fidl.dart},
 // {fidl_async.dart} and {fidl.dart, fidl_async.dart} generate equivalent
@@ -49,7 +50,7 @@ enum OlderSimpleUnionTag {
   f, // 0x5136cf7e
 }
 
-const Map<int, OlderSimpleUnionTag> _OlderSimpleUnionTag_map = const {
+const Map<int, OlderSimpleUnionTag> _OlderSimpleUnionTag_map = {
   1026732503: OlderSimpleUnionTag.i,
   1362546558: OlderSimpleUnionTag.f,
 };
@@ -70,7 +71,7 @@ class OlderSimpleUnion extends $fidl.XUnion {
   final int _ordinal;
   final _data;
 
-  OlderSimpleUnionTag get tag => _OlderSimpleUnionTag_map[_ordinal];
+  OlderSimpleUnionTag get $tag => _OlderSimpleUnionTag_map[_ordinal];
 
   int get i {
     if (_ordinal != 1026732503) {
@@ -105,27 +106,27 @@ class OlderSimpleUnion extends $fidl.XUnion {
   Object get $data => _data;
 
   static OlderSimpleUnion _ctor(int ordinal, Object data) {
-    return new OlderSimpleUnion._(ordinal, data);
+    return OlderSimpleUnion._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_Type =
-    const $fidl.XUnionType<OlderSimpleUnion>(
+    $fidl.XUnionType<OlderSimpleUnion>(
   encodedSize: 24,
-  members: const <int, $fidl.FidlType>{
-    1026732503: const $fidl.Int64Type(),
-    1362546558: const $fidl.Float32Type(),
+  members: <int, $fidl.FidlType>{
+    1026732503: $fidl.Int64Type(),
+    1362546558: $fidl.Float32Type(),
   },
   ctor: OlderSimpleUnion._ctor,
 );
 const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_OptType =
-    const $fidl.XUnionType<OlderSimpleUnion>(
+    $fidl.XUnionType<OlderSimpleUnion>(
   encodedSize: 24,
-  members: const <int, $fidl.FidlType>{
-    1026732503: const $fidl.Int64Type(),
-    1362546558: const $fidl.Float32Type(),
+  members: <int, $fidl.FidlType>{
+    1026732503: $fidl.Int64Type(),
+    1362546558: $fidl.Float32Type(),
   },
   ctor: OlderSimpleUnion._ctor,
   nullable: true,
@@ -137,7 +138,7 @@ enum NewerSimpleUnionTag {
   v, // 0x6c38b28f
 }
 
-const Map<int, NewerSimpleUnionTag> _NewerSimpleUnionTag_map = const {
+const Map<int, NewerSimpleUnionTag> _NewerSimpleUnionTag_map = {
   693944286: NewerSimpleUnionTag.i,
   473666119: NewerSimpleUnionTag.s,
   1815655055: NewerSimpleUnionTag.v,
@@ -163,7 +164,7 @@ class NewerSimpleUnion extends $fidl.XUnion {
   final int _ordinal;
   final _data;
 
-  NewerSimpleUnionTag get tag => _NewerSimpleUnionTag_map[_ordinal];
+  NewerSimpleUnionTag get $tag => _NewerSimpleUnionTag_map[_ordinal];
 
   int get i {
     if (_ordinal != 693944286) {
@@ -207,35 +208,33 @@ class NewerSimpleUnion extends $fidl.XUnion {
   Object get $data => _data;
 
   static NewerSimpleUnion _ctor(int ordinal, Object data) {
-    return new NewerSimpleUnion._(ordinal, data);
+    return NewerSimpleUnion._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_Type =
-    const $fidl.XUnionType<NewerSimpleUnion>(
+    $fidl.XUnionType<NewerSimpleUnion>(
   encodedSize: 24,
-  members: const <int, $fidl.FidlType>{
-    693944286: const $fidl.Int64Type(),
-    473666119: const $fidl.StringType(maybeElementCount: null, nullable: false),
-    1815655055: const $fidl.VectorType<List<String>>(
-        element:
-            const $fidl.StringType(maybeElementCount: null, nullable: false),
+  members: <int, $fidl.FidlType>{
+    693944286: $fidl.Int64Type(),
+    473666119: $fidl.StringType(maybeElementCount: null, nullable: false),
+    1815655055: $fidl.VectorType<List<String>>(
+        element: $fidl.StringType(maybeElementCount: null, nullable: false),
         maybeElementCount: null,
         nullable: false),
   },
   ctor: NewerSimpleUnion._ctor,
 );
 const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_OptType =
-    const $fidl.XUnionType<NewerSimpleUnion>(
+    $fidl.XUnionType<NewerSimpleUnion>(
   encodedSize: 24,
-  members: const <int, $fidl.FidlType>{
-    693944286: const $fidl.Int64Type(),
-    473666119: const $fidl.StringType(maybeElementCount: null, nullable: false),
-    1815655055: const $fidl.VectorType<List<String>>(
-        element:
-            const $fidl.StringType(maybeElementCount: null, nullable: false),
+  members: <int, $fidl.FidlType>{
+    693944286: $fidl.Int64Type(),
+    473666119: $fidl.StringType(maybeElementCount: null, nullable: false),
+    1815655055: $fidl.VectorType<List<String>>(
+        element: $fidl.StringType(maybeElementCount: null, nullable: false),
         maybeElementCount: null,
         nullable: false),
   },

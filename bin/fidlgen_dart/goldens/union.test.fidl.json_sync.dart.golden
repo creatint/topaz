@@ -12,7 +12,7 @@ import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 // These imports improve deduplication by making uses of {fidl.dart},
 // {fidl_async.dart} and {fidl.dart, fidl_async.dart} generate equivalent
@@ -49,36 +49,38 @@ enum UnionTag {
 class Union extends $fidl.Union {
   const Union.withPrimitive(int value)
       : _data = value,
-        tag = UnionTag.primitive;
+        _tag = UnionTag.primitive;
 
   const Union.withStringNeedsConstructor(String value)
       : _data = value,
-        tag = UnionTag.stringNeedsConstructor;
+        _tag = UnionTag.stringNeedsConstructor;
 
   const Union.withVectorStringAlsoNeedsConstructor(List<String> value)
       : _data = value,
-        tag = UnionTag.vectorStringAlsoNeedsConstructor;
+        _tag = UnionTag.vectorStringAlsoNeedsConstructor;
 
-  Union._(this.tag, Object data) : _data = data;
+  Union._(UnionTag tag, Object data)
+      : _tag = tag,
+        _data = data;
 
-  final UnionTag tag;
+  final UnionTag _tag;
   final _data;
   int get primitive {
-    if (tag != UnionTag.primitive) {
+    if (_tag != UnionTag.primitive) {
       return null;
     }
     return _data;
   }
 
   String get stringNeedsConstructor {
-    if (tag != UnionTag.stringNeedsConstructor) {
+    if (_tag != UnionTag.stringNeedsConstructor) {
       return null;
     }
     return _data;
   }
 
   List<String> get vectorStringAlsoNeedsConstructor {
-    if (tag != UnionTag.vectorStringAlsoNeedsConstructor) {
+    if (_tag != UnionTag.vectorStringAlsoNeedsConstructor) {
       return null;
     }
     return _data;
@@ -86,42 +88,45 @@ class Union extends $fidl.Union {
 
   @override
   String toString() {
-    switch (tag) {
+    switch (_tag) {
       case UnionTag.primitive:
-        return 'Union.primitive($primitive)';
+        return r'Union.primitive($primitive)';
       case UnionTag.stringNeedsConstructor:
-        return 'Union.stringNeedsConstructor($stringNeedsConstructor)';
+        return r'Union.stringNeedsConstructor($stringNeedsConstructor)';
       case UnionTag.vectorStringAlsoNeedsConstructor:
-        return 'Union.vectorStringAlsoNeedsConstructor($vectorStringAlsoNeedsConstructor)';
+        return r'Union.vectorStringAlsoNeedsConstructor($vectorStringAlsoNeedsConstructor)';
       default:
         return null;
     }
   }
 
+  UnionTag get $tag => _tag;
+  // TODO: remove, see: FIDL-587
+  UnionTag get tag => _tag;
+
   @override
-  int get $index => tag.index;
+  int get $index => _tag.index;
 
   @override
   Object get $data => _data;
 
   static Union _ctor(int index, Object data) {
-    return new Union._(UnionTag.values[index], data);
+    return Union._(UnionTag.values[index], data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<Union> kUnion_Type = const $fidl.UnionType<Union>(
+const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   encodedSize: 24,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int32Type(), offset: 8),
-    const $fidl.MemberType<String>(
-        type: const $fidl.StringType(maybeElementCount: null, nullable: false),
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 8),
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offset: 8),
-    const $fidl.MemberType<List<String>>(
-        type: const $fidl.VectorType<List<String>>(
-            element: const $fidl.StringType(
-                maybeElementCount: null, nullable: false),
+    $fidl.MemberType<List<String>>(
+        type: $fidl.VectorType<List<String>>(
+            element: $fidl.StringType(maybeElementCount: null, nullable: false),
             maybeElementCount: null,
             nullable: false),
         offset: 8),

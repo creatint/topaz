@@ -6,13 +6,13 @@
 
 library fidl_test_name_test;
 
-import 'dart:async' show Future, Stream;
-import 'dart:core' hide Error;
+import 'dart:async' as $async;
+import 'dart:core' hide Error, Future, Match, Set, Stream, Type;
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 import './fidl_async.dart';
 
@@ -26,7 +26,7 @@ import './fidl_async.dart';
 
 class Interface$TestBase extends Interface {
   @override
-  Future<void> method() {
-    return Future.error(UnimplementedError());
+  $async.Future<void> method() {
+    return $async.Future.error(UnimplementedError());
   }
 }

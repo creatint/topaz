@@ -6,13 +6,13 @@
 
 library fidl_test_name_test;
 
-import 'dart:async' show Future, Stream;
-import 'dart:core' hide Error;
+import 'dart:async' as $async;
+import 'dart:core' hide Error, Future, Match, Set, Stream, Type;
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 import './fidl_async.dart';
 
@@ -27,122 +27,122 @@ import './fidl_async.dart';
 class WithAndWithoutRequestResponse$TestBase
     extends WithAndWithoutRequestResponse {
   @override
-  Future<void> noRequestNoResponse() {
-    return Future.error(UnimplementedError());
+  $async.Future<void> noRequestNoResponse() {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Future<void> noRequestEmptyResponse() {
-    return Future.error(UnimplementedError());
+  $async.Future<void> noRequestEmptyResponse() {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Future<String> noRequestWithResponse() {
-    return Future.error(UnimplementedError());
+  $async.Future<String> noRequestWithResponse() {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Future<void> withRequestNoResponse(String arg) {
-    return Future.error(UnimplementedError());
+  $async.Future<void> withRequestNoResponse(String arg) {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Future<void> withRequestEmptyResponse(String arg) {
-    return Future.error(UnimplementedError());
+  $async.Future<void> withRequestEmptyResponse(String arg) {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Future<String> withRequestWithResponse(String arg) {
-    return Future.error(UnimplementedError());
+  $async.Future<String> withRequestWithResponse(String arg) {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Stream<void> get onEmptyResponse {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<void> get onEmptyResponse {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
 
   @override
-  Stream<String> get onWithResponse {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<String> get onWithResponse {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
 }
 
 class WithErrorSyntax$TestBase extends WithErrorSyntax {
   @override
-  Future<WithErrorSyntaxErrorAsPrimitiveResult> errorAsPrimitive() {
-    return Future.error(UnimplementedError());
+  $async.Future<void> errorAsPrimitive() {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Future<WithErrorSyntaxErrorAsEnumResult> errorAsEnum() {
-    return Future.error(UnimplementedError());
+  $async.Future<void> errorAsEnum() {
+    return $async.Future.error(UnimplementedError());
   }
 }
 
 class OvernetInternalProtocol$TestBase extends OvernetInternalProtocol {
   @override
-  Future<void> methodA(int a, int b) {
-    return Future.error(UnimplementedError());
+  $async.Future<void> methodA(int a, int b) {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Stream<OvernetInternalProtocol$EventA$Response> get eventA {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<OvernetInternalProtocol$EventA$Response> get eventA {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
 
   @override
-  Future<int> methodB(int a, int b) {
-    return Future.error(UnimplementedError());
+  $async.Future<int> methodB(int a, int b) {
+    return $async.Future.error(UnimplementedError());
   }
 }
 
 class SocketControlProtocol$TestBase extends SocketControlProtocol {
   @override
-  Future<void> methodA(int a, int b) {
-    return Future.error(UnimplementedError());
+  $async.Future<void> methodA(int a, int b) {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Stream<SocketControlProtocol$EventA$Response> get eventA {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<SocketControlProtocol$EventA$Response> get eventA {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
 
   @override
-  Future<int> methodB(int a, int b) {
-    return Future.error(UnimplementedError());
+  $async.Future<int> methodB(int a, int b) {
+    return $async.Future.error(UnimplementedError());
   }
 }
 
 class ChannelProtocol$TestBase extends ChannelProtocol {
   @override
-  Future<void> methodA(int a, int b) {
-    return Future.error(UnimplementedError());
+  $async.Future<void> methodA(int a, int b) {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Stream<ChannelProtocol$EventA$Response> get eventA {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<ChannelProtocol$EventA$Response> get eventA {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
 
   @override
-  Future<int> methodB(int a, int b) {
-    return Future.error(UnimplementedError());
+  $async.Future<int> methodB(int a, int b) {
+    return $async.Future.error(UnimplementedError());
   }
 }
 
 class KitchenSink$TestBase extends KitchenSink {
   @override
-  Future<void> methodA(int a, int b) {
-    return Future.error(UnimplementedError());
+  $async.Future<void> methodA(int a, int b) {
+    return $async.Future.error(UnimplementedError());
   }
 
   @override
-  Stream<KitchenSink$EventA$Response> get eventA {
-    return Stream.fromFuture(Future.error(UnimplementedError()));
+  $async.Stream<KitchenSink$EventA$Response> get eventA {
+    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
   }
 
   @override
-  Future<int> methodB(int a, int b) {
-    return Future.error(UnimplementedError());
+  $async.Future<int> methodB(int a, int b) {
+    return $async.Future.error(UnimplementedError());
   }
 }

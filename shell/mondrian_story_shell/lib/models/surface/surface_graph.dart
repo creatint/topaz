@@ -86,7 +86,7 @@ class SurfaceGraph extends Model {
         this, node, properties, relation, pattern, placeholderColor);
     // if this is an external surface, create an association between this and
     // the most focused surface.
-    if (properties.source == ModuleSource.external$ &&
+    if (properties.source == ModuleSource.external &&
         _focusedSurfaces.isNotEmpty) {
       _visualAssociation[_focusedSurfaces.last] = id;
     }
@@ -296,7 +296,7 @@ class SurfaceGraph extends Model {
     Surface parent = getNode(surfaceId);
     List<Surface> externalSurfaces = parent.children.toList()
       ..retainWhere(
-          (Surface s) => s.properties.source == ModuleSource.external$);
+          (Surface s) => s.properties.source == ModuleSource.external);
     Set<String> externalIds =
         externalSurfaces.map((Surface s) => s.node.value).toSet();
     // Case2: The focused surface has a recorded visual association with an

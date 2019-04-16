@@ -12,7 +12,7 @@ import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 // These imports improve deduplication by making uses of {fidl.dart},
 // {fidl_async.dart} and {fidl.dart, fidl_async.dart} generate equivalent
@@ -48,8 +48,7 @@ abstract class SwitchingOrdinals {
 
 // ordinalFive: ()
 const int _kSwitchingOrdinals_OrdinalFive_Ordinal = 2005164903;
-const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type =
-    const $fidl.MethodType(
+const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OrdinalFive",
@@ -57,7 +56,7 @@ const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type =
 // onlyGeneratedOrdinal: ()
 const int _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal = 667506719;
 const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
-    const $fidl.MethodType(
+    $fidl.MethodType(
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OnlyGeneratedOrdinal",
@@ -65,7 +64,7 @@ const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
 // eventOrdinalFifteen:  -> ()
 const int _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal = 1467258273;
 const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
-    const $fidl.MethodType(
+    $fidl.MethodType(
   request: null,
   response: null,
   name: r"SwitchingOrdinals.EventOrdinalFifteen",
@@ -73,7 +72,7 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
 // eventOnlyGeneratedOrdinal:  -> ()
 const int _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal = 2146190926;
 const $fidl.MethodType _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type =
-    const $fidl.MethodType(
+    $fidl.MethodType(
   request: null,
   response: null,
   name: r"SwitchingOrdinals.EventOnlyGeneratedOrdinal",
@@ -85,13 +84,13 @@ typedef void SwitchingOrdinalsEventOnlyGeneratedOrdinalCallback();
 class SwitchingOrdinalsProxy extends $fidl.Proxy<SwitchingOrdinals>
     implements SwitchingOrdinals {
   SwitchingOrdinalsProxy()
-      : super(new $fidl.ProxyController<SwitchingOrdinals>(
+      : super($fidl.ProxyController<SwitchingOrdinals>(
             $serviceName: null, $interfaceName: r'SwitchingOrdinals')) {
     ctrl.onResponse = _handleResponse;
   }
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal:
         final String _name = _kSwitchingOrdinals_EventOrdinalFifteen_Type.name;
@@ -156,7 +155,7 @@ class SwitchingOrdinalsProxy extends $fidl.Proxy<SwitchingOrdinals>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       default:
         ctrl.proxyError('Unexpected message ordinal: ${$message.ordinal}');
@@ -172,7 +171,7 @@ class SwitchingOrdinalsProxy extends $fidl.Proxy<SwitchingOrdinals>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kSwitchingOrdinals_OrdinalFive_Ordinal, 0);
     ctrl.sendMessage($encoder.message);
   }
@@ -184,7 +183,7 @@ class SwitchingOrdinalsProxy extends $fidl.Proxy<SwitchingOrdinals>
       return;
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal, 0);
     ctrl.sendMessage($encoder.message);
@@ -197,14 +196,14 @@ class SwitchingOrdinalsProxy extends $fidl.Proxy<SwitchingOrdinals>
 class SwitchingOrdinalsEvents {
   $fidl.Binding<SwitchingOrdinals> _binding;
   void eventOrdinalFifteen() {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal, 0);
     _binding.sendMessage($encoder.message);
   }
 
   void eventOnlyGeneratedOrdinal() {
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal, 0);
     _binding.sendMessage($encoder.message);
@@ -216,11 +215,11 @@ class SwitchingOrdinalsBinding extends $fidl.Binding<SwitchingOrdinals> {
     events._binding = this;
   }
 
-  final SwitchingOrdinalsEvents events = new SwitchingOrdinalsEvents();
+  final SwitchingOrdinalsEvents events = SwitchingOrdinalsEvents();
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kSwitchingOrdinals_OrdinalFive_Ordinal:
         final String _name = _kSwitchingOrdinals_OrdinalFive_Type.name;
@@ -257,8 +256,8 @@ class SwitchingOrdinalsBinding extends $fidl.Binding<SwitchingOrdinals> {
         }
         break;
       default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for SwitchingOrdinalsBinding');
+        throw $fidl.FidlError(
+            r'Unexpected message name for SwitchingOrdinalsBinding');
     }
   }
 }

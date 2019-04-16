@@ -21,7 +21,7 @@ void main() {
     parent.add(node);
     node.add(child);
     SurfaceProperties properties = SurfaceProperties(
-        containerLabel: 'containerLabel', source: ModuleSource.external$);
+        containerLabel: 'containerLabel', source: ModuleSource.external);
     SurfaceRelation relation = SurfaceRelation(
       emphasis: 0.12,
       arrangement: SurfaceArrangement.copresent,
@@ -37,7 +37,7 @@ void main() {
     expect(decodedSurface.relation.arrangement, SurfaceArrangement.copresent);
     expect(decodedSurface.relation.dependency, SurfaceDependency.dependent);
     expect(decodedSurface.properties.containerLabel, 'containerLabel');
-    expect(decodedSurface.properties.source, ModuleSource.external$);
+    expect(decodedSurface.properties.source, ModuleSource.external);
     expect(decodedSurface.compositionPattern, null);
   });
 

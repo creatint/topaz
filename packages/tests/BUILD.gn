@@ -80,6 +80,7 @@ group("all") {
     "//topaz/packages/tests:fidl_changes",
     "//topaz/packages/tests:fidl_compatibility_test",
     "//topaz/packages/tests:fidl_compatibility_test_server_dart",
+    "//topaz/packages/tests:fidl_dangerous_identifiers",
     "//topaz/packages/tests:flutter_runner_tests",
     "//topaz/packages/tests:flutter_screencap_test",
     "//topaz/packages/tests:flutter_screencap_test_app",
@@ -180,6 +181,13 @@ group("fidl_changes") {
   testonly = true
   public_deps = [
     "//topaz/tests/fidl-changes",
+  ]
+}
+
+group("fidl_dangerous_identifiers") {
+  testonly = true
+  public_deps = [
+    "//topaz/tests/fidl-dangerous-identifiers",
   ]
 }
 

@@ -282,7 +282,7 @@ class {{ $className }} {
 class {{ $className }} {
   static Object toJson(Object unionVal) {
     if (unionVal is {{ $type }}) {
-      switch(unionVal.tag) {
+      switch(unionVal.$tag) {
       {{- range .Members }}
         {{- $member_name := toLowerCamelCase .Name }}
          {{- $value_expr := print "unionVal." $member_name }}

@@ -21,7 +21,7 @@ import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 {{ range .Imports -}}
 import '{{ .URL }}' as {{ .LocalName }};
@@ -94,13 +94,14 @@ export 'fidl.dart' show {{ range $index, $item := . }}
 
 library {{ .LibraryName }}_async;
 
-import 'dart:async';
+import 'dart:async' as $async;
+import 'dart:core' hide Set;
 import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 {{ range .Imports -}}
 import '{{ .AsyncURL }}' as {{ .LocalName }};
@@ -173,13 +174,13 @@ typedef _VoidCallback = void Function();
 
 library {{ .LibraryName }}_test;
 
-import 'dart:async' show Future, Stream;
-import 'dart:core' hide Error;
+import 'dart:async' as $async;
+import 'dart:core' hide Error, Future, Match, Set, Stream, Type;
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 {{ range .Imports -}}
 import '{{ .AsyncURL }}' as {{ .LocalName }};

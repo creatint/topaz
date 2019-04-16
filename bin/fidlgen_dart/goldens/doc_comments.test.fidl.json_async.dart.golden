@@ -6,13 +6,14 @@
 
 library fidl_test_name_async;
 
-import 'dart:async';
+import 'dart:async' as $async;
+import 'dart:core' hide Set;
 import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 // These imports improve deduplication by making uses of {fidl.dart},
 // {fidl_async.dart} and {fidl.dart, fidl_async.dart} generate equivalent
@@ -59,14 +60,16 @@ enum UnionTag {
 class Union extends $fidl.Union {
   const Union.withField(int value)
       : _data = value,
-        tag = UnionTag.field;
+        _tag = UnionTag.field;
 
-  Union._(this.tag, Object data) : _data = data;
+  Union._(UnionTag tag, Object data)
+      : _tag = tag,
+        _data = data;
 
-  final UnionTag tag;
+  final UnionTag _tag;
   final _data;
   int get field {
-    if (tag != UnionTag.field) {
+    if (_tag != UnionTag.field) {
       return null;
     }
     return _data;
@@ -74,9 +77,9 @@ class Union extends $fidl.Union {
 
   @override
   String toString() {
-    switch (tag) {
+    switch (_tag) {
       case UnionTag.field:
-        return 'Union.field($field)';
+        return r'Union.field($field)';
       default:
         return null;
     }
@@ -85,23 +88,28 @@ class Union extends $fidl.Union {
   /// union comment #1
   ///
   /// union comment #3
+
+  UnionTag get $tag => _tag;
+  // TODO: remove, see: FIDL-587
+  UnionTag get tag => _tag;
+
   @override
-  int get $index => tag.index;
+  int get $index => _tag.index;
 
   @override
   Object get $data => _data;
 
   static Union _ctor(int index, Object data) {
-    return new Union._(UnionTag.values[index], data);
+    return Union._(UnionTag.values[index], data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<Union> kUnion_Type = const $fidl.UnionType<Union>(
+const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   encodedSize: 8,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int32Type(), offset: 4),
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 4),
   ],
   ctor: Union._ctor,
 );
@@ -140,15 +148,15 @@ class Struct extends $fidl.Struct {
     return r'Struct' r'(field: ' + field.toString() + r')';
   }
 
-  static Struct _ctor(List<Object> argv) => new Struct._(argv);
+  static Struct _ctor(List<Object> argv) => Struct._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.StructType<Struct> kStruct_Type = const $fidl.StructType<Struct>(
+const $fidl.StructType<Struct> kStruct_Type = $fidl.StructType<Struct>(
   encodedSize: 4,
-  members: const <$fidl.MemberType>[
-    const $fidl.MemberType<int>(type: const $fidl.Int32Type(), offset: 0),
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 0),
   ],
   ctor: Struct._ctor,
 );
@@ -175,15 +183,15 @@ class Table extends $fidl.Table {
     };
   }
 
-  static Table _ctor(Map<int, dynamic> argv) => new Table._(argv);
+  static Table _ctor(Map<int, dynamic> argv) => Table._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.TableType<Table> kTable_Type = const $fidl.TableType<Table>(
+const $fidl.TableType<Table> kTable_Type = $fidl.TableType<Table>(
   encodedSize: 16,
-  members: const <int, $fidl.FidlType>{
-    1: const $fidl.Int32Type(),
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
   },
   ctor: Table._ctor,
 );
@@ -193,7 +201,7 @@ typedef _VoidCallback = void Function();
 
 // method: ()
 const int _kInterface_Method_Ordinal = 1061382220;
-const $fidl.MethodType _kInterface_Method_Type = const $fidl.MethodType(
+const $fidl.MethodType _kInterface_Method_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"Interface.Method",
@@ -205,12 +213,12 @@ const $fidl.MethodType _kInterface_Method_Type = const $fidl.MethodType(
 abstract class Interface extends $fidl.Service {
   static const String $serviceName = null;
   @override
-  $fidl.ServiceData get $serviceData => const InterfaceData();
+  $fidl.ServiceData get $serviceData => InterfaceData();
 
   /// method comment #1
   ///
   /// method comment #3
-  Future<void> method();
+  $async.Future<void> method();
 }
 
 class InterfaceData implements $fidl.ServiceData<Interface> {
@@ -232,7 +240,7 @@ class InterfaceData implements $fidl.ServiceData<Interface> {
 /// interface comment #3
 class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
   InterfaceProxy()
-      : super(new $fidl.AsyncProxyController<Interface>(
+      : super($fidl.AsyncProxyController<Interface>(
             $serviceName: null, $interfaceName: r'Interface')) {
     ctrl.onResponse = _handleResponse;
   }
@@ -241,11 +249,11 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
   $fidl.ServiceData get $serviceData => InterfaceData();
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       default:
-        ctrl.proxyError(new $fidl.FidlError(
-            'Unexpected message ordinal: ${$message.ordinal}'));
+        ctrl.proxyError(
+            $fidl.FidlError('Unexpected message ordinal: ${$message.ordinal}'));
         ctrl.close();
         break;
     }
@@ -257,16 +265,16 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
       _handleEvent($message);
       return;
     }
-    final Completer $completer = ctrl.getCompleter($txid);
+    final $async.Completer $completer = ctrl.getCompleter($txid);
     if ($completer == null) {
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       default:
-        ctrl.proxyError(new $fidl.FidlError(
-            'Unexpected message ordinal: ${$message.ordinal}'));
+        ctrl.proxyError(
+            $fidl.FidlError('Unexpected message ordinal: ${$message.ordinal}'));
         ctrl.close();
         break;
     }
@@ -276,17 +284,16 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
   ///
   /// method comment #3
   @override
-  Future<void> method() async {
+  $async.Future<void> method() async {
     if (!ctrl.isBound) {
-      return new Future.error(
-          new $fidl.FidlStateException(
-              'Proxy<${ctrl.$interfaceName}> is closed.'),
+      return $async.Future.error(
+          $fidl.FidlStateException('Proxy<${ctrl.$interfaceName}> is closed.'),
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = new $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kInterface_Method_Ordinal, 0);
-    return new Future.sync(() {
+    return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
   }
@@ -297,7 +304,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = new $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kInterface_Method_Ordinal:
         final String _name = _kInterface_Method_Type.name;
@@ -305,7 +312,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = _kInterface_Method_Type.request;
           $decoder.claimMemory(16);
-          final Future<void> $future = impl.method();
+          final $async.Future<void> $future = impl.method();
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
           close();
@@ -316,8 +323,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
         }
         break;
       default:
-        throw new $fidl.FidlError(
-            'Unexpected message name for InterfaceBinding');
+        throw $fidl.FidlError(r'Unexpected message name for InterfaceBinding');
     }
   }
 }

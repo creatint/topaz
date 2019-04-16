@@ -39,8 +39,8 @@ class SurfaceProperties {
   ModuleSource moduleSourceFromString(String str) {
     if (str == ModuleSource.internal.toString()) {
       return ModuleSource.internal;
-    } else if (str == ModuleSource.external$.toString()) {
-      return ModuleSource.external$;
+    } else if (str == ModuleSource.external.toString()) {
+      return ModuleSource.external;
     } else if (str == 'null') {
       return null;
     } else {

@@ -9,7 +9,7 @@ import 'dart:convert';
 import 'package:fidl_fuchsia_setui/fidl.dart';
 
 IntlSettings applyMutation(IntlSettings settings, Mutation mutation) {
-  switch (mutation.tag) {
+  switch (mutation.$tag) {
     case MutationTag.localesMutationValue:
       return setLocales(settings, mutation.localesMutationValue);
     case MutationTag.hourCycleMutationValue:
@@ -67,6 +67,6 @@ IntlSettings fromJson(String json) {
   Map<String, dynamic> parsed = jsonDecode(json);
   return IntlSettings(
       locales: List<String>.from(parsed['locales']),
-      hourCycle: HourCycle.valuesMap[parsed['hour_cycle']],
-      temperatureUnit: TemperatureUnit.valuesMap[parsed['temperature_unit']]);
+      hourCycle: HourCycle.$valuesMap[parsed['hour_cycle']],
+      temperatureUnit: TemperatureUnit.$valuesMap[parsed['temperature_unit']]);
 }

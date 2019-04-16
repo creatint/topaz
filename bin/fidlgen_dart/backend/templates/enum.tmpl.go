@@ -29,28 +29,31 @@ class {{ .Name }} extends $fidl.Enum {
   static const {{ $.Name }} {{ .Name }} = {{ $.Name }}._({{ .Value }});
 {{- end }}
 
-  const {{ .Name }}._(this.value);
+  const {{ .Name }}._(this.$value);
 
   @override
-  final int value;
+  final int $value;
 
-  static const Map<String, {{ .Name }}> valuesMap = {
+  static const Map<String, {{ .Name }}> $valuesMap = {
   {{- range .Members }}
     r'{{ .Name }}': {{ .Name }},
   {{- end }}
   };
 
-  static const List<{{ .Name }}> values = [
+  static const List<{{ .Name }}> $values = [
     {{- range .Members }}
     {{ .Name }},
     {{- end }}
   ];
 
-  static {{ .Name }} valueOf(String name) => valuesMap[name];
+  // TODO: remove, see: FIDL-587
+  static const List<{{ .Name }}> values = {{ .Name }}.$values;
+
+  static {{ .Name }} $valueOf(String name) => $valuesMap[name];
 
   @override
   String toString() {
-    switch (value) {
+    switch ($value) {
   {{- range .Members }}
       case {{ .Value }}:
         return r'{{ $.Name }}.{{ .Name }}';

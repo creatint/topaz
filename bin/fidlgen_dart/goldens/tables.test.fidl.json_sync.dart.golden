@@ -12,7 +12,7 @@ import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart' as $fidl;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+import 'package:zircon/zircon.dart' as $zx;
 
 // These imports improve deduplication by making uses of {fidl.dart},
 // {fidl_async.dart} and {fidl.dart, fidl_async.dart} generate equivalent
@@ -50,15 +50,15 @@ class EmptyTable extends $fidl.Table {
     return {};
   }
 
-  static EmptyTable _ctor(Map<int, dynamic> argv) => new EmptyTable._(argv);
+  static EmptyTable _ctor(Map<int, dynamic> argv) => EmptyTable._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<EmptyTable> kEmptyTable_Type =
-    const $fidl.TableType<EmptyTable>(
+    $fidl.TableType<EmptyTable>(
   encodedSize: 16,
-  members: const <int, $fidl.FidlType>{},
+  members: <int, $fidl.FidlType>{},
   ctor: EmptyTable._ctor,
 );
 
@@ -82,17 +82,17 @@ class SimpleTable extends $fidl.Table {
     };
   }
 
-  static SimpleTable _ctor(Map<int, dynamic> argv) => new SimpleTable._(argv);
+  static SimpleTable _ctor(Map<int, dynamic> argv) => SimpleTable._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<SimpleTable> kSimpleTable_Type =
-    const $fidl.TableType<SimpleTable>(
+    $fidl.TableType<SimpleTable>(
   encodedSize: 16,
-  members: const <int, $fidl.FidlType>{
-    1: const $fidl.Int64Type(),
-    5: const $fidl.Int64Type(),
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int64Type(),
+    5: $fidl.Int64Type(),
   },
   ctor: SimpleTable._ctor,
 );
@@ -113,16 +113,16 @@ class OlderSimpleTable extends $fidl.Table {
   }
 
   static OlderSimpleTable _ctor(Map<int, dynamic> argv) =>
-      new OlderSimpleTable._(argv);
+      OlderSimpleTable._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<OlderSimpleTable> kOlderSimpleTable_Type =
-    const $fidl.TableType<OlderSimpleTable>(
+    $fidl.TableType<OlderSimpleTable>(
   encodedSize: 16,
-  members: const <int, $fidl.FidlType>{
-    1: const $fidl.Int64Type(),
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int64Type(),
   },
   ctor: OlderSimpleTable._ctor,
 );
@@ -152,18 +152,18 @@ class NewerSimpleTable extends $fidl.Table {
   }
 
   static NewerSimpleTable _ctor(Map<int, dynamic> argv) =>
-      new NewerSimpleTable._(argv);
+      NewerSimpleTable._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<NewerSimpleTable> kNewerSimpleTable_Type =
-    const $fidl.TableType<NewerSimpleTable>(
+    $fidl.TableType<NewerSimpleTable>(
   encodedSize: 16,
-  members: const <int, $fidl.FidlType>{
-    1: const $fidl.Int64Type(),
-    5: const $fidl.Int64Type(),
-    6: const $fidl.Int64Type(),
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int64Type(),
+    5: $fidl.Int64Type(),
+    6: $fidl.Int64Type(),
   },
   ctor: NewerSimpleTable._ctor,
 );

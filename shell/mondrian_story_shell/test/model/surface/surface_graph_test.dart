@@ -182,7 +182,7 @@ void main() {
   test('external surfaces are found by resummon dismissed checks', () {
     SurfaceGraph graph = SurfaceGraph();
     SurfaceProperties externalProp =
-        SurfaceProperties(source: ModuleSource.external$);
+        SurfaceProperties(source: ModuleSource.external);
     graph
       ..addSurface('parent', SurfaceProperties(), '', SurfaceRelation(),
           null, '')

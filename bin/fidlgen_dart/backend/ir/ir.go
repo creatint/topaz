@@ -69,6 +69,7 @@ type UnionMember struct {
 	Type     Type
 	Name     string
 	CtorName string
+	Tag      string
 	Offset   int
 	typeExpr string
 	Documented
@@ -92,6 +93,7 @@ type XUnionMember struct {
 	Type     Type
 	Name     string
 	CtorName string
+	Tag      string
 	Offset   int
 	Documented
 }
@@ -206,69 +208,102 @@ type Root struct {
 	XUnions     []XUnion
 }
 
-// FIXME(FIDL-107): Add "get" and "set" back to this list.
-// They are only reserved in certain contexts.  We should add them
-// back but also make the code generator smarter about escaping
-// reserved words to avoid style violations in various contexts.
-var reservedWords = map[string]bool{
-	// "Error":      true,
-	"abstract":   true,
-	"as":         true,
-	"assert":     true,
-	"async":      true,
-	"await":      true,
-	"break":      true,
-	"bool":       true,
-	"case":       true,
-	"catch":      true,
-	"class":      true,
-	"const":      true,
-	"continue":   true,
-	"covariant":  true,
-	"default":    true,
-	"deferred":   true,
-	"do":         true,
-	"double":     true,
-	"dynamic":    true,
-	"else":       true,
-	"enum":       true,
-	"export":     true,
-	"extends":    true,
-	"external":   true,
-	"factory":    true,
-	"false":      true,
-	"final":      true,
-	"finally":    true,
-	"for":        true,
-	"if":         true,
-	"implements": true,
-	"import":     true,
-	"in":         true,
-	"int":        true,
-	"is":         true,
-	"library":    true,
-	"new":        true,
-	"null":       true,
-	"num":        true,
-	"Object":     true,
-	"operator":   true,
-	"part":       true,
-	"rethrow":    true,
-	"return":     true,
-	"static":     true,
-	"String":     true,
-	"super":      true,
-	"switch":     true,
-	"this":       true,
-	"throw":      true,
-	"true":       true,
-	"try":        true,
-	"typedef":    true,
-	"var":        true,
-	"void":       true,
-	"while":      true,
-	"with":       true,
-	"yield":      true,
+type context map[string]bool
+
+var (
+	// Name of an enum member
+	enumMemberContext context = make(context)
+	// Name of a struct member
+	structMemberContext = make(context)
+	// Name of a table member
+	tableMemberContext = make(context)
+	// Name of a union member
+	unionMemberContext = make(context)
+	// Tag of a union member
+	unionMemberTagContext = make(context)
+	// Name of a constant
+	constantContext = make(context)
+	// Name of a top-level declaration (other than a constant)
+	declarationContext = make(context)
+	// Name of a method
+	methodContext = make(context)
+	// Name of a method parameter
+	parameterContext = make(context)
+	// Everywhere
+)
+
+func init() {
+	var allContexts = []context{enumMemberContext, structMemberContext, tableMemberContext,
+		unionMemberContext, unionMemberTagContext, constantContext, declarationContext,
+		methodContext, parameterContext}
+
+	var reservedWords = map[string][]context{
+		"assert":       allContexts,
+		"async":        allContexts,
+		"await":        allContexts,
+		"break":        allContexts,
+		"bool":         []context{structMemberContext, tableMemberContext},
+		"case":         allContexts,
+		"catch":        allContexts,
+		"class":        allContexts,
+		"const":        allContexts,
+		"continue":     allContexts,
+		"default":      allContexts,
+		"do":           allContexts,
+		"double":       []context{structMemberContext, tableMemberContext},
+		"dynamic":      []context{enumMemberContext, methodContext, unionMemberContext, constantContext, tableMemberContext, structMemberContext},
+		"else":         allContexts,
+		"enum":         allContexts,
+		"extends":      allContexts,
+		"false":        allContexts,
+		"final":        allContexts,
+		"finally":      allContexts,
+		"for":          allContexts,
+		"hashCode":     []context{methodContext, enumMemberContext, unionMemberContext, structMemberContext, tableMemberContext},
+		"noSuchMethod": []context{methodContext, enumMemberContext, unionMemberContext, structMemberContext, tableMemberContext},
+		"runtimeType":  []context{methodContext, enumMemberContext, unionMemberContext, structMemberContext, tableMemberContext},
+		"index":        []context{unionMemberTagContext},
+		"if":           allContexts,
+		"in":           allContexts,
+		"int":          []context{enumMemberContext, methodContext, unionMemberContext, constantContext, tableMemberContext, structMemberContext},
+		"is":           allContexts,
+		"List":         []context{declarationContext},
+		"Map":          []context{declarationContext},
+		"new":          allContexts,
+		"null":         allContexts,
+		"Null":         []context{declarationContext},
+		"num":          []context{enumMemberContext, methodContext, unionMemberContext, constantContext, tableMemberContext, structMemberContext},
+		"Object":       []context{declarationContext},
+		"override":     allContexts,
+		"rethrow":      allContexts,
+		"return":       allContexts,
+		"String":       allContexts,
+		"super":        allContexts,
+		"switch":       allContexts,
+		"this":         allContexts,
+		"throw":        allContexts,
+		"toString":     []context{methodContext, enumMemberContext, structMemberContext, tableMemberContext, unionMemberContext},
+		"true":         allContexts,
+		"try":          allContexts,
+		"values":       []context{unionMemberTagContext},
+		"var":          allContexts,
+		"void":         allContexts,
+		"while":        allContexts,
+		"with":         allContexts,
+		"yield":        allContexts,
+	}
+	for word, ctxs := range reservedWords {
+		for _, ctx := range ctxs {
+			ctx[word] = true
+		}
+	}
+}
+
+func (ctx context) changeIfReserved(str string) string {
+	if ctx[str] {
+		return str + "$"
+	}
+	return str
 }
 
 var declForPrimitiveType = map[types.PrimitiveSubtype]string{
@@ -432,10 +467,10 @@ func formatLibraryName(library types.LibraryIdentifier) string {
 
 func typeExprForMethod(request []Parameter, response []Parameter, name string) string {
 	return fmt.Sprintf(`$fidl.MethodType(
-    request: %s,
-	response: %s,
-	name: r"%s",
-  )`, formatParameterList(request), formatParameterList(response), name)
+	    request: %s,
+		response: %s,
+		name: r"%s",
+	  )`, formatParameterList(request), formatParameterList(response), name)
 }
 
 func typeExprForPrimitiveSubtype(val types.PrimitiveSubtype) string {
@@ -448,18 +483,6 @@ func typeExprForPrimitiveSubtype(val types.PrimitiveSubtype) string {
 
 func libraryPrefix(library types.LibraryIdentifier) string {
 	return fmt.Sprintf("lib$%s", formatLibraryName(library))
-}
-
-func isReservedWord(str string) bool {
-	_, ok := reservedWords[str]
-	return ok
-}
-
-func changeIfReserved(str string) string {
-	if isReservedWord(str) {
-		return str + "$"
-	}
-	return str
 }
 
 type compiler struct {
@@ -496,33 +519,33 @@ func (c *compiler) _typeSymbolForCompoundIdentifier(ident types.CompoundIdentifi
 	return t
 }
 
-func (c *compiler) compileUpperCamelIdentifier(val types.Identifier) string {
-	return changeIfReserved(common.ToUpperCamelCase(string(val)))
+func (c *compiler) compileUpperCamelIdentifier(val types.Identifier, context context) string {
+	return context.changeIfReserved(common.ToUpperCamelCase(string(val)))
 }
 
-func (c *compiler) compileLowerCamelIdentifier(val types.Identifier) string {
-	return changeIfReserved(common.ToLowerCamelCase(string(val)))
+func (c *compiler) compileLowerCamelIdentifier(val types.Identifier, context context) string {
+	return context.changeIfReserved(common.ToLowerCamelCase(string(val)))
 }
 
-func (c *compiler) compileCompoundIdentifier(val types.CompoundIdentifier) string {
+func (c *compiler) compileCompoundIdentifier(val types.CompoundIdentifier, context context) string {
 	strs := []string{}
 	if c.inExternalLibrary(val) {
 		strs = append(strs, libraryPrefix(val.Library))
 	}
-	strs = append(strs, changeIfReserved(string(val.Name)))
+	strs = append(strs, context.changeIfReserved(string(val.Name)))
 	return strings.Join(strs, ".")
 }
 
-func (c *compiler) compileUpperCamelCompoundIdentifier(val types.CompoundIdentifier, ext string) string {
-	str := changeIfReserved(common.ToUpperCamelCase(string(val.Name))) + ext
+func (c *compiler) compileUpperCamelCompoundIdentifier(val types.CompoundIdentifier, ext string, context context) string {
+	str := context.changeIfReserved(common.ToUpperCamelCase(string(val.Name))) + ext
 	val.Name = types.Identifier(str)
-	return c.compileCompoundIdentifier(val)
+	return c.compileCompoundIdentifier(val, context)
 }
 
-func (c *compiler) compileLowerCamelCompoundIdentifier(val types.CompoundIdentifier, ext string) string {
-	str := changeIfReserved(common.ToLowerCamelCase(string(val.Name))) + ext
+func (c *compiler) compileLowerCamelCompoundIdentifier(val types.CompoundIdentifier, ext string, context context) string {
+	str := context.changeIfReserved(common.ToLowerCamelCase(string(val.Name))) + ext
 	val.Name = types.Identifier(str)
-	return c.compileCompoundIdentifier(val)
+	return c.compileCompoundIdentifier(val, context)
 }
 
 func (c *compiler) compileLiteral(val types.Literal) string {
@@ -548,7 +571,7 @@ func (c *compiler) compileLiteral(val types.Literal) string {
 func (c *compiler) compileConstant(val types.Constant, t *Type) string {
 	switch val.Kind {
 	case types.IdentifierConstant:
-		v := c.compileLowerCamelCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier), "")
+		v := c.compileLowerCamelCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier), "", constantContext)
 		if t != nil && t.declType == types.EnumDeclType {
 			v = fmt.Sprintf("%s.%s", t.Decl, v)
 		}
@@ -618,25 +641,27 @@ func (c *compiler) compileType(val types.Type) Type {
 		r.typeExpr = fmt.Sprintf("$fidl.StringType(maybeElementCount: %s, nullable: %s)",
 			formatInt(val.ElementCount), formatBool(val.Nullable))
 	case types.HandleType:
+		var subtype string
 		switch val.HandleSubtype {
 		case "channel":
-			r.Decl = "Channel"
+			subtype = "Channel"
 		case "eventpair":
-			r.Decl = "EventPair"
+			subtype = "EventPair"
 		case "socket":
-			r.Decl = "Socket"
+			subtype = "Socket"
 		case "vmo":
-			r.Decl = "Vmo"
+			subtype = "Vmo"
 		default:
-			r.Decl = "Handle"
+			subtype = "Handle"
 		}
+		r.Decl = "$zx." + subtype
 		r.SyncDecl = r.Decl
 		r.AsyncDecl = r.Decl
 		r.typeExpr = fmt.Sprintf("$fidl.%sType(nullable: %s)",
-			r.Decl, formatBool(val.Nullable))
+			subtype, formatBool(val.Nullable))
 	case types.RequestType:
 		compound := types.ParseCompoundIdentifier(val.RequestSubtype)
-		t := c.compileUpperCamelCompoundIdentifier(compound, "")
+		t := c.compileUpperCamelCompoundIdentifier(compound, "", declarationContext)
 		r.Decl = fmt.Sprintf("$fidl.InterfaceRequest<%s>", t)
 		if c.inExternalLibrary(compound) {
 			r.SyncDecl = fmt.Sprintf("$fidl.InterfaceRequest<sync$%s>", t)
@@ -654,7 +679,7 @@ func (c *compiler) compileType(val types.Type) Type {
 		r.typeExpr = typeExprForPrimitiveSubtype(val.PrimitiveSubtype)
 	case types.IdentifierType:
 		compound := types.ParseCompoundIdentifier(val.Identifier)
-		t := c.compileUpperCamelCompoundIdentifier(compound, "")
+		t := c.compileUpperCamelCompoundIdentifier(compound, "", declarationContext)
 		declType, ok := (*c.decls)[val.Identifier]
 		if !ok {
 			log.Fatal("Unknown identifier: ", val.Identifier)
@@ -718,10 +743,10 @@ func (c *compiler) compileType(val types.Type) Type {
 
 func (c *compiler) compileConst(val types.Const) Const {
 	r := Const{
-		c.compileType(val.Type),
-		c.compileLowerCamelCompoundIdentifier(types.ParseCompoundIdentifier(val.Name), ""),
-		c.compileConstant(val.Value, nil),
-		docString(val),
+		Type:       c.compileType(val.Type),
+		Name:       c.compileLowerCamelCompoundIdentifier(types.ParseCompoundIdentifier(val.Name), "", constantContext),
+		Value:      c.compileConstant(val.Value, nil),
+		Documented: docString(val),
 	}
 	if r.Type.declType == types.EnumDeclType {
 		r.Value = fmt.Sprintf("%s.%s", r.Type.Decl, r.Value)
@@ -731,19 +756,19 @@ func (c *compiler) compileConst(val types.Const) Const {
 
 func (c *compiler) compileEnum(val types.Enum) Enum {
 	ci := types.ParseCompoundIdentifier(val.Name)
-	n := c.compileUpperCamelCompoundIdentifier(ci, "")
+	n := c.compileUpperCamelCompoundIdentifier(ci, "", declarationContext)
 	e := Enum{
-		n,
-		[]EnumMember{},
-		c.typeSymbolForCompoundIdentifier(ci),
-		fmt.Sprintf("$fidl.EnumType<%s>(type: %s, ctor: %s._ctor)", n, typeExprForPrimitiveSubtype(val.Type), n),
-		docString(val),
+		Name:       n,
+		Members:    []EnumMember{},
+		TypeSymbol: c.typeSymbolForCompoundIdentifier(ci),
+		TypeExpr:   fmt.Sprintf("$fidl.EnumType<%s>(type: %s, ctor: %s._ctor)", n, typeExprForPrimitiveSubtype(val.Type), n),
+		Documented: docString(val),
 	}
 	for _, v := range val.Members {
 		e.Members = append(e.Members, EnumMember{
-			c.compileLowerCamelIdentifier(v.Name),
-			c.compileConstant(v.Value, nil),
-			docString(v),
+			Name:       c.compileLowerCamelIdentifier(v.Name, enumMemberContext),
+			Value:      c.compileConstant(v.Value, nil),
+			Documented: docString(v),
 		})
 	}
 	return e
@@ -754,7 +779,7 @@ func (c *compiler) compileParameter(paramName types.Identifier, paramType types.
 		t         = c.compileType(paramType)
 		typeStr   = fmt.Sprintf("type: %s", t.typeExpr)
 		offsetStr = fmt.Sprintf("offset: %v", offset)
-		name      = c.compileLowerCamelIdentifier(paramName)
+		name      = c.compileLowerCamelIdentifier(paramName, parameterContext)
 		convert   string
 	)
 	if t.declType == types.InterfaceDeclType {
@@ -850,7 +875,7 @@ NotAResult:
 
 func (c *compiler) compileMethod(val types.Method, protocol Interface) Method {
 	var (
-		name               = c.compileLowerCamelIdentifier(val.Name)
+		name               = c.compileLowerCamelIdentifier(val.Name, methodContext)
 		request            = c.compileParameterArray(val.Request)
 		response           = c.compileMethodResponse(val)
 		asyncResponseClass string
@@ -884,7 +909,7 @@ func (c *compiler) compileMethod(val types.Method, protocol Interface) Method {
 		ResponseSize:       val.ResponseSize,
 		AsyncResponseClass: asyncResponseClass,
 		AsyncResponseType:  asyncResponseType,
-		CallbackType:       fmt.Sprintf("%s%sCallback", protocol.Name, val.Name),
+		CallbackType:       fmt.Sprintf("%s%sCallback", protocol.Name, c.compileUpperCamelIdentifier(val.Name, methodContext)),
 		TypeSymbol:         fmt.Sprintf("_k%s_%s_Type", protocol.Name, val.Name),
 		TypeExpr:           typeExprForMethod(request, response.WireParameters, fmt.Sprintf("%s.%s", protocol.Name, val.Name)),
 		Transitional:       transitional,
@@ -895,12 +920,12 @@ func (c *compiler) compileMethod(val types.Method, protocol Interface) Method {
 func (c *compiler) compileInterface(val types.Interface) Interface {
 	ci := types.ParseCompoundIdentifier(val.Name)
 	r := Interface{
-		c.compileUpperCamelCompoundIdentifier(ci, ""),
+		c.compileUpperCamelCompoundIdentifier(ci, "", declarationContext),
 		val.GetServiceName(),
-		c.compileUpperCamelCompoundIdentifier(ci, "Data"),
-		c.compileUpperCamelCompoundIdentifier(ci, "Proxy"),
-		c.compileUpperCamelCompoundIdentifier(ci, "Binding"),
-		c.compileUpperCamelCompoundIdentifier(ci, "Events"),
+		c.compileUpperCamelCompoundIdentifier(ci, "Data", declarationContext),
+		c.compileUpperCamelCompoundIdentifier(ci, "Proxy", declarationContext),
+		c.compileUpperCamelCompoundIdentifier(ci, "Binding", declarationContext),
+		c.compileUpperCamelCompoundIdentifier(ci, "Events", declarationContext),
 		[]Method{},
 		false,
 		docString(val),
@@ -933,7 +958,7 @@ func (c *compiler) compileStructMember(val types.StructMember) StructMember {
 	offsetStr := fmt.Sprintf("offset: %v", val.Offset)
 	return StructMember{
 		t,
-		c.compileLowerCamelIdentifier(val.Name),
+		c.compileLowerCamelIdentifier(val.Name, structMemberContext),
 		defaultValue,
 		val.Offset,
 		fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
@@ -944,12 +969,12 @@ func (c *compiler) compileStructMember(val types.StructMember) StructMember {
 func (c *compiler) compileStruct(val types.Struct) Struct {
 	ci := types.ParseCompoundIdentifier(val.Name)
 	r := Struct{
-		c.compileUpperCamelCompoundIdentifier(ci, ""),
-		[]StructMember{},
-		c.typeSymbolForCompoundIdentifier(ci),
-		"",
-		false,
-		docString(val),
+		Name:             c.compileUpperCamelCompoundIdentifier(ci, "", declarationContext),
+		Members:          []StructMember{},
+		TypeSymbol:       c.typeSymbolForCompoundIdentifier(ci),
+		TypeExpr:         "",
+		HasNullableField: false,
+		Documented:       docString(val),
 	}
 
 	var hasNullableField = false
@@ -989,7 +1014,7 @@ func (c *compiler) compileTableMember(val types.TableMember) TableMember {
 	return TableMember{
 		Ordinal:      val.Ordinal,
 		Type:         t,
-		Name:         c.compileLowerCamelIdentifier(val.Name),
+		Name:         c.compileLowerCamelIdentifier(val.Name, tableMemberContext),
 		DefaultValue: defaultValue,
 		Documented:   docString(val),
 	}
@@ -998,7 +1023,7 @@ func (c *compiler) compileTableMember(val types.TableMember) TableMember {
 func (c *compiler) compileTable(val types.Table) Table {
 	ci := types.ParseCompoundIdentifier(val.Name)
 	r := Table{
-		Name:       c.compileUpperCamelCompoundIdentifier(ci, ""),
+		Name:       c.compileUpperCamelCompoundIdentifier(ci, "", declarationContext),
 		TypeSymbol: c.typeSymbolForCompoundIdentifier(ci),
 		Documented: docString(val),
 	}
@@ -1022,24 +1047,25 @@ func (c *compiler) compileUnionMember(val types.UnionMember) UnionMember {
 	typeStr := fmt.Sprintf("type: %s", t.typeExpr)
 	offsetStr := fmt.Sprintf("offset: %v", val.Offset)
 	return UnionMember{
-		t,
-		c.compileLowerCamelIdentifier(val.Name),
-		c.compileUpperCamelIdentifier(val.Name),
-		val.Offset,
-		fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
-		docString(val),
+		Type:       t,
+		Name:       c.compileLowerCamelIdentifier(val.Name, unionMemberContext),
+		CtorName:   c.compileUpperCamelIdentifier(val.Name, unionMemberContext),
+		Tag:        c.compileLowerCamelIdentifier(val.Name, unionMemberTagContext),
+		Offset:     val.Offset,
+		typeExpr:   fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		Documented: docString(val),
 	}
 }
 
 func (c *compiler) compileUnion(val types.Union) Union {
 	ci := types.ParseCompoundIdentifier(val.Name)
 	r := Union{
-		c.compileUpperCamelCompoundIdentifier(ci, ""),
-		c.compileUpperCamelCompoundIdentifier(ci, "Tag"),
-		[]UnionMember{},
-		c.typeSymbolForCompoundIdentifier(ci),
-		"",
-		docString(val),
+		Name:       c.compileUpperCamelCompoundIdentifier(ci, "", declarationContext),
+		TagName:    c.compileUpperCamelCompoundIdentifier(ci, "Tag", declarationContext),
+		Members:    []UnionMember{},
+		TypeSymbol: c.typeSymbolForCompoundIdentifier(ci),
+		TypeExpr:   "",
+		Documented: docString(val),
 	}
 
 	for _, v := range val.Members {
@@ -1061,8 +1087,9 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 		members = append(members, XUnionMember{
 			Ordinal:    member.Ordinal,
 			Type:       memberType,
-			Name:       c.compileLowerCamelIdentifier(member.Name),
-			CtorName:   c.compileUpperCamelIdentifier(member.Name),
+			Name:       c.compileLowerCamelIdentifier(member.Name, unionMemberContext),
+			CtorName:   c.compileUpperCamelIdentifier(member.Name, unionMemberContext),
+			Tag:        c.compileLowerCamelIdentifier(member.Name, unionMemberTagContext),
 			Offset:     member.Offset,
 			Documented: docString(member),
 		})
@@ -1070,8 +1097,8 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 
 	ci := types.ParseCompoundIdentifier(val.Name)
 	r := XUnion{
-		Name:          c.compileUpperCamelCompoundIdentifier(ci, ""),
-		TagName:       c.compileUpperCamelCompoundIdentifier(ci, "Tag"),
+		Name:          c.compileUpperCamelCompoundIdentifier(ci, "", declarationContext),
+		TagName:       c.compileUpperCamelCompoundIdentifier(ci, "Tag", declarationContext),
 		TypeSymbol:    c.typeSymbolForCompoundIdentifier(ci),
 		OptTypeSymbol: c.optTypeSymbolForCompoundIdentifier(ci),
 		Members:       members,
