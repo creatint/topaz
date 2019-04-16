@@ -4,7 +4,7 @@
 
 // ignore_for_file: implementation_imports
 
-import 'package:fuchsia_inspect/src/inspect.dart';
+import 'package:fuchsia_inspect/inspect.dart';
 import 'package:fuchsia_inspect/src/vmo_writer.dart';
 import 'package:test/test.dart';
 

@@ -4,7 +4,7 @@
 
 // ignore_for_file: implementation_imports
 
-import 'package:fuchsia_inspect/src/node.dart';
+import 'package:fuchsia_inspect/inspect.dart';
 import 'package:fuchsia_inspect/src/util.dart';
 import 'package:fuchsia_inspect/src/vmo_holder.dart';
 import 'package:fuchsia_inspect/src/vmo_writer.dart';
@@ -19,7 +19,8 @@ void main() {
   setUp(() {
     vmo = FakeVmo(512);
     var writer = VmoWriter(vmo);
-    node = Node(writer.rootNode, writer);
+    var inspect = Inspect.internal(writer);
+    node = inspect.root;
   });
 
   test('Child nodes have unique indices from their parents', () {

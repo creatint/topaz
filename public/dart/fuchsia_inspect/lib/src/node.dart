@@ -2,15 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:meta/meta.dart';
-
-import 'vmo_writer.dart';
+part of 'inspect.dart';
 
 /// A node in the [Inspect] tree that can have associated key-values (KVs).
 class Node {
-  // TODO(CF-602): Refactor this to hide implementation details like this index
-  // and the public constructor below (since client code should only create
-  // Nodes using [createChild].
   /// The VMO index of this node.
   @visibleForTesting
   final int index;
@@ -19,14 +14,17 @@ class Node {
   final VmoWriter _writer;
 
   /// Creates a [Node] with the VMO [index] and [writer].
-  Node(this.index, this._writer);
+  ///
+  /// Private as an implementation detail to code that understands VMO indices.
+  /// Client code that wishes to create [Node]s should use [createChild].
+  Node._(this.index, this._writer);
 
   /// Creates a child [Node] with [name].
   ///
   /// This method is not idempotent: calling it multiple times with the same
   /// [name] will create multiple children with the same name.
   Node createChild(String name) =>
-      Node(_writer.createNode(index, name), _writer);
+      Node._(_writer.createNode(index, name), _writer);
 
   /// Creates a [StringProperty] with [name] on this node.
   ///
@@ -34,7 +32,7 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [StringProperty]s.
   StringProperty createStringProperty(String name) =>
-      StringProperty(name, index, _writer);
+      StringProperty._(name, index, _writer);
 }
 
 /// A VMO-backed key-value pair with a string key and string value.
@@ -52,7 +50,7 @@ class StringProperty {
   bool _isRemoved = false;
 
   /// Creates a [StringProperty] with [name] under the [parentIndex].
-  StringProperty(String name, int parentIndex, this._writer)
+  StringProperty._(String name, int parentIndex, this._writer)
       : index = _writer.createProperty(parentIndex, name);
 
   /// Sets the value of this property in the VMO.
