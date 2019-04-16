@@ -63,7 +63,6 @@ dart_library("ermine_library") {
     "//topaz/public/dart/fuchsia_scenic_flutter",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/dart/widgets:lib.widgets",
-    "//topaz/public/lib/module_resolver/dart",
     "//topaz/public/lib/story/dart",
   ]
 }
