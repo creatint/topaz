@@ -3,12 +3,13 @@
 // found in the LICENSE file.
 
 #include "topaz/auth_providers/google/factory_impl.h"
+
 #include "topaz/auth_providers/google/settings.h"
 
 namespace google_auth_provider {
 
 FactoryImpl::FactoryImpl(async_dispatcher_t* main_dispatcher,
-                         component::StartupContext* context,
+                         sys::ComponentContext* context,
                          network_wrapper::NetworkWrapper* network_wrapper,
                          Settings settings)
     : main_dispatcher_(main_dispatcher),

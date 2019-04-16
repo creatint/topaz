@@ -7,9 +7,9 @@
 #include "lib/callback/capture.h"
 #include "lib/callback/set_when_called.h"
 #include "lib/fidl/cpp/binding.h"
-#include "src/lib/fxl/macros.h"
 #include "lib/gtest/test_loop_fixture.h"
 #include "lib/network_wrapper/fake_network_wrapper.h"
+#include "src/lib/fxl/macros.h"
 #include "topaz/auth_providers/google/settings.h"
 
 namespace google_auth_provider {
@@ -18,7 +18,7 @@ class GoogleFactoryImplTest : public gtest::TestLoopFixture {
  public:
   GoogleFactoryImplTest()
       : network_wrapper_(dispatcher()),
-        context_(component::StartupContext::CreateFromStartupInfo().get()),
+        context_(sys::ComponentContext::Create().get()),
         factory_impl_(dispatcher(), context_, &network_wrapper_, {}) {
     factory_impl_.Bind(factory_.NewRequest());
   }
@@ -27,7 +27,7 @@ class GoogleFactoryImplTest : public gtest::TestLoopFixture {
 
  protected:
   network_wrapper::FakeNetworkWrapper network_wrapper_;
-  component::StartupContext* context_;
+  sys::ComponentContext* context_;
   fuchsia::auth::AuthProviderPtr auth_provider_;
   fuchsia::auth::AuthProviderFactoryPtr factory_;
 

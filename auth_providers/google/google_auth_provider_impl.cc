@@ -5,16 +5,16 @@
 #include "topaz/auth_providers/google/google_auth_provider_impl.h"
 
 #include <fuchsia/net/oldhttp/cpp/fidl.h>
+#include <lib/async/dispatcher.h>
 #include <lib/fdio/directory.h>
+#include <lib/fidl/cpp/interface_request.h>
 #include <lib/fit/function.h>
+#include <lib/sys/cpp/component_context.h>
 #include <lib/syslog/global.h>
 #include <lib/ui/scenic/cpp/view_token_pair.h>
+#include <lib/vfs/cpp/service.h>
 
 #include "garnet/public/lib/rapidjson_utils/rapidjson_validation.h"
-#include "lib/component/cpp/connect.h"
-#include "lib/component/cpp/startup_context.h"
-#include "lib/fidl/cpp/interface_request.h"
-#include "lib/svc/cpp/services.h"
 #include "peridot/lib/rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "rapidjson/schema.h"
@@ -124,8 +124,7 @@ using fuchsia::auth::FirebaseTokenPtr;
 using modular::JsonValueToPrettyString;
 
 GoogleAuthProviderImpl::GoogleAuthProviderImpl(
-    async_dispatcher_t* const main_dispatcher,
-    component::StartupContext* context,
+    async_dispatcher_t* const main_dispatcher, sys::ComponentContext* context,
     network_wrapper::NetworkWrapper* network_wrapper, Settings settings,
     fidl::InterfaceRequest<fuchsia::auth::AuthProvider> request)
     : main_dispatcher_(main_dispatcher),
@@ -604,12 +603,11 @@ void GoogleAuthProviderImpl::GetUserProfile(fidl::StringPtr credential,
 fuchsia::ui::views::ViewHolderToken GoogleAuthProviderImpl::SetupChromium() {
   // Connect to the Chromium service and create a new frame.
   auto context_provider =
-      context_->ConnectToEnvironmentService<fuchsia::web::ContextProvider>();
+      context_->svc()->Connect<fuchsia::web::ContextProvider>();
 
   fidl::InterfaceHandle<fuchsia::io::Directory> incoming_service_clone =
-      fidl::InterfaceHandle<fuchsia::io::Directory>(
-          zx::channel(fdio_service_clone(
-              context_->incoming_services()->directory().get())));
+      context_->svc()->CloneChannel();
+
   if (!incoming_service_clone.is_valid()) {
     FX_LOG(ERROR, NULL, "Failed to clone service directory");
     return fuchsia::ui::views::ViewHolderToken();
@@ -661,19 +659,13 @@ void GoogleAuthProviderImpl::ReleaseResources() {
 }
 
 void GoogleAuthProviderImpl::ExposeCredentialInjectorInterface() {
-  context_->outgoing().debug_dir()->AddEntry(
+  context_->outgoing()->debug_dir()->AddEntry(
       kInjectionEntry,
-      fbl::AdoptRef(new fs::Service([this](zx::channel channel) {
-        fidl::InterfaceRequest<
-            fuchsia::auth::testing::LegacyAuthCredentialInjector>
-            request(std::move(channel));
-        injector_bindings_.AddBinding(this, std::move(request));
-        return ZX_OK;
-      })));
+      std::make_unique<vfs::Service>(injector_bindings_.GetHandler(this)));
 }
 
 void GoogleAuthProviderImpl::RemoveCredentialInjectorInterface() {
-  if (context_->outgoing().debug_dir()->RemoveEntry(kInjectionEntry) ==
+  if (context_->outgoing()->debug_dir()->RemoveEntry(kInjectionEntry) ==
       ZX_ERR_NOT_FOUND) {
     FX_LOGF(WARNING, NULL,
             "Attempted to remove nonexistent '%s' from debug directory",

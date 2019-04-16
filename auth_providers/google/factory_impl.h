@@ -9,8 +9,8 @@
 #include <lib/async/dispatcher.h>
 
 #include "lib/callback/auto_cleanable.h"
-#include "src/lib/fxl/macros.h"
 #include "lib/network_wrapper/network_wrapper.h"
+#include "src/lib/fxl/macros.h"
 #include "topaz/auth_providers/google/google_auth_provider_impl.h"
 #include "topaz/auth_providers/google/settings.h"
 
@@ -19,7 +19,7 @@ namespace google_auth_provider {
 class FactoryImpl : public fuchsia::auth::AuthProviderFactory {
  public:
   FactoryImpl(async_dispatcher_t* main_dispatcher,
-              component::StartupContext* context,
+              sys::ComponentContext* context,
               network_wrapper::NetworkWrapper* network_wrapper,
               Settings settings);
 
@@ -34,7 +34,7 @@ class FactoryImpl : public fuchsia::auth::AuthProviderFactory {
       GetAuthProviderCallback callback) override;
 
   async_dispatcher_t* const main_dispatcher_;
-  component::StartupContext* const context_;
+  sys::ComponentContext* const context_;
   network_wrapper::NetworkWrapper* const network_wrapper_;
   const Settings settings_;
 

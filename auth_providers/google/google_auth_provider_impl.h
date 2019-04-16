@@ -14,12 +14,13 @@
 #include <fuchsia/auth/testing/cpp/fidl.h>
 #include <fuchsia/ui/views/cpp/fidl.h>
 #include <fuchsia/web/cpp/fidl.h>
+#include <lib/callback/cancellable.h>
+#include <lib/fidl/cpp/binding.h>
+#include <lib/fidl/cpp/binding_set.h>
 #include <lib/fit/function.h>
+#include <lib/network_wrapper/network_wrapper.h>
+#include <lib/sys/cpp/component_context.h>
 
-#include "lib/callback/cancellable.h"
-#include "lib/component/cpp/startup_context.h"
-#include "lib/fidl/cpp/binding.h"
-#include "lib/network_wrapper/network_wrapper.h"
 #include "src/lib/fxl/macros.h"
 #include "topaz/auth_providers/google/settings.h"
 
@@ -37,7 +38,7 @@ class GoogleAuthProviderImpl
       fuchsia::auth::testing::LegacyAuthCredentialInjector {
  public:
   GoogleAuthProviderImpl(
-      async_dispatcher_t* main_dispatcher, component::StartupContext* context,
+      async_dispatcher_t* main_dispatcher, sys::ComponentContext* context,
       network_wrapper::NetworkWrapper* network_wrapper, Settings settings,
       fidl::InterfaceRequest<fuchsia::auth::AuthProvider> request);
 
@@ -144,7 +145,7 @@ class GoogleAuthProviderImpl
           callback);
 
   async_dispatcher_t* const main_dispatcher_;
-  component::StartupContext* context_;
+  sys::ComponentContext* context_;
   network_wrapper::NetworkWrapper* const network_wrapper_;
   const Settings settings_;
   fuchsia::sys::ComponentControllerPtr web_view_controller_;
