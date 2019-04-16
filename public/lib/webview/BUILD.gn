@@ -15,9 +15,9 @@ dart_library("webview") {
   deps = [
     "//sdk/fidl/fuchsia.sys",
     "//sdk/fidl/fuchsia.ui.views",
+    "//sdk/fidl/fuchsia.web",
     "//topaz/public/dart/fuchsia_logger",
     "//topaz/public/dart/fuchsia_scenic_flutter",
-    "//topaz/runtime/chromium:chromium.web",
     "//zircon/public/fidl/fuchsia-io",
     "//zircon/public/fidl/fuchsia-mem",
   ]

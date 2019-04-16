@@ -6,11 +6,11 @@ import 'dart:convert' show utf8;
 import 'dart:io';
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_chromium_web/fidl_async.dart' as web;
 import 'package:fidl_fuchsia_mem/fidl_async.dart' as fuchsia_mem;
 import 'package:fidl_fuchsia_io/fidl_async.dart' as fidl_io;
 import 'package:fidl_fuchsia_sys/fidl_async.dart' as sys;
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart' as views;
+import 'package:fidl_fuchsia_web/fidl_async.dart' as web;
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
@@ -25,14 +25,14 @@ class ChromiumWebView {
   final web.NavigationControllerProxy _navigationController =
       web.NavigationControllerProxy();
 
-  final web.NavigationEventObserverBinding _navigationEventObserverBinding =
-      web.NavigationEventObserverBinding();
+  final web.NavigationEventListenerBinding _navigationEventObserverBinding =
+      web.NavigationEventListenerBinding();
 
   ChildViewConnection _childViewConnection;
 
   ChromiumWebView({
     this.serviceProvider,
-    web.LogLevel javascriptLogLevel = web.LogLevel.none,
+    web.ConsoleLogLevel javascriptLogLevel = web.ConsoleLogLevel.none,
   }) {
     final contextProviderProxyRequest = _contextProvider.ctrl.request();
     if (serviceProvider != null) {
@@ -60,7 +60,7 @@ class ChromiumWebView {
     final viewHolderToken = views.ViewHolderToken(value: tokenPair.first);
     final viewToken = views.ViewToken(value: tokenPair.second);
 
-    _frame.createView2(viewToken.value, null, null);
+    _frame.createView(viewToken);
     _childViewConnection = ChildViewConnection(viewHolderToken);
     _frame
       ..getNavigationController(_navigationController.ctrl.request())
@@ -71,19 +71,18 @@ class ChromiumWebView {
 
   web.NavigationControllerProxy get controller => _navigationController;
 
-  void setNavigationEventObserver(web.NavigationEventObserver observer) {
-    _frame.setNavigationEventObserver(
+  void setNavigationEventListener(web.NavigationEventListener observer) {
+    _frame.setNavigationEventListener(
         _navigationEventObserverBinding.wrap(observer));
   }
 
   Future<bool> injectJavascript(
+    int id,
     String script,
-    List<String> origins, {
-    web.ExecuteMode executeMode = web.ExecuteMode.onPageLoad,
-  }) {
+    List<String> origins) {
     final vmo = SizedVmo.fromUint8List(utf8.encode(script));
     final buffer = fuchsia_mem.Buffer(vmo: vmo, size: vmo.size);
-    return _frame.executeJavaScript(origins, buffer, executeMode);
+    return _frame.addBeforeLoadJavaScript(id, origins, buffer);
   }
 
   Future<bool> postMessage(String message, String targetOrigin,
@@ -92,10 +91,10 @@ class ChromiumWebView {
     var msg = web.WebMessage(
       data: fuchsia_mem.Buffer(vmo: vmo, size: vmo.size),
       outgoingTransfer: outgoingMessagePortRequest != null
-          ? web.OutgoingTransferable.withMessagePort(outgoingMessagePortRequest)
+          ? [ web.OutgoingTransferable.withMessagePort(outgoingMessagePortRequest) ]
           : null,
     );
-    return _frame.postMessage(msg, targetOrigin);
+    return _frame.postMessage(targetOrigin, msg);
   }
 
   void dispose() {

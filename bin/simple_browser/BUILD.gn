@@ -20,6 +20,7 @@ flutter_app("simple_browser") {
   manifest = "pubspec.yaml"
 
   deps = [
+    "//sdk/fidl/fuchsia.web",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/html_unescape",
     "//third_party/dart-pkg/pub/http",
@@ -27,7 +28,6 @@ flutter_app("simple_browser") {
     "//topaz/public/dart/fuchsia_modular",
     "//topaz/public/dart/fuchsia_scenic_flutter",
     "//topaz/public/dart/widgets:lib.widgets",
-    "//topaz/runtime/chromium:chromium.web",
     "//topaz/public/lib/webview",
   ]
 }

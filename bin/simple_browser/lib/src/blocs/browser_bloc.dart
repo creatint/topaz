@@ -6,7 +6,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 import 'package:fuchsia_logger/logger.dart';
-import 'package:fidl_chromium_web/fidl_async.dart' as web;
+import 'package:fidl_fuchsia_web/fidl_async.dart' as web;
 import 'package:meta/meta.dart';
 import 'package:webview/webview.dart';
 import '../models/browse_action.dart';
@@ -16,7 +16,7 @@ import '../models/browse_action.dart';
 //   BrowseAction: a browsing action - url request, prev/next page, etc.
 // Streams:
 //   Url: streams the url in case of an in page navigation.
-class BrowserBloc extends web.NavigationEventObserver {
+class BrowserBloc extends web.NavigationEventListener {
   final ChromiumWebView webView;
 
   // State storage for browsing with back/forward buttons.
@@ -44,7 +44,7 @@ class BrowserBloc extends web.NavigationEventObserver {
     @required this.webView,
     String homePage,
   }) : assert(webView != null) {
-    webView.setNavigationEventObserver(this);
+    webView.setNavigationEventListener(this);
 
     if (homePage != null) {
       _handleAction(NavigateToAction(url: homePage));
@@ -53,7 +53,7 @@ class BrowserBloc extends web.NavigationEventObserver {
   }
 
   @override
-  Future<Null> onNavigationStateChanged(web.NavigationEvent event) async {
+  Future<Null> onNavigationStateChanged(web.NavigationState event) async {
     log.info('url loaded: ${event.url}');
     if (!_navigationOngoing) {
       // The event was triggered by a navigation inside the page.

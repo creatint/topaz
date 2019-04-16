@@ -11,7 +11,6 @@
     },
     "sandbox": {
         "services": [
-            "chromium.web.ContextProvider",
             "fuchsia.cobalt.LoggerFactory",
             "fuchsia.fonts.Provider",
             "fuchsia.logger.LogSink",
@@ -27,7 +26,8 @@
             "fuchsia.ui.input.ImeVisibilityService",
             "fuchsia.ui.scenic.Scenic",
             "fuchsia.ui.policy.Presenter",
-            "fuchsia.modular.ComponentContext"
+            "fuchsia.modular.ComponentContext",
+            "fuchsia.web.ContextProvider"
         ],
         "system": [
             "data/modules"
