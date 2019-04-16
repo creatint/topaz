@@ -46,10 +46,35 @@ class StringProperty {
   /// The writer for the underlying VMO.
   final VmoWriter _writer;
 
+  /// Whether this property has been removed from the VMO.
+  ///
+  /// If so, all actions on this property should be no-ops and not throw.
+  bool _isRemoved = false;
+
   /// Creates a [StringProperty] with [name] under the [parentIndex].
   StringProperty(String name, int parentIndex, this._writer)
       : index = _writer.createProperty(parentIndex, name);
 
   /// Sets the value of this property in the VMO.
-  set value(String value) => _writer.setProperty(index, value);
+  set value(String value) {
+    if (_isRemoved) {
+      return;
+    }
+
+    _writer.setProperty(index, value);
+  }
+
+  /// Remove this property from the VMO.
+  ///
+  /// After a property has been removed, it should no longer be used, so callers
+  /// should clear their references to this property after calling remove.
+  /// Any calls on an already removed property will be no-ops.
+  void remove() {
+    if (_isRemoved) {
+      return;
+    }
+
+    _writer.deleteProperty(index);
+    _isRemoved = true;
+  }
 }

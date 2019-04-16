@@ -53,4 +53,30 @@ void main() {
     expect(readProperty(vmo, property.index),
         equalsByteData(toByteData('waffles')));
   });
+
+  test('String properties can be removed', () {
+    var property = node.createStringProperty('scallops');
+    var index = property.index;
+
+    property.remove();
+
+    expect(() => readProperty(vmo, index), throwsA(anything),
+        reason: 'cannot read VMO values from a removed property');
+  });
+
+  test('Setting a value on an already removed property is a no-op', () {
+    var property = node.createStringProperty('paella');
+    var index = property.index;
+    property.remove();
+
+    expect(() => property.value = 'this will not set', returnsNormally);
+    expect(() => readProperty(vmo, index), throwsA(anything),
+        reason: 'cannot read VMO values from a removed property');
+  });
+
+  test('Removing an already removed property is a no-op', () {
+    var property = node.createStringProperty('nothing-here')..remove();
+
+    expect(() => property.remove(), returnsNormally);
+  });
 }
