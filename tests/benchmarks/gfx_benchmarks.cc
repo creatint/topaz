@@ -17,7 +17,7 @@ void AddGraphicsBenchmarks(benchmarking::BenchmarksRunner* benchmarks_runner) {
   };
 
   constexpr char kImageGridFlutterX3Command[] =
-      "set_root_view fuchsia-pkg://fuchsia.com/tile_view#meta/tile_view.cmx "
+      "present_view fuchsia-pkg://fuchsia.com/tile_view#meta/tile_view.cmx "
       "image_grid_flutter image_grid_flutter image_grid_flutter";
   constexpr char kChoreographyCommand[] =
       "basemgr --test --enable_presenter "
@@ -32,11 +32,11 @@ void AddGraphicsBenchmarks(benchmarking::BenchmarksRunner* benchmarks_runner) {
     //
     // image_grid_flutter
     //
-    {"fuchsia.scenic.image_grid_flutter_noclipping_noshadows", "set_root_view image_grid_flutter", "image_grid_flutter", "--unshadowed --clipping_disabled"},
-    {"fuchsia.scenic.image_grid_flutter_noshadows", "set_root_view image_grid_flutter", "image_grid_flutter", "--unshadowed --clipping_enabled"},
-    {"fuchsia.scenic.image_grid_flutter_ssdo", "set_root_view image_grid_flutter", "image_grid_flutter", "--screen_space_shadows --clipping_enabled"},
-    {"fuchsia.scenic.image_grid_flutter_shadow_map", "set_root_view image_grid_flutter", "image_grid_flutter", "--shadow_map --clipping_enabled"},
-    {"fuchsia.scenic.image_grid_flutter_moment_shadow_map", "set_root_view image_grid_flutter", "image_grid_flutter", "--moment_shadow_map --clipping_enabled"},
+    {"fuchsia.scenic.image_grid_flutter_noclipping_noshadows", "present_view image_grid_flutter", "image_grid_flutter", "--unshadowed --clipping_disabled"},
+    {"fuchsia.scenic.image_grid_flutter_noshadows", "present_view image_grid_flutter", "image_grid_flutter", "--unshadowed --clipping_enabled"},
+    {"fuchsia.scenic.image_grid_flutter_ssdo", "present_view image_grid_flutter", "image_grid_flutter", "--screen_space_shadows --clipping_enabled"},
+    {"fuchsia.scenic.image_grid_flutter_shadow_map", "present_view image_grid_flutter", "image_grid_flutter", "--shadow_map --clipping_enabled"},
+    {"fuchsia.scenic.image_grid_flutter_moment_shadow_map", "present_view image_grid_flutter", "image_grid_flutter", "--moment_shadow_map --clipping_enabled"},
 
     //
     // image_grid_flutter x3
