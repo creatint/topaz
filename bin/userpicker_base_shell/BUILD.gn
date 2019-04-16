@@ -58,7 +58,6 @@ flutter_app("userpicker_base_shell") {
     "//topaz/lib/base_shell:lib.base_shell",
     "//topaz/lib/settings:lib.settings",
     "//topaz/public/dart/fuchsia_logger",
-    "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia_scenic_flutter",
     "//topaz/public/dart/widgets:lib.widgets",
     "//topaz/public/lib/device/dart",

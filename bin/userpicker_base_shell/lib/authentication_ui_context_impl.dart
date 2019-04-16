@@ -2,10 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_auth/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart';
 import 'package:flutter/widgets.dart';
 import 'package:zircon/zircon.dart';
 
@@ -29,19 +27,14 @@ class AuthenticationUiContextImpl extends AuthenticationUiContext {
 
   @override
   // ignore: override_on_non_overriding_method
-  Future<void> startOverlay(InterfaceHandle<ViewOwner> viewOwner) =>
-      startOverlay2(EventPair(viewOwner?.passChannel()?.passHandle()));
+  Future<void> startOverlay(ViewHolderToken viewHolderToken) async  =>
+      _onStartOverlay?.call(viewHolderToken);
 
   @override
   // ignore: override_on_non_overriding_method
-  Future<void> startOverlay2(EventPair viewHolderToken) {
-    _onStartOverlay?.call(ViewHolderToken(value: viewHolderToken));
-    return null;
-  }
+  Future<void> startOverlay2(EventPair viewHolderToken) async =>
+      await startOverlay(ViewHolderToken(value: viewHolderToken));
 
   @override
-  Future<void> stopOverlay() {
-    _onStopOverlay?.call();
-    return null;
-  }
+  Future<void> stopOverlay() async => _onStopOverlay?.call();
 }
