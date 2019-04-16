@@ -12,10 +12,10 @@
 
 #include "gmock/gmock.h"
 #include "lib/component/cpp/expose.h"
-#include "src/lib/fxl/strings/substitute.h"
 #include "lib/svc/cpp/services.h"
 #include "lib/sys/cpp/testing/test_with_environment.h"
 #include "src/lib/files/glob.h"
+#include "src/lib/fxl/strings/substitute.h"
 
 namespace {
 
@@ -112,9 +112,9 @@ TEST_F(InspectTest, ReadHierarchy) {
   EXPECT_THAT(
       hierarchy,
       AllOf(
-          ObjectMatches(NameMatches("root")),
+          NodeMatches(NameMatches("root")),
           ChildrenMatch(UnorderedElementsAre(
-              AllOf(ObjectMatches(AllOf(
+              AllOf(NodeMatches(AllOf(
                         NameMatches("t1"),
                         PropertyList(UnorderedElementsAre(
                             StringPropertyIs("version", "1.0"),
@@ -123,16 +123,16 @@ TEST_F(InspectTest, ReadHierarchy) {
                         MetricList(
                             UnorderedElementsAre(IntMetricIs("value", -10))))),
                     ChildrenMatch(UnorderedElementsAre(
-                        ObjectMatches(AllOf(NameMatches("item-0x0"),
-                                            MetricList(UnorderedElementsAre(
-                                                IntMetricIs("value", 10))))),
-                        ObjectMatches(AllOf(NameMatches("item-0x1"),
-                                            MetricList(UnorderedElementsAre(
-                                                IntMetricIs("value", 100)))))
+                        NodeMatches(AllOf(NameMatches("item-0x0"),
+                                          MetricList(UnorderedElementsAre(
+                                              IntMetricIs("value", 10))))),
+                        NodeMatches(AllOf(NameMatches("item-0x1"),
+                                          MetricList(UnorderedElementsAre(
+                                              IntMetricIs("value", 100)))))
 
                             ))),
               AllOf(
-                  ObjectMatches(AllOf(
+                  NodeMatches(AllOf(
                       NameMatches("t2"),
                       PropertyList(UnorderedElementsAre(
                           StringPropertyIs("version", "1.0"),
@@ -140,7 +140,7 @@ TEST_F(InspectTest, ReadHierarchy) {
                               "frame", std::vector<uint8_t>({0, 0, 0})))),
                       MetricList(
                           UnorderedElementsAre(IntMetricIs("value", -10))))),
-                  ChildrenMatch(UnorderedElementsAre(ObjectMatches(AllOf(
+                  ChildrenMatch(UnorderedElementsAre(NodeMatches(AllOf(
                       NameMatches("item-0x2"), MetricList(UnorderedElementsAre(
                                                    IntMetricIs("value", 4)))))))
 
