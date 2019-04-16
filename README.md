@@ -41,3 +41,4 @@ shas are provided for reference only. Code can be checked out with:
 * topaz/public/lib/fuchsia_driver: b34f97387
 * topaz/public/lib/decomposition: b34f97387
 * topaz/public/lib/module_resolver: 2e13a4929
+* topaz/public/lib/proposal: d32421a9d
