@@ -41,6 +41,7 @@ import 'package:zircon/zircon.dart';
 import '../utils/elevations.dart';
 import '../utils/key_chord_listener.dart' show KeyChordListener;
 import '../utils/session_shell_services.dart' show SessionShellServices;
+import 'default_proposer.dart' show DefaultProposer;
 import 'ermine_service_provider.dart' show ErmineServiceProvider;
 import 'package_proposer.dart' show PackageProposer;
 import 'story_manager.dart'
@@ -64,6 +65,7 @@ class AppModel extends Model {
   final _componentControllerProxy = ComponentControllerProxy();
   final _suggestionProvider = SuggestionProviderProxy();
   final _ask = AskBarProxy();
+  final _defaultProposer = DefaultProposer();
   final _packageProposer = PackageProposer();
   final _webProposer = WebProposer();
 
@@ -88,6 +90,7 @@ class AppModel extends Model {
         .incoming
         .connectToService(_componentContext);
     StartupContext.fromStartupInfo().incoming.connectToService(_puppetMaster);
+    _defaultProposer.start();
     _packageProposer.start();
     _webProposer.start();
 
@@ -200,6 +203,7 @@ class AppModel extends Model {
     _sessionShellContext.logout();
     storyManager.stop();
     _pointerEventsListener.stop();
+    _defaultProposer.stop();
     _packageProposer.stop();
     _webProposer.stop();
 

@@ -32,6 +32,7 @@ dart_library("ermine_library") {
     "main.dart",
     "src/models/app_model.dart",
     "src/models/ermine_service_provider.dart",
+    "src/models/default_proposer.dart",
     "src/models/package_proposer.dart",
     "src/models/story_manager.dart",
     "src/models/story_model.dart",
