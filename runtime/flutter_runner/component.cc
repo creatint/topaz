@@ -266,7 +266,10 @@ Application::Application(
 
   settings_.log_tag = debug_label_ + std::string{"(flutter)"};
 
-#if !defined(DART_PRODUCT)
+  // No asserts in debug or release product.
+  // No asserts in release with flutter_profile=true (non-product)
+  // Yes asserts in non-product debug.
+#if !defined(DART_PRODUCT) && (!defined(FLUTTER_PROFILE) || !defined(NDEBUG))
   // Debug mode
   settings_.disable_dart_asserts = false;
 #else

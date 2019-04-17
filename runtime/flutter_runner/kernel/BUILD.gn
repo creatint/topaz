@@ -5,6 +5,7 @@
 import("//build/dart/dart_tool.gni")
 import("//build/host.gni")
 import("//third_party/dart/utils/compile_platform.gni")
+import("//topaz/runtime/dart/dart_component.gni")
 import("//topaz/runtime/dart/dart_kernel.gni")
 import("//topaz/runtime/flutter_runner/prebuilt_framework.gni")
 
@@ -110,7 +111,10 @@ template("core_snapshot") {
       "--write_v8_snapshot_profile_to=" +
           rebase_path(snapshot_profile, root_build_dir),
     ]
-    if (!invoker.product) {
+    # No asserts in debug or release product.
+    # No asserts in release with flutter_profile=true (non-product)
+    # Yes asserts in non-product debug.
+    if (!invoker.product && (!flutter_profile || is_debug)) {
       args += [ "--enable_asserts" ]
     }
     args += [ rebase_path(platform_dill) ]

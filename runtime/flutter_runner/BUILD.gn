@@ -9,6 +9,7 @@ import("//build/test/test_package.gni")
 import("//build/testing/environments.gni")
 import("//build/vulkan/config.gni")
 import("//garnet/bin/ui/scenic/config.gni")
+import("//topaz/runtime/dart/dart_component.gni")
 import("//topaz/runtime/flutter_runner/prebuilt_framework.gni")
 import("$flutter_root/shell/gpu/gpu.gni")
 
@@ -179,6 +180,9 @@ template("flutter_runner") {
 flutter_runner("aot") {
   output_name = "flutter_aot_runner"
   product = false
+  if (flutter_profile) {
+    extra_defines = [ "FLUTTER_PROFILE" ]
+  }
   extra_deps = [
     "//third_party/dart/runtime:libdart_precompiled_runtime",
     "//third_party/dart/runtime/platform:libdart_platform_precompiled_runtime",
@@ -198,6 +202,9 @@ flutter_runner("aot_product") {
 flutter_runner("jit") {
   output_name = "flutter_jit_runner"
   product = false
+  if (flutter_profile) {
+    extra_defines = [ "FLUTTER_PROFILE" ]
+  }
   extra_deps = [
                  "//third_party/dart/runtime:libdart_jit",
                  "//third_party/dart/runtime/platform:libdart_platform_jit",
