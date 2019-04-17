@@ -346,7 +346,8 @@ class Block {
   @visibleForTesting
   ByteData get nameUtf8 {
     _checkType(BlockType.nameUtf8);
-    return payloadBytes;
+    return ByteData.view(payloadBytes.buffer, payloadBytes.offsetInBytes,
+        _header.read(nameLengthBits));
   }
 
   /// Adds a [BlockType.reserved] block to the head of a [BlockType.extent]

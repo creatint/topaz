@@ -242,9 +242,13 @@ void main() {
 
     test('Becoming a name', () {
       final vmo = FakeVmo(64);
-      Block.create(vmo, 2).becomeName('abc');
+      final block = Block.create(vmo, 2)..becomeName('abc');
       compare(vmo, 32,
           '${hexChar(BlockType.nameUtf8.value)} 1 03 0000 0000 0000 61 62 63');
+      expect(
+          Uint8List.view(
+              block.nameUtf8.buffer, 0, block.nameUtf8.lengthInBytes),
+          Uint8List.fromList([0x61, 0x62, 0x63]));
     });
 
     test('Becoming and setting an extent', () {
