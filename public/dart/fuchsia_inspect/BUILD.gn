@@ -14,15 +14,15 @@ dart_library("fuchsia_inspect") {
 
   sources = [
     "inspect.dart",
-    "src/bitfield64.dart",
-    "src/block.dart",
-    "src/heap.dart",
-    "src/inspect.dart",
-    "src/node.dart",
-    "src/util.dart",
-    "src/vmo_fields.dart",
-    "src/vmo_holder.dart",
-    "src/vmo_writer.dart",
+    "src/inspect/inspect.dart",
+    "src/inspect/node.dart",
+    "src/vmo/bitfield64.dart",
+    "src/vmo/block.dart",
+    "src/vmo/heap.dart",
+    "src/vmo/util.dart",
+    "src/vmo/vmo_fields.dart",
+    "src/vmo/vmo_holder.dart",
+    "src/vmo/vmo_writer.dart",
   ]
 
   deps = [
@@ -37,15 +37,15 @@ dart_library("fuchsia_inspect") {
 
 dart_test("fuchsia_inspect_package_unittests") {
   sources = [
-    "bitfield64_test.dart",
-    "block_test.dart",
-    "heap_test.dart",
-    "inspect_test.dart",
+    "inspect/inspect_test.dart",
+    "inspect/node_test.dart",
     "integration/writer.dart",
-    "node_test.dart",
     "util.dart",
-    "vmo_fields_test.dart",
-    "vmo_writer_test.dart",
+    "vmo/bitfield64_test.dart",
+    "vmo/block_test.dart",
+    "vmo/heap_test.dart",
+    "vmo/vmo_fields_test.dart",
+    "vmo/vmo_writer_test.dart",
   ]
 
   deps = [

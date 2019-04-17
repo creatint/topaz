@@ -4,7 +4,7 @@
 
 // ignore_for_file: implementation_imports
 
-import 'package:fuchsia_inspect/src/bitfield64.dart';
+import 'package:fuchsia_inspect/src/vmo/bitfield64.dart';
 import 'package:test/test.dart';
 
 void main() {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:math' show min;
+
 import 'package:meta/meta.dart';
 
 import 'block.dart';

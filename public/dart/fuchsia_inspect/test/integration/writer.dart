@@ -6,8 +6,8 @@
 
 import 'dart:typed_data';
 
-import 'package:fuchsia_inspect/src/vmo_writer.dart';
-import 'package:fuchsia_inspect/src/vmo_holder.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_writer.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_holder.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:fuchsia_vfs/vfs.dart';
 

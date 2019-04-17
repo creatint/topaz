@@ -9,8 +9,8 @@ import 'dart:math' show min;
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import 'package:fuchsia_inspect/src/block.dart';
-import 'package:fuchsia_inspect/src/vmo_holder.dart';
+import 'package:fuchsia_inspect/src/vmo/block.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_holder.dart';
 import 'package:test/test.dart';
 import 'package:zircon/zircon.dart';
 

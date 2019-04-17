@@ -4,11 +4,12 @@
 
 // ignore_for_file: implementation_imports
 
-import 'package:fuchsia_inspect/src/heap.dart';
-import 'package:fuchsia_inspect/src/block.dart';
-import 'package:fuchsia_inspect/src/vmo_fields.dart';
+import 'package:fuchsia_inspect/src/vmo/heap.dart';
+import 'package:fuchsia_inspect/src/vmo/block.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_fields.dart';
 import 'package:test/test.dart';
-import 'util.dart';
+
+import '../util.dart';
 
 // In the VMO data structure, indexes 0..3 are reserved for VMO HEADER block,
 // root-node block, and root-node's name.

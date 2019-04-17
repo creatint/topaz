@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:typed_data';
+
 import 'package:zircon/zircon.dart';
 
 /// Holder for a VMO with read/write capability.
@@ -15,8 +16,7 @@ class VmoHolder {
   VmoHolder(this.size) {
     HandleResult result = System.vmoCreate(size);
     if (result.status != ZX.OK) {
-      throw ZxStatusException(
-          result.status, getStringForStatus(result.status));
+      throw ZxStatusException(result.status, getStringForStatus(result.status));
     }
     _vmo = Vmo(result.handle);
   }
@@ -44,8 +44,7 @@ class VmoHolder {
   ByteData read(int offset, int size) {
     ReadResult result = _vmo.read(size, offset);
     if (result.status != ZX.OK) {
-      throw ZxStatusException(
-          result.status, getStringForStatus(result.status));
+      throw ZxStatusException(result.status, getStringForStatus(result.status));
     }
     return result.bytes;
   }

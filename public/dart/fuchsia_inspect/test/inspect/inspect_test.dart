@@ -5,10 +5,10 @@
 // ignore_for_file: implementation_imports
 
 import 'package:fuchsia_inspect/inspect.dart';
-import 'package:fuchsia_inspect/src/vmo_writer.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_writer.dart';
 import 'package:test/test.dart';
 
-import 'util.dart';
+import '../util.dart';
 
 void main() {
   test('Inspect root node is non-null by default', () {

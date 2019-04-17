@@ -6,11 +6,12 @@
 
 import 'dart:typed_data';
 
-import 'package:fuchsia_inspect/src/block.dart';
-import 'package:fuchsia_inspect/src/util.dart';
-import 'package:fuchsia_inspect/src/vmo_fields.dart';
+import 'package:fuchsia_inspect/src/vmo/block.dart';
+import 'package:fuchsia_inspect/src/vmo/util.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_fields.dart';
 import 'package:test/test.dart';
-import 'util.dart';
+
+import '../util.dart';
 
 void main() {
   group('Block', () {

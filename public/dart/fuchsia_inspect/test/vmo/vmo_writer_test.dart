@@ -6,14 +6,15 @@
 
 import 'dart:typed_data';
 
-import 'package:fuchsia_inspect/src/bitfield64.dart';
-import 'package:fuchsia_inspect/src/block.dart';
-import 'package:fuchsia_inspect/src/util.dart';
-import 'package:fuchsia_inspect/src/vmo_fields.dart';
-import 'package:fuchsia_inspect/src/vmo_holder.dart';
-import 'package:fuchsia_inspect/src/vmo_writer.dart';
+import 'package:fuchsia_inspect/src/vmo/bitfield64.dart';
+import 'package:fuchsia_inspect/src/vmo/block.dart';
+import 'package:fuchsia_inspect/src/vmo/util.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_fields.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_holder.dart';
+import 'package:fuchsia_inspect/src/vmo/vmo_writer.dart';
 import 'package:test/test.dart';
-import 'util.dart';
+
+import '../util.dart';
 
 void main() {
   group('vmo_writer operations work:', () {
