@@ -30,6 +30,11 @@ bool CreateVulkanImage(vulkan::VulkanProvider& vulkan_provider,
   FML_DCHECK(!size.isEmpty());
   FML_DCHECK(out_vulkan_image != nullptr);
 
+  // The image creation parameters need to be the same as those in scenic
+  // (garnet/lib/ui/gfx/resources/gpu_image.cc and
+  // garnet/public/lib/escher/util/image_utils.cc) or else the different vulkan
+  // devices may interpret the bytes differently.
+  // TODO(SCN-1369): Use API to coordinate this with scenic.
   out_vulkan_image->vk_image_create_info = {
       .sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO,
       .pNext = nullptr,
@@ -42,7 +47,9 @@ bool CreateVulkanImage(vulkan::VulkanProvider& vulkan_provider,
       .arrayLayers = 1,
       .samples = VK_SAMPLE_COUNT_1_BIT,
       .tiling = VK_IMAGE_TILING_OPTIMAL,
-      .usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT,
+      .usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT |
+               VK_IMAGE_USAGE_TRANSFER_DST_BIT |
+               VK_IMAGE_USAGE_TRANSFER_SRC_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
       .sharingMode = VK_SHARING_MODE_EXCLUSIVE,
       .queueFamilyIndexCount = 0,
       .pQueueFamilyIndices = nullptr,
@@ -151,7 +158,8 @@ vulkan::VulkanHandle<VkSemaphore> VulkanSurface::SemaphoreFromEvent(
   }
 
   VkImportSemaphoreZirconHandleInfoFUCHSIA import_info = {
-      .sType = VK_STRUCTURE_TYPE_TEMP_IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA,
+      .sType =
+          VK_STRUCTURE_TYPE_TEMP_IMPORT_SEMAPHORE_ZIRCON_HANDLE_INFO_FUCHSIA,
       .pNext = nullptr,
       .semaphore = semaphore,
       .handleType =
@@ -221,7 +229,8 @@ bool VulkanSurface::AllocateDeviceMemory(sk_sp<GrContext> context,
   VkExportMemoryAllocateInfoKHR export_allocate_info = {
       .sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_KHR,
       .pNext = nullptr,
-      .handleTypes = VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA};
+      .handleTypes =
+          VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA};
 
   const VkMemoryAllocateInfo alloc_info = {
       .sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
