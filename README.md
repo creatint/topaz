@@ -42,3 +42,4 @@ shas are provided for reference only. Code can be checked out with:
 * topaz/public/lib/decomposition: b34f97387
 * topaz/public/lib/module_resolver: 2e13a4929
 * topaz/public/lib/proposal: d32421a9d
+* topaz/public/lib/user: 62cc03e

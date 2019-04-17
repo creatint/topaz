@@ -57,7 +57,6 @@ dart_library("lib.widgets") {
     "//topaz/public/dart/fuchsia_scenic_flutter",
     "//topaz/public/lib/app/dart",
     "//topaz/public/lib/module/dart",
-    "//topaz/public/lib/user/dart",
     "//zircon/public/fidl/fuchsia-cobalt",
   ]
 }
