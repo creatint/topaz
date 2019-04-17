@@ -39,3 +39,41 @@ import 'fidl_async.dart' as $strongly_connect_async;
 // ignore_for_file: always_put_required_named_parameters_first
 // ignore_for_file: prefer_generic_function_type_aliases
 // ignore_for_file: prefer_equal_for_default_values
+
+class MyBits extends $fidl.Bits {
+  static const MyBits myFirstBit = MyBits._(1);
+  static const MyBits myOtherBit = MyBits._(2);
+
+  const MyBits._(this.$value);
+
+  MyBits operator |(MyBits other) {
+    return MyBits._($value | other.$value);
+  }
+
+  @override
+  final int $value;
+
+  @override
+  String toString() {
+    if ($value == null) {
+      return null;
+    }
+    List<String> parts = [];
+    if ($value & 1 != 0) {
+      parts.add(r'MyBits.myFirstBit');
+    }
+    if ($value & 2 != 0) {
+      parts.add(r'MyBits.myOtherBit');
+    }
+    if (parts.isEmpty) {
+      return r'MyBits.$none';
+    } else {
+      return parts.join(" | ");
+    }
+  }
+
+  static MyBits _ctor(int v) => MyBits._(v);
+}
+
+const $fidl.BitsType<MyBits> kMyBits_Type =
+    $fidl.BitsType<MyBits>(type: $fidl.Uint32Type(), ctor: MyBits._ctor);

@@ -54,6 +54,22 @@ type EnumMember struct {
 	Documented
 }
 
+// Bits represents a bits declaration.
+type Bits struct {
+	Name       string
+	Members    []BitsMember
+	TypeSymbol string
+	TypeExpr   string
+	Documented
+}
+
+// BitsMember represents a member of a bits declaration.
+type BitsMember struct {
+	Name  string
+	Value string
+	Documented
+}
+
 // Union represents a union declaration.
 type Union struct {
 	Name       string
@@ -201,6 +217,7 @@ type Root struct {
 	Imports     []Import
 	Consts      []Const
 	Enums       []Enum
+	Bits        []Bits
 	Interfaces  []Interface
 	Structs     []Struct
 	Tables      []Table
@@ -211,8 +228,10 @@ type Root struct {
 type context map[string]bool
 
 var (
+	// Name of a bits member
+	bitsMemberContext = make(context)
 	// Name of an enum member
-	enumMemberContext context = make(context)
+	enumMemberContext = make(context)
 	// Name of a struct member
 	structMemberContext = make(context)
 	// Name of a table member
@@ -233,9 +252,12 @@ var (
 )
 
 func init() {
-	var allContexts = []context{enumMemberContext, structMemberContext, tableMemberContext,
-		unionMemberContext, unionMemberTagContext, constantContext, declarationContext,
-		methodContext, parameterContext}
+	var allContexts = []context{
+		enumMemberContext, structMemberContext, tableMemberContext,
+		unionMemberContext, unionMemberTagContext, constantContext,
+		declarationContext, methodContext, parameterContext,
+		bitsMemberContext,
+	}
 
 	var reservedWords = map[string][]context{
 		"assert":       allContexts,
@@ -251,7 +273,7 @@ func init() {
 		"default":      allContexts,
 		"do":           allContexts,
 		"double":       []context{structMemberContext, tableMemberContext},
-		"dynamic":      []context{enumMemberContext, methodContext, unionMemberContext, constantContext, tableMemberContext, structMemberContext},
+		"dynamic":      []context{bitsMemberContext, enumMemberContext, methodContext, unionMemberContext, constantContext, tableMemberContext, structMemberContext},
 		"else":         allContexts,
 		"enum":         allContexts,
 		"extends":      allContexts,
@@ -259,13 +281,13 @@ func init() {
 		"final":        allContexts,
 		"finally":      allContexts,
 		"for":          allContexts,
-		"hashCode":     []context{methodContext, enumMemberContext, unionMemberContext, structMemberContext, tableMemberContext},
+		"hashCode":     []context{methodContext, bitsMemberContext, enumMemberContext, unionMemberContext, structMemberContext, tableMemberContext},
 		"noSuchMethod": []context{methodContext, enumMemberContext, unionMemberContext, structMemberContext, tableMemberContext},
 		"runtimeType":  []context{methodContext, enumMemberContext, unionMemberContext, structMemberContext, tableMemberContext},
 		"index":        []context{unionMemberTagContext},
 		"if":           allContexts,
 		"in":           allContexts,
-		"int":          []context{enumMemberContext, methodContext, unionMemberContext, constantContext, tableMemberContext, structMemberContext},
+		"int":          []context{bitsMemberContext, enumMemberContext, methodContext, unionMemberContext, constantContext, tableMemberContext, structMemberContext},
 		"is":           allContexts,
 		"List":         []context{declarationContext},
 		"Map":          []context{declarationContext},
@@ -282,7 +304,7 @@ func init() {
 		"switch":       allContexts,
 		"this":         allContexts,
 		"throw":        allContexts,
-		"toString":     []context{methodContext, enumMemberContext, structMemberContext, tableMemberContext, unionMemberContext},
+		"toString":     []context{methodContext, bitsMemberContext, enumMemberContext, structMemberContext, tableMemberContext, unionMemberContext},
 		"true":         allContexts,
 		"try":          allContexts,
 		"values":       []context{unionMemberTagContext},
@@ -690,6 +712,8 @@ func (c *compiler) compileType(val types.Type) Type {
 			fallthrough
 		case types.EnumDeclType:
 			fallthrough
+		case types.BitsDeclType:
+			fallthrough
 		case types.StructDeclType:
 			fallthrough
 		case types.TableDeclType:
@@ -772,6 +796,29 @@ func (c *compiler) compileEnum(val types.Enum) Enum {
 		})
 	}
 	return e
+}
+
+func (c *compiler) compileBits(val types.Bits) Bits {
+	ci := types.ParseCompoundIdentifier(val.Name)
+	n := c.compileUpperCamelCompoundIdentifier(ci, "", declarationContext)
+	if val.Type.Kind != types.PrimitiveType {
+		panic("unexpected, only primitives are allowed for bits declarations")
+	}
+	subtype := val.Type.PrimitiveSubtype
+	b := Bits{
+		Name:       n,
+		TypeSymbol: c.typeSymbolForCompoundIdentifier(ci),
+		TypeExpr:   fmt.Sprintf("$fidl.BitsType<%s>(type: %s, ctor: %s._ctor)", n, typeExprForPrimitiveSubtype(subtype), n),
+		Documented: docString(val),
+	}
+	for _, v := range val.Members {
+		b.Members = append(b.Members, BitsMember{
+			Name:       c.compileLowerCamelIdentifier(v.Name, bitsMemberContext),
+			Value:      c.compileConstant(v.Value, nil),
+			Documented: docString(v),
+		})
+	}
+	return b
 }
 
 func (c *compiler) compileParameter(paramName types.Identifier, paramType types.Type, offset int) Parameter {
@@ -1136,6 +1183,10 @@ func Compile(r types.Root) Root {
 
 	for _, v := range r.Enums {
 		root.Enums = append(root.Enums, c.compileEnum(v))
+	}
+
+	for _, v := range r.Bits {
+		root.Bits = append(root.Bits, c.compileBits(v))
 	}
 
 	for _, v := range r.Interfaces {

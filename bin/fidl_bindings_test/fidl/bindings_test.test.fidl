@@ -28,6 +28,12 @@ xunion ExampleXunion {
     vector<uint8> baz;
 };
 
+bits ExampleBits {
+    MEMBER_A = 2;
+    MEMBER_B = 4;
+    MEMBER_C = 8;
+};
+
 [Discoverable]
 protocol TestServer {
     OneWayNoArgs();
@@ -48,6 +54,9 @@ protocol TestServer {
 
     OneWayExampleXunion(ExampleXunion value);
     ReceivedOneWayExampleXunion() -> (ExampleXunion received);
+
+    OneWayExampleBits(ExampleBits value);
+    ReceivedOneWayExampleBits() -> (ExampleBits received);
 
     SendEmptyEvent();
     -> EmptyEvent();

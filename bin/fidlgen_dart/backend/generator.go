@@ -61,6 +61,7 @@ func GenerateFidl(fidl types.Root, config *types.Config, dartfmt string) error {
 	tmpls := template.New("DartTemplates")
 	template.Must(tmpls.Parse(templates.Const))
 	template.Must(tmpls.Parse(templates.Enum))
+	template.Must(tmpls.Parse(templates.Bits))
 	template.Must(tmpls.Parse(templates.Interface))
 	template.Must(tmpls.Parse(templates.Library))
 	template.Must(tmpls.Parse(templates.Struct))

@@ -104,5 +104,19 @@ void main() async {
       expect(received.bar, equals(null));
       expect(received.baz, unorderedEquals(primes));
     });
+
+    test('bits with single bit', () async {
+      await server.proxy.oneWayExampleBits(ExampleBits.memberB);
+      final received = await server.proxy.receivedOneWayExampleBits();
+      expect(received, equals(ExampleBits.memberB));
+    });
+
+    test('bits with multiple bits', () async {
+      await server.proxy.oneWayExampleBits(
+        ExampleBits.memberB | ExampleBits.memberC);
+      final received = await server.proxy.receivedOneWayExampleBits();
+      expect(received, equals(
+        ExampleBits.memberB | ExampleBits.memberC));
+    });
   });
 }

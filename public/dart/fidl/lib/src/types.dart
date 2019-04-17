@@ -7,6 +7,7 @@ import 'dart:typed_data';
 
 import 'package:zircon/zircon.dart';
 
+import 'bits.dart';
 import 'codec.dart';
 import 'enum.dart';
 import 'error.dart';
@@ -948,6 +949,29 @@ class EnumType<T extends Enum> extends FidlType<T> {
 
   final FidlType<int> type;
   final EnumFactory<T> ctor;
+
+  @override
+  int get encodedSize => type.encodedSize;
+
+  @override
+  void encode(Encoder encoder, T value, int offset) {
+    type.encode(encoder, value.$value, offset);
+  }
+
+  @override
+  T decode(Decoder decoder, int offset) {
+    return ctor(type.decode(decoder, offset));
+  }
+}
+
+class BitsType<T extends Bits> extends FidlType<T> {
+  const BitsType({
+    this.type,
+    this.ctor,
+  });
+
+  final FidlType<int> type;
+  final BitsFactory<T> ctor;
 
   @override
   int get encodedSize => type.encodedSize;

@@ -78,6 +78,18 @@ class TestServerImpl extends TestServer {
     return _oneWayExampleXunion;
   }
 
+  ExampleBits _oneWayExampleBits;
+
+  @override
+  Future<void> oneWayExampleBits(ExampleBits value) async {
+    _oneWayExampleBits = value;
+  }
+
+  @override
+  Future<ExampleBits> receivedOneWayExampleBits() async {
+    return _oneWayExampleBits;
+  }
+
   @override
   Future<void> twoWayNoArgs() async {}
 

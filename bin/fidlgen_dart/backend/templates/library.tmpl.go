@@ -59,6 +59,9 @@ import 'fidl_async.dart' as $strongly_connect_async;
 {{ range $enum := .Enums -}}
 {{ template "EnumDeclaration" $enum }}
 {{ end -}}
+{{ range $bits := .Bits -}}
+{{ template "BitsDeclaration" $bits }}
+{{ end -}}
 {{ range $union := .Unions -}}
 {{ template "UnionDeclaration" $union }}
 {{ end -}}
@@ -142,6 +145,9 @@ import 'fidl.dart' as $strongly_connect_sync;
 {{ end -}}
 {{ range $enum := .Enums -}}
 {{ template "EnumDeclaration" $enum }}
+{{ end -}}
+{{ range $bits := .Bits -}}
+{{ template "BitsDeclaration" $bits }}
 {{ end -}}
 {{ range $union := .Unions -}}
 {{ template "UnionDeclaration" $union }}
