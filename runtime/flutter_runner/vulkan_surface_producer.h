@@ -24,7 +24,7 @@
 namespace flutter_runner {
 
 class VulkanSurfaceProducer final
-    : public flow::SceneUpdateContext::SurfaceProducer,
+    : public flutter::SceneUpdateContext::SurfaceProducer,
       public vulkan::VulkanProvider {
  public:
   VulkanSurfaceProducer(scenic::Session* scenic_session);
@@ -33,31 +33,31 @@ class VulkanSurfaceProducer final
 
   bool IsValid() const { return valid_; }
 
-  // |flow::SceneUpdateContext::SurfaceProducer|
-  std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface>
+  // |flutter::SceneUpdateContext::SurfaceProducer|
+  std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface>
   ProduceSurface(const SkISize& size,
-                 const flow::LayerRasterCacheKey& layer_key,
+                 const flutter::LayerRasterCacheKey& layer_key,
                  std::unique_ptr<scenic::EntityNode> entity_node) override;
 
-  // |flow::SceneUpdateContext::SurfaceProducer|
+  // |flutter::SceneUpdateContext::SurfaceProducer|
   void SubmitSurface(
-      std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface> surface)
+      std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface> surface)
       override;
 
-  // |flow::SceneUpdateContext::HasRetainedNode|
-  bool HasRetainedNode(const flow::LayerRasterCacheKey& key) const override {
+  // |flutter::SceneUpdateContext::HasRetainedNode|
+  bool HasRetainedNode(const flutter::LayerRasterCacheKey& key) const override {
     return surface_pool_->HasRetainedNode(key);
   }
 
-  // |flow::SceneUpdateContext::GetRetainedNode|
+  // |flutter::SceneUpdateContext::GetRetainedNode|
   const scenic::EntityNode& GetRetainedNode(
-      const flow::LayerRasterCacheKey& key) override {
+      const flutter::LayerRasterCacheKey& key) override {
     return surface_pool_->GetRetainedNode(key);
   }
 
   void OnSurfacesPresented(
       std::vector<
-          std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface>>
+          std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface>>
           surfaces);
 
   void OnSessionSizeChangeHint(float width_change_factor,
@@ -76,7 +76,7 @@ class VulkanSurfaceProducer final
 
   bool TransitionSurfacesToExternal(
       const std::vector<
-          std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface>>&
+          std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface>>&
           surfaces);
 
   // Note: the order here is very important. The proctable must be destroyed

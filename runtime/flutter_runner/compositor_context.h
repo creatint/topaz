@@ -18,7 +18,7 @@ namespace flutter_runner {
 
 // Holds composition specific state and bindings specific to composition on
 // Fuchsia.
-class CompositorContext final : public flow::CompositorContext {
+class CompositorContext final : public flutter::CompositorContext {
  public:
   CompositorContext(std::string debug_label,
                     fuchsia::ui::views::ViewToken view_token,
@@ -36,10 +36,10 @@ class CompositorContext final : public flow::CompositorContext {
   const std::string debug_label_;
   SessionConnection session_connection_;
 
-  // |flow::CompositorContext|
+  // |flutter::CompositorContext|
   std::unique_ptr<ScopedFrame> AcquireFrame(
       GrContext* gr_context, SkCanvas* canvas,
-      flow::ExternalViewEmbedder* view_embedder,
+      flutter::ExternalViewEmbedder* view_embedder,
       const SkMatrix& root_surface_transformation,
       bool instrumentation_enabled) override;
 

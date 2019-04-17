@@ -127,7 +127,7 @@ bool VulkanSurfaceProducer::Initialize(scenic::Session* scenic_session) {
 
 void VulkanSurfaceProducer::OnSurfacesPresented(
     std::vector<
-        std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface>>
+        std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface>>
         surfaces) {
   TRACE_DURATION("flutter", "VulkanSurfaceProducer::OnSurfacesPresented");
 
@@ -167,7 +167,7 @@ void VulkanSurfaceProducer::OnSurfacesPresented(
 
 bool VulkanSurfaceProducer::TransitionSurfacesToExternal(
     const std::vector<
-        std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface>>&
+        std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface>>&
         surfaces) {
   for (auto& surface : surfaces) {
     auto vk_surface = static_cast<VulkanSurface*>(surface.get());
@@ -222,10 +222,10 @@ bool VulkanSurfaceProducer::TransitionSurfacesToExternal(
   return true;
 }
 
-std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface>
+std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface>
 VulkanSurfaceProducer::ProduceSurface(
     const SkISize& size,
-    const flow::LayerRasterCacheKey& layer_key,
+    const flutter::LayerRasterCacheKey& layer_key,
     std::unique_ptr<scenic::EntityNode> entity_node) {
   FML_DCHECK(valid_);
   last_produce_time_ = async::Now(async_get_default_dispatcher());
@@ -235,7 +235,7 @@ VulkanSurfaceProducer::ProduceSurface(
 }
 
 void VulkanSurfaceProducer::SubmitSurface(
-    std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface> surface) {
+    std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface> surface) {
   FML_DCHECK(valid_ && surface != nullptr);
   surface_pool_->SubmitSurface(std::move(surface));
 }

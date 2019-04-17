@@ -107,7 +107,7 @@ VulkanSurfacePool::GetCachedOrCreateSurface(const SkISize& size) {
 }
 
 void VulkanSurfacePool::SubmitSurface(
-    std::unique_ptr<flow::SceneUpdateContext::SurfaceProducerSurface>
+    std::unique_ptr<flutter::SceneUpdateContext::SurfaceProducerSurface>
         p_surface) {
   TRACE_DURATION("flutter", "VulkanSurfacePool::SubmitSurface");
 
@@ -122,7 +122,7 @@ void VulkanSurfacePool::SubmitSurface(
   }
 
 
-  const flow::LayerRasterCacheKey& retained_key =
+  const flutter::LayerRasterCacheKey& retained_key =
       vulkan_surface->GetRetainedKey();
   if (retained_key.id() != nullptr) {
     // Add the surface to |retained_surfaces_| if its retained key has a non-
@@ -204,7 +204,7 @@ void VulkanSurfacePool::RecycleSurface(std::unique_ptr<VulkanSurface> surface) {
 }
 
 void VulkanSurfacePool::RecycleRetainedSurface(
-    const flow::LayerRasterCacheKey& key) {
+    const flutter::LayerRasterCacheKey& key) {
   auto it = retained_surfaces_.find(key);
   if (it == retained_surfaces_.end()) {
     return;
@@ -218,7 +218,7 @@ void VulkanSurfacePool::RecycleRetainedSurface(
   RecycleSurface(std::move(surface_to_recycle));
 }
 
-void VulkanSurfacePool::SignalRetainedReady(flow::LayerRasterCacheKey key) {
+void VulkanSurfacePool::SignalRetainedReady(flutter::LayerRasterCacheKey key) {
   retained_surfaces_[key].is_pending = false;
 }
 
@@ -259,7 +259,7 @@ void VulkanSurfacePool::AgeAndCollectOldBuffers() {
   // It's safe to recycle any retained surfaces that are not pending no matter
   // whether they're used or not. Hence if there's memory pressure, feel free to
   // recycle all retained surfaces that are not pending.
-  std::vector<flow::LayerRasterCacheKey> recycle_keys;
+  std::vector<flutter::LayerRasterCacheKey> recycle_keys;
   for (auto&[key, retained_surface] : retained_surfaces_) {
     if (retained_surface.is_pending ||
       retained_surface.vk_surface->IsUsedInRetainedRendering()) {

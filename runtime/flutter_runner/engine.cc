@@ -156,7 +156,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
   // Create the compositor context from the scenic pointer to create the
   // rasterizer.
-  std::unique_ptr<flow::CompositorContext> compositor_context;
+  std::unique_ptr<flutter::CompositorContext> compositor_context;
   {
     TRACE_DURATION("flutter", "CreateCompositorContext");
     compositor_context = std::make_unique<flutter_runner::CompositorContext>(

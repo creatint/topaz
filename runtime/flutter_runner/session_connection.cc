@@ -47,7 +47,7 @@ SessionConnection::SessionConnection(
 
 SessionConnection::~SessionConnection() = default;
 
-void SessionConnection::Present(flow::CompositorContext::ScopedFrame& frame) {
+void SessionConnection::Present(flutter::CompositorContext::ScopedFrame& frame) {
   // Flush all session ops. Paint tasks have not yet executed but those are
   // fenced. The compositor can start processing ops while we finalize paint
   // tasks.

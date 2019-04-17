@@ -47,14 +47,14 @@ class SessionConnection final {
         fidl::MakeOptional(std::move(metrics_copy)));
   }
 
-  flow::SceneUpdateContext& scene_update_context() {
+  flutter::SceneUpdateContext& scene_update_context() {
     return scene_update_context_;
   }
 
   scenic::ContainerNode& root_node() { return root_node_; }
   scenic::View* root_view() { return &root_view_; }
 
-  void Present(flow::CompositorContext::ScopedFrame& frame);
+  void Present(flutter::CompositorContext::ScopedFrame& frame);
 
   void OnSessionSizeChangeHint(float width_change_factor,
                                float height_change_factor);
@@ -67,7 +67,7 @@ class SessionConnection final {
   scenic::EntityNode root_node_;
 
   std::unique_ptr<VulkanSurfaceProducer> surface_producer_;
-  flow::SceneUpdateContext scene_update_context_;
+  flutter::SceneUpdateContext scene_update_context_;
   zx_handle_t vsync_event_handle_;
 
   // A flow event trace id for following |Session::Present| calls into
