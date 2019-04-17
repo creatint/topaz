@@ -9,7 +9,7 @@ Assumes you already have an existing Fuchsia checkout and have set-up your hardw
 1.  Run for workstation.
 
     ```
-    fx set workstation.x64 --with //bundles:kitchen_sink
+    fx set workstation.chromebook-x64 --with //bundles:kitchen_sink
     ```
 
 1.  Do a fresh build.
