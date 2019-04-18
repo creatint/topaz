@@ -17,9 +17,9 @@
 #include "topaz/runtime/dart/utils/files.h"
 
 #include "fuchsia_font_manager.h"
-#include "loop.h"
 #include "platform_view.h"
 #include "task_runner_adapter.h"
+#include "thread.h"
 
 namespace flutter_runner {
 
@@ -58,9 +58,8 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
   // Launch the threads that will be used to run the shell. These threads will
   // be joined in the destructor.
-  for (auto& loop : host_loops_) {
-    loop.reset(MakeObservableLoop(false));
-    loop->StartThread();
+  for (auto& thread : threads_) {
+    thread.reset(new Thread());
   }
 
   // Set up the session connection.
@@ -183,9 +182,9 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   const flutter::TaskRunners task_runners(
       thread_label_,  // Dart thread labels
       CreateFMLTaskRunner(async_get_default_dispatcher()),  // platform
-      CreateFMLTaskRunner(host_loops_[0]->dispatcher()),    // gpu
-      CreateFMLTaskRunner(host_loops_[1]->dispatcher()),    // ui
-      CreateFMLTaskRunner(host_loops_[2]->dispatcher())     // io
+      CreateFMLTaskRunner(threads_[0]->dispatcher()),    // gpu
+      CreateFMLTaskRunner(threads_[1]->dispatcher()),    // ui
+      CreateFMLTaskRunner(threads_[2]->dispatcher())     // io
   );
 
   UpdateNativeThreadLabelNames(thread_label_, task_runners);
@@ -294,11 +293,11 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
 
 Engine::~Engine() {
   shell_.reset();
-  for (const auto& loop : host_loops_) {
-    loop->Quit();
+  for (const auto& thread : threads_) {
+    thread->Quit();
   }
-  for (const auto& loop : host_loops_) {
-    loop->JoinThreads();
+  for (const auto& thread : threads_) {
+    thread->Join();
   }
 }
 

@@ -15,6 +15,7 @@
 #include "flutter/fml/macros.h"
 #include "flutter/shell/common/shell.h"
 #include "isolate_configurator.h"
+#include "thread.h"
 
 namespace flutter_runner {
 
@@ -47,7 +48,7 @@ class Engine final {
   Delegate& delegate_;
   const std::string thread_label_;
   flutter::Settings settings_;
-  std::array<std::unique_ptr<async::Loop>, 3> host_loops_;
+  std::array<std::unique_ptr<Thread>, 3> threads_;
   std::unique_ptr<IsolateConfigurator> isolate_configurator_;
   std::unique_ptr<flutter::Shell> shell_;
   zx::event vsync_event_;
