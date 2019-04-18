@@ -42,9 +42,11 @@ VulkanSurfaceProducer::VulkanSurfaceProducer(scenic::Session* scenic_session) {
 
 VulkanSurfaceProducer::~VulkanSurfaceProducer() {
   // Make sure queue is idle before we start destroying surfaces
-  VkResult wait_result =
-      VK_CALL_LOG_ERROR(vk_->QueueWaitIdle(logical_device_->GetQueueHandle()));
-  FML_DCHECK(wait_result == VK_SUCCESS);
+  if (valid_) {
+    VkResult wait_result =
+        VK_CALL_LOG_ERROR(vk_->QueueWaitIdle(logical_device_->GetQueueHandle()));
+    FML_DCHECK(wait_result == VK_SUCCESS);
+  }
 };
 
 bool VulkanSurfaceProducer::Initialize(scenic::Session* scenic_session) {
