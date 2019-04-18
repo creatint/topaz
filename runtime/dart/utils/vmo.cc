@@ -22,6 +22,7 @@ bool VmoFromFd(int fd, fuchsia::mem::Buffer* buffer) {
 
   struct stat stat_struct;
   if (fstat(fd, &stat_struct) == -1) {
+    FX_LOGF(ERROR, LOG_TAG, "fstat failed: %s", strerror(errno));
     return false;
   }
 
@@ -49,6 +50,7 @@ bool VmoFromFilenameAt(int dirfd, const std::string& filename,
                        fuchsia::mem::Buffer* buffer) {
   int fd = openat(dirfd, filename.c_str(), O_RDONLY);
   if (fd == -1) {
+    FX_LOGF(ERROR, LOG_TAG, "openat(\"%s\") failed: %s", filename.c_str(), strerror(errno));
     return false;
   }
   bool result = VmoFromFd(fd, buffer);

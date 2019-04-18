@@ -34,6 +34,7 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
   } else {
     auto root_dir = fdio_ns_opendir(namespc);
     if (root_dir < 0) {
+      FX_LOG(ERROR, LOG_TAG, "Failed to open namespace directory");
       return false;
     }
 

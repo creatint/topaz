@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include <lib/async-loop/cpp/loop.h>
+#include <lib/syslog/cpp/logger.h>
 #include <trace-provider/provider.h>
 #include <trace/event.h>
 
@@ -11,6 +12,7 @@
 
 int main(int argc, const char** argv) {
   async::Loop loop(&kAsyncLoopConfigAttachToThread);
+  syslog::InitLogger();
   fbl::unique_ptr<trace::TraceProvider> provider;
   {
     TRACE_DURATION("dart", "CreateTraceProvider");
