@@ -132,7 +132,7 @@ class TileModel<T> extends ChangeNotifier {
   TileModel parent;
   TileType type;
   T content;
-  List<TileModel> tiles;
+  List<TileModel<T>> tiles;
 
   TileModel({
     @required this.type,
@@ -141,7 +141,7 @@ class TileModel<T> extends ChangeNotifier {
     this.tiles,
     double flex = 1,
   }) : _flex = flex {
-    tiles ??= <TileModel>[];
+    tiles ??= <TileModel<T>>[];
   }
 
   // Defines the flex factor on how the tile is sized.
