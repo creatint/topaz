@@ -18,8 +18,5 @@ dart_library("fuchsia_media") {
 
   deps = [
     "//sdk/fidl/fuchsia.media",
-    # TODO(dustingreen): Remove after soft transition done, since fuchsia.media
-    # will automatically pick up fuchsia.sysmem soon.
-    "//zircon/public/fidl/fuchsia-sysmem",
   ]
 }
