@@ -8,6 +8,9 @@ import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
 void main() {
   print('toString-test');
   group('bits', () {
+    test('no bit', () {
+      expect(ExampleBits.$none.toString(), equals(r'ExampleBits.$none'));
+    });
     test('single bit', () {
       expect(ExampleBits.memberC.toString(), equals(r'ExampleBits.memberC'));
     });

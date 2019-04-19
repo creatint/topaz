@@ -118,5 +118,12 @@ void main() async {
       expect(received, equals(
         ExampleBits.memberB | ExampleBits.memberC));
     });
+
+    test('bits with no bit set', () async {
+      await server.proxy.oneWayExampleBits(ExampleBits.$none);
+      final received = await server.proxy.receivedOneWayExampleBits();
+      expect(received, equals(
+        ExampleBits.memberB & ExampleBits.memberA /* 0 too */));
+    });
   });
 }

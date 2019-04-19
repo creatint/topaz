@@ -17,11 +17,16 @@ class {{ .Name }} extends $fidl.Bits {
   {{- end }}
   static const {{ $.Name }} {{ .Name }} = {{ $.Name }}._({{ .Value }});
 {{- end }}
+  static const {{ .Name }} $none = {{ .Name }}._(0);
 
   const {{ .Name }}._(this.$value);
 
   {{ .Name }} operator |({{ .Name }} other) {
     return {{ .Name }}._($value | other.$value);
+  }
+
+  {{ .Name }} operator &({{ .Name }} other) {
+    return {{ .Name }}._($value & other.$value);
   }
 
   @override
