@@ -76,22 +76,25 @@ class ChromiumWebView {
         _navigationEventObserverBinding.wrap(observer));
   }
 
-  Future<bool> injectJavascript(
-    int id,
-    String script,
-    List<String> origins) {
+  Future<bool> injectJavascript(int id, String script, List<String> origins) {
     final vmo = SizedVmo.fromUint8List(utf8.encode(script));
     final buffer = fuchsia_mem.Buffer(vmo: vmo, size: vmo.size);
     return _frame.addBeforeLoadJavaScript(id, origins, buffer);
   }
 
-  Future<bool> postMessage(String message, String targetOrigin,
-      {InterfaceRequest<web.MessagePort> outgoingMessagePortRequest}) {
+  Future<void> postMessage(
+    String message,
+    String targetOrigin, {
+    InterfaceRequest<web.MessagePort> outgoingMessagePortRequest,
+  }) {
     final vmo = SizedVmo.fromUint8List(utf8.encode(message));
     var msg = web.WebMessage(
       data: fuchsia_mem.Buffer(vmo: vmo, size: vmo.size),
       outgoingTransfer: outgoingMessagePortRequest != null
-          ? [ web.OutgoingTransferable.withMessagePort(outgoingMessagePortRequest) ]
+          ? [
+              web.OutgoingTransferable.withMessagePort(
+                  outgoingMessagePortRequest)
+            ]
           : null,
     );
     return _frame.postMessage(targetOrigin, msg);
