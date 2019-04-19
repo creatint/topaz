@@ -25,6 +25,7 @@
 #include "flutter/common/settings.h"
 #include "flutter/fml/macros.h"
 
+#include "thread.h"
 #include "unique_fdio_ns.h"
 
 namespace flutter_runner {
@@ -40,7 +41,7 @@ class Application final : public Engine::Delegate,
   // Creates a dedicated thread to run the application and constructions the
   // application on it. The application can be accessed only on this thread.
   // This is a synchronous operation.
-  static std::pair<std::unique_ptr<async::Loop>, std::unique_ptr<Application>>
+  static std::pair<std::unique_ptr<Thread>, std::unique_ptr<Application>>
   Create(TerminationCallback termination_callback,
          fuchsia::sys::Package package, fuchsia::sys::StartupInfo startup_info,
          std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,

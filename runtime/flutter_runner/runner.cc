@@ -146,7 +146,7 @@ void Runner::StartComponent(
         });
       };
 
-  auto loop_application_pair = Application::Create(
+  auto thread_application_pair = Application::Create(
       std::move(termination_callback),  // termination callback
       std::move(package),               // application pacakge
       std::move(startup_info),          // startup info
@@ -154,9 +154,9 @@ void Runner::StartComponent(
       std::move(controller)             // controller request
   );
 
-  auto key = loop_application_pair.second.get();
+  auto key = thread_application_pair.second.get();
 
-  active_applications_[key] = std::move(loop_application_pair);
+  active_applications_[key] = std::move(thread_application_pair);
 }
 
 void Runner::OnApplicationTerminate(const Application* application) {
@@ -173,22 +173,22 @@ void Runner::OnApplicationTerminate(const Application* application) {
   // Grab the items out of the entry because we will have to rethread the
   // destruction.
   auto application_to_destroy = std::move(active_application.application);
-  auto application_loop = std::move(active_application.loop);
+  auto application_thread = std::move(active_application.thread);
 
   // Delegate the entry.
   active_applications_.erase(application);
 
   // Post the task to destroy the application and quit its message loop.
   async::PostTask(
-      application_loop->dispatcher(),
+      application_thread->dispatcher(),
       fml::MakeCopyable([instance = std::move(application_to_destroy),
-                         loop = application_loop.get()]() mutable {
+                         thread = application_thread.get()]() mutable {
         instance.reset();
-        loop->Quit();
+        thread->Quit();
       }));
 
   // This works because just posted the quit task on the hosted thread.
-  application_loop->JoinThreads();
+  application_thread->Join();
 }
 
 void Runner::SetupICU() {
@@ -210,7 +210,7 @@ void Runner::SetupTraceObserver() {
     } else if (trace_state() == TRACE_STOPPING) {
       for (auto& it : runner->active_applications_) {
         fml::AutoResetWaitableEvent latch;
-        async::PostTask(it.second.loop->dispatcher(), [&]() {
+        async::PostTask(it.second.thread->dispatcher(), [&]() {
           it.second.application->WriteProfileToTrace();
           latch.Signal();
         });

@@ -28,9 +28,9 @@
 #include "topaz/runtime/dart/utils/tempfs.h"
 #include "topaz/runtime/dart/utils/vmo.h"
 
-#include "loop.h"
 #include "service_provider_dir.h"
 #include "task_observers.h"
+#include "thread.h"
 
 namespace flutter_runner {
 
@@ -38,18 +38,17 @@ constexpr char kDataKey[] = "data";
 constexpr char kTmpPath[] = "/tmp";
 constexpr char kServiceRootPath[] = "/svc";
 
-std::pair<std::unique_ptr<async::Loop>, std::unique_ptr<Application>>
+std::pair<std::unique_ptr<Thread>, std::unique_ptr<Application>>
 Application::Create(
     TerminationCallback termination_callback, fuchsia::sys::Package package,
     fuchsia::sys::StartupInfo startup_info,
     std::shared_ptr<sys::ServiceDirectory> runner_incoming_services,
     fidl::InterfaceRequest<fuchsia::sys::ComponentController> controller) {
-  std::unique_ptr<async::Loop> loop(MakeObservableLoop(false));
-  loop->StartThread();
+  std::unique_ptr<Thread> thread = std::make_unique<Thread>();
   std::unique_ptr<Application> application;
 
   fml::AutoResetWaitableEvent latch;
-  async::PostTask(loop->dispatcher(), [&]() mutable {
+  async::PostTask(thread->dispatcher(), [&]() mutable {
     application.reset(
         new Application(std::move(termination_callback), std::move(package),
                         std::move(startup_info), runner_incoming_services,
@@ -58,7 +57,7 @@ Application::Create(
   });
 
   latch.Wait();
-  return {std::move(loop), std::move(application)};
+  return {std::move(thread), std::move(application)};
 }
 
 static std::string DebugLabelForURL(const std::string& url) {
@@ -309,6 +308,7 @@ Application::Application(
 #endif  // defined(__aarch64__)
 
   auto dispatcher = async_get_default_dispatcher();
+  FML_CHECK(dispatcher);
   const std::string component_url = package.resolved_url;
   settings_.unhandled_exception_callback =
       [dispatcher, runner_incoming_services, component_url](
