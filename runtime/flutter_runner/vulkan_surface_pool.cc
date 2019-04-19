@@ -124,9 +124,9 @@ void VulkanSurfacePool::SubmitSurface(
 
   const flutter::LayerRasterCacheKey& retained_key =
       vulkan_surface->GetRetainedKey();
-  if (retained_key.id() != nullptr) {
-    // Add the surface to |retained_surfaces_| if its retained key has a non-
-    // null layer (|retained_key.id()|).
+  if (retained_key.id() != 0) {
+    // Add the surface to |retained_surfaces_| if its retained key has a valid
+    // layer id (|retained_key.id()|).
     //
     // We have to add the entry to |retained_surfaces_| map early when it's
     // still pending (|is_pending| = true). Otherwise (if we add the surface
