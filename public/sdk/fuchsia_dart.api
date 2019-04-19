@@ -3,6 +3,7 @@ sdk://dart/fuchsia
 sdk://dart/fuchsia_logger
 sdk://dart/fuchsia_media
 sdk://dart/fuchsia_modular
+sdk://dart/fuchsia_scenic
 sdk://dart/fuchsia_scenic_flutter
 sdk://dart/fuchsia_services
 sdk://dart/fuchsia_vfs
