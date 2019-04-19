@@ -58,6 +58,7 @@ abstract class ZX {
   static const int ERR_CONNECTION_RESET = -75;
   static const int ERR_CONNECTION_ABORTED = -76;
   static const int HANDLE_INVALID = 0;
+  static const int HANDLE_FIXED_BITS_MASK = 0x3;
   static const int CLOCK_MONOTONIC = 0;
   static const int CLOCK_UTC = 1;
   static const int CLOCK_THREAD = 2;
@@ -97,8 +98,8 @@ abstract class ZX {
   static const int FIFO_WRITABLE = __ZX_OBJECT_WRITABLE;
   static const int FIFO_PEER_CLOSED = __ZX_OBJECT_PEER_CLOSED;
   static const int TASK_TERMINATED = __ZX_OBJECT_SIGNALED;
-  static const int JOB_NO_PROCESSES = __ZX_OBJECT_SIGNALED;
   static const int JOB_NO_JOBS = __ZX_OBJECT_SIGNAL_4;
+  static const int JOB_NO_PROCESSES = __ZX_OBJECT_SIGNAL_5;
   static const int PROCESS_TERMINATED = __ZX_OBJECT_SIGNALED;
   static const int THREAD_TERMINATED = __ZX_OBJECT_SIGNALED;
   static const int THREAD_RUNNING = __ZX_OBJECT_SIGNAL_4;
@@ -109,6 +110,7 @@ abstract class ZX {
   static const int VMO_ZERO_CHILDREN = __ZX_OBJECT_SIGNALED;
   static const int KOID_INVALID = 0;
   static const int KOID_KERNEL = 1;
+  static const int KOID_FIRST = 1024;
   static const int WAIT_MANY_MAX_ITEMS = 16;
   static const int VMO_NON_RESIZABLE = 1;
   static const int VMO_OP_COMMIT = 1;
@@ -204,7 +206,10 @@ abstract class ZX {
   static const int OBJ_TYPE_PMT = 26;
   static const int OBJ_TYPE_SUSPEND_TOKEN = 27;
   static const int OBJ_TYPE_PAGER = 28;
+  static const int OBJ_TYPE_EXCEPTION = 29;
   static const int OBJ_TYPE_UPPER_BOUND = 64;
+  static const int HANDLE_OP_MOVE = 0;
+  static const int HANDLE_OP_DUPLICATE = 1;
   static const int VM_FLAG_PERM_READ = 1 << 0;
   static const int VM_FLAG_PERM_WRITE = 1 << 1;
   static const int VM_FLAG_PERM_EXECUTE = 1 << 2;
@@ -267,6 +272,8 @@ abstract class ZX {
   static const int __ZX_OBJECT_SIGNAL_22 = 1 << 22;
   // ignore: unused_field
   static const int __ZX_OBJECT_HANDLE_CLOSED = 1 << 23;
+  // ignore: unused_field
+  static const int __ZX_JOB_NO_PROCESSES_OLD = __ZX_OBJECT_SIGNALED;
   static const int RIGHT_NONE = 0;
   static const int RIGHT_DUPLICATE = 1 << 0;
   static const int RIGHT_TRANSFER = 1 << 1;
@@ -320,7 +327,8 @@ abstract class ZX {
       RIGHT_DESTROY |
       RIGHT_SIGNAL |
       RIGHT_MANAGE_JOB |
-      RIGHT_MANAGE_PROCESS;
+      RIGHT_MANAGE_PROCESS |
+      RIGHT_MANAGE_THREAD;
   static const int DEFAULT_LOG_RIGHTS =
       RIGHTS_BASIC | RIGHT_WRITE | RIGHT_SIGNAL;
   static const int DEFAULT_PCI_DEVICE_RIGHTS = RIGHTS_BASIC | RIGHTS_IO;
@@ -370,6 +378,8 @@ abstract class ZX {
       RIGHT_GET_PROPERTY |
       RIGHT_SET_PROPERTY |
       RIGHT_TRANSFER;
+  static const int DEFAULT_EXCEPTION_RIGHTS =
+      RIGHT_TRANSFER | RIGHTS_PROPERTY | RIGHT_INSPECT;
 }
 
 String getStringForStatus(int status) {
