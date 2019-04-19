@@ -12,7 +12,6 @@
 
 #include "gmock/gmock.h"
 #include "lib/component/cpp/expose.h"
-#include "lib/svc/cpp/services.h"
 #include "lib/sys/cpp/testing/test_with_environment.h"
 #include "src/lib/files/glob.h"
 #include "src/lib/fxl/strings/substitute.h"
