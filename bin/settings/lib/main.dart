@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:fuchsia_logger/logger.dart';
 
 import 'src/models/settings_model.dart';
+import 'src/setting_entry.dart';
+import 'src/setting_entry_parser.dart';
 import 'src/widgets/all_settings.dart';
 
 /// Main function of settings.
@@ -17,36 +19,15 @@ Future<Null> main() async {
   Timeline.instantSync('settings starting');
 
   SettingsModel settingsModel = SettingsModel();
+  List<SettingEntry> entries = await SettingEntryParser.parseFile(
+      settingsModel, 'pkg/data/settings.config');
+
+  // We handle license setting separately as it is not a component.
+  entries.add(LicenseSettingEntry());
 
   Widget app = MaterialApp(
-    home: AllSettings(),
-    routes: <String, WidgetBuilder>{
-      '/wifi': (BuildContext context) => _buildModule(
-            'Wi-Fi',
-            () => settingsModel.wifiModule,
-          ),
-      '/datetime': (BuildContext context) => _buildModule(
-            'Date & Time',
-            () => settingsModel.datetimeModule,
-          ),
-      '/display': (BuildContext context) => _buildModule(
-            'Display',
-            () => settingsModel.displayModule,
-          ),
-      '/accessibility': (BuildContext context) => _buildModule(
-            'Accessibility',
-            () => settingsModel.accessibilitySettingsModule,
-          ),
-      '/experiments': (BuildContext context) => _buildModule(
-            'Experiments',
-            () => settingsModel.experimentsModule,
-          ),
-      '/system': (BuildContext context) => _buildModule(
-            'System',
-            () => settingsModel.deviceSettingsModule,
-          ),
-      '/licenses': (BuildContext context) => LicensePage()
-    },
+    home: AllSettings(entries),
+    routes: _buildRoutes(settingsModel, entries),
   );
 
   app = ScopedModel<SettingsModel>(
@@ -59,19 +40,13 @@ Future<Null> main() async {
   Timeline.instantSync('settings started');
 }
 
-// Returns the [Scaffold] widget for the root view of the module.
-Widget _buildModule(String title, Widget getModView()) {
-  return ScopedModelDescendant<SettingsModel>(
-    builder: (
-      BuildContext context,
-      Widget child,
-      SettingsModel settingsModel,
-    ) =>
-        Scaffold(
-          appBar: AppBar(
-            title: Text(title),
-          ),
-          body: getModView(),
-        ),
-  );
+Map<String, WidgetBuilder> _buildRoutes(
+    SettingsModel settingsModel, List<SettingEntry> entries) {
+  Map<String, WidgetBuilder> routes = {};
+
+  for (SettingEntry entry in entries) {
+    routes[entry.route] = entry.getRouteBuilder(settingsModel);
+  }
+
+  return routes;
 }

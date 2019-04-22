@@ -6,9 +6,25 @@ import 'package:flutter/material.dart';
 import 'package:lib.widgets/model.dart';
 
 import '../models/settings_model.dart';
+import '../setting_entry.dart';
 
 /// Main view that shows all settings.
 class AllSettings extends StatelessWidget {
+  final List<SettingEntry> _settingEntries;
+
+  const AllSettings(this._settingEntries);
+
+  List<Widget> _buildSettingList(
+      BuildContext context, SettingsModel settingsModel) {
+    List<Widget> rows = [];
+
+    for (SettingEntry entry in _settingEntries) {
+      rows.add(entry.getRow(settingsModel, context));
+    }
+
+    return rows;
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<SettingsModel>(
@@ -23,51 +39,7 @@ class AllSettings extends StatelessWidget {
             ),
             body: ListView(
               physics: BouncingScrollPhysics(),
-              children: <Widget>[
-                ListTile(
-                  leading: Icon(Icons.wifi),
-                  title: Text('Wi-Fi'),
-                  subtitle: Text(settingsModel.wifiStatus),
-                  onTap: () => Navigator.of(context).pushNamed('/wifi'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.schedule),
-                  title: Text('Date & time'),
-                  subtitle: Text(settingsModel.datetimeStatus),
-                  onTap: () => Navigator.of(context).pushNamed('/datetime'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.settings_brightness),
-                  title: Text('Display'),
-                  onTap: () => Navigator.of(context).pushNamed('/display'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.accessibility),
-                  title: Text('Accessibility'),
-                  onTap: () =>
-                      Navigator.of(context).pushNamed('/accessibility'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.touch_app),
-                  title: Text('Experiments'),
-                  onTap: () => Navigator.of(context).pushNamed('/experiments'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.info_outline),
-                  title: Text('System'),
-                  subtitle: Text(
-                    '${settingsModel.hostname} '
-                        '${settingsModel.networkAddresses} '
-                        '${settingsModel.buildInfo}',
-                  ),
-                  onTap: () => Navigator.of(context).pushNamed('/system'),
-                ),
-                ListTile(
-                  leading: Icon(Icons.copyright),
-                  title: Text('Show Open Source Licenses'),
-                  onTap: () => Navigator.of(context).pushNamed('/licenses'),
-                ),
-              ],
+              children: _buildSettingList(context, settingsModel),
             ),
           ),
     );

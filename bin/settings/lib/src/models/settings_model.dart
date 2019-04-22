@@ -3,21 +3,26 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
-import 'package:intl/intl.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
+import 'package:flutter/material.dart';
 import 'package:fuchsia_logger/logger.dart';
-import 'package:lib.settings/device_info.dart';
-import 'package:lib.widgets/model.dart';
 import 'package:fuchsia_modular/module.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
+import 'package:intl/intl.dart';
+import 'package:lib.settings/device_info.dart';
+import 'package:lib.widgets/model.dart';
 
+import '../setting_entry.dart';
 import 'settings_status.dart';
 
 export 'package:lib.widgets/model.dart'
     show ScopedModel, Model, ScopedModelDescendant;
+
+typedef ListRowBuilder = Widget Function(BuildContext context);
 
 /// Model for settings view.
 class SettingsModel extends Model {
@@ -25,23 +30,7 @@ class SettingsModel extends Model {
 
   SettingsStatus _settingsStatus;
 
-  // Wi-Fi module.
-  _CachedModule _wifiModule;
-
-  // Datetime module.
-  _CachedModule _datetimeModule;
-
-  // Display module.
-  _CachedModule _displayModule;
-
-  // Accessibility module.
-  _CachedModule _accessibilityModule;
-
-  // Experiments module.
-  _CachedModule _experimentsModule;
-
-  /// Module for general device settings, including update.
-  _CachedModule _deviceSettingsModule;
+  HashMap<String, _CachedModule> _cachedModules;
 
   DateTime _testDeviceSourceDate;
 
@@ -52,10 +41,21 @@ class SettingsModel extends Model {
 
   // Exposed for testing.
   void initialize() {
+    _cachedModules = HashMap();
     // Explicitly ignore intents
     Module().registerIntentHandler(NoopIntentHandler());
     _settingsStatus = SettingsStatus()..addListener(notifyListeners);
     _setNetworkAddresses();
+  }
+
+  ChildView getModule(SettingEntry entry) {
+    if (!_cachedModules.containsKey(entry.id)) {
+      entry.embedModule().then((EmbeddedModule module) {
+        _cachedModules[entry.id] = _CachedModule(module);
+        notifyListeners();
+      });
+    }
+    return _cachedModules[entry.id]?.childView;
   }
 
   /// Fetches and sets the addresses of all network interfaces delimited by space.
@@ -99,105 +99,8 @@ class SettingsModel extends Model {
   /// Returns the wifi status.
   String get wifiStatus => _settingsStatus.wifiStatus;
 
-  /// Returns the [EmbeddedModule] for Wi-Fi.
-  ChildView get wifiModule {
-    if (_wifiModule == null) {
-      _embedSetting(
-        name: 'wifi_settings',
-        title: 'Wi-Fi',
-      ).then((_CachedModule module) {
-        _wifiModule = module;
-        notifyListeners();
-      });
-    }
-    return _wifiModule?.childView;
-  }
-
   /// Returns the datetime status.
   String get datetimeStatus => _settingsStatus.timezoneStatus;
-
-  /// Returns the [EmbeddedModule] for Date & Time.
-  ChildView get datetimeModule {
-    if (_datetimeModule == null) {
-      _embedSetting(
-        name: 'datetime_settings',
-        title: 'Date & Time',
-      ).then((_CachedModule module) {
-        _datetimeModule = module;
-        notifyListeners();
-      });
-    }
-    return _datetimeModule?.childView;
-  }
-
-  /// Returns the [EmbeddedModule] for Experiments.
-  ChildView get experimentsModule {
-    if (_experimentsModule == null) {
-      _embedSetting(
-        name: 'experiments_setting',
-        title: 'Experiments',
-      ).then((_CachedModule module) {
-        _experimentsModule = module;
-        notifyListeners();
-      });
-    }
-    return _experimentsModule?.childView;
-  }
-
-  /// Returns the [EmbeddedModule] for Display.
-  ChildView get displayModule {
-    if (_displayModule == null) {
-      _embedSetting(
-        name: 'display_settings',
-        title: 'Display',
-      ).then((_CachedModule module) {
-        _displayModule = module;
-        notifyListeners();
-      });
-    }
-    return _displayModule?.childView;
-  }
-
-  /// Returns the [EmbeddedModule] for accessibility settings.
-  ChildView get accessibilitySettingsModule {
-    if (_accessibilityModule == null) {
-      _embedSetting(
-        name: 'accessibility_settings',
-        title: 'Accessibility',
-      ).then((_CachedModule module) {
-        _accessibilityModule = module;
-        notifyListeners();
-      });
-    }
-    return _accessibilityModule?.childView;
-  }
-
-  /// Returns the [EmbeddedModule] for device settings.
-  ChildView get deviceSettingsModule {
-    if (_deviceSettingsModule == null) {
-      _embedSetting(
-        name: 'device_settings',
-        title: 'System',
-      ).then((_CachedModule module) {
-        _deviceSettingsModule = module;
-        notifyListeners();
-      });
-    }
-    return _deviceSettingsModule?.childView;
-  }
-
-  Future<_CachedModule> _embedSetting({
-    String name,
-    String title,
-  }) {
-    final intent = Intent(
-      action: '',
-      handler: 'fuchsia-pkg://fuchsia.com/$name#meta/$name.cmx',
-    );
-    return Module()
-        .embedModule(name: title, intent: intent)
-        .then((m) => _CachedModule(m));
-  }
 
   set testDeviceSourceDate(DateTime testDeviceSourceDate) =>
       _testDeviceSourceDate = testDeviceSourceDate;
