@@ -93,6 +93,7 @@ package("web_runner_tests") {
 
   tests = [
     {
+      is_disabled = true # Disabled due to flake being investigated in WEB-32
       name = "web_runner_integration_tests"
 
       # FLK-148
@@ -107,6 +108,7 @@ package("web_runner_tests") {
       ]
     },
     {
+      is_disabled = true # Disabled due to flake being investigated in WEB-32
       name = "web_runner_pixel_tests"
       environments = [
         {
