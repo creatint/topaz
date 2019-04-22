@@ -22,7 +22,6 @@
 #include "lib/ui/scenic/cpp/id.h"
 
 #include "context_writer_bridge.h"
-#include "semantics_bridge.h"
 #include "surface.h"
 
 namespace flutter_runner {
@@ -81,9 +80,6 @@ class PlatformView final : public flutter::PlatformView,
   fuchsia::sys::ServiceProviderPtr parent_environment_service_provider_;
   fuchsia::modular::ClipboardPtr clipboard_;
   ContextWriterBridge context_writer_bridge_;
-  // The Semantics bridge is used to provide semantics data from this platform
-  // view to the accessibility manager.
-  SemanticsBridge semantics_bridge_;
   std::unique_ptr<Surface> surface_;
   flutter::LogicalMetrics metrics_;
   fuchsia::ui::gfx::Metrics scenic_metrics_;

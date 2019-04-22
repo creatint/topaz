@@ -100,7 +100,6 @@ PlatformView::PlatformView(
       size_change_hint_callback_(std::move(session_size_change_hint_callback)),
       ime_client_(this),
       context_writer_bridge_(std::move(accessibility_context_writer)),
-      semantics_bridge_(this, &metrics_),
       surface_(std::make_unique<Surface>(debug_label_)),
       vsync_event_handle_(vsync_event_handle) {
   // Register all error handlers.
@@ -596,7 +595,8 @@ void PlatformView::UpdateSemantics(
   // TODO(MI4-1262): Figure out if the context_writer_bridge should be removed
   // as it is unused.
   // context_writer_bridge_.UpdateSemantics(update);
-  semantics_bridge_.UpdateSemantics(update);
+  // TODO(MIT-1539): Uncomment/Reimplement following code, to add A11y support.
+  //semantics_bridge_.UpdateSemantics(update);
 }
 
 // Channel handler for kAccessibilityChannel

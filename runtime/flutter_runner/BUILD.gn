@@ -86,8 +86,6 @@ template("flutter_runner") {
       "platform_view.h",
       "runner.cc",
       "runner.h",
-      "semantics_bridge.cc",
-      "semantics_bridge.h",
       "service_provider_dir.cc",
       "service_provider_dir.h",
       "session_connection.cc",
