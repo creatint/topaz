@@ -66,8 +66,8 @@ class ImageGridModel extends Model {
 
       var image = await recorder.endRecording().toImage(500, 500);
 
-      images.add(
-          RawImage(image: image, width: 500.0, height: 500.0, scale: 1.0));
+      images
+          .add(RawImage(image: image, width: 500.0, height: 500.0, scale: 1.0));
     }
     return images;
   }
@@ -82,8 +82,7 @@ class ImageGridModel extends Model {
 }
 
 class _TracedSpringModel extends SpringModel {
-  final FrameRateTracer _frameRateTracer =
-      FrameRateTracer(name: 'auto scroll');
+  final FrameRateTracer _frameRateTracer = FrameRateTracer(name: 'auto scroll');
   _TracedSpringModel({RK4SpringDescription springDescription})
       : super(springDescription: springDescription);
 

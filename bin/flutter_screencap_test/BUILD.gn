@@ -19,7 +19,7 @@ flutter_app("flutter_screencap_test_app") {
 
   deps = [
     "//third_party/dart-pkg/git/flutter/packages/flutter",
-    "//topaz/public/lib/app/dart",
+    "//topaz/public/dart/fuchsia_logger",
   ]
 }
 

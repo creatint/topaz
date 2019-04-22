@@ -19,7 +19,6 @@ dart_library("dart") {
     "//topaz/lib/shell",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/widgets:lib.widgets",
-    "//topaz/public/lib/app/dart",
   ]
 }
 

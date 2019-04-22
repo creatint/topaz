@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 
 const Color _lightColor = Color(0xFF4dac26);
 const Color _darkColor = Color(0xFFd01c8b);
@@ -41,7 +41,6 @@ class CheckerBoard extends StatelessWidget {
 void main() {
   setupLogger(
     name: 'flutter_screencap_test_app',
-    logToStdoutForTest: true,
   );
   log.info('starting flutter_screencap_test_app');
   runApp(MaterialApp(
