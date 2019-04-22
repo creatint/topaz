@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lib.app.dart/app.dart';
-import 'package:lib.widgets/application_deprecated.dart';
+import 'package:fuchsia_services/services.dart';
+import 'package:fidl_fuchsia_sys/fidl_async.dart' as fidl_sys;
+import 'package:lib.widgets/application.dart';
 
 void main() => runApp(MyApp());
 
@@ -80,24 +81,31 @@ class _MyHomePageState extends State<MyHomePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Dismissible(
-                      key: Key('right$rightCounter'),
-                      onDismissed: _onRightDismissed,
-                      resizeDuration: null,
-                      child: Card(
-                          child: Container(
+                    key: Key('right$rightCounter'),
+                    onDismissed: _onRightDismissed,
+                    resizeDuration: null,
+                    child: Card(
+                      child: Container(
                         width: 300.0,
                         height: 300.0,
                         child: ApplicationWidget(
                             url:
                                 'fuchsia-pkg://fuchsia.com/simple_flutter#meta/leaf_flutter.cmx',
-                            launcher:
-                                StartupContext.fromStartupInfo().launcher),
-                      ))),
+                            launcher: _launcher()),
+                      ),
+                    ),
+                  ),
                   Text('Right, $rightCounter')
                 ]),
           ],
         ),
       ),
     );
+  }
+
+  fidl_sys.Launcher _launcher() {
+    final launcher = fidl_sys.LauncherProxy();
+    StartupContext.fromStartupInfo().incoming.connectToService(launcher);
+    return launcher;
   }
 }
