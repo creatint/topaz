@@ -5,9 +5,13 @@
 import 'package:flutter/material.dart';
 
 import 'sizer.dart';
+import 'tile_model.dart';
+import 'utils.dart';
 
 typedef TileChromeBuilder = Widget Function(
     BuildContext context, TileModel tile);
+typedef CustomTilesBuilder = Widget Function(
+    BuildContext context, List<TileModel> tiles);
 
 /// A [Widget] that renders a tile give its [TileModel]. If the tile type is
 /// [TileType.content], it calls [chromeBuilder] to build a widget to render
@@ -18,199 +22,187 @@ class Tile extends StatelessWidget {
   final TileModel model;
   final TileChromeBuilder chromeBuilder;
   final TileSizerBuilder sizerBuilder;
+  final CustomTilesBuilder customTilesBuilder;
   final double sizerThickness;
+  final ValueChanged<TileModel> onFloat;
 
   const Tile({
     @required this.model,
     @required this.chromeBuilder,
+    this.customTilesBuilder,
     this.sizerBuilder,
-    this.sizerThickness = 0.0,
+    this.sizerThickness,
+    this.onFloat,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (model.type == TileType.content) {
-      return chromeBuilder(context, model);
-    } else if (model.tiles.isEmpty) {
-      return SizedBox.shrink();
-    } else {
-      return LayoutBuilder(
-        builder: (context, constraints) {
-          /// Compute individual tile width and height.
-          final type = model.type;
-          final width = constraints.maxWidth;
-          final height = constraints.maxHeight;
+    return AnimatedBuilder(
+      animation: model,
+      builder: (context, child) {
+        final type = model.type;
+        if (model.isContent) {
+          return chromeBuilder(context, model);
+        } else if (model.tiles.isEmpty) {
+          return SizedBox.shrink();
+        } else {
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              assert(constraints.isTight);
 
-          final numTiles = model.tiles.length;
-          final numSizers = numTiles - 1;
+              // Filter out tiles that are floating.
+              final availableTiles = model.tiles;
 
-          final tileWidth = type == TileType.column
-              ? (width - sizerThickness * numSizers) / numTiles
-              : width;
-          final tileHeight = type == TileType.row
-              ? (height - sizerThickness * numSizers) / numTiles
-              : height;
+              /// Filter out tiles that don't fit based on their minSize.
+              final availableSize =
+                  _availableSize(type, availableTiles, constraints.biggest);
+              final tiles = _fit(type, availableTiles, availableSize).toList();
+              bool fit = tiles.length == availableTiles.length;
 
-          // Normalize the flex on each tile.
-          final flex =
-              model.tiles.map((t) => t.flex).reduce((f1, f2) => f1 + f2);
-          for (var tile in model.tiles) {
-            tile
-              ..flex = tile.flex * (numTiles / flex)
-              ..width = tileWidth
-              ..height = tileHeight;
-          }
+              if (type != TileType.custom &&
+                  (fit || customTilesBuilder == null)) {
+                // Float the tiles that did not fit.
+                availableTiles
+                    .where((t) => !tiles.contains(t))
+                    .toList()
+                    .forEach(onFloat?.call);
 
-          final tiles = model.tiles
-              .map<List<Widget>>((t) => t == model.tiles.first
-                  ? [
-                      AnimatedBuilder(
-                        animation: t,
-                        child: Tile(
-                          model: t,
-                          chromeBuilder: chromeBuilder,
-                          sizerBuilder: sizerBuilder,
-                          sizerThickness: sizerThickness,
-                        ),
-                        builder: (context, child) => SizedBox(
-                              width: t.width,
-                              height: t.height,
-                              child: child,
-                            ),
-                      ),
-                    ]
-                  : [
-                      Sizer(
-                        direction: model.type == TileType.row
-                            ? Axis.horizontal
-                            : Axis.vertical,
-                        tileBefore: model.tiles[model.tiles.indexOf(t) - 1],
-                        tileAfter: t,
-                        sizerBuilder: sizerBuilder,
-                      ),
-                      AnimatedBuilder(
-                        animation: t,
-                        child: Tile(
-                          model: t,
-                          chromeBuilder: chromeBuilder,
-                          sizerBuilder: sizerBuilder,
-                          sizerThickness: sizerThickness,
-                        ),
-                        builder: (context, child) => SizedBox(
-                              width: t.width,
-                              height: t.height,
-                              child: child,
-                            ),
-                      ),
-                    ])
-              .expand((e) => e)
-              .toList();
-          return model.type == TileType.row
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: tiles,
-                )
-              : Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: tiles,
-                );
-        },
+                // All tiles fit, set flex,width and height and return tiles.
+                final flex = _totalFlex(tiles);
+                for (var tile in tiles) {
+                  tile
+                    ..flex = tile.flex / flex
+                    ..width = availableSize.width
+                    ..height = availableSize.height;
+                }
+
+                // Generate tile widgets with sizer widgets interleaved.
+                final count = tiles.length + tiles.length - 1;
+                final tileWidgets = List<Widget>.generate(count, (index) {
+                  if (index.isOdd) {
+                    return Sizer(
+                      direction: model.type == TileType.row
+                          ? Axis.horizontal
+                          : Axis.vertical,
+                      tileBefore: tiles[index ~/ 2],
+                      tileAfter: tiles[index ~/ 2 + 1],
+                      sizerBuilder: sizerBuilder,
+                    );
+                  } else {
+                    return _tileBuilder(
+                      tile: tiles[index ~/ 2],
+                      chromeBuilder: chromeBuilder,
+                      sizerBuilder: sizerBuilder,
+                      customTilesBuilder: customTilesBuilder,
+                      sizerThickness: sizerThickness,
+                      onFloat: onFloat,
+                    );
+                  }
+                });
+
+                return model.type == TileType.row
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: tileWidgets,
+                      )
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: tileWidgets,
+                      );
+              } else {
+                // Flatten all tiles to group them for tabbing between them.
+                final allTiles = flatten(availableTiles).toList();
+                // Display tabs only when we have more than 1 tile.
+                if (allTiles.length > 1) {
+                  return customTilesBuilder?.call(context, allTiles) ??
+                      Offstage();
+                } else {
+                  return _tileBuilder(
+                      tile: allTiles.first,
+                      chromeBuilder: chromeBuilder,
+                      sizerBuilder: sizerBuilder,
+                      customTilesBuilder: customTilesBuilder,
+                      sizerThickness: sizerThickness,
+                      onFloat: onFloat);
+                }
+              }
+            },
+          );
+        }
+      },
+    );
+  }
+
+  Widget _tileBuilder({
+    TileModel tile,
+    TileChromeBuilder chromeBuilder,
+    TileSizerBuilder sizerBuilder,
+    CustomTilesBuilder customTilesBuilder,
+    ValueChanged<TileModel> onFloat,
+    double sizerThickness,
+  }) =>
+      AnimatedBuilder(
+        animation: tile,
+        child: Tile(
+          model: tile,
+          chromeBuilder: chromeBuilder,
+          sizerBuilder: sizerBuilder,
+          customTilesBuilder: customTilesBuilder,
+          onFloat: onFloat,
+          sizerThickness: sizerThickness,
+        ),
+        builder: (context, child) => SizedBox(
+              width: tile.width,
+              height: tile.height,
+              child: child,
+            ),
       );
+
+  /// Fit as many tiles as possible within [size].
+  Iterable<TileModel> _fit(
+      TileType type, Iterable<TileModel> tiles, Size size) {
+    if (tiles.isEmpty) {
+      return tiles;
     }
-  }
-}
 
-enum TileType { content, row, column }
+    // Calculate the normalized flex of each tile.
+    final flex = _totalFlex(tiles);
+    final width = size.width;
+    final height = size.height;
 
-/// Defines a model for a tile. It is a tree data structure where each tile
-/// model holds a reference to its parent and a list of children. If the type
-/// of tile, [TileType] is [TileType.content], it is a leaf node tile.
-///
-/// The [content] of tile holds a reference to an arbitrary object, that is
-/// passed to the caller during the construction of the tile's chrome widget.
-class TileModel<T> extends ChangeNotifier {
-  TileModel parent;
-  TileType type;
-  T content;
-  List<TileModel<T>> tiles;
+    // Find tiles that don't fit based on their minSize.
+    final unfitableTiles = tiles.where((tile) {
+      double tileFlex = tile.flex / flex;
+      double tileWidth = type == TileType.column ? tileFlex * width : width;
+      double tileHeight = type == TileType.row ? tileFlex * height : height;
+      return type == TileType.column
+          ? tile.minSize.width > tileWidth
+          : tile.minSize.height > tileHeight;
+    });
 
-  TileModel({
-    @required this.type,
-    this.parent,
-    this.content,
-    this.tiles,
-    double flex = 1,
-  }) : _flex = flex {
-    tiles ??= <TileModel<T>>[];
-  }
-
-  // Defines the flex factor on how the tile is sized.
-  double _flex = 1;
-  double get flex => _flex;
-  set flex(double value) {
-    _flex = value;
-    _computeOffset();
-  }
-
-  double _width = 0;
-  double get width =>
-      parent.type == TileType.column ? _width + _offset : _width;
-  set width(double value) {
-    _width = value;
-    _computeOffset();
-  }
-
-  double _height = 0;
-  double get height =>
-      parent.type == TileType.row ? _height + _offset : _height;
-  set height(double value) {
-    _height = value;
-    _computeOffset();
-  }
-
-  double _offset = 0;
-  double get offset => _offset;
-  set offset(double value) {
-    _offset += value;
-    _computeFlex();
-
-    notifyListeners();
-  }
-
-  // Called everytime flex or width/height is set.
-  void _computeOffset() {
-    if (parent.type == TileType.column) {
-      _offset = -(_width - (_width * _flex));
+    if (unfitableTiles.isEmpty) {
+      return tiles;
     } else {
-      _offset = -(_height - (_height * _flex));
+      // Remove the last tile in unfittableTiles from tiles and run fit again.
+      return _fit(type, tiles.where((t) => t != unfitableTiles.last), size);
     }
   }
 
-  // Called everytime offset is set.
-  void _computeFlex() {
-    _flex = parent.type == TileType.column
-        ? (_width + _offset) / _width
-        : (_height + _offset) / _height;
+  // Returns the size available after sizers thickness is accounted for.
+  Size _availableSize(TileType type, Iterable<TileModel> tiles, Size size) {
+    final numTiles = tiles.length;
+    final numSizers = numTiles - 1;
+
+    // Calculate the width/height of a tile minus sizer thickness.
+    final width = type == TileType.column
+        ? (size.width - sizerThickness * numSizers)
+        : size.width;
+    final height = type == TileType.row
+        ? (size.height - sizerThickness * numSizers)
+        : size.height;
+    return Size(width, height);
   }
 
-  void copy(TileModel other) {
-    _offset = other._offset;
-    _flex = other._flex;
-    _width = other._width;
-    _height = other._height;
-  }
-
-  void reset() {
-    _flex = 1;
-    _offset = 0;
-    _width = 0;
-    _height = 0;
-  }
-
-  void notify() => notifyListeners();
-
-  @override
-  String toString() => type == TileType.content
-      ? '($content)'
-      : type == TileType.row ? 'row $tiles' : 'column $tiles';
+  double _totalFlex(Iterable<TileModel> tiles) =>
+      tiles.map((t) => t.flex).reduce((f1, f2) => f1 + f2);
 }

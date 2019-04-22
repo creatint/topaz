@@ -4,7 +4,7 @@
 
 import 'package:flutter/material.dart';
 
-import 'tile.dart';
+import 'tile_model.dart';
 
 typedef TileSizerBuilder = Widget Function(
   BuildContext context,
@@ -46,7 +46,11 @@ class Sizer extends StatelessWidget {
   void _onPointerMove(PointerMoveEvent event) {
     double delta =
         direction == Axis.horizontal ? event.delta.dy : event.delta.dx;
-    tileBefore.offset = delta;
-    tileAfter.offset = -delta;
+    tileBefore.resize(delta);
+    tileAfter.resize(-delta);
+    if (tileBefore.overflowed || tileAfter.overflowed) {
+      tileBefore.resize(-delta);
+      tileAfter.resize(delta);
+    }
   }
 }

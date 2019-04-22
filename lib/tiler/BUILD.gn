@@ -10,9 +10,12 @@ dart_library("tiler") {
 
   sources = [
     "tiler.dart",
-    "src/tile.dart",
-    "src/tiler.dart",
     "src/sizer.dart",
+    "src/tile.dart",
+    "src/tile_model.dart",
+    "src/tiler.dart",
+    "src/tiler_model.dart",
+    "src/utils.dart",
   ]
 
   deps = [

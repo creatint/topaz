@@ -4,4 +4,7 @@
 
 export 'src/sizer.dart';
 export 'src/tile.dart';
+export 'src/tile_model.dart';
 export 'src/tiler.dart';
+export 'src/tiler_model.dart';
+export 'src/utils.dart';
