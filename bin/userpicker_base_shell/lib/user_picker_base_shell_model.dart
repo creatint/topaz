@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:io';
-
 import 'package:fidl_fuchsia_cobalt/fidl_async.dart' as cobalt;
 import 'package:fidl_fuchsia_modular_auth/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
@@ -12,8 +10,10 @@ import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:lib.app.dart/logging.dart';
 import 'package:lib.base_shell/base_model.dart';
 import 'package:lib.widgets/model.dart';
+import 'package:zircon/zircon.dart';
 
 export 'package:lib.widgets/model.dart'
     show ScopedModel, ScopedModelDescendant, ModelFinder;
@@ -76,11 +76,10 @@ class UserPickerBaseShellModel extends CommonBaseShellModel
 
   /// Call when reset is tapped.
   void resetTapped() {
-    File dm = File('/dev/misc/dmctl');
-    print('dmctl exists? ${dm.existsSync()}');
-    if (dm.existsSync()) {
-      dm.writeAsStringSync('reboot', flush: true);
-    }
+      int status = System.reboot();
+      if (status != 0 ) {
+        log.severe('Unable to reboot system: $status');
+      }
   }
 
   /// Create a new user and login with that user
