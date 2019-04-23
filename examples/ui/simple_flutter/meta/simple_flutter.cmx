@@ -9,6 +9,7 @@
             "fuchsia.modular.Clipboard",
             "fuchsia.modular.ContextWriter",
             "fuchsia.sys.Environment",
+            "fuchsia.sys.Launcher",
             "fuchsia.ui.scenic.Scenic"
         ]
     }

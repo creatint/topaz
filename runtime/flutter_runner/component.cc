@@ -331,7 +331,7 @@ Application::~Application() = default;
 
 const std::string& Application::GetDebugLabel() const { return debug_label_; }
 
-class FileInNamespaceBuffer final : public flutter::DartSnapshotBuffer {
+class FileInNamespaceBuffer final : public fml::Mapping {
  public:
   FileInNamespaceBuffer(int namespace_fd, const char* path, bool executable)
       : address_(nullptr), size_(0) {
@@ -379,10 +379,13 @@ class FileInNamespaceBuffer final : public flutter::DartSnapshotBuffer {
     }
   }
 
-  const uint8_t* GetSnapshotPointer() const override {
+  // |fml::Mapping|
+  const uint8_t* GetMapping() const override {
     return reinterpret_cast<const uint8_t*>(address_);
   }
-  size_t GetSnapshotSize() const override { return size_; }
+
+  // |fml::Mapping|
+  size_t GetSize() const override { return size_; }
 
  private:
   void* address_;
@@ -391,12 +394,13 @@ class FileInNamespaceBuffer final : public flutter::DartSnapshotBuffer {
   FML_DISALLOW_COPY_AND_ASSIGN(FileInNamespaceBuffer);
 };
 
-std::unique_ptr<flutter::DartSnapshotBuffer> CreateWithContentsOfFile(
-    int namespace_fd, const char* file_path, bool executable) {
+std::unique_ptr<fml::Mapping> CreateWithContentsOfFile(int namespace_fd,
+                                                       const char* file_path,
+                                                       bool executable) {
   TRACE_DURATION("flutter", "LoadFile", "path", file_path);
   auto source = std::make_unique<FileInNamespaceBuffer>(namespace_fd, file_path,
                                                         executable);
-  return source->GetSnapshotPointer() == nullptr ? nullptr : std::move(source);
+  return source->GetMapping() == nullptr ? nullptr : std::move(source);
 }
 
 void Application::AttemptVMLaunchWithCurrentSettings(

@@ -232,8 +232,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   }
 
   if (!shell_) {
-    FML_LOG(ERROR) << "Could not launch the shell with settings: "
-                   << settings_.ToString();
+    FML_LOG(ERROR) << "Could not launch the shell.";
     return;
   }
 
