@@ -11,7 +11,7 @@
 #include <lib/inspect/testing/inspect.h>
 
 #include "gmock/gmock.h"
-#include "lib/component/cpp/expose.h"
+#include "lib/inspect/deprecated/expose.h"
 #include "lib/sys/cpp/testing/test_with_environment.h"
 #include "src/lib/files/glob.h"
 #include "src/lib/fxl/strings/substitute.h"
