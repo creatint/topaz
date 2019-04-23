@@ -24,7 +24,7 @@ bool validateLedgerResponse(ledger.Status status, String description) {
 /// Ledger calls, assemble the complete response and call [callback] exactly
 /// once.
 void getEntriesFromSnapshot(ledger.PageSnapshotProxy snapshot,
-    void callback(ledger.Status status, Map<List<int>, String> items)) {
+    void callback(Map<List<int>, String> items)) {
   _getEntriesRecursive(snapshot, <List<int>, String>{}, null, callback);
 }
 
@@ -32,21 +32,17 @@ Future<void> _getEntriesRecursive(
     ledger.PageSnapshotProxy snapshot,
     Map<List<int>, String> items,
     ledger.Token token,
-    void callback(ledger.Status status, Map<List<int>, String> items)) async {
+    void callback(Map<List<int>, String> items)) async {
   final response = await snapshot.getEntriesInline(Uint8List(0), token);
   final status = response.status;
   final entries = response.entries;
   final nextToken = response.nextToken;
 
-  if (status != ledger.Status.ok && status != ledger.Status.partialResult) {
-    callback(status, <List<int>, String>{});
-    return;
-  }
   for (final ledger.InlinedEntry entry in entries) {
     items[entry.key] = utf8.decode(entry.inlinedValue.value);
   }
-  if (status == ledger.Status.ok) {
-    callback(ledger.Status.ok, items);
+  if (status == ledger.IterationStatus.ok) {
+    callback(items);
     return;
   }
   await _getEntriesRecursive(snapshot, items, nextToken, callback);

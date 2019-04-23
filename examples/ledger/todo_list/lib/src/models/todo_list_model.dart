@@ -71,13 +71,10 @@ class TodoListModel extends Model {
   }
 
   void _readItems(ledger.PageSnapshotProxy snapshot) {
-    getEntriesFromSnapshot(snapshot,
-        (ledger.Status status, Map<List<int>, String> items) {
-      if (validateLedgerResponse(status, 'getEntries')) {
-        _items = items;
-        notifyListeners();
-        snapshot.ctrl.close();
-      }
+    getEntriesFromSnapshot(snapshot, (Map<List<int>, String> items) {
+      _items = items;
+      notifyListeners();
+      snapshot.ctrl.close();
     });
   }
 

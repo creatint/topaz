@@ -26,8 +26,7 @@ abstract class LedgerObjectsFactory {
 /// Real implementation of LedgerObjectsFactory.
 class LedgerObjectsFactoryImpl implements LedgerObjectsFactory {
   @override
-  ledger.PageSnapshotProxy newPageSnapshotProxy() =>
-      ledger.PageSnapshotProxy();
+  ledger.PageSnapshotProxy newPageSnapshotProxy() => ledger.PageSnapshotProxy();
 
   @override
   ledger.PageWatcherBinding newPageWatcherBinding() =>
@@ -60,28 +59,24 @@ Future<Null> _getFullEntriesRecursively(
   List<int> keyPrefix, {
   ledger.Token token,
 }) async {
-  Completer<ledger.Status> statusCompleter = Completer<ledger.Status>();
+  Completer<ledger.IterationStatus> statusCompleter =
+      Completer<ledger.IterationStatus>();
   List<ledger.Entry> entries;
   ledger.Token nextToken;
 
-  snapshot.getEntries(keyPrefix ?? Uint8List(0), token,
-      (ledger.Status status, List<ledger.Entry> entriesResult,
+  snapshot.getEntriesNew(keyPrefix ?? Uint8List(0), token,
+      (ledger.IterationStatus status, List<ledger.Entry> entriesResult,
           ledger.Token nextTokenResult) {
     entries = entriesResult;
     nextToken = nextTokenResult;
     statusCompleter.complete(status);
   });
 
-  ledger.Status status = await statusCompleter.future;
-
-  if (status != ledger.Status.ok && status != ledger.Status.partialResult) {
-    throw Exception(
-        'PageSnapshot::GetEntries() returned an error status: $status');
-  }
+  ledger.IterationStatus status = await statusCompleter.future;
 
   result.addAll(entries.takeWhile((entry) => hasPrefix(entry.key, keyPrefix)));
 
-  if (status == ledger.Status.partialResult &&
+  if (status == ledger.IterationStatus.partialResult &&
       hasPrefix(entries[entries.length - 1].key, keyPrefix)) {
     return _getFullEntriesRecursively(
       snapshot,

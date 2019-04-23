@@ -27,11 +27,12 @@ class FakeLedgerPageSnapshot extends ledger.PageSnapshotProxy {
       _FakeProxyController<FakeLedgerPageSnapshot>();
 
   @override
-  void getEntries(
+  void getEntriesNew(
       Uint8List keyPrefix,
       ledger.Token token,
-      void callback(ledger.Status status, List<ledger.Entry> entriesResult,
-          ledger.Token nextTokenResult)) {
-    callback(ledger.Status.ok, _fakeLedgerPage.getEntries(keyPrefix), token);
+      void callback(ledger.IterationStatus status,
+          List<ledger.Entry> entriesResult, ledger.Token nextTokenResult)) {
+    callback(ledger.IterationStatus.ok, _fakeLedgerPage.getEntries(keyPrefix),
+        token);
   }
 }
