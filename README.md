@@ -44,3 +44,6 @@ shas are provided for reference only. Code can be checked out with:
 * topaz/public/lib/proposal: d32421a9d
 * topaz/public/lib/user: 62cc03e
 * topaz/lib/setui/settings: 4009b4a
+* topaz/public/lib/schemas: e5810dfa1
+* topaz/public/lib/entity: e5810dfa1
+* topaz/public/lib/component: e5810dfa1
