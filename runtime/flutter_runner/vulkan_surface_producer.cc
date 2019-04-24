@@ -22,9 +22,9 @@ namespace flutter_runner {
 
 namespace {
 
-// TODO: Properly tune these values. See FL-153.
+// TODO(FL-153): Properly tune these values.
 constexpr int kGrCacheMaxCount = 8192;
-constexpr size_t kGrCacheMaxByteSize = 8 * (1 << 20);
+constexpr size_t kGrCacheMaxByteSize = 16 * (1 << 20);
 
 }  // namespace
 
