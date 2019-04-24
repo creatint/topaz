@@ -134,6 +134,7 @@ group("fidl_compatibility_test") {
     "//garnet/packages/tests:fidl_compatibility_test_bin",
     "//garnet/packages/tests:fidl_compatibility_test_server_cpp",
     "//garnet/packages/tests:fidl_compatibility_test_server_go",
+    "//garnet/packages/tests:fidl_compatibility_test_server_llcpp",
     "//garnet/packages/tests:fidl_compatibility_test_server_rust",
     "//topaz/bin/fidl_compatibility_test:package",
     "//topaz/packages/tests:fidl_compatibility_test_server_dart",

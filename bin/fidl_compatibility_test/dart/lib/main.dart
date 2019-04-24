@@ -11,14 +11,19 @@ import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 
 class EchoImpl extends Echo {
-  final StartupContext context;
+  final StartupContext _context;
 
+  final _binding = EchoBinding();
   final _echoEventStreamController = StreamController<Struct>();
 
   // Saves references to proxies from which we're expecting events.
   Map<String, EchoProxy> proxies = {};
 
-  EchoImpl(this.context);
+  EchoImpl(this._context);
+
+  void bind(InterfaceRequest<Echo> request) {
+    _binding.bind(this, request);
+  }
 
   Future<Struct> proxyEcho(Struct value, String forwardToServer) async {
     assert(forwardToServer.isNotEmpty);
@@ -29,7 +34,7 @@ class EchoImpl extends Echo {
         directoryRequest: dirProxy.ctrl.request().passChannel());
     final controller = ComponentControllerProxy();
     final launcher = LauncherProxy();
-    context.incoming.connectToService(launcher);
+    _context.incoming.connectToService(launcher);
     await launcher.createComponent(launchInfo, controller.ctrl.request());
     final echo = EchoProxy();
     Incoming(dirProxy).connectToService(echo);
@@ -45,7 +50,7 @@ class EchoImpl extends Echo {
     return value;
   }
 
-  void handleEchoEvent(Struct value, String serverUrl) {
+  void _handleEchoEvent(Struct value, String serverUrl) {
     _echoEventStreamController.add(value);
     // Not technically safe if there's more than one outstanding event on this
     // proxy, but that shouldn't happen in the existing test.
@@ -61,14 +66,14 @@ class EchoImpl extends Echo {
           directoryRequest: dirProxy.ctrl.request().passChannel());
       final controller = ComponentControllerProxy();
       final launcher = LauncherProxy();
-      context.incoming.connectToService(launcher);
+      _context.incoming.connectToService(launcher);
       await launcher.createComponent(launchInfo, controller.ctrl.request());
       final echo = EchoProxy();
-       Incoming(dirProxy).connectToService(echo);
+      Incoming(dirProxy).connectToService(echo);
       // Keep echo around until we process the expected event.
       proxies[forwardToServer] = echo;
       echo.echoEvent.listen((Struct val) {
-        handleEchoEvent(val, forwardToServer);
+        _handleEchoEvent(val, forwardToServer);
       });
       return echo.echoStructNoRetVal(value, '');
     }
@@ -80,10 +85,7 @@ class EchoImpl extends Echo {
 }
 
 void main(List<String> args) {
-  final EchoBinding echoBinding = EchoBinding();
   final StartupContext context = StartupContext.fromStartupInfo();
   final EchoImpl echoImpl = EchoImpl(context);
-  context.outgoing.addPublicService(
-      (InterfaceRequest<Echo> request) => echoBinding.bind(echoImpl, request),
-      Echo.$serviceName);
+  context.outgoing.addPublicService(echoImpl.bind, Echo.$serviceName);
 }
