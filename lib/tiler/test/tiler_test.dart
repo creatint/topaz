@@ -22,6 +22,13 @@ void main() {
       final tiler = TilerModel();
       expect(tiler, isNotNull);
       expect(tiler.root, isNotNull);
+      expect(tiler.root.isEmpty, true);
+    });
+    test('should return empty for a content tile', () {
+      final tiler = TilerModel<String>()..add();
+      expect(tiler.root.isCollection, true);
+      expect(tiler.root.tiles.first.isContent, true);
+      expect(tiler.root.tiles.first.isEmpty, true);
     });
     test('should create an instance of TilerModel with content tile', () {
       final tiler = TilerModel<String>()..add(content: 'x');

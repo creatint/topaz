@@ -50,7 +50,8 @@ class TileModel<T> extends ChangeNotifier {
   bool get isColumn => type == TileType.column;
   bool get isCustom => type == TileType.custom;
   bool get isCollection => isRow || isColumn || isCustom;
-  bool get isEmpty => isCollection && tiles.isEmpty || content == null;
+  bool get isEmpty =>
+      isCollection && tiles.isEmpty || isContent && content == null;
 
   double _width = 0;
   double get width => parent?.type == TileType.column ? _width * flex : _width;
