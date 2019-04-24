@@ -6,7 +6,9 @@
 
 #include <fcntl.h>
 #include <hid/usages.h>
+
 #include <iomanip>
+
 #include "lib/component/cpp/connect.h"
 #include "lib/fidl/cpp/clone.h"
 #include "lib/fidl/cpp/optional.h"
@@ -81,7 +83,7 @@ MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
 
   auto [view_token, view_holder_token] = scenic::NewViewTokenPair();
 
-  player_->CreateView2(std::move(view_token.value));
+  player_->CreateView(std::move(view_token));
 
   video_host_view_holder_ = std::make_unique<scenic::ViewHolder>(
       session(), std::move(view_holder_token), "Player");

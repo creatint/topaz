@@ -7,14 +7,12 @@ import 'dart:io';
 
 import 'package:fidl_fuchsia_math/fidl_async.dart' as geom;
 import 'package:fidl_fuchsia_media_playback/fidl_async.dart';
-import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fuchsia_services/services.dart';
-import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
-    show ChildViewConnection;
+import 'package:fuchsia_scenic/views.dart';
+import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
 import 'package:lib.mediaplayer.dart/audio_player_controller.dart';
-import 'package:zircon/zircon.dart';
 
 /// Controller for MediaPlayer widgets.
 class MediaPlayerController extends AudioPlayerController
@@ -36,8 +34,6 @@ class MediaPlayerController extends AudioPlayerController
     _close(); // Initialize stuff.
   }
 
-  set shouldCreateNewChildView(bool should) {}
-
   @override
   void open(Uri uri, {HttpHeaders headers}) {
     _wasActive = openOrConnected;
@@ -48,12 +44,10 @@ class MediaPlayerController extends AudioPlayerController
   @override
   void onMediaPlayerCreated(PlayerProxy player) {
     if (!_wasActive) {
-      final EventPairPair viewTokens = EventPairPair();
-      assert(viewTokens.status == ZX.OK);
-      player.createView2(viewTokens.first);
+      final ViewTokenPair viewTokens = ViewTokenPair();
 
-      _videoViewConnection =
-          ChildViewConnection(ViewHolderToken(value: viewTokens.second));
+      player.createView(viewTokens.viewToken);
+      _videoViewConnection = ChildViewConnection(viewTokens.viewHolderToken);
     }
   }
 
@@ -135,7 +129,6 @@ class MediaPlayerController extends AudioPlayerController
 
   /// Gets the video view connection.
   ChildViewConnection get videoViewConnection => _videoViewConnection;
-  ChildViewConnection get videoViewConnectionNew => _videoViewConnection;
 
   @override
   void onVideoGeometryUpdated(geom.Size videoSize, geom.Size pixelAspectRatio) {
