@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 export 'src/composition_delegate/composition_delegate.dart';
-export 'src/layout/layout_context.dart';
 export 'src/layout/layout_types.dart';
 export 'src/surface/surface.dart';
 export 'src/surface/surface_relation.dart';

@@ -13,7 +13,7 @@ void main() {
   }
 
   group(
-    'Test layout determination',
+    'Test stack layout determination',
     () {
       test('For no Surfaces is empty', () {
         CompositionDelegate compDelegate = setupCompositionDelegate();
@@ -54,66 +54,6 @@ void main() {
           ..addSurface(surface: Surface(surfaceId: 'second'))
           ..focusSurface(surfaceId: 'second');
         expect(compDelegate.getLayout(), equals(expectedLayout));
-      });
-
-      test('For two related Surfaces is a 50/50 split', () {
-        CompositionDelegate compDelegate = setupCompositionDelegate();
-        List<SurfaceLayout> surfaces = [
-          SurfaceLayout(x: 0.0, y: 0.0, w: 640.0, h: 800.0, surfaceId: 'first'),
-          SurfaceLayout(
-              x: 640.0, y: 0.0, w: 640.0, h: 800.0, surfaceId: 'second'),
-        ];
-
-        Layer expectedLayout = Layer.fromList(elements: surfaces);
-        compDelegate
-          ..addSurface(surface: Surface(surfaceId: 'first'))
-          ..addSurface(
-              surface: Surface(
-                surfaceId: 'second',
-                metadata: {},
-              ),
-              parentId: 'first')
-          ..focusSurface(surfaceId: 'second');
-        expect(compDelegate.getLayout(), equals([expectedLayout]));
-      });
-
-      test(
-          'For four Surfaces, 3 children with the same parent, is split into quarters vertically',
-          () {
-        CompositionDelegate compDelegate = setupCompositionDelegate();
-        List<SurfaceLayout> surfaces = [
-          SurfaceLayout(x: 0.0, y: 0.0, w: 320.0, h: 800.0, surfaceId: 'first'),
-          SurfaceLayout(
-              x: 320.0, y: 0.0, w: 320.0, h: 800.0, surfaceId: 'second'),
-          SurfaceLayout(
-              x: 640.0, y: 0.0, w: 320.0, h: 800.0, surfaceId: 'third'),
-          SurfaceLayout(
-              x: 960.0, y: 0.0, w: 320.0, h: 800.0, surfaceId: 'fourth'),
-        ];
-
-        Layer expectedLayout = Layer.fromList(elements: surfaces);
-        compDelegate
-          ..addSurface(surface: Surface(surfaceId: 'first'))
-          ..addSurface(
-              surface: Surface(
-                surfaceId: 'second',
-                metadata: {},
-              ),
-              parentId: 'first')
-          ..addSurface(
-              surface: Surface(
-                surfaceId: 'third',
-                metadata: {},
-              ),
-              parentId: 'first')
-          ..addSurface(
-              surface: Surface(
-                surfaceId: 'fourth',
-                metadata: {},
-              ),
-              parentId: 'first')
-          ..focusSurface(surfaceId: 'fourth');
-        expect(compDelegate.getLayout(), equals([expectedLayout]));
       });
     },
   );

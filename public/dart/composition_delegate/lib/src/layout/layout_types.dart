@@ -139,3 +139,41 @@ class StackLayout extends LayoutElement {
     return toJson().toString();
   }
 }
+
+/// The context in which the CompositionDelegate determines layout
+class LayoutContext {
+  /// The size of the viewport the CompositionDelegate can use
+  final Size size;
+
+  /// Constructor
+  const LayoutContext({this.size});
+}
+
+/// Simple class for capturing 2D size of boxes in layout.
+class Size {
+  /// height
+  final double height;
+
+  /// width
+  final double width;
+
+  /// constructor
+  const Size(this.width, this.height);
+
+  /// convert to JSON
+  Map<String, dynamic> toJson() => {
+        'width': width,
+        'height': height,
+      };
+}
+
+/// List of Layout Strategies implemented by the composition delegate
+enum layoutStrategyType {
+  /// The fallback layout strategy: stack surfaces.
+  /// Logic in stack_strategy/stack_strategy.dart.
+  stackStrategy,
+
+  /// Split the space evenly.
+  /// Logic in split_evenly_strategy/split_evenly_strategy.dart.
+  splitEvenlyStrategy,
+}

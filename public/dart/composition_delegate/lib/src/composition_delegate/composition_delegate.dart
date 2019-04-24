@@ -5,10 +5,11 @@
 import 'dart:collection';
 import 'package:meta/meta.dart';
 
-import '../internal/tree/_surface_tree.dart';
-import '../layout/layout_context.dart';
-import '../layout/layout_types.dart';
-import '../surface/surface.dart';
+import 'package:composition_delegate.dart/src/internal/layout_logic/_layout_logic.dart';
+import 'package:composition_delegate.dart/src/internal/layout_logic/_layout_strategy.dart';
+import 'package:composition_delegate.dart/src/internal/tree/_surface_tree.dart';
+import 'package:composition_delegate.dart/src/layout/layout_types.dart';
+import 'package:composition_delegate.dart/src/surface/surface.dart';
 
 /// The CompositionDelegate maintains the model of surfaces participating in an
 /// experience and their relationships. Using context such as viewport area,
@@ -36,11 +37,19 @@ class CompositionDelegate {
   static const LayoutContext defaultContext =
       LayoutContext(size: Size(1280, 800));
 
+  /// Keep instances of layout strategies around to avoid re-instantiating
+  final Map<layoutStrategyType, LayoutStrategy> _strategyEngines = {};
+
+  /// The layout strategy currently being used for getLayout();
+  layoutStrategyType _layoutStrategy;
+
   /// Constructor
   CompositionDelegate({
     this.layoutContext = defaultContext,
   })  : _hiddenSurfaces = <String>{},
-        _surfaceTree = SurfaceTree();
+        _surfaceTree = SurfaceTree() {
+    setLayoutStrategy(layoutStrategy: layoutStrategyType.stackStrategy);
+  }
 
   /// Add a Surface to the tree. [parentId] is an optional paramater used when
   /// this surface has a parent-child relationship with a [Surface] that is
@@ -89,6 +98,21 @@ class CompositionDelegate {
     _surfaceTree.update(surface: surface, parentId: parentId);
   }
 
+  /// Choose the layout strategy to use with getLayout().
+  void setLayoutStrategy({layoutStrategyType layoutStrategy}) {
+    if (!_strategyEngines.containsKey(layoutStrategy)) {
+      switch (layoutStrategy) {
+        case layoutStrategyType.splitEvenlyStrategy:
+          _strategyEngines[layoutStrategy] = SplitEvenStrategy();
+          break;
+        case layoutStrategyType.stackStrategy:
+          _strategyEngines[layoutStrategy] = StackStrategy();
+          break;
+      }
+    }
+    _layoutStrategy = layoutStrategy;
+  }
+
   /// Determines a layout given the current LayoutContext and focusedSurface, and
   /// returns a list of [Layer]s.
   ///
@@ -134,55 +158,17 @@ class CompositionDelegate {
   ///     {"x":640","y":0,"w":640,"h":800,"surfaceId":"B"} // SurfaceLayout
   ///   ] // Layer
   /// ] // List<Layer>'
+  ///
   List<Layer> getLayout({List<Layer> previousLayout}) {
-    // TODO(djmurphy): complete logic - this is placeholder to unblock work
     if (_surfaceTree.isEmpty) {
       return <Layer>[];
     }
-    List<Layer> layout = <Layer>[];
-    SurfaceTree spanningTree = _surfaceTree.spanningTree(
-      startNodeId: _focusedSurfaces.last,
-      condition: (node) => true,
-    );
-    int spanningTreeSize = spanningTree.length;
-    if (spanningTreeSize > 1) {
-      _splitEvenly(layout, spanningTree, spanningTreeSize);
-    } else {
-      // Relies purely on the focused surfaces rather than what's in the graph.
-      // TODO(jphsiao/djmurphy) expand this to take into account the surface graph.
-      for (String id in _focusedSurfaces.toList()) {
-        layout.add(
-          Layer(
-            element: SurfaceLayout(
-              x: 0.0,
-              y: 0.0,
-              w: layoutContext.size.width,
-              h: layoutContext.size.height,
-              surfaceId: id,
-            ),
-          ),
-        );
-      }
-    }
-    return layout;
-  }
-
-  List<Layer> _splitEvenly(
-      List<Layer> layout, SurfaceTree spanningTree, int spanningTreeSize) {
-    Layer layer = Layer();
-    int surfaceIndex = 0;
-    double splitSize = layoutContext.size.width / spanningTreeSize;
-    for (Surface surface in spanningTree) {
-      layer.add(SurfaceLayout(
-        x: surfaceIndex * splitSize,
-        y: 0.0,
-        w: splitSize,
-        h: layoutContext.size.height,
-        surfaceId: surface.surfaceId,
-      ));
-      surfaceIndex += 1;
-    }
-    layout.add(layer);
-    return layout;
+    LayoutStrategy strategy = _strategyEngines[_layoutStrategy];
+    return strategy.getLayout(
+        hiddenSurfaces: _hiddenSurfaces,
+        focusedSurfaces: _focusedSurfaces,
+        layoutContext: layoutContext,
+        previousLayout: previousLayout,
+        surfaceTree: _surfaceTree);
   }
 }
