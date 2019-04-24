@@ -76,7 +76,7 @@ class ChromiumWebView {
         _navigationEventObserverBinding.wrap(observer));
   }
 
-  Future<bool> injectJavascript(int id, String script, List<String> origins) {
+  Future<void> injectJavascript(int id, String script, List<String> origins) {
     final vmo = SizedVmo.fromUint8List(utf8.encode(script));
     final buffer = fuchsia_mem.Buffer(vmo: vmo, size: vmo.size);
     return _frame.addBeforeLoadJavaScript(id, origins, buffer);
