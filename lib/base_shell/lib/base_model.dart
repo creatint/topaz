@@ -187,7 +187,6 @@ class CommonBaseShellModel extends BaseShellModel
   // |ServiceProvider|.
   @override
   Future<void> connectToService(String serviceName, Channel channel) {
-    // TODO(SCN-595) mozart.Presentation is being renamed to ui.Presentation.
     if (serviceName == 'ui.Presentation') {
       _presentationBindings.add(PresentationBinding()
         ..bind(_presentationImpl, InterfaceRequest<Presentation>(channel)));
@@ -244,7 +243,7 @@ class CommonBaseShellModel extends BaseShellModel
     if (_serviceProviderBinding.isBound) {
       log.warning(
         'Ignoring unsupported attempt to log in'
-            ' while already logged in!',
+        ' while already logged in!',
       );
       return;
     }
@@ -262,7 +261,7 @@ class CommonBaseShellModel extends BaseShellModel
       if (status != cobalt.Status.ok) {
         log.warning(
           'Failed to start timer metric '
-              '$_kSessionShellLoginTimeMetricId: $status. ',
+          '$_kSessionShellLoginTimeMetricId: $status. ',
         );
       }
     });
@@ -347,7 +346,7 @@ class CommonBaseShellModel extends BaseShellModel
         if (status != cobalt.Status.ok) {
           log.warning(
             'Failed to end timer metric '
-                'session_shell_log_out_timer_id: $status. ',
+            'session_shell_log_out_timer_id: $status. ',
           );
         }
       });

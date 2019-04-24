@@ -67,7 +67,7 @@ class ViewController : public scenic::SkiaView, public TermModel::Delegate {
   // If we skip drawing despite being forced to, we should force the next draw.
   bool force_next_draw_;
 
-  mozart::SkiaFontLoader font_loader_;
+  scenic::SkiaFontLoader font_loader_;
   sk_sp<SkTypeface> regular_typeface_;
 
   int ascent_;

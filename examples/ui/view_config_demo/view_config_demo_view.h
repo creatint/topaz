@@ -27,8 +27,8 @@ class ViewConfigDemoView : public scenic::SkiaView {
       fuchsia::ui::gfx::ViewProperties old_properties) override;
 
   // |scenic::BaseView|
-  void OnSceneInvalidated(fuchsia::images::PresentationInfo presentation_info)
-      override;
+  void OnSceneInvalidated(
+      fuchsia::images::PresentationInfo presentation_info) override;
 
   // |scenic::BaseView|
   void OnConfigChanged(
@@ -37,7 +37,7 @@ class ViewConfigDemoView : public scenic::SkiaView {
   // Draw a solid background and some centered text.
   void Draw(SkCanvas* canvas);
 
-  mozart::SkiaFontLoader font_loader_;
+  scenic::SkiaFontLoader font_loader_;
   sk_sp<SkTypeface> typeface_;
 };
 

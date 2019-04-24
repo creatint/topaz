@@ -8,16 +8,16 @@
 #include <fuchsia/fonts/cpp/fidl.h>
 #include <fuchsia/images/cpp/fidl.h>
 #include <fuchsia/ui/input/cpp/fidl.h>
-#include "src/lib/fxl/macros.h"
-#include "src/lib/fxl/time/time_point.h"
+#include <src/lib/fxl/macros.h>
+#include <src/lib/fxl/time/time_point.h>
+
+#include "examples/ui/lib/skia_font_loader.h"
+#include "examples/ui/lib/skia_view.h"
 #include "third_party/skia/include/core/SkCanvas.h"
 #include "third_party/skia/include/core/SkColor.h"
 #include "third_party/skia/include/core/SkFont.h"
 #include "third_party/skia/include/core/SkRect.h"
 #include "third_party/skia/include/core/SkTypeface.h"
-
-#include "examples/ui/lib/skia_font_loader.h"
-#include "examples/ui/lib/skia_view.h"
 
 namespace examples {
 
@@ -50,7 +50,7 @@ class JankView : public scenic::SkiaView {
   void DrawButton(SkCanvas* canvas, const char* label, const SkRect& bounds);
   void OnClick(const Button& button);
 
-  mozart::SkiaFontLoader font_loader_;
+  scenic::SkiaFontLoader font_loader_;
   sk_sp<SkTypeface> typeface_;
 
   fxl::TimePoint stutter_end_time_;
