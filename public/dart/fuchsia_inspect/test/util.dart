@@ -9,6 +9,7 @@ import 'dart:math' show min;
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
+import 'package:fuchsia_inspect/inspect.dart';
 import 'package:fuchsia_inspect/src/vmo/block.dart';
 import 'package:fuchsia_inspect/src/vmo/vmo_holder.dart';
 import 'package:test/test.dart';
@@ -161,7 +162,7 @@ void dumpBlocks(FakeVmo vmo, {int startIndex = 0, int howMany32 = -1}) {
   }
 }
 
-/// Reads the property at [propertyIndex] out of [vmo] and returns the value.
+/// Reads the property at [propertyIndex] out of [vmo], and returns the value.
 ByteData readProperty(FakeVmo vmo, int propertyIndex) {
   final property = Block.read(vmo, propertyIndex);
   final totalLength = property.propertyTotalLength;
@@ -181,6 +182,14 @@ ByteData readProperty(FakeVmo vmo, int propertyIndex) {
   }
   return data;
 }
+
+/// Returns the int value of [metric] in [vmo].
+int readInt(FakeVmo vmo, IntMetric metric) =>
+    Block.read(vmo, metric.index).intValue;
+
+/// Returns the double value of [metric] in [vmo].
+double readDouble(FakeVmo vmo, DoubleMetric metric) =>
+    Block.read(vmo, metric.index).doubleValue;
 
 /// A matcher that matches ByteData values as unit8 lists.
 Matcher equalsByteData(ByteData data) => _EqualsByteData(data);

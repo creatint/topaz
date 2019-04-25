@@ -12,6 +12,7 @@ import 'package:meta/meta.dart';
 import '../vmo/vmo_writer.dart';
 
 part 'node.dart';
+part 'metric.dart';
 part 'property.dart';
 
 const int _defaultVmoSizeBytes = 256 * 1024;

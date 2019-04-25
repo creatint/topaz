@@ -59,4 +59,24 @@ class Node {
 
     return property;
   }
+
+  /// Creates a [IntMetric] with [name] on this node.
+  ///
+  /// Optionally sets the [value], if specified.
+  ///
+  /// Does not check whether the metric already exists. This method is not
+  /// idempotent and calling it multiple times with the same [name] will
+  /// create multiple [IntMetric]s.
+  IntMetric createIntMetric(String name, {int value = 0}) =>
+      IntMetric._(name, index, _writer, value);
+
+  /// Creates a [DoubleMetric] with [name] on this node.
+  ///
+  /// Optionally sets the [value], if specified.
+  ///
+  /// Does not check whether the metric already exists. This method is not
+  /// idempotent and calling it multiple times with the same [name] will
+  /// create multiple [DoubleMetric]s.
+  DoubleMetric createDoubleMetric(String name, {double value = 0.0}) =>
+      DoubleMetric._(name, index, _writer, value);
 }

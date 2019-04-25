@@ -56,12 +56,16 @@ class _InspectHomePageState extends State<_InspectHomePage> {
 
   final inspect.Node _inspectNode;
 
+  /// A metric that tracks the value of [_counter].
+  final inspect.IntMetric _counterMetric;
+
   inspect.StringProperty _backgroundProperty;
 
   int _counter = 0;
   int _colorIndex = 0;
 
-  _InspectHomePageState(this._inspectNode) {
+  _InspectHomePageState(this._inspectNode)
+      : _counterMetric = _inspectNode.createIntMetric('counter') {
     _backgroundProperty = _inspectNode.createStringProperty('background-color',
         value: '$_backgroundColor');
   }
@@ -71,12 +75,19 @@ class _InspectHomePageState extends State<_InspectHomePage> {
   void _incrementCounter() {
     setState(() {
       _counter++;
+
+      // Note: an alternate approach that is also valid is to set the metric to
+      // the new value:
+      //
+      //     _buttonMetric.value = _counter;
+      _counterMetric.increment();
     });
   }
 
   void _decrementCounter() {
     setState(() {
       _counter--;
+      _counterMetric.decrement();
     });
   }
 
