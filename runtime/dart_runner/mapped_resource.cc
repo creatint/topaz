@@ -38,8 +38,10 @@ bool MappedResource::LoadFromNamespace(fdio_ns_t* namespc,
       return false;
     }
 
-    if (!dart_utils::VmoFromFilenameAt(root_dir, path, &resource_vmo)) {
-      return false;
+    bool result = dart_utils::VmoFromFilenameAt(root_dir, path, &resource_vmo);
+    close(root_dir);
+    if (!result) {
+      return result;
     }
   }
 
