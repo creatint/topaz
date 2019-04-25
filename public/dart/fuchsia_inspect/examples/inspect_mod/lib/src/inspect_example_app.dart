@@ -74,6 +74,12 @@ class _InspectHomePageState extends State<_InspectHomePage> {
     });
   }
 
+  void _decrementCounter() {
+    setState(() {
+      _counter--;
+    });
+  }
+
   /// Increments through the possible [_colors].
   ///
   /// If we've reached the end, start over at the beginning.
@@ -108,7 +114,7 @@ class _InspectHomePageState extends State<_InspectHomePage> {
       backgroundColor: _backgroundColor,
       body: Center(
         child: Text(
-          'Button tapped $_counter time${_counter == 1 ? '' : 's'}.',
+          'Counter: $_counter.',
         ),
       ),
       persistentFooterButtons: <Widget>[
@@ -119,6 +125,10 @@ class _InspectHomePageState extends State<_InspectHomePage> {
         FlatButton(
           onPressed: _incrementCounter,
           child: Text('Increment counter'),
+        ),
+        FlatButton(
+          onPressed: _decrementCounter,
+          child: Text('Decrement counter'),
         ),
       ],
     );
