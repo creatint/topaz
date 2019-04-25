@@ -16,6 +16,7 @@ dart_library("fuchsia_inspect") {
     "inspect.dart",
     "src/inspect/inspect.dart",
     "src/inspect/node.dart",
+    "src/inspect/property.dart",
     "src/vmo/bitfield64.dart",
     "src/vmo/block.dart",
     "src/vmo/heap.dart",
@@ -39,6 +40,7 @@ dart_test("fuchsia_inspect_package_unittests") {
   sources = [
     "inspect/inspect_test.dart",
     "inspect/node_test.dart",
+    "inspect/property_test.dart",
     "integration/writer.dart",
     "util.dart",
     "vmo/bitfield64_test.dart",

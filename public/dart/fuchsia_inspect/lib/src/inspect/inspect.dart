@@ -4,12 +4,15 @@
 
 library topaz.public.dart.fuchsia_inspect.inspect.inspect;
 
+import 'dart:typed_data';
+
 import 'package:fuchsia_services/services.dart';
 import 'package:meta/meta.dart';
 
 import '../vmo/vmo_writer.dart';
 
 part 'node.dart';
+part 'property.dart';
 
 const int _defaultVmoSizeBytes = 256 * 1024;
 
