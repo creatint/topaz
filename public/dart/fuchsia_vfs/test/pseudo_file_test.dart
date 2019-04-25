@@ -191,7 +191,7 @@ void main() {
       for (var path in paths) {
         var proxy = FileProxy();
         file.open(openRightReadable | openFlagDescribe, 0, path,
-            _getNodeInterfaceRequest(proxy));
+            _getNodeInterfaceRequest(proxy), openRightReadable);
 
         await proxy.onOpen.first.then((response) {
           expect(response.s, ZX.ERR_NOT_DIR);

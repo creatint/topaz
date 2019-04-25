@@ -6,6 +6,7 @@ import 'package:fidl/fidl.dart' as fidl;
 import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:zircon/zircon.dart';
 
+import 'internal/_flags.dart';
 import 'vnode.dart';
 
 /// Function passed by service implementation which can be
@@ -27,7 +28,7 @@ class Service<T> extends Vnode {
 
   @override
   int connect(int flags, int mode, fidl.InterfaceRequest<Node> request,
-      [int parentFlags = -1]) {
+      [int parentFlags = Flags.fsRights]) {
     if (_closed) {
       sendErrorEvent(flags, ZX.ERR_NOT_SUPPORTED, request);
       return ZX.ERR_NOT_SUPPORTED;
