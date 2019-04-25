@@ -13,7 +13,7 @@ group("ermine") {
   testonly = true
   public_deps = [
     ":ermine_required",
-    "//topaz/shell/ermine:ermine_basemgr",
+    "//topaz/shell/ermine:ermine_modular_config",
   ]
 }
 
@@ -21,6 +21,5 @@ group("ermine_required") {
   testonly = true
   public_deps = [
     "//topaz/shell/ermine:ermine_fonts",
-    "//topaz/shell/ermine:launch_ermine",
   ]
 }

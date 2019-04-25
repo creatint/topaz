@@ -4,6 +4,7 @@
 
 import("//build/fidl/fidl.gni")
 import("//build/package.gni")
+import("//peridot/build/modular_config/modular_config.gni")
 import("//topaz/runtime/flutter_runner/flutter_app.gni")
 
 flutter_app("ermine") {
@@ -31,8 +32,8 @@ dart_library("ermine_library") {
   sources = [
     "main.dart",
     "src/models/app_model.dart",
-    "src/models/ermine_service_provider.dart",
     "src/models/default_proposer.dart",
+    "src/models/ermine_service_provider.dart",
     "src/models/package_proposer.dart",
     "src/models/story_manager.dart",
     "src/models/story_model.dart",
@@ -98,26 +99,8 @@ fidl("shell.ermine") {
   ]
 }
 
-package("launch_ermine") {
-  deprecated_system_image = true
-
-  resources = [
-    {
-      path = rebase_path("config/base_shell_config.json")
-      dest = "sysui/base_shell_config.json"
-    },
-  ]
-}
-
-package("ermine_basemgr") {
-  deprecated_system_image = true
-
-  resources = [
-    {
-      path = rebase_path("config/basemgr.config")
-      dest = "sysmgr/basemgr.config"
-    },
-  ]
+modular_config("ermine_modular_config") {
+  config = "config/modular_config.json"
 }
 
 package("ermine_fonts") {
