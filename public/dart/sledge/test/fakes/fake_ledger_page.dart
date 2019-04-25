@@ -6,8 +6,8 @@ import 'dart:typed_data';
 
 // ignore_for_file: implementation_imports, library_prefixes
 import 'package:fidl/fidl.dart' as $fidl;
-import 'package:fidl_fuchsia_ledger/fidl.dart' as ledger;
-import 'package:fidl_fuchsia_mem/fidl.dart' as lib$fuchsia_mem;
+import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
+import 'package:fidl_fuchsia_mem/fidl_async.dart' as lib$fuchsia_mem;
 import 'package:sledge/src/document/change.dart';
 import 'package:sledge/src/document/values/key_value.dart';
 
@@ -38,39 +38,45 @@ class FakeLedgerPage extends ledger.PageProxy {
   StorageState get storageState => _storageState;
 
   @override
-  void put(Uint8List key, Uint8List value) {
+  Future<ledger.Status> put(Uint8List key, Uint8List value) async {
     _modification.changedEntries.add(KeyValue(key, value));
+    return ledger.Status.ok;
   }
 
   @override
-  void delete(Uint8List key) {
+  Future<ledger.Status> delete(Uint8List key) async {
     _modification.deletedKeys.add(key);
+    return ledger.Status.ok;
   }
 
   @override
-  void startTransaction() {
+  Future<ledger.Status> startTransaction() async {
     assert(_modification.changedEntries.isEmpty);
     assert(_modification.deletedKeys.isEmpty);
+    return ledger.Status.ok;
   }
 
   @override
-  void commit() {
+  Future<ledger.Status> commit() async {
     _storageState.applyChange(_modification);
     onChange(_modification);
     _modification.clear();
+    return ledger.Status.ok;
   }
 
   @override
-  void rollback() {
+  Future<ledger.Status> rollback() async {
     _modification.clear();
+    return ledger.Status.ok;
   }
 
   @override
-  void getSnapshot(
-      Object snapshotRequest, Uint8List keyPrefix, dynamic watcher) {
+  Future<ledger.Status> getSnapshot(Object snapshotRequest, Uint8List keyPrefix,
+      $fidl.InterfaceHandle<ledger.PageWatcher> watcher) async {
     if (watcher != null) {
       _watcher = watcher;
     }
+    return ledger.Status.ok;
   }
 
   List<ledger.Entry> getEntries(Uint8List keyPrefix) =>
@@ -82,7 +88,6 @@ class FakeLedgerPage extends ledger.PageProxy {
             timestamp: null,
             changedEntries: convertToEntries(change.changedEntries),
             deletedKeys: change.deletedKeys),
-        ledger.ResultState.completed,
-        ($fidl.InterfaceRequest<ledger.PageSnapshot> snapshotRequest) {});
+        ledger.ResultState.completed);
   }
 }

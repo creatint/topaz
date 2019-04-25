@@ -5,7 +5,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:fidl_fuchsia_ledger/fidl.dart' as ledger;
+import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
 
 import 'document/change.dart';
 import 'document/document.dart';
@@ -41,15 +41,15 @@ class Transaction {
   /// Runs [modification].
   Future<bool> saveModification(Modification modification) async {
     // Start Ledger transaction.
-    _pageProxy
-      ..startTransaction()
-      // Obtain the snapshot.
-      // All the read operations in |modification| will read from that snapshot.
-      ..getSnapshot(
-        _pageSnapshotProxy.ctrl.request(),
-        Uint8List(0),
-        null,
-      );
+    await _pageProxy.startTransaction();
+
+    // Obtain the snapshot.
+    // All the read operations in |modification| will read from that snapshot.
+    await _pageProxy.getSnapshot(
+      _pageSnapshotProxy.ctrl.request(),
+      Uint8List(0),
+      null,
+    );
 
     try {
       // Execute the modifications.
@@ -72,7 +72,7 @@ class Transaction {
       for (final document in _documents) {
         if (document.state == DocumentState.available) {
           saveDocumentToPage(document, _pageProxy);
-          saveSchemaToPage(document.documentId.schema, _pageProxy);
+          await saveSchemaToPage(document.documentId.schema, _pageProxy);
         } else {
           await deleteDocumentFromPage(
               document, _pageProxy, _pageSnapshotProxy);
@@ -80,7 +80,7 @@ class Transaction {
       }
 
       // Finish the transaction by commiting.
-      _pageProxy.commit();
+      await _pageProxy.commit();
 
       // Notify the documents that the transaction has been completed.
       _documents

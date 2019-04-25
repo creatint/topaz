@@ -5,7 +5,7 @@
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_ledger/fidl.dart' as ledger;
+import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
 
 import '../document/change.dart';
 import '../ledger_helpers.dart';
@@ -32,8 +32,8 @@ class Subscription extends ledger.PageWatcher {
   }
 
   @override
-  void onChange(ledger.PageChange pageChange, ledger.ResultState resultState,
-      void callback(InterfaceRequest<ledger.PageSnapshot> snapshotRequest)) {
+  Future<InterfaceRequest<ledger.PageSnapshot>> onChange(
+      ledger.PageChange pageChange, ledger.ResultState resultState) {
     _currentChange.addAll(getChangeFromPageChange(pageChange));
 
     // For a given change, [onChange] can be called multiple times.
@@ -42,8 +42,7 @@ class Subscription extends ledger.PageWatcher {
       _applyChangeCallback(_currentChange);
       _currentChange.clear();
     }
-
-    callback(null);
+    return null;
   }
 
   /// Ends subscription.

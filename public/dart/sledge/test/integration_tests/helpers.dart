@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:fidl/fidl.dart' as fidl;
-import 'package:fidl_fuchsia_ledger/fidl.dart' as ledger;
+import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
 import 'package:fidl_fuchsia_sys/fidl_async.dart'
     show LaunchInfo, ComponentControllerProxy;
 import 'package:lib.app.dart/app_async.dart' show Services, StartupContext;

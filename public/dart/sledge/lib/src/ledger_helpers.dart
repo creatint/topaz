@@ -5,8 +5,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:fidl_fuchsia_ledger/fidl.dart' as ledger;
-import 'package:fidl_fuchsia_mem/fidl.dart';
+import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
+import 'package:fidl_fuchsia_mem/fidl_async.dart';
 import 'package:zircon/zircon.dart' show ZX, ReadResult;
 
 import 'document/change.dart';
@@ -59,20 +59,12 @@ Future<Null> _getFullEntriesRecursively(
   List<int> keyPrefix, {
   ledger.Token token,
 }) async {
-  Completer<ledger.IterationStatus> statusCompleter =
-      Completer<ledger.IterationStatus>();
-  List<ledger.Entry> entries;
-  ledger.Token nextToken;
+  final ledger.PageSnapshot$GetEntriesNew$Response response =
+      await snapshot.getEntriesNew(keyPrefix ?? Uint8List(0), token);
 
-  snapshot.getEntriesNew(keyPrefix ?? Uint8List(0), token,
-      (ledger.IterationStatus status, List<ledger.Entry> entriesResult,
-          ledger.Token nextTokenResult) {
-    entries = entriesResult;
-    nextToken = nextTokenResult;
-    statusCompleter.complete(status);
-  });
-
-  ledger.IterationStatus status = await statusCompleter.future;
+  List<ledger.Entry> entries = response.entries;
+  ledger.Token nextToken = response.nextToken;
+  ledger.IterationStatus status = response.status;
 
   result.addAll(entries.takeWhile((entry) => hasPrefix(entry.key, keyPrefix)));
 

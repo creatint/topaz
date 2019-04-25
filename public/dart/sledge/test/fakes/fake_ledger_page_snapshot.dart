@@ -5,11 +5,11 @@
 import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_ledger/fidl.dart' as ledger;
+import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
 
 import 'fake_ledger_page.dart';
 
-class _FakeProxyController<T> extends ProxyController<T> {
+class _FakeProxyController<T> extends AsyncProxyController<T> {
   @override
   InterfaceRequest<T> request() {
     return null;
@@ -23,16 +23,14 @@ class FakeLedgerPageSnapshot extends ledger.PageSnapshotProxy {
   FakeLedgerPageSnapshot(this._fakeLedgerPage);
 
   @override
-  ProxyController<FakeLedgerPageSnapshot> get ctrl =>
+  AsyncProxyController<FakeLedgerPageSnapshot> get ctrl =>
       _FakeProxyController<FakeLedgerPageSnapshot>();
 
   @override
-  void getEntriesNew(
-      Uint8List keyPrefix,
-      ledger.Token token,
-      void callback(ledger.IterationStatus status,
-          List<ledger.Entry> entriesResult, ledger.Token nextTokenResult)) {
-    callback(ledger.IterationStatus.ok, _fakeLedgerPage.getEntries(keyPrefix),
-        token);
+  Future<ledger.PageSnapshot$GetEntriesNew$Response> getEntriesNew(
+      Uint8List keyStart, ledger.Token token) async {
+    final response = ledger.PageSnapshot$GetEntriesNew$Response(
+        ledger.IterationStatus.ok, _fakeLedgerPage.getEntries(keyStart), token);
+    return response;
   }
 }

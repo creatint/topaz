@@ -5,9 +5,8 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:fidl_fuchsia_ledger/fidl.dart' as ledger;
-import 'package:fidl_fuchsia_modular/fidl.dart';
-import 'package:fidl_fuchsia_modular/fidl_async.dart' as modular_async;
+import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
+import 'package:fidl_fuchsia_modular/fidl_async.dart' as modular;
 import 'package:fidl/fidl.dart' as fidl;
 import 'package:zircon/zircon.dart' show ChannelPair;
 
@@ -45,10 +44,11 @@ class Sledge {
   Subscription _subscribtion;
 
   /// Default constructor.
-  factory Sledge(ComponentContext componentContext, [SledgePageId pageId]) {
-    fidl.InterfacePair<ledger.Ledger> ledgerPair = fidl.InterfacePair();
-    componentContext.getLedger(ledgerPair.passRequest());
-    return Sledge._(ledgerPair.passHandle(), pageId);
+  factory Sledge(modular.ComponentContext componentContext,
+      [SledgePageId pageId]) {
+    final pair = ChannelPair();
+    componentContext.getLedger(fidl.InterfaceRequest(pair.first));
+    return Sledge._(fidl.InterfaceHandle(pair.second), pageId);
   }
 
   /// Internal constructor
@@ -64,9 +64,9 @@ class Sledge {
     // 3/ Obtaining a LedgerPageProxy using the LedgerProxy.
     // 4/ Subscribing for change notifications on the LedgerPageProxy.
 
-    _ledgerProxy.ctrl.onConnectionError = () {
+    _ledgerProxy.ctrl.whenClosed.then((_) {
       // TODO(jif): Handle disconnection from the Ledger.
-    };
+    });
 
     _ledgerProxy.ctrl.bind(ledgerHandle);
 
@@ -74,22 +74,6 @@ class Sledge {
     _modificationQueue =
         ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
     _subscribtion = _subscribe();
-  }
-
-  /// Constructor that takes a new-style binding of ComponentContext
-  factory Sledge.forAsync(modular_async.ComponentContext componentContext,
-      [SledgePageId pageId]) {
-    final pair = ChannelPair();
-    componentContext.getLedger(fidl.InterfaceRequest(pair.first));
-    return Sledge._(fidl.InterfaceHandle(pair.second), pageId);
-  }
-
-  /// Convenience factory for modules.
-  factory Sledge.fromModule(final ModuleContext moduleContext,
-      [SledgePageId pageId]) {
-    ComponentContextProxy componentContextProxy = ComponentContextProxy();
-    moduleContext.getComponentContext(componentContextProxy.ctrl.request());
-    return Sledge(componentContextProxy, pageId);
   }
 
   /// Convenience constructor for tests.
