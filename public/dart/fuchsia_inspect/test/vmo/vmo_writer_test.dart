@@ -71,6 +71,8 @@ void main() {
       checker.check(0, [Test(intMetric, 3)]);
       writer.subMetric(intMetric, 4);
       checker.check(0, [Test(intMetric, -1)]);
+      writer.setMetric(intMetric, 2);
+      checker.check(0, [Test(intMetric, 2)]);
       writer.deleteMetric(intMetric);
       checker.check(-2, [Test(writer.rootNode, 0)]);
     });
@@ -91,6 +93,8 @@ void main() {
       checker.check(0, [Test(doubleMetric, 3.5)]);
       writer.subMetric(doubleMetric, 4.0);
       checker.check(0, [Test(doubleMetric, -0.5)]);
+      writer.setMetric(doubleMetric, 1.5);
+      checker.check(0, [Test(doubleMetric, 1.5)]);
       writer.deleteMetric(doubleMetric);
       checker.check(-2, [Test(writer.rootNode, 0)]);
     });

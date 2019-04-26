@@ -163,7 +163,7 @@ class VmoWriter {
   void setMetric<T extends num>(int metricIndex, T value) {
     _beginWork();
     var metric = Block.read(_vmo, metricIndex);
-    if (T is double) {
+    if (value is double) {
       metric.doubleValue = value.toDouble();
     } else {
       metric.intValue = value.toInt();
