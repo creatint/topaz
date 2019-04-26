@@ -2,13 +2,6 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-group("auth_provider_tests") {
-  testonly = true
-  public_deps = [
-    "//topaz/auth_providers:auth_provider_tests",
-  ]
-}
-
 group("scenic") {
   testonly = true
   public_deps = [
@@ -65,7 +58,6 @@ group("all") {
   public_deps = [
     "//garnet/packages/tests:run_test_component",
     "//topaz/packages/examples:tests",
-    "//topaz/packages/tests:auth_provider_tests",
     "//topaz/packages/tests:bindings_tests",
     "//topaz/packages/tests:crasher_dart",
     "//topaz/packages/tests:crasher_flutter",
