@@ -8,6 +8,7 @@
 
 #include <ddk/device.h>
 #include <fcntl.h>
+#include <fs/vfs.h>
 #include <fuchsia/device/manager/cpp/fidl.h>
 #include <lib/fdio/directory.h>
 #include <lib/fdio/io.h>
@@ -128,7 +129,7 @@ Dart_Handle ConstructDartObject(const char* class_name, Args&&... args) {
   return object;
 }
 
-fxl::UniqueFD FdFromPath(std::string path) {
+fdio_ns_t* GetNamespace() {
   // Grab the fdio_ns_t* out of the isolate.
   Dart_Handle zircon_lib = Dart_LookupLibrary(ToDart("dart:zircon"));
   FXL_DCHECK(!tonic::LogIfError(zircon_lib));
@@ -142,9 +143,12 @@ fxl::UniqueFD FdFromPath(std::string path) {
   Dart_Handle result = Dart_IntegerToUint64(namespace_field, &fdio_ns_ptr);
   FXL_DCHECK(!tonic::LogIfError(result));
 
+  return reinterpret_cast<fdio_ns_t*>(fdio_ns_ptr);
+}
+
+fxl::UniqueFD FdFromPath(std::string path) {
   // Get a VMO for the file.
-  fdio_ns_t* ns = reinterpret_cast<fdio_ns_t*>(fdio_ns_ptr);
-  fxl::UniqueFD dirfd(fdio_ns_opendir(ns));
+  fxl::UniqueFD dirfd(fdio_ns_opendir(GetNamespace()));
   if (!dirfd.is_valid())
     return fxl::UniqueFD();
 
@@ -170,29 +174,11 @@ Dart_Handle System::ChannelCreate(uint32_t options) {
   }
 }
 
-zx_status_t System::Reboot() {
-  zx::channel local, remote;
-  auto status = zx::channel::create(0, &local, &remote);
-  if (status != ZX_OK) {
-    return status;
-  }
+zx_status_t System::ConnectToService(std::string path, fxl::RefPtr<Handle> channel) {
+  return fdio_ns_connect(GetNamespace(), path.c_str(),
+                         ZX_FS_RIGHT_READABLE | ZX_FS_RIGHT_WRITABLE,
+                         channel->ReleaseHandle());
 
-  const std::string service = std::string{"/svc/"} +
-      fuchsia::device::manager::Administrator::Name_;
-  status = fdio_service_connect(service.c_str(), remote.get());
-  if (status != ZX_OK) {
-    printf("failed to connect to service %s: %d\n", service.c_str(), status);
-    return status;
-  }
-
-  zx_status_t call_status;
-  fuchsia::device::manager::Administrator_SyncProxy administrator(std::move(local));
-  status = administrator.Suspend(DEVICE_SUSPEND_FLAG_REBOOT, &call_status);
-  if (status != ZX_OK || call_status != ZX_OK) {
-    printf("Call to %s failed: ret: %d  remote: %d\n", service.c_str(), status, call_status);
-  }
-
-  return status != ZX_OK ? status : call_status;
 }
 
 Dart_Handle System::ChannelFromFile(std::string path) {
@@ -469,7 +455,7 @@ uint64_t System::ClockGet(uint32_t clock_id) {
   V(System, ChannelWrite)          \
   V(System, ChannelQueryAndRead)   \
   V(System, EventpairCreate)       \
-  V(System, Reboot)                \
+  V(System, ConnectToService)      \
   V(System, SocketCreate)          \
   V(System, SocketWrite)           \
   V(System, SocketRead)            \

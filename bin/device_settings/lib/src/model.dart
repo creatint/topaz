@@ -4,7 +4,9 @@
 
 import 'dart:async';
 
+import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_amber/fidl_async.dart' as amber;
+import 'package:fidl_fuchsia_device_manager/fidl_async.dart' as devmgr;
 import 'package:flutter/foundation.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_services/services.dart';
@@ -123,10 +125,30 @@ class DeviceSettingsModel extends Model {
       final flagSet = await DeviceInfo.setFactoryResetFlag(shouldReset: true);
       log.severe('Factory Reset flag set successfully: $flagSet');
 
-      int status = System.reboot();
-      if (status != 0 ) {
-        log.severe('Unable to reboot system: $status');
+      final ChannelPair channels = ChannelPair();
+      if (channels.status != 0) {
+        log.severe('Unable to create channels: $channels.status');
+        return;
       }
+
+      int status = System.connectToService(
+        '/svc/${devmgr.Administrator.$serviceName}',
+        channels.second.passHandle());
+      if (status != 0 ) {
+        channels.first.close();
+        log.severe('Unable to connect to device administrator service: $status');
+        return;
+      }
+
+      final devmgr.AdministratorProxy admin = devmgr.AdministratorProxy();
+      admin.ctrl.bind(InterfaceHandle<devmgr.Administrator>(channels.first));
+
+      status = await admin.suspend(devmgr.suspendFlagReboot);
+      if (status != 0) {
+        log.severe('Reboot call failed with status: $status');
+      }
+
+      admin.ctrl.close();
     } else {
       _showResetConfirmation = true;
       notifyListeners();

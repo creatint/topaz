@@ -8,7 +8,6 @@
             "vulkan"
         ],
         "services": [
-            "fuchsia.device.manager.Administrator",
             "fuchsia.crash.Analyzer",
             "fuchsia.fonts.Provider",
             "fuchsia.net.SocketProvider",
