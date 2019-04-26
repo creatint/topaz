@@ -7,7 +7,7 @@ import 'dart:typed_data';
 
 // TODO: investigate whether we can get rid of the implementation_imports.
 // ignore_for_file: implementation_imports
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:sledge/sledge.dart';
 import 'package:sledge/src/document/change.dart';
 import 'package:sledge/src/uint8list_ops.dart';

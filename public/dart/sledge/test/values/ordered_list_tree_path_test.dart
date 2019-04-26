@@ -5,7 +5,7 @@
 // ignore_for_file: implementation_imports
 import 'dart:typed_data';
 
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:sledge/src/document/values/ordered_list_tree_path.dart';
 import 'package:test/test.dart';
 

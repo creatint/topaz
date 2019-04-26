@@ -6,7 +6,7 @@
 
 import 'dart:typed_data';
 
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:sledge/src/document/change.dart';
 import 'package:sledge/src/document/values/key_value.dart';
 import 'package:sledge/src/uint8list_ops.dart';

@@ -4,7 +4,7 @@
 
 import 'dart:typed_data';
 
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
 import 'package:sledge/sledge.dart';
 import 'package:test/test.dart';

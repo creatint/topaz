@@ -4,7 +4,7 @@
 
 // ignore_for_file: implementation_imports
 
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:sledge/src/document/values/last_one_wins_value.dart';
 import 'package:test/test.dart';
 
