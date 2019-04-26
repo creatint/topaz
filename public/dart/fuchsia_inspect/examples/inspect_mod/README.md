@@ -15,7 +15,7 @@ Assumes you already have an existing Fuchsia checkout and have set-up your hardw
 1.  Do a fresh build.
 
     ```
-    fx full-build
+    fx build
     ```
 
 1.  Connect and turn on the desired device. Serve to hardware.
@@ -56,14 +56,12 @@ Assumes you already have an existing Fuchsia checkout and have set-up your hardw
 ## Local development
 
 Each time you make local Dart changes and want to see the changes, you'll want
-to rebuild and re-add the inspect mod. This can be done in one command.
+to rebuild and re-add the inspect mod.
 
-```
-fx build &&
-fx shell sessionctl restart_session &&
-fx shell sessionctl add_mod fuchsia-pkg://fuchsia.com/inspect_mod#meta/inspect_mod.cmx
-```
+1.  Press "x" on the open mod to close it.
 
-Restarting the session is unnecessary, but it tends to be easier than manually
-closing the old mod in the UI before adding a new one (to avoid cluttering the
-device with multiple mods during development).
+1.  Build and add your mod.
+
+    ```
+    fx build && fx shell sessionctl add_mod fuchsia-pkg://fuchsia.com/inspect_mod#meta/inspect_mod.cmx
+    ```
