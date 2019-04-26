@@ -120,9 +120,6 @@ Dart_Handle ConstructDartObject(const char* class_name, Args&&... args) {
       Dart_HandleFromPersistent(class_library.GetClass("zircon", class_name));
   FXL_DCHECK(!tonic::LogIfError(type));
 
-  const char* cstr;
-  Dart_StringToCString(Dart_ToString(type), &cstr);
-
   std::array<Dart_Handle, sizeof...(Args)> args_array{
       {std::forward<Args>(args)...}};
   Dart_Handle object =
