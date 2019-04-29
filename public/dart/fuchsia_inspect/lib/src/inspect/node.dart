@@ -28,17 +28,35 @@ class Node {
 
   /// Creates a [StringProperty] with [name] on this node.
   ///
+  /// Optionally sets the [value], if specified.
+  ///
   /// Does not check whether the property already exists. This method is not
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [StringProperty]s.
-  StringProperty createStringProperty(String name) =>
-      StringProperty._(name, index, _writer);
+  StringProperty createStringProperty(String name, {String value}) {
+    var property = StringProperty._(name, index, _writer);
+
+    if (value != null) {
+      property.value = value;
+    }
+
+    return property;
+  }
 
   /// Creates a [ByteDataProperty] with [name] on this node.
+  ///
+  /// Optionally sets the [value], if specified.
   ///
   /// Does not check whether the property already exists. This method is not
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [ByteDataProperty]s.
-  ByteDataProperty createByteDataProperty(String name) =>
-      ByteDataProperty._(name, index, _writer);
+  ByteDataProperty createByteDataProperty(String name, {ByteData value}) {
+    var property = ByteDataProperty._(name, index, _writer);
+
+    if (value != null) {
+      property.value = value;
+    }
+
+    return property;
+  }
 }

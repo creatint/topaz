@@ -25,7 +25,7 @@ void main() {
 
   group('String properties', () {
     test('are written to the VMO when the value is set', () {
-      var property = node.createStringProperty('color')..value = 'fuchsia';
+      var property = node.createStringProperty('color', value: 'fuchsia');
 
       expect(readProperty(vmo, property.index),
           equalsByteData(toByteData('fuchsia')));
@@ -72,14 +72,14 @@ void main() {
   group('ByteData properties', () {
     test('are written to the VMO when the value is set', () {
       var bytes = toByteData('fuchsia');
-      var property = node.createByteDataProperty('color')..value = bytes;
+      var property = node.createByteDataProperty('color', value: bytes);
 
       expect(readProperty(vmo, property.index), equalsByteData(bytes));
     });
 
     test('can be mutated', () {
       var pancakes = toByteData('pancakes');
-      var property = node.createByteDataProperty('breakfast')..value = pancakes;
+      var property = node.createByteDataProperty('breakfast', value: pancakes);
 
       expect(readProperty(vmo, property.index), equalsByteData(pancakes));
 

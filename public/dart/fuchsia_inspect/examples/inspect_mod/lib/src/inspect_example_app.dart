@@ -30,7 +30,7 @@ class InspectExampleApp extends StatelessWidget {
 
   /// Initializes the [Inspect] metrics for this widget.
   void _initMetrics() {
-    _inspectNode.createStringProperty('app-color').value = '$_appColor';
+    _inspectNode.createStringProperty('app-color', value: '$_appColor');
   }
 }
 
@@ -39,7 +39,7 @@ class _InspectHomePage extends StatefulWidget {
   final inspect.Node inspectNode;
 
   _InspectHomePage({Key key, this.title, this.inspectNode}) : super(key: key) {
-    inspectNode.createStringProperty('title').value = title;
+    inspectNode.createStringProperty('title', value: title);
   }
 
   @override
@@ -62,8 +62,8 @@ class _InspectHomePageState extends State<_InspectHomePage> {
   int _colorIndex = 0;
 
   _InspectHomePageState(this._inspectNode) {
-    _backgroundProperty = _inspectNode.createStringProperty('background-color')
-      ..value = '$_backgroundColor';
+    _backgroundProperty = _inspectNode.createStringProperty('background-color',
+        value: '$_backgroundColor');
   }
 
   Color get _backgroundColor => _colors[_colorIndex];
