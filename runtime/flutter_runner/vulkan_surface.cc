@@ -226,9 +226,14 @@ bool VulkanSurface::AllocateDeviceMemory(sk_sp<GrContext> context,
     }
   }
 
+  VkMemoryDedicatedAllocateInfo dedicated_allocate_info = {
+      .sType = VK_STRUCTURE_TYPE_MEMORY_DEDICATED_ALLOCATE_INFO,
+      .pNext = nullptr,
+      .image = vulkan_image_.vk_image,
+      .buffer = VK_NULL_HANDLE};
   VkExportMemoryAllocateInfoKHR export_allocate_info = {
       .sType = VK_STRUCTURE_TYPE_EXPORT_MEMORY_ALLOCATE_INFO_KHR,
-      .pNext = nullptr,
+      .pNext = &dedicated_allocate_info,
       .handleTypes =
           VK_EXTERNAL_MEMORY_HANDLE_TYPE_TEMP_ZIRCON_VMO_BIT_FUCHSIA};
 
