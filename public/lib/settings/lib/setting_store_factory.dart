@@ -4,7 +4,7 @@
 
 import 'package:fidl_fuchsia_devicesettings/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
-import 'package:lib.app.dart/logging.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:settings_protos/audio.pb.dart';
 import 'package:settings_protos/setting_store.dart';
 
@@ -26,7 +26,6 @@ class SettingStoreFactory {
 
   /// Returns the setting store for [Audio].
   SettingStore<Audio> createAudioStore() {
-    return SettingStore<Audio>(
-        _deviceSettingsManagerService, 'Audio', Audio());
+    return SettingStore<Audio>(_deviceSettingsManagerService, 'Audio', Audio());
   }
 }
