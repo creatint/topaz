@@ -80,6 +80,8 @@ class TilerModel<T> extends ChangeNotifier {
         // and move it one level down along with [tile].
         assert(nearTile.isCollection);
         if (nearTile.type == type) {
+          _setFlex(nearTile, tile);
+
           nearTile.insert(
               axisDirectionIsReversed(direction) ? 0 : nearTile.tiles.length,
               tile);
@@ -90,19 +92,20 @@ class TilerModel<T> extends ChangeNotifier {
         } else {
           final copy = TileModel<T>(
             type: nearTile.type,
-            tiles: nearTile.tiles,
           );
-          for (final child in copy.tiles) {
-            child.parent = copy;
+          // Move child tiles from [nearTile] to [copy].
+          for (final tile in nearTile.tiles.toList()) {
+            nearTile.remove(tile);
+            copy.add(tile);
           }
           nearTile
-            ..tiles =
-                axisDirectionIsReversed(direction) ? [tile, copy] : [copy, tile]
+            ..add(axisDirectionIsReversed(direction) ? tile : copy)
+            ..add(axisDirectionIsReversed(direction) ? copy : tile)
             ..type = type;
-          tile.parent = copy.parent = nearTile;
         }
       } else {
         if (parent.type == type || parent.tiles.length == 1) {
+          _setFlex(parent, tile);
           int index = parent.tiles.indexOf(nearTile);
           parent
             ..insert(
@@ -253,4 +256,13 @@ class TilerModel<T> extends ChangeNotifier {
   // ignore:unused_element
   bool _isVertical(AxisDirection direction) =>
       direction == AxisDirection.up || direction == AxisDirection.down;
+
+  void _setFlex(TileModel<T> parent, TileModel<T> tile) {
+    // If all existing children have same flex, then set the [tile]'s
+    // flex to be the same, thus equally sub-dividing the parent.
+    if (!parent.isEmpty &&
+        parent.tiles.every((tile) => parent.tiles.first.flex == tile.flex)) {
+      tile.flex = parent.tiles.first.flex;
+    }
+  }
 }

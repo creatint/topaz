@@ -16,7 +16,7 @@ enum TileType { content, row, column, custom }
 /// The [content] of tile holds a reference to an arbitrary object, that is
 /// passed to the caller during the construction of the tile's chrome widget.
 class TileModel<T> extends ChangeNotifier {
-  TileModel parent;
+  TileModel<T> parent;
   TileType _type;
   T content;
   double flex;

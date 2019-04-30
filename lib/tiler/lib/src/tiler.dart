@@ -15,13 +15,13 @@ import 'tiler_model.dart';
 /// widget. The [sizerBuilder] is called to display a sizing widget between
 /// two tiles. If [sizerBuilder] returns null, no space is created between
 /// the tiles. The supplied [sizerThickness] is used during layout calculations.
-class Tiler extends StatelessWidget {
-  final TilerModel model;
-  final TileChromeBuilder chromeBuilder;
+class Tiler<T> extends StatelessWidget {
+  final TilerModel<T> model;
+  final TileChromeBuilder<T> chromeBuilder;
   final TileSizerBuilder sizerBuilder;
-  final CustomTilesBuilder customTilesBuilder;
+  final CustomTilesBuilder<T> customTilesBuilder;
   final double sizerThickness;
-  final ValueChanged<TileModel> onFloat;
+  final ValueChanged<TileModel<T>> onFloat;
 
   const Tiler({
     @required this.model,
@@ -41,7 +41,7 @@ class Tiler extends StatelessWidget {
             ? Stack(
                 children: <Widget>[
                   Positioned.fill(
-                    child: Tile(
+                    child: Tile<T>(
                       model: model.root,
                       chromeBuilder: chromeBuilder,
                       sizerBuilder: sizerBuilder,
@@ -66,7 +66,7 @@ class Tiler extends StatelessWidget {
                             child: SizedBox(
                               width: tile.width,
                               height: tile.height,
-                              child: Tile(
+                              child: Tile<T>(
                                 model: tile,
                                 chromeBuilder: chromeBuilder,
                                 sizerBuilder: sizerBuilder,

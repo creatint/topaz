@@ -8,23 +8,23 @@ import 'sizer.dart';
 import 'tile_model.dart';
 import 'utils.dart';
 
-typedef TileChromeBuilder = Widget Function(
-    BuildContext context, TileModel tile);
-typedef CustomTilesBuilder = Widget Function(
-    BuildContext context, List<TileModel> tiles);
+typedef TileChromeBuilder<T> = Widget Function(
+    BuildContext context, TileModel<T> tile);
+typedef CustomTilesBuilder<T> = Widget Function(
+    BuildContext context, List<TileModel<T>> tiles);
 
 /// A [Widget] that renders a tile give its [TileModel]. If the tile type is
 /// [TileType.content], it calls [chromeBuilder] to build a widget to render
 /// the tile. Otherwise, it renders the [tiles] children in row or column
 /// order. It calls [sizerBuilder] to get a sizing widget to display between
 /// rows or columns of tiles.
-class Tile extends StatelessWidget {
-  final TileModel model;
-  final TileChromeBuilder chromeBuilder;
+class Tile<T> extends StatelessWidget {
+  final TileModel<T> model;
+  final TileChromeBuilder<T> chromeBuilder;
   final TileSizerBuilder sizerBuilder;
-  final CustomTilesBuilder customTilesBuilder;
+  final CustomTilesBuilder<T> customTilesBuilder;
   final double sizerThickness;
-  final ValueChanged<TileModel> onFloat;
+  final ValueChanged<TileModel<T>> onFloat;
 
   const Tile({
     @required this.model,
@@ -134,11 +134,11 @@ class Tile extends StatelessWidget {
   }
 
   Widget _tileBuilder({
-    TileModel tile,
-    TileChromeBuilder chromeBuilder,
+    TileModel<T> tile,
+    TileChromeBuilder<T> chromeBuilder,
     TileSizerBuilder sizerBuilder,
-    CustomTilesBuilder customTilesBuilder,
-    ValueChanged<TileModel> onFloat,
+    CustomTilesBuilder<T> customTilesBuilder,
+    ValueChanged<TileModel<T>> onFloat,
     double sizerThickness,
   }) =>
       AnimatedBuilder(
@@ -159,8 +159,8 @@ class Tile extends StatelessWidget {
       );
 
   /// Fit as many tiles as possible within [size].
-  Iterable<TileModel> _fit(
-      TileType type, Iterable<TileModel> tiles, Size size) {
+  Iterable<TileModel<T>> _fit(
+      TileType type, Iterable<TileModel<T>> tiles, Size size) {
     if (tiles.isEmpty) {
       return tiles;
     }
@@ -189,7 +189,7 @@ class Tile extends StatelessWidget {
   }
 
   // Returns the size available after sizers thickness is accounted for.
-  Size _availableSize(TileType type, Iterable<TileModel> tiles, Size size) {
+  Size _availableSize(TileType type, Iterable<TileModel<T>> tiles, Size size) {
     final numTiles = tiles.length;
     final numSizers = numTiles - 1;
 
@@ -203,6 +203,6 @@ class Tile extends StatelessWidget {
     return Size(width, height);
   }
 
-  double _totalFlex(Iterable<TileModel> tiles) =>
+  double _totalFlex(Iterable<TileModel<T>> tiles) =>
       tiles.map((t) => t.flex).reduce((f1, f2) => f1 + f2);
 }
