@@ -20,6 +20,7 @@ sdk("fuchsia_dart") {
 
   deps = [
     "//topaz/bin/fidlgen_dart:fidlgen_dart_sdk($host_toolchain)",
+    "//topaz/public/dart/composition_delegate:composition_delegate_sdk($dart_toolchain)",
     "//topaz/public/dart/fidl:fidl_sdk($dart_toolchain)",
     "//topaz/public/dart/fuchsia:fuchsia_sdk($dart_toolchain)",
     "//topaz/public/dart/fuchsia_logger:fuchsia_logger_sdk($dart_toolchain)",
