@@ -16,6 +16,8 @@ group("sdk") {}
 sdk("fuchsia_dart") {
   category = "partner"
 
+  id = sdk_id
+
   api = "fuchsia_dart.api"
 
   deps = [
