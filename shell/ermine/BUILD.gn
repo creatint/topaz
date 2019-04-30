@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/config.gni")
 import("//build/fidl/fidl.gni")
 import("//build/package.gni")
 import("//peridot/build/modular_config/modular_config.gni")
@@ -103,28 +104,22 @@ modular_config("ermine_modular_config") {
   config = "config/modular_config.json"
 }
 
-package("ermine_fonts") {
-  deprecated_system_image = true
+config_data("ermine_fonts") {
+  for_pkg = "fonts"
 
-  resources = [
-    {
-      path = rebase_path("fonts/manifest.json")
-      dest = "vendor/fonts/manifest.json"
-    },
-    {
-      path = rebase_path(
-              "//garnet/bin/fonts/third_party/robotomono/RobotoMono-Regular.ttf")
-      dest = "vendor/fonts/RobotoMono-Regular.ttf"
-    },
-    {
-      path = rebase_path(
-              "//garnet/bin/fonts/third_party/robotomono/RobotoMono-Medium.ttf")
-      dest = "vendor/fonts/RobotoMono-Medium.ttf"
-    },
-    {
-      path = rebase_path(
-              "//garnet/bin/fonts/third_party/robotomono/RobotoMono-Light.ttf")
-      dest = "vendor/fonts/RobotoMono-Light.ttf"
-    },
+  sources = [
+    "fonts/manifest.json",
+  ]
+
+  sources += rebase_path([
+                           "RobotoMono-Light.ttf",
+                           "RobotoMono-Medium.ttf",
+                           "RobotoMono-Regular.ttf",
+                         ],
+                         "",
+                         "//garnet/bin/fonts/third_party/robotomono/")
+
+  outputs = [
+    "fonts/{{source_file_part}}",
   ]
 }
