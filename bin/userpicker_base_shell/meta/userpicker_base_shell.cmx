@@ -19,9 +19,6 @@
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.policy.Presenter",
             "fuchsia.ui.scenic.Scenic"
-        ],
-        "system": [
-            "data/sysui"
         ]
     }
 }
