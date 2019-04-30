@@ -34,9 +34,7 @@ void AddGraphicsBenchmarks(benchmarking::BenchmarksRunner* benchmarks_runner) {
     //
     {"fuchsia.scenic.image_grid_flutter_noclipping_noshadows", "present_view image_grid_flutter", "image_grid_flutter", "--unshadowed --clipping_disabled"},
     {"fuchsia.scenic.image_grid_flutter_noshadows", "present_view image_grid_flutter", "image_grid_flutter", "--unshadowed --clipping_enabled"},
-    {"fuchsia.scenic.image_grid_flutter_ssdo", "present_view image_grid_flutter", "image_grid_flutter", "--screen_space_shadows --clipping_enabled"},
-    {"fuchsia.scenic.image_grid_flutter_shadow_map", "present_view image_grid_flutter", "image_grid_flutter", "--shadow_map --clipping_enabled"},
-    {"fuchsia.scenic.image_grid_flutter_moment_shadow_map", "present_view image_grid_flutter", "image_grid_flutter", "--moment_shadow_map --clipping_enabled"},
+    {"fuchsia.scenic.image_grid_flutter_stencil_shadow_volume", "present_view image_grid_flutter", "image_grid_flutter", "--stencil_shadow_volume --clipping_enabled"},
 
     //
     // image_grid_flutter x3
@@ -45,18 +43,14 @@ void AddGraphicsBenchmarks(benchmarking::BenchmarksRunner* benchmarks_runner) {
     // process_scenic_trace.
     {"fuchsia.scenic.image_grid_flutter_x3_noclipping_noshadows", kImageGridFlutterX3Command, {}, "--unshadowed --clipping_disabled",},
     {"fuchsia.scenic.image_grid_flutter_x3_noshadows", kImageGridFlutterX3Command, {}, "--unshadowed --clipping_enabled",},
-    {"fuchsia.scenic.image_grid_flutter_x3_ssdo", kImageGridFlutterX3Command, {}, "--screen_space_shadows --clipping_enabled",},
-    {"fuchsia.scenic.image_grid_flutter_x3_shadow_map", kImageGridFlutterX3Command, {}, "--shadow_map --clipping_enabled",},
-    {"fuchsia.scenic.image_grid_flutter_x3_moment_shadow_map", kImageGridFlutterX3Command, {}, "--moment_shadow_map --clipping_enabled",},
+    {"fuchsia.scenic.image_grid_flutter_x3_stencil_shadow_volume", kImageGridFlutterX3Command, {}, "--stencil_shadow_volume --clipping_enabled",},
 
     //
     // choreography
     //
     {"fuchsia.scenic.choreography_noclipping_noshadows", kChoreographyCommand, "dashboard", "--unshadowed --clipping_disabled",},
     {"fuchsia.scenic.choreography_noshadows", kChoreographyCommand, "dashboard", "--unshadowed --clipping_enabled",},
-    {"fuchsia.scenic.choreography_ssdo", kChoreographyCommand, "dashboard", "--screen_space_shadows --clipping_enabled",},
-    {"fuchsia.scenic.choreography_shadow_map", kChoreographyCommand, "dashboard", "--shadow_map --clipping_enabled",},
-    {"fuchsia.scenic.choreography_moment_shadow_map", kChoreographyCommand, "dashboard", "--moment_shadow_map --clipping_enabled",},
+    {"fuchsia.scenic.choreography_stencil_shadow_volume", kChoreographyCommand, "dashboard", "--stencil_shadow_volume --clipping_enabled",},
   };
   // clang-format on
 
