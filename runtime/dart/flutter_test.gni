@@ -123,6 +123,9 @@ if (current_toolchain == dart_toolchain) {
           main_dart = _bootstrap_filename
           args = []
 
+          product = false
+          aot = false
+
           # TODO(tvolkert): Change to flutter platform once libraries.json works
           #                 in Fuchsia
           # platform_deps = [

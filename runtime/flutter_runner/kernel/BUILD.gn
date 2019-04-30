@@ -46,6 +46,23 @@ dart_kernel("framework_shim") {
   manifest = "$target_gen_dir/framework_shim.dilpmanifest"
 }
 
+dart_kernel("framework_shim_product") {
+  platform_name = "flutter_runner"
+  platform_deps =
+      [ "//topaz/runtime/flutter_runner/kernel:kernel_platform_files" ]
+  platform_path = "$root_out_dir/flutter_runner_patched_sdk"
+  disable_analysis = true
+  gen_bytecode = true
+  product = true
+  args = []
+
+  main_dart = "framework_shim.dart"
+  deps = [
+    "//third_party/dart-pkg/git/flutter/packages/flutter",
+  ]
+  manifest = "$target_gen_dir/framework_shim_product.dilpmanifest"
+}
+
 template("core_snapshot") {
   assert(defined(invoker.product),
          "core_snapshot requires 'product' to be defined")
@@ -58,6 +75,11 @@ template("core_snapshot") {
   }
   if (invoker.framework) {
     suffix = "${suffix}_framework"
+  }
+
+  product_suffix = ""
+  if (invoker.product) {
+    product_suffix = "_product"
   }
 
   action(target_name) {
@@ -121,9 +143,9 @@ template("core_snapshot") {
 
     if (invoker.framework) {
       if (prebuilt_framework_path == "") {
-        deps += [ ":framework_shim_kernel" ]
-        inputs += [ "$target_gen_dir/framework_shim_kernel.dil" ]
-        args += [ rebase_path("$target_gen_dir/framework_shim_kernel.dil") ]
+        deps += [ ":framework_shim${product_suffix}_kernel" ]
+        inputs += [ "$target_gen_dir/framework_shim${product_suffix}_kernel.dil" ]
+        args += [ rebase_path("$target_gen_dir/framework_shim${product_suffix}_kernel.dil") ]
       } else {
         deps += [ ":extract_prebuilt_framework" ]
         foreach(package, framework_packages) {
@@ -133,6 +155,8 @@ template("core_snapshot") {
               [ "$target_gen_dir/data/$prebuilt_framework_name/$package.dilp" ]
         }
       }
+    } else {
+      not_needed(["product_suffix"])
     }
   }
 }

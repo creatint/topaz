@@ -430,6 +430,10 @@ template("flutter_dart_jit_component") {
         component_name,
       ]
 
+      # The variable 'product' is already defined in this scope. This line makes
+      # explicit that that definition is passed to dart_kernel().
+      product = product
+
       # TODO(CP-140): Should be forwarded from the component.
       non_dart_deps = []
       if (defined(invoker.non_dart_deps)) {
@@ -780,6 +784,11 @@ template("flutter_dart_aot_component") {
       }
       sources_required = false
 
+      # The variable 'product' is already defined in this scope. This line makes
+      # explicit that that definition is passed to dart_kernel().
+      product = product
+      aot = true
+
       # TODO(CP-140): These variables should be from the component
       forward_variables_from(invoker,
                              [
@@ -796,10 +805,6 @@ template("flutter_dart_aot_component") {
       }
 
       main_dart = component.main_dart
-      args = [
-        "--aot",
-        "--tfa",
-      ]
     }
 
     # TODO(rmacnak): VM snapshot is ignored. Allow skipping its generation.
