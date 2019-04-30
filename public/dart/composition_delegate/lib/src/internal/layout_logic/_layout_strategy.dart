@@ -4,13 +4,13 @@
 
 import 'dart:collection' show LinkedHashSet;
 
-import 'package:composition_delegate.dart/src/layout/layout_types.dart';
-import 'package:composition_delegate.dart/src/internal/tree/_surface_tree.dart';
+import 'package:composition_delegate/src/layout/layout_types.dart';
+import 'package:composition_delegate/src/internal/tree/_surface_tree.dart';
 
 export 'dart:collection' show LinkedHashSet;
-export 'package:composition_delegate.dart/src/layout/layout_types.dart';
-export 'package:composition_delegate.dart/src/surface/surface.dart';
-export 'package:composition_delegate.dart/src/internal/tree/_surface_tree.dart';
+export 'package:composition_delegate/src/layout/layout_types.dart';
+export 'package:composition_delegate/src/surface/surface.dart';
+export 'package:composition_delegate/src/internal/tree/_surface_tree.dart';
 
 /// Abstract class for defining the LayoutStrategy interface. Custom layout
 /// implementations and experiments can extend LayoutStrategy and override

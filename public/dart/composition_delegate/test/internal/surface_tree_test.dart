@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 // ignore_for_file: implementation_imports
-import 'package:composition_delegate.dart/composition_delegate.dart';
-import 'package:composition_delegate.dart/src/internal/tree/_surface_node.dart';
-import 'package:composition_delegate.dart/src/internal/tree/_surface_tree.dart';
+import 'package:composition_delegate/composition_delegate.dart';
+import 'package:composition_delegate/src/internal/tree/_surface_node.dart';
+import 'package:composition_delegate/src/internal/tree/_surface_tree.dart';
 import 'package:test/test.dart';
 
 void main() {

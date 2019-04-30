@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:composition_delegate.dart/src/internal/layout_logic/_layout_strategy.dart';
+import 'package:composition_delegate/src/internal/layout_logic/_layout_strategy.dart';
 
 /// The default strategy, returns each Surface in a Stack
 class StackStrategy extends LayoutStrategy {

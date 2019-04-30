@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 // ignore_for_file: implementation_imports
-import 'package:composition_delegate.dart/composition_delegate.dart';
-import 'package:composition_delegate.dart/src/internal/tree/_surface_node.dart';
+import 'package:composition_delegate/composition_delegate.dart';
+import 'package:composition_delegate/src/internal/tree/_surface_node.dart';
 import 'package:test/test.dart';
 // import 'package:lib.app.dart/logging.dart';
 
@@ -44,11 +44,10 @@ void main() {
     sibling = SurfaceNode(surface: Surface(surfaceId: 'sibling'));
     child = SurfaceNode(surface: Surface(surfaceId: 'child'));
 
-    aunt = SurfaceNode(
-        surface: Surface(surfaceId: 'aunt'), childNodes: [cousin]);
+    aunt =
+        SurfaceNode(surface: Surface(surfaceId: 'aunt'), childNodes: [cousin]);
     parent = SurfaceNode(
-        surface: Surface(surfaceId: 'parent'),
-        childNodes: [child, sibling]);
+        surface: Surface(surfaceId: 'parent'), childNodes: [child, sibling]);
     grandparent = SurfaceNode(
         surface: Surface(surfaceId: 'grandparent'),
         childNodes: [parent, uncle, aunt]);

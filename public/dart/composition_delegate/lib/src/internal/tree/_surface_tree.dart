@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:composition_delegate.dart/src/surface/surface.dart';
-import 'package:composition_delegate.dart/src/surface/surface_relation.dart';
-import 'package:composition_delegate.dart/src/internal/tree/_surface_node.dart';
+import 'package:composition_delegate/src/surface/surface.dart';
+import 'package:composition_delegate/src/surface/surface_relation.dart';
+import 'package:composition_delegate/src/internal/tree/_surface_node.dart';
 
 /// A logger for Surface Tree warnings
 Logger log = Logger.root;
@@ -101,7 +101,7 @@ class SurfaceTree extends Iterable<Surface> {
           parentId,
           'parentId',
           'Relationship provided, but parent not specified. Relationships are'
-          'between parents and children'));
+              'between parents and children'));
     }
     SurfaceNode oldNode = _nodeMap[surface.surfaceId];
     SurfaceNode newNode =

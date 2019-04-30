@@ -5,8 +5,8 @@
 import("//build/dart/test.gni")
 import("//build/dart/dart_library.gni")
 
-dart_library("dart") {
-  package_name = "composition_delegate.dart"
+dart_library("composition_delegate") {
+  package_name = "composition_delegate"
 
   sdk_category = "partner"
   sources = [
@@ -40,7 +40,7 @@ dart_test("composition_delegate_tests") {
   ]
 
   deps = [
-    ":dart",
+    ":composition_delegate",
     "//third_party/dart-pkg/pub/logging",
     "//third_party/dart-pkg/pub/test",
   ]

@@ -5,11 +5,11 @@
 import 'dart:collection';
 import 'package:meta/meta.dart';
 
-import 'package:composition_delegate.dart/src/internal/layout_logic/_layout_logic.dart';
-import 'package:composition_delegate.dart/src/internal/layout_logic/_layout_strategy.dart';
-import 'package:composition_delegate.dart/src/internal/tree/_surface_tree.dart';
-import 'package:composition_delegate.dart/src/layout/layout_types.dart';
-import 'package:composition_delegate.dart/src/surface/surface.dart';
+import 'package:composition_delegate/src/internal/layout_logic/_layout_logic.dart';
+import 'package:composition_delegate/src/internal/layout_logic/_layout_strategy.dart';
+import 'package:composition_delegate/src/internal/tree/_surface_tree.dart';
+import 'package:composition_delegate/src/layout/layout_types.dart';
+import 'package:composition_delegate/src/surface/surface.dart';
 
 /// The CompositionDelegate maintains the model of surfaces participating in an
 /// experience and their relationships. Using context such as viewport area,
