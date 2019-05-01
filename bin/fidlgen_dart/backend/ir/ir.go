@@ -576,8 +576,27 @@ func (c *compiler) compileLiteral(val types.Literal) string {
 		// TODO(abarth): Escape more characters (e.g., newline).
 		return fmt.Sprintf("%q", val.Value)
 	case types.NumericLiteral:
-		// TODO(abarth): Values larger than max int64 need to be encoded in hex.
-		return val.Value
+		// TODO(FIDL-486): Once we expose resolved constants for defaults, e.g.
+		// in structs, we will not need ignore hex and binary values.
+		if strings.HasPrefix(val.Value, "0x") || strings.HasPrefix(val.Value, "0b") {
+			return val.Value
+		}
+
+		// No special handling of floats.
+		if strings.ContainsRune(val.Value, '.') {
+			return val.Value
+		}
+
+		// For numbers larger than int64, they must be emitted as hex numbers.
+		// We simply do this for all positive numbers.
+		if strings.HasPrefix(val.Value, "-") {
+			return val.Value
+		}
+		num, err := strconv.ParseUint(val.Value, 10, 64)
+		if err != nil {
+			panic(fmt.Sprintf("JSON IR contains invalid numeric literal: %s", val.Value))
+		}
+		return fmt.Sprintf("0x%s", strconv.FormatUint(num, 16))
 	case types.TrueLiteral:
 		return "true"
 	case types.FalseLiteral:

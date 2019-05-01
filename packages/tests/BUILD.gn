@@ -76,6 +76,7 @@ group("all") {
     "//topaz/packages/tests:scenic",
     "//topaz/packages/tests:sledge",
     "//topaz/packages/tests:web_runner_tests",
+    "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_ir_test($host_toolchain)",
   ]
 }
 
