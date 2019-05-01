@@ -37,16 +37,3 @@ sdk("fuchsia_dart") {
     "//topaz/runtime/dart:kernel_compiler_sdk($host_toolchain)",
   ]
 }
-
-sdk("topaz") {
-  category = "partner"
-
-  id = sdk_id
-
-  testonly = true
-
-  deps = [
-    ":fuchsia_dart_molecule",
-    "//sdk:core_molecule",
-  ]
-}

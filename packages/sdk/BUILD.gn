@@ -5,7 +5,7 @@
 group("all") {
   testonly = true
   public_deps = [
-    "//topaz/packages/sdk:topaz",
+    ":topaz",
   ]
 }
 
