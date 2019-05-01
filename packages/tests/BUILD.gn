@@ -66,7 +66,7 @@ group("all") {
     "//topaz/packages/tests:dart_target_unittests",
     "//topaz/packages/tests:dart_unittests",
     "//topaz/packages/tests:fidl_changes",
-    "//topaz/packages/tests:fidl_compatibility_test",
+    "//topaz/packages/tests:fidl_compatibility_test_topaz",
     "//topaz/packages/tests:fidl_compatibility_test_server_dart",
     "//topaz/packages/tests:fidl_dangerous_identifiers",
     "//topaz/packages/tests:flutter_runner_tests",
@@ -121,15 +121,14 @@ group("crasher_dart") {
   ]
 }
 
-group("fidl_compatibility_test") {
+group("fidl_compatibility_test_topaz") {
   testonly = true
   public_deps = [
-    "//garnet/packages/tests:fidl_compatibility_test_bin",
     "//garnet/packages/tests:fidl_compatibility_test_server_cpp",
     "//garnet/packages/tests:fidl_compatibility_test_server_go",
     "//garnet/packages/tests:fidl_compatibility_test_server_llcpp",
     "//garnet/packages/tests:fidl_compatibility_test_server_rust",
-    "//topaz/bin/fidl_compatibility_test:package",
+    "//topaz/bin/fidl_compatibility_test:fidl_compatibility_test_topaz",
     "//topaz/packages/tests:fidl_compatibility_test_server_dart",
   ]
 }
