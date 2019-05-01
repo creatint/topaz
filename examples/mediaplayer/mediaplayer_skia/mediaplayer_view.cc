@@ -81,7 +81,7 @@ MediaPlayerView::MediaPlayerView(scenic::ViewContext view_context,
         HandleStatusChanged(status);
       };
 
-  auto [view_token, view_holder_token] = scenic::NewViewTokenPair();
+  auto [view_token, view_holder_token] = scenic::ViewTokenPair::New();
 
   player_->CreateView(std::move(view_token));
 

@@ -127,7 +127,7 @@ class PixelTest : public gtest::RealLoopFixture {
   // Gets a view token for presentation by |RootPresenter|. See also
   // garnet/examples/ui/hello_base_view
   fuchsia::ui::views::ViewToken CreatePresentationViewToken() {
-    auto [view_token, view_holder_token] = scenic::NewViewTokenPair();
+    auto [view_token, view_holder_token] = scenic::ViewTokenPair::New();
 
     auto presenter = context_->svc()->Connect<fuchsia::ui::policy::Presenter>();
     presenter.set_error_handler([](zx_status_t status) {
