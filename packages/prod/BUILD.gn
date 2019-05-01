@@ -65,7 +65,6 @@ group("all") {
     "//topaz/packages/prod:flutter_jit",
     "//topaz/packages/prod:flutter_jit_product",
     "//topaz/packages/prod:latin-ime",
-    "//topaz/packages/prod:modules_index",
     "//topaz/packages/prod:mondrian",
     "//topaz/packages/prod:settings",
     "//topaz/packages/prod:skottie_viewer",
@@ -180,13 +179,6 @@ group("flutter_jit_product") {
   public_deps = [
     "//garnet/packages/prod:scenic",
     "//topaz/runtime/flutter_runner:flutter_jit_product_runner",
-  ]
-}
-
-group("modules_index") {
-  testonly = true
-  public_deps = [
-    "//topaz:topaz_modules_index",
   ]
 }
 
