@@ -16,9 +16,9 @@ import 'package:fidl_fuchsia_ui_app/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_scenic/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
+import 'package:fuchsia_scenic/views.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:pedantic/pedantic.dart';
-import 'package:zircon/zircon.dart';
 
 const _testAppUrl =
     'fuchsia-pkg://fuchsia.com/flutter_screencap_test_app#meta/flutter_screencap_test_app.cmx';
@@ -33,16 +33,14 @@ const int _blankColor = 0x00000000;
 // See lib/main.dart.
 final Set<int> _expectedTopTwoColors = {0xFF4dac26, 0xFFd01c8b};
 
-EventPair _createPresentationViewToken() {
-  final viewTokens = EventPairPair();
-  assert(viewTokens.status == ZX.OK);
-
+ViewToken _createPresentationViewToken() {
+  final tokenPair = ViewTokenPair();
   final presenter = PresenterProxy();
 
   try {
     StartupContext.fromStartupInfo().incoming.connectToService(presenter);
-    presenter.presentView(ViewHolderToken(value: viewTokens.second), null);
-    return viewTokens.first;
+    presenter.presentView(tokenPair.viewHolderToken, null);
+    return tokenPair.viewToken;
   } finally {
     presenter.ctrl.close();
   }
@@ -110,7 +108,8 @@ Future<void> _startAppAsRootView(
   final incoming = Incoming(directory);
   try {
     incoming.connectToService(viewProvider);
-    await viewProvider.createView(_createPresentationViewToken(), null, null);
+    await viewProvider.createView(
+        _createPresentationViewToken().value, null, null);
   } finally {
     viewProvider.ctrl.close();
     unawaited(incoming.close());

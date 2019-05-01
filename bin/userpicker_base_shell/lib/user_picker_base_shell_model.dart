@@ -76,10 +76,10 @@ class UserPickerBaseShellModel extends CommonBaseShellModel
 
   /// Call when reset is tapped.
   void resetTapped() {
-      int status = System.reboot();
-      if (status != 0 ) {
-        log.severe('Unable to reboot system: $status');
-      }
+    int status = System.reboot();
+    if (status != 0) {
+      log.severe('Unable to reboot system: $status');
+    }
   }
 
   /// Create a new user and login with that user
@@ -139,10 +139,7 @@ class UserPickerBaseShellModel extends CommonBaseShellModel
   bool get showingLoadingSpinner => _showingLoadingSpinner;
 
   /// Show the system clock if true
-  bool get showingClock =>
-      !showingLoadingSpinner &&
-      _draggedUsers.isEmpty &&
-      childViewConnection == null;
+  bool get showingClock => !showingLoadingSpinner && _draggedUsers.isEmpty;
 
   /// If true, show advanced user actions
   bool get showingUserActions => _showingUserActions;

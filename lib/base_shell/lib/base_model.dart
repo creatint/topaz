@@ -14,13 +14,10 @@ import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_gfx/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_input/fidl_async.dart' as input;
 import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
-import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
 import 'package:fuchsia_logger/logger.dart';
-import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
-    show ChildViewConnection;
 import 'package:fuchsia_services/services.dart' as app;
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart' show Channel, EventPair;
+import 'package:zircon/zircon.dart' show Channel;
 
 import 'base_shell_model.dart';
 import 'netstack_model.dart';
@@ -152,9 +149,6 @@ class CommonBaseShellModel extends BaseShellModel
   /// Only updated after [refreshUsers] is called.
   List<Account> _accounts;
 
-  /// Childview connection that contains the session shell.
-  ChildViewConnection _childViewConnection;
-
   final List<KeyboardCaptureListenerHackBinding> _keyBindings = [];
 
   final PresentationModeListenerBinding _presentationModeListenerBinding =
@@ -162,14 +156,13 @@ class CommonBaseShellModel extends BaseShellModel
   final PointerCaptureListenerHackBinding _pointerCaptureListenerBinding =
       PointerCaptureListenerHackBinding();
 
-  // Because this base shell only supports a single user logged in at a time,
-  // we don't need to maintain separate ServiceProvider for each logged-in user.
-  final ServiceProviderBinding _serviceProviderBinding =
-      ServiceProviderBinding();
   final List<PresentationBinding> _presentationBindings =
       <PresentationBinding>[];
 
   CommonBaseShellPresentationImpl _presentationImpl;
+
+  /// Has the user logged in or not yet?
+  bool _loggedIn = false;
 
   /// Constructor
   CommonBaseShellModel(this.logger) : super() {
@@ -177,12 +170,6 @@ class CommonBaseShellModel extends BaseShellModel
   }
 
   List<Account> get accounts => _accounts;
-
-  /// Returns the authenticated child view connection
-  ChildViewConnection get childViewConnection => _childViewConnection;
-  ChildViewConnection get childViewConnectionNew => _childViewConnection;
-
-  set shouldCreateNewChildView(bool should) {}
 
   // |ServiceProvider|.
   @override
@@ -240,10 +227,9 @@ class CommonBaseShellModel extends BaseShellModel
 
   /// Login with given user
   Future<void> login(String accountId) async {
-    if (_serviceProviderBinding.isBound) {
+    if (_loggedIn) {
       log.warning(
-        'Ignoring unsupported attempt to log in'
-        ' while already logged in!',
+        'Ignoring unsupported attempt to log in while already logged in!',
       );
       return;
     }
@@ -266,28 +252,8 @@ class CommonBaseShellModel extends BaseShellModel
       }
     });
 
-    final InterfacePair<ServiceProvider> serviceProvider =
-        InterfacePair<ServiceProvider>();
-
-    _serviceProviderBinding.bind(this, serviceProvider.passRequest());
-
-    final viewOwnerHandle =
-        _userManager.login(accountId, serviceProvider.passHandle());
-
-    _childViewConnection = ChildViewConnection(
-      ViewHolderToken(
-          value: EventPair(viewOwnerHandle.passChannel().passHandle())),
-      onAvailable: (ChildViewConnection connection) {
-        log.info('BaseShell: Child view connection available!');
-        connection.requestFocus();
-        notifyListeners();
-      },
-      onUnavailable: (ChildViewConnection connection) {
-        log.info('BaseShell: Child view connection now unavailable!');
-        onLogout();
-        notifyListeners();
-      },
-    );
+    _userManager.login(accountId);
+    _loggedIn = true;
 
     notifyListeners();
   }
@@ -295,12 +261,13 @@ class CommonBaseShellModel extends BaseShellModel
   /// Called when the the session shell logs out.
   @mustCallSuper
   Future<void> onLogout() async {
-    _childViewConnection = null;
-    _serviceProviderBinding.close();
+    _loggedIn = false;
+
     for (PresentationBinding presentationBinding in _presentationBindings) {
       presentationBinding.close();
     }
     await refreshUsers();
+
     notifyListeners();
   }
 

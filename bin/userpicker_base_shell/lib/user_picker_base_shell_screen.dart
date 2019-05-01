@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:flutter/material.dart';
-import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 import 'package:meta/meta.dart';
 
 import 'clock.dart';
@@ -28,30 +27,16 @@ class UserPickerBaseShellScreen extends StatelessWidget {
         Widget child,
         UserPickerBaseShellModel model,
       ) {
-        List<Widget> stackChildren = <Widget>[];
-
-        if (model.childViewConnection == null || model.loadingChildView) {
-          stackChildren.addAll(<Widget>[
-            UserPickerScreen(),
-            Align(
-              alignment: FractionalOffset.center,
-              child: Offstage(
-                offstage: !model.showingClock,
-                child: Clock(),
-              ),
+        List<Widget> stackChildren = <Widget>[
+          UserPickerScreen(),
+          Align(
+            alignment: FractionalOffset.center,
+            child: Offstage(
+              offstage: !model.showingClock,
+              child: Clock(),
             ),
-          ]);
-        }
-
-        if (model.childViewConnection != null) {
-          stackChildren.add(Offstage(
-            child: Container(
-              color: Colors.black,
-              child: ChildView(connection: model.childViewConnection),
-            ),
-            offstage: model.loadingChildView,
-          ));
-        }
+          ),
+        ];
 
         return Stack(fit: StackFit.expand, children: stackChildren);
       },

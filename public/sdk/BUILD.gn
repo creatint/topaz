@@ -10,7 +10,8 @@ import("//sdk/config.gni")
 # This default target is empty because there are multiple flavors of SDKs and
 # there is no "default" one. The empty target is still needed so that all the
 # other targets in this file are attached to the build graph.
-group("sdk") {}
+group("sdk") {
+}
 
 # Tools and libraries to develop for Fuchsia with Dart.
 sdk("fuchsia_dart") {

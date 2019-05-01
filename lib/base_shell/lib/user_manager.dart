@@ -1,10 +1,7 @@
 import 'dart:async';
 
-import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_modular/fidl_async.dart';
 import 'package:fidl_fuchsia_modular_auth/fidl_async.dart';
-import 'package:fidl_fuchsia_sys/fidl_async.dart';
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart';
 import 'package:fuchsia_logger/logger.dart';
 
 /// Handles adding, removing, and logging, and controlling users.
@@ -39,22 +36,12 @@ class BaseShellUserManager {
   }
 
   /// Logs in the user given by [accountId].
-  ///
-  /// Takes in [serviceProviderHandle] which gets passed to the session shell.
-  /// Returns a handle to the [ViewOwner] that the base shell should use
-  /// to open a [ChildViewConnection] to display the session shell.
-  InterfaceHandle<ViewOwner> login(String accountId,
-      InterfaceHandle<ServiceProvider> serviceProviderHandle) {
-    final InterfacePair<ViewOwner> viewOwner = InterfacePair<ViewOwner>();
-    final UserLoginParams params = UserLoginParams(
+  void login(String accountId) {
+    final UserLoginParams2 params = UserLoginParams2(
       accountId: accountId,
-      viewOwner: viewOwner.passRequest(),
-      services: serviceProviderHandle,
     );
 
-    _userProvider.login(params);
-
-    return viewOwner.passHandle();
+    _userProvider.login2(params);
   }
 
   Future<void> removeUser(String userId) {
