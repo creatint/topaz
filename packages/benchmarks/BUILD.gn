@@ -13,6 +13,6 @@ group("topaz") {
   testonly = true
   public_deps = [
     "//garnet/packages/benchmarks:buildbot",
-    "//topaz/tests/benchmarks:topaz_benchmarks",
+    "//topaz/tests/benchmarks:all",
   ]
 }

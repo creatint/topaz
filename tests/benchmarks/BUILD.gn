@@ -4,6 +4,22 @@
 
 import("//build/package.gni")
 
+group("all") {
+  testonly = true
+  public_deps = [
+    "//topaz/tests/benchmarks:input_latency",
+    "//topaz/tests/benchmarks:topaz_benchmarks",
+  ]
+}
+
+group("input_latency") {
+  testonly = true
+  public_deps = [
+    "//garnet/tests/benchmarks/input_latency:garnet_input_latency_benchmarks",
+    "//topaz/tests/benchmarks/input_latency:topaz_input_latency_benchmarks",
+  ]
+}
+
 executable("topaz_benchmarks_bin") {
   output_name = "topaz_benchmarks"
 
