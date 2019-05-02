@@ -60,6 +60,7 @@ class EditorState extends State<Editor> {
   LineCol _lastTapLocation;
 
   final FocusNode _focusNode = FocusNode();
+  FocusAttachment _focusAttachment;
   TextStyle _defaultStyle;
 
   StreamSubscription<Document> _documentStream;
@@ -81,6 +82,7 @@ class EditorState extends State<Editor> {
   void initState() {
     super.initState();
     _setupStream();
+    _focusAttachment = _focusNode.attach(context);
   }
 
   @override
@@ -223,7 +225,7 @@ class EditorState extends State<Editor> {
   }
 
   void _requestKeyboard() {
-    FocusScope.of(context).requestFocus(_focusNode);
+    _focusNode.requestFocus();
   }
 
   LineCol _getLineColFromGlobal(Offset globalPosition) {
@@ -293,7 +295,7 @@ class EditorState extends State<Editor> {
 
   @override
   Widget build(BuildContext context) {
-    FocusScope.of(context).reparentIfNeeded(_focusNode);
+    _focusAttachment.reparent();
 
     final Widget lines = (widget.document == null)
         ? Container()

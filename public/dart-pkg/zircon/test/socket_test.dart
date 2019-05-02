@@ -41,6 +41,9 @@ void main() {
 
   test('read write socket', () {
     final HandlePairResult pair = System.socketCreate();
+    expect(pair.status, equals(ZX.OK));
+    expect(pair.first.isValid, isTrue);
+    expect(pair.second.isValid, isTrue);
 
     // When no data is available, ZX.ERR_SHOULD_WAIT is returned.
     expect(
@@ -60,6 +63,10 @@ void main() {
 
   test('partial read socket', () {
     final HandlePairResult pair = System.socketCreate();
+    expect(pair.status, equals(ZX.OK));
+    expect(pair.first.isValid, isTrue);
+    expect(pair.second.isValid, isTrue);
+
     final ByteData data = utf8Bytes('Hello, world');
     final WriteResult writeResult = System.socketWrite(pair.first, data, 0);
     expect(writeResult.status, equals(ZX.OK));
@@ -83,6 +90,10 @@ void main() {
 
   test('partial write socket', () {
     final HandlePairResult pair = System.socketCreate();
+    expect(pair.status, equals(ZX.OK));
+    expect(pair.first.isValid, isTrue);
+    expect(pair.second.isValid, isTrue);
+
     final WriteResult writeResult1 =
         System.socketWrite(pair.first, utf8Bytes('Hello, '), 0);
     expect(writeResult1.status, equals(ZX.OK));
@@ -99,14 +110,21 @@ void main() {
 
   test('async wait socket read', () async {
     final HandlePairResult pair = System.socketCreate();
-    final Completer<int> completer = Completer<int>();
-    pair.first.asyncWait(ZX.SOCKET_READABLE, (int status, int pending) {
-      completer.complete(status);
-    });
+    expect(pair.status, equals(ZX.OK));
+    expect(pair.first.isValid, isTrue);
+    expect(pair.second.isValid, isTrue);
 
+    final Completer<int> completer = Completer<int>();
+    final HandleWaiter waiter = pair.first.asyncWait(ZX.SOCKET_READABLE,
+        (int status, int pending) {
+          completer.complete(status);
+        });
+    expect(waiter, isNotNull);
     expect(completer.isCompleted, isFalse);
 
-    System.socketWrite(pair.second, utf8Bytes('Hi'), 0);
+    final WriteResult writeResult =
+        System.socketWrite(pair.second, utf8Bytes('Hi'), 0);
+    expect(writeResult.status, equals(ZX.OK));
 
     final int status = await completer.future;
     expect(status, equals(ZX.OK));
@@ -114,14 +132,19 @@ void main() {
 
   test('async wait socket closed', () async {
     final HandlePairResult pair = System.socketCreate();
-    final Completer<int> completer = Completer<int>();
-    pair.first.asyncWait(ZX.SOCKET_PEER_CLOSED, (int status, int pending) {
-      completer.complete(status);
-    });
+    expect(pair.status, equals(ZX.OK));
+    expect(pair.first.isValid, isTrue);
+    expect(pair.second.isValid, isTrue);
 
+    final Completer<int> completer = Completer<int>();
+    final HandleWaiter waiter = pair.first.asyncWait(ZX.SOCKET_PEER_CLOSED,
+        (int status, int pending) {
+          completer.complete(status);
+        });
+    expect(waiter, isNotNull);
     expect(completer.isCompleted, isFalse);
 
-    pair.second.close();
+    expect(pair.second.close(), equals(ZX.OK));
 
     final int status = await completer.future;
     expect(status, equals(ZX.OK));

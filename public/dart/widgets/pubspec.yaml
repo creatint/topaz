@@ -8,4 +8,4 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_image: ^1.0.0
+  flutter_image: 2.0.0-dev.1
