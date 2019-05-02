@@ -20,6 +20,7 @@
 #include "third_party/icu/source/common/unicode/udata.h"
 #include "third_party/skia/include/core/SkGraphics.h"
 #include "topaz/runtime/dart/utils/vmo.h"
+#include "topaz/runtime/dart/utils/files.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
 namespace flutter_runner {
@@ -88,6 +89,19 @@ static void SetThreadName(const std::string& thread_name) {
                                    thread_name.size());
 }
 
+#if !defined(DART_PRODUCT)
+// Register native symbol information for the Dart VM's profiler.
+static void RegisterProfilerSymbols(const char* symbols_path,
+                                    const char* dso_name) {
+  std::string* symbols = new std::string();
+  if (dart_utils::ReadFileToString(symbols_path, symbols)) {
+    Dart_AddSymbols(dso_name, symbols->data(), symbols->size());
+  } else {
+    FML_LOG(ERROR) << "Failed to load " << symbols_path;
+  }
+}
+#endif  // !defined(DART_PRODUCT)
+
 Runner::Runner(async::Loop* loop)
     : loop_(loop),
       runner_context_(RunnerContext::CreateFromStartupInfo()) {
@@ -112,6 +126,20 @@ Runner::Runner(async::Loop* loop)
 
   runner_context_->AddPublicService<fuchsia::sys::Runner>(
       std::bind(&Runner::RegisterApplication, this, std::placeholders::_1));
+
+#if !defined(DART_PRODUCT)
+  if (Dart_IsPrecompiledRuntime()) {
+    RegisterProfilerSymbols("pkg/data/libdart_precompiled_runtime.dartprofilersymbols",
+                            "libdart_precompiled_runtime.so");
+    RegisterProfilerSymbols("pkg/data/flutter_aot_runner.dartprofilersymbols",
+                            "");
+  } else {
+    RegisterProfilerSymbols("pkg/data/libdart_jit.dartprofilersymbols",
+                            "libdart_jit.so");
+    RegisterProfilerSymbols("pkg/data/flutter_jit_runner.dartprofilersymbols",
+                            "");
+  }
+#endif  // !defined(DART_PRODUCT)
 }
 
 Runner::~Runner() {

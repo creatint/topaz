@@ -300,12 +300,6 @@ Application::Application(
   // Don't collect CPU samples from Dart VM C++ code.
   settings_.dart_flags.push_back("--no_profile_vm");
 
-  // Scale back CPU profiler sampling period on ARM64 to avoid overloading
-  // the tracing engine.
-#if defined(__aarch64__)
-  settings_.dart_flags.push_back("--profile_period=10000");
-#endif  // defined(__aarch64__)
-
   auto dispatcher = async_get_default_dispatcher();
   FML_CHECK(dispatcher);
   const std::string component_url = package.resolved_url;
