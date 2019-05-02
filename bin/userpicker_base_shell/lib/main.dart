@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl_fuchsia_cobalt/fidl_async.dart' as cobalt;
-import 'package:fidl_fuchsia_mem/fidl_async.dart';
 import 'package:fidl_fuchsia_netstack/fidl_async.dart';
 import 'package:flutter/material.dart';
 import 'package:fuchsia_logger/logger.dart';
@@ -13,7 +11,6 @@ import 'package:lib.base_shell/netstack_model.dart';
 import 'package:lib.widgets/application.dart';
 import 'package:lib.widgets/model.dart';
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 
 import 'authentication_overlay.dart';
@@ -25,8 +22,6 @@ import 'user_picker_base_shell_screen.dart';
 const double _kMousePointerElevation = 800.0;
 const double _kIndicatorElevation = _kMousePointerElevation - 1.0;
 
-const String _kCobaltConfigBinProtoPath = '/pkg/data/sysui_metrics_config.pb';
-
 /// The main base shell widget.
 BaseShellWidget<UserPickerBaseShellModel> _baseShellWidget;
 
@@ -35,29 +30,10 @@ void main() {
   StartupContext startupContext = StartupContext.fromStartupInfo();
   final launcherProxy = LauncherProxy();
   startupContext.incoming.connectToService(launcherProxy);
-
-  // Connect to Cobalt
-  cobalt.LoggerProxy logger = cobalt.LoggerProxy();
-
-  cobalt.LoggerFactoryProxy loggerFactory = cobalt.LoggerFactoryProxy();
-  startupContext.incoming.connectToService(loggerFactory);
-
-  SizedVmo configVmo = SizedVmo.fromFile(_kCobaltConfigBinProtoPath);
-  cobalt.ProjectProfile profile = cobalt.ProjectProfile(
-      config: Buffer(vmo: configVmo, size: configVmo.size),
-      releaseStage: cobalt.ReleaseStage.ga);
-  loggerFactory
-      .createLogger(profile, logger.ctrl.request())
-      .then((cobalt.Status s) {
-    if (s != cobalt.Status.ok) {
-      print('Failed to obtain Logger. Cobalt config is invalid.');
-    }
-  });
-  loggerFactory.ctrl.close();
-
+  
   NetstackProxy netstackProxy = NetstackProxy();
   startupContext.incoming.connectToService(netstackProxy);
-
+  
   NetstackModel netstackModel = NetstackModel(netstack: netstackProxy)..start();
 
   _OverlayModel wifiInfoOverlayModel = _OverlayModel();
@@ -75,7 +51,6 @@ void main() {
     onWifiTapped: () {
       wifiInfoOverlayModel.showing = !wifiInfoOverlayModel.showing;
     },
-    logger: logger,
   );
 
   Widget mainWidget = Stack(

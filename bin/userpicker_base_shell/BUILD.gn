@@ -2,12 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//third_party/cobalt_config/metrics_registry.gni")
 import("//topaz/runtime/flutter_runner/flutter_app.gni")
-
-metrics_registry("sysui_metrics_config") {
-  project_id = 103
-}
 
 flutter_app("userpicker_base_shell") {
   main_dart = "lib/main.dart"
@@ -16,15 +11,6 @@ flutter_app("userpicker_base_shell") {
     {
       path = rebase_path("meta/userpicker_base_shell.cmx")
       dest = "userpicker_base_shell.cmx"
-    },
-  ]
-
-  resources = [
-    {
-      path = rebase_path(
-              get_label_info(":sysui_metrics_config", "target_gen_dir") +
-              "/sysui_metrics_config.pb")
-      dest = "sysui_metrics_config.pb"
     },
   ]
 
@@ -44,8 +30,6 @@ flutter_app("userpicker_base_shell") {
     "user_picker_base_shell_screen.dart",
     "user_picker_screen.dart",
   ]
-
-  non_dart_deps = [ ":sysui_metrics_config" ]
 
   deps = [
     "//sdk/fidl/fuchsia.modular",

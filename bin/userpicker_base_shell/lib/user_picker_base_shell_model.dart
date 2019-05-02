@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'package:fidl_fuchsia_cobalt/fidl_async.dart' as cobalt;
+
 import 'package:fidl_fuchsia_modular_auth/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
@@ -49,8 +49,7 @@ class UserPickerBaseShellModel extends CommonBaseShellModel
     this.onBaseShellStopped,
     this.onWifiTapped,
     this.onLogin,
-    cobalt.Logger logger,
-  }) : super(logger);
+  });
 
   @override
   void onStop() {

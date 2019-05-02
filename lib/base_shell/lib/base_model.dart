@@ -141,7 +141,7 @@ class CommonBaseShellModel extends BaseShellModel
 
   NetstackModel _netstackModel;
 
-  /// Logs metrics to cobalt.
+  /// Logs metrics to Cobalt. May be null, in which case no metrics are logged.
   final cobalt.Logger logger;
 
   /// A list of accounts that are already logged in on the device.
@@ -165,7 +165,7 @@ class CommonBaseShellModel extends BaseShellModel
   bool _loggedIn = false;
 
   /// Constructor
-  CommonBaseShellModel(this.logger) : super() {
+  CommonBaseShellModel([this.logger]) : super() {
     _presentationImpl = CommonBaseShellPresentationImpl(this);
   }
 
@@ -235,22 +235,25 @@ class CommonBaseShellModel extends BaseShellModel
     }
 
     Timeline.instantSync('logging in', arguments: {'accountId': '$accountId'});
-    await logger
-        .startTimer(
-            _kSessionShellLoginTimeMetricId,
-            0,
-            '',
-            'session_shell_login_timer_id',
-            DateTime.now().millisecondsSinceEpoch,
-            _kCobaltTimerTimeout.inSeconds)
-        .then((status) {
-      if (status != cobalt.Status.ok) {
-        log.warning(
-          'Failed to start timer metric '
-          '$_kSessionShellLoginTimeMetricId: $status. ',
-        );
-      }
-    });
+    
+    if (logger != null) {
+      await logger
+      .startTimer(
+        _kSessionShellLoginTimeMetricId,
+        0,
+        '',
+        'session_shell_login_timer_id',
+        DateTime.now().millisecondsSinceEpoch,
+        _kCobaltTimerTimeout.inSeconds)
+      .then((status) {
+          if (status != cobalt.Status.ok) {
+            log.warning(
+              'Failed to start timer metric '
+              '$_kSessionShellLoginTimeMetricId: $status. ',
+            );
+          }
+      });
+    }
 
     _userManager.login(accountId);
     _loggedIn = true;
@@ -304,24 +307,25 @@ class CommonBaseShellModel extends BaseShellModel
     _userManager = BaseShellUserManager(userProvider);
 
     _userManager.onLogout.listen((_) async {
-      await logger
+        if (logger != null) {
+          await logger
           .endTimer(
-              'session_shell_log_out_timer_id',
-              DateTime.now().millisecondsSinceEpoch,
-              _kCobaltTimerTimeout.inSeconds)
+            'session_shell_log_out_timer_id',
+            DateTime.now().millisecondsSinceEpoch,
+            _kCobaltTimerTimeout.inSeconds)
           .then((status) {
-        if (status != cobalt.Status.ok) {
-          log.warning(
-            'Failed to end timer metric '
-            'session_shell_log_out_timer_id: $status. ',
-          );
+              if (status != cobalt.Status.ok) {
+                log.warning(
+                  'Failed to end timer metric '
+                  'session_shell_log_out_timer_id: $status. ',
+                );
+              }
+          });
         }
-      });
-
-      log.info('UserPickerBaseShell: User logged out!');
-      await onLogout();
+        log.info('UserPickerBaseShell: User logged out!');
+        await onLogout();
     });
-
+    
     await refreshUsers();
   }
 
