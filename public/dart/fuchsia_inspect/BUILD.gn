@@ -15,6 +15,7 @@ dart_library("fuchsia_inspect") {
   sources = [
     "inspect.dart",
     "src/inspect/inspect.dart",
+    "src/inspect/internal/_inspect_impl.dart",
     "src/inspect/node.dart",
     "src/inspect/metric.dart",
     "src/inspect/property.dart",
@@ -39,7 +40,7 @@ dart_library("fuchsia_inspect") {
 
 dart_test("fuchsia_inspect_package_unittests") {
   sources = [
-    "inspect/inspect_test.dart",
+    "inspect/internal/inspect_impl_test.dart",
     "inspect/node_test.dart",
     "inspect/metric_test.dart",
     "inspect/property_test.dart",

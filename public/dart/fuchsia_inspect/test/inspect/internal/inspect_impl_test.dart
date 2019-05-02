@@ -4,17 +4,20 @@
 
 // ignore_for_file: implementation_imports
 
-import 'package:fuchsia_inspect/inspect.dart';
+import 'package:fuchsia_inspect/src/inspect/internal/_inspect_impl.dart';
 import 'package:fuchsia_inspect/src/vmo/vmo_writer.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
 
-import '../util.dart';
+import '../../util.dart';
 
 void main() {
   test('Inspect root node is non-null by default', () {
+    var context = StartupContext.fromStartupInfo();
     var vmo = FakeVmo(512);
     var writer = VmoWriter(vmo);
-    var inspect = Inspect.internal(writer);
+
+    var inspect = InspectImpl(context, writer);
     expect(inspect.root, isNotNull);
   });
 }

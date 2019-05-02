@@ -5,15 +5,13 @@
 import 'package:flutter/material.dart';
 import 'package:fuchsia_inspect/inspect.dart' as inspect;
 import 'package:fuchsia_modular/module.dart';
-import 'package:fuchsia_services/services.dart';
 
 import '../inspect_example_app.dart';
 
 class RootIntentHandler extends IntentHandler {
   @override
   void handleIntent(Intent intent) {
-    var context = StartupContext.fromStartupInfo();
-    var inspectNode = inspect.Inspect(context).root;
+    var inspectNode = inspect.Inspect().root;
     runApp(InspectExampleApp(inspectNode));
   }
 }

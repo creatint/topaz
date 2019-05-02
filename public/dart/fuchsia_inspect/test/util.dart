@@ -19,8 +19,10 @@ class FakeVmo implements VmoHolder {
   /// The memory contents of this "VMO".
   final ByteData bytes;
 
+  final Vmo _vmo = Vmo(null);
+
   @override
-  Vmo get vmo => null;
+  Vmo get vmo => _vmo;
 
   /// Size of the "VMO".
   @override

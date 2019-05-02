@@ -5,9 +5,11 @@
 // ignore_for_file: implementation_imports
 
 import 'package:fuchsia_inspect/inspect.dart';
+import 'package:fuchsia_inspect/src/inspect/internal/_inspect_impl.dart';
 import 'package:fuchsia_inspect/src/vmo/util.dart';
 import 'package:fuchsia_inspect/src/vmo/vmo_holder.dart';
 import 'package:fuchsia_inspect/src/vmo/vmo_writer.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
 
 import '../util.dart';
@@ -17,9 +19,10 @@ void main() {
   Node node;
 
   setUp(() {
+    var context = StartupContext.fromStartupInfo();
     vmo = FakeVmo(512);
     var writer = VmoWriter(vmo);
-    var inspect = Inspect.internal(writer);
+    Inspect inspect = InspectImpl(context, writer);
     node = inspect.root;
   });
 
