@@ -34,10 +34,10 @@ group("dart") {
 group("flutter") {
   testonly = true
   public_deps = [
-    "//topaz/packages/prod:flutter_aot_product",
     "//topaz/packages/prod:flutter_aot",
-    "//topaz/packages/prod:flutter_jit_product",
+    "//topaz/packages/prod:flutter_aot_product",
     "//topaz/packages/prod:flutter_jit",
+    "//topaz/packages/prod:flutter_jit_product",
   ]
 }
 
@@ -55,7 +55,6 @@ group("all") {
     "//topaz/packages/prod:dart_jit_runner",
     "//topaz/packages/prod:dart_runner",
     "//topaz/packages/prod:datetime_settings",
-    "//topaz/packages/prod:story_shell_labs",
     "//topaz/packages/prod:device_settings",
     "//topaz/packages/prod:display_settings",
     "//topaz/packages/prod:ermine",
@@ -68,6 +67,7 @@ group("all") {
     "//topaz/packages/prod:mondrian",
     "//topaz/packages/prod:settings",
     "//topaz/packages/prod:skottie_viewer",
+    "//topaz/packages/prod:story_shell_labs",
     "//topaz/packages/prod:system_dashboard",
     "//topaz/packages/prod:term",
     "//topaz/packages/prod:userpicker_base_shell",
@@ -152,8 +152,8 @@ group("dart_jit_product_runner") {
 group("userpicker_base_shell") {
   testonly = true
   public_deps = [
-    "//topaz/packages/prod:flutter",
     "//topaz/bin/userpicker_base_shell",
+    "//topaz/packages/prod:flutter",
   ]
 }
 
@@ -167,10 +167,10 @@ group("dart_aot_runner") {
 group("dart_runner") {
   testonly = true
   public_deps = [
-    "//topaz/packages/prod:dart_aot_runner",
     "//topaz/packages/prod:dart_aot_product_runner",
-    "//topaz/packages/prod:dart_jit_runner",
+    "//topaz/packages/prod:dart_aot_runner",
     "//topaz/packages/prod:dart_jit_product_runner",
+    "//topaz/packages/prod:dart_jit_runner",
   ]
 }
 
@@ -192,10 +192,10 @@ group("latin-ime") {
 group("term") {
   testonly = true
   public_deps = [
-    "//garnet/packages/prod:fonts",
     "//garnet/bin/fonts:font_provider_tests",
-    "//topaz/app/term",
+    "//garnet/packages/prod:fonts",
     "//third_party/vulkan_loader_and_validation_layers/loader:vulkan_loader",
+    "//topaz/app/term",
   ]
 }
 
@@ -246,12 +246,12 @@ group("flutter_jit") {
 group("xi") {
   testonly = true
   public_deps = [
-    "//topaz/bin/xi/xi_mod",
-    "//topaz/bin/xi/xi_embeddable",
-    "//topaz/bin/xi/xi_session_agent",
-    "//topaz/bin/xi/xi_session_demo",
     "//garnet/bin/xi_core",
     "//topaz/bin/xi",
+    "//topaz/bin/xi/xi_embeddable",
+    "//topaz/bin/xi/xi_mod",
+    "//topaz/bin/xi/xi_session_agent",
+    "//topaz/bin/xi/xi_session_demo",
   ]
 }
 
@@ -259,12 +259,13 @@ group("ermine") {
   testonly = true
   public_deps = [
     "//topaz/packages/prod:chromium",
-    "//topaz/packages/prod:dart_jit_runner",
     "//topaz/packages/prod:dart_jit_product_runner",
+    "//topaz/packages/prod:dart_jit_runner",
     "//topaz/packages/prod:datetime_settings",
     "//topaz/packages/prod:display_settings",
     "//topaz/packages/prod:mondrian",
     "//topaz/packages/prod:settings",
+    "//topaz/packages/prod:story_shell_labs",
     "//topaz/packages/prod:userpicker_base_shell",
     "//topaz/packages/prod:wifi_settings",
     "//topaz/shell/ermine:ermine",

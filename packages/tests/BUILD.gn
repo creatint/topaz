@@ -28,6 +28,7 @@ group("dart_unittests") {
     "//topaz/public/dart/fuchsia_scenic_flutter:fuchsia_scenic_flutter_unittests($host_toolchain)",
     "//topaz/public/dart/fuchsia_services:fuchsia_services_package_unittests($host_toolchain)",
     "//topaz/public/dart/sledge:dart_sledge_tests($host_toolchain)",
+    "//topaz/public/dart/story_shell_labs:layout_unittests($host_toolchain)",
     "//topaz/public/dart/widgets:dart_widget_tests($host_toolchain)",
     "//topaz/public/lib/app/dart:dart_app_tests($host_toolchain)",
     "//topaz/public/lib/display/flutter:display_test($host_toolchain)",
