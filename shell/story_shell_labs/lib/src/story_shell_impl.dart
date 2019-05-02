@@ -102,9 +102,9 @@ class StoryShellImpl extends fidl_modular.StoryShell {
     List<fidl_modular.ContainerView> views,
   ) async {}
 
-  void _onLifecycleTerminate() {
+  Future<void> _onLifecycleTerminate() async {
     _clearBinding();
-    _focusEventStreamController.close();
+    await _focusEventStreamController.close();
   }
 
   void _clearBinding() {
