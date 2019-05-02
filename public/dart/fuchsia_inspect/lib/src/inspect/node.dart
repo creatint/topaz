@@ -2,7 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-part of 'inspect.dart';
+import 'dart:typed_data';
+
+import 'package:meta/meta.dart';
+
+import '../vmo/vmo_writer.dart';
+import 'metric.dart';
+import 'property.dart';
+
+/// Exposes internal constructor to other implementation files within the
+/// package but should be hidden to clients of the package.
+Node internalNode(int index, VmoWriter writer) => Node._(index, writer);
 
 /// A node in the [Inspect] tree that can have associated key-values (KVs).
 class Node {
@@ -34,7 +44,7 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [StringProperty]s.
   StringProperty createStringProperty(String name, {String value}) {
-    var property = StringProperty._(name, index, _writer);
+    var property = internalStringProperty(name, index, _writer);
 
     if (value != null) {
       property.value = value;
@@ -51,7 +61,7 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [ByteDataProperty]s.
   ByteDataProperty createByteDataProperty(String name, {ByteData value}) {
-    var property = ByteDataProperty._(name, index, _writer);
+    var property = internalByteDataProperty(name, index, _writer);
 
     if (value != null) {
       property.value = value;
@@ -68,7 +78,7 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [IntMetric]s.
   IntMetric createIntMetric(String name, {int value = 0}) =>
-      IntMetric._(name, index, _writer, value);
+      internalIntMetric(name, index, _writer, value);
 
   /// Creates a [DoubleMetric] with [name] on this node.
   ///
@@ -78,5 +88,5 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [DoubleMetric]s.
   DoubleMetric createDoubleMetric(String name, {double value = 0.0}) =>
-      DoubleMetric._(name, index, _writer, value);
+      internalDoubleMetric(name, index, _writer, value);
 }

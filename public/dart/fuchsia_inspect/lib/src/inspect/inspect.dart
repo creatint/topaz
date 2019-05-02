@@ -2,18 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-library topaz.public.dart.fuchsia_inspect.inspect.inspect;
-
-import 'dart:typed_data';
-
 import 'package:fuchsia_services/services.dart';
 import 'package:meta/meta.dart';
 
 import '../vmo/vmo_writer.dart';
-
-part 'node.dart';
-part 'metric.dart';
-part 'property.dart';
+import 'node.dart';
 
 const int _defaultVmoSizeBytes = 256 * 1024;
 
@@ -36,7 +29,7 @@ class Inspect {
   /// injection of fakes for testing.
   @visibleForTesting
   Inspect.internal(this._writer) {
-    _root = Node._(_writer.rootNode, _writer);
+    _root = internalNode(_writer.rootNode, _writer);
   }
 
   /// The root [Node] of this Inspect tree.
