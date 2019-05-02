@@ -104,6 +104,12 @@ class CommonBaseShellPresentationImpl extends Presentation
     await _model.presentation.setPresentationModeListener(listener);
   }
 
+  @override
+  Future<void> registerMediaButtonsListener(
+      InterfaceHandle<MediaButtonsListener> listener) async {
+    await _model.presentation.registerMediaButtonsListener(listener);
+  }
+
   /// |PresentationModeListener|.
   @override
   Future<void> onModeChanged() async {
