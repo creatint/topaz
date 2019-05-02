@@ -11,26 +11,26 @@
 #include <lib/fdio/directory.h>
 #include <lib/fdio/namespace.h>
 #include <lib/ui/scenic/cpp/view_token_pair.h>
+#include <lib/vfs/cpp/composed_service_dir.h>
 #include <lib/vfs/cpp/remote_dir.h>
 #include <lib/vfs/cpp/service.h>
 #include <src/lib/files/file.h>
 #include <sys/stat.h>
 #include <zircon/dlfcn.h>
 #include <zircon/status.h>
+
 #include <regex>
 #include <sstream>
 
 #include "flutter/fml/synchronization/waitable_event.h"
 #include "flutter/shell/common/switches.h"
+#include "task_observers.h"
 #include "third_party/flutter/runtime/dart_vm_lifecycle.h"
+#include "thread.h"
 #include "topaz/runtime/dart/utils/files.h"
 #include "topaz/runtime/dart/utils/handle_exception.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
 #include "topaz/runtime/dart/utils/vmo.h"
-
-#include "service_provider_dir.h"
-#include "task_observers.h"
-#include "thread.h"
 
 namespace flutter_runner {
 
@@ -160,8 +160,8 @@ Application::Application(
   fdio_service_connect_at(directory_ptr_.channel().get(), "public",
                           request.release());
 
-  auto service_provider_dir = std::make_unique<ServiceProviderDir>();
-  service_provider_dir->set_fallback(std::move(flutter_public_dir));
+  auto composed_service_dir = std::make_unique<vfs::ComposedServiceDir>();
+  composed_service_dir->set_fallback(std::move(flutter_public_dir));
 
   // Clone and check if client is servicing the directory.
   directory_ptr_->Clone(fuchsia::io::OPEN_FLAG_DESCRIBE |
@@ -198,7 +198,7 @@ Application::Application(
   // All launch arguments have been read. Perform service binding and
   // final settings configuration. The next call will be to create a view
   // for this application.
-  service_provider_dir->AddService(
+  composed_service_dir->AddService(
       fuchsia::ui::app::ViewProvider::Name_,
       std::make_unique<vfs::Service>(
           [this](zx::channel channel, async_dispatcher_t* dispatcher) {
@@ -207,7 +207,7 @@ Application::Application(
                           std::move(channel)));
           }));
 
-  outgoing_dir_->AddEntry("public", std::move(service_provider_dir));
+  outgoing_dir_->AddEntry("public", std::move(composed_service_dir));
 
   // Setup the application controller binding.
   if (application_controller_request) {
@@ -436,9 +436,9 @@ void Application::AttemptVMLaunchWithCurrentSettings(
           "shared_snapshot_instructions.bin", true));
 
   auto vm = flutter::DartVMRef::Create(settings_,               //
-                                     std::move(vm_snapshot),  //
-                                     isolate_snapshot_,       //
-                                     shared_snapshot_         //
+                                       std::move(vm_snapshot),  //
+                                       isolate_snapshot_,       //
+                                       shared_snapshot_         //
   );
   FML_CHECK(vm) << "Mut be able to initialize the VM.";
 }
