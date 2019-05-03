@@ -22,6 +22,7 @@ sdk("fuchsia_dart") {
   api = "fuchsia_dart.api"
 
   deps = [
+    "//sdk/docs:modular_config_schema",
     "//topaz/bin/fidlgen_dart:fidlgen_dart_sdk($host_toolchain)",
     "//topaz/public/dart/composition_delegate:composition_delegate_sdk($dart_toolchain)",
     "//topaz/public/dart/fidl:fidl_sdk($dart_toolchain)",
