@@ -15,11 +15,9 @@ import 'package:zircon/zircon.dart';
 
 void main() {
   Incoming _incoming;
-  DirectoryProxy _dirProxy;
 
   setUp(() {
-    _dirProxy = DirectoryProxy();
-    _incoming = Incoming(_dirProxy);
+    _incoming = Incoming();
   });
 
   group('null checks:', () {
@@ -49,6 +47,19 @@ void main() {
     });
   });
 
+  group('channel passing:', () {
+    test('request() returns a valid interface request', () {
+      final request = _incoming.request();
+      expect(request, isNotNull);
+    });
+
+    test('request() throws FidlStateException on subsequent calls', () {
+      _incoming.request();
+      expect(
+          _incoming.request, throwsA(const TypeMatcher<FidlStateException>()));
+    });
+  });
+
   group('connections:', () {
     Outgoing outgoing;
     StreamController<bool> streamController;
@@ -69,9 +80,7 @@ void main() {
       }, fooProxy.$serviceData.getName());
 
       // mimic the responsibility of startup context and serve the dir channel
-      outgoing
-          .publicDir()
-          .serve(InterfaceRequest(_dirProxy.ctrl.request().passChannel()));
+      outgoing.publicDir().serve(_incoming.request());
     });
 
     test('Successfully connectToService', () async {
@@ -103,6 +112,12 @@ void main() {
       connectorStream.listen(expectAsync1((response) {
         expect(response, true);
       }));
+    });
+
+    test('Throws exception if directory is not bound', () {
+      // Do not use _incoming since its directory is bound in setup
+      expect(() => Incoming().connectToService(fooProxy),
+          throwsA(const TypeMatcher<IncomingStateException>()));
     });
   });
 }

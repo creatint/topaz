@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_services_examples/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia/fuchsia.dart' show exit;
@@ -46,12 +45,12 @@ Future<void> _run(String thoughtToExpose) async {
     log.info('Exposing ThoughtLeakerImpl with the thought "$thoughtToExpose"');
   }
 
-  /// A [DirectoryProxy] who's channels will facilitate the connection between
-  /// this client component and the launched server component we're about to
-  /// launch. This client component is looking for service under /in/svc/
+  /// An [Incoming] is a helper class which will allow for connecting to
+  /// services exposed by the launched component.
+  /// This client component is looking for service under /in/svc/
   /// directory to connect to while the server exposes services others can
   /// connect to under /out/public directory.
-  final dirProxy = DirectoryProxy();
+  final incoming = Incoming();
 
   /// The [LaunchInfo] struct is used to construct the component we want to
   /// launch.
@@ -59,7 +58,7 @@ Future<void> _run(String thoughtToExpose) async {
     url: _mindReaderServerUrl,
     // The directoryRequest is the handle to the /out directory of the launched
     // component.
-    directoryRequest: dirProxy.ctrl.request().passChannel(),
+    directoryRequest: incoming.request().passChannel(),
 
     // The service list is a list of services which are exposed to the child.
     // If a service is not included in this list the child will fail to connect.
@@ -80,7 +79,9 @@ Future<void> _run(String thoughtToExpose) async {
   // Now that the component has launched we attempt to connect to the mind
   // reader service which is exposed to us by the child.
   final mindReader = MindReaderProxy();
-  Incoming(dirProxy).connectToService(mindReader);
+  incoming.connectToService(mindReader);
+
+  await incoming.close();
 
   // We ask the service to read our mind and wait for the response.
   final response = await mindReader.readMind();

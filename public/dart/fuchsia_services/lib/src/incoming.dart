@@ -3,24 +3,54 @@
 // found in the LICENSE file
 
 import 'dart:async';
+
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:zircon/zircon.dart';
 
 /// Helper class to connect to incoming services.
 ///
+/// [Incoming] is used to connect to the services exposed by a launched component.
+/// The general pattern for launching and connecting to a service is:
+/// ```
+/// final incoming = Incoming();
+/// final launchInfo = LaunchInfo(
+///   url: serverUrl,
+///   directoryRequest: incoming.request().passChannel(),
+/// );
+///
+/// final launcherProxy = LauncherProxy();
+/// context.incoming.connectToService(launcherProxy);
+///
+/// launcherProxy.createComponent(launchInfo, ctrl);
+/// final myProxy = MyProxy();
+/// incoming.connectToService(myProxy);
+///
+/// incoming.close();
+/// ```
+///
 /// These services have been offered to this component by its parent or are
 /// ambiently offered by the Component Framework.
 class Incoming {
-  Directory _dirProxy;
+  DirectoryProxy _dirProxy;
 
   /// Initializes [Incoming] with a [Directory] that should be bound to `/svc`
   /// of this component.
-  Incoming(Directory dir)
-      : assert(dir != null),
-        _dirProxy = dir;
+  ///
+  /// [dir] is now optional to aid in soft transition. It will soon be removed.
+  /// If [dir] is not bound before connecting to a service an
+  /// [IncomingStateException] will be thrown
+  Incoming([DirectoryProxy dir]) : _dirProxy = dir ?? DirectoryProxy();
+
+  /// Terminates connection and return Zircon status.
+  Future<int> close() async {
+    return _dirProxy.close();
+  }
 
   /// Connects to the incoming service specified by [serviceProxy].
+  ///
+  /// If this object is not bound via the [request] method before
+  /// this method is called an [IncomingStateException] will be thrown.
   void connectToService<T>(AsyncProxy<T> serviceProxy) {
     if (serviceProxy == null) {
       throw ArgumentError.notNull('serviceProxy');
@@ -41,11 +71,47 @@ class Incoming {
         serviceName, serviceProxyRequest.passChannel());
   }
 
+  /// Connects to the incoming service specified by [serviceName] through the
+  /// [channel] endpoint supplied by the caller.
+  ///
+  /// If the service provider is not willing or able to provide the requested
+  /// service, it should close the [channel].
+  ///
+  /// If this object is not bound via the [request] method before
+  /// this method is called an [IncomingStateException] will be thrown.
+  void connectToServiceByNameWithChannel(String serviceName, Channel channel) {
+    if (serviceName == null) {
+      throw Exception(
+          'serviceName must not be null. Check the FIDL file for a missing '
+          '[Discoverable]');
+    }
+    if (channel == null) {
+      throw ArgumentError.notNull('channel');
+    }
+
+    if (_dirProxy.ctrl.isUnbound) {
+      throw IncomingStateException(
+          'The directory must be bound before trying to connect to a service. '
+          'See [Incoming.request] for more information');
+    }
+
+    // connection flags for service: can read & write from target object.
+    const int _openFlags = openRightReadable | openRightWritable;
+    // 0755
+    const int _openMode = 0x1ED;
+
+    _dirProxy.open(
+        _openFlags, _openMode, serviceName, InterfaceRequest<Node>(channel));
+  }
+
   /// Connects to the incoming service specified by [serviceProxy] through the
   /// [channel] endpoint supplied by the caller.
   ///
   /// If the service provider is not willing or able to provide the requested
   /// service, it should close the [channel].
+  ///
+  /// If this object is not bound via the [request] method before
+  /// this method is called an [IncomingStateException] will be thrown.
   void connectToServiceWithChannel<T>(
       AsyncProxy<T> serviceProxy, Channel channel) {
     if (serviceProxy == null) {
@@ -63,32 +129,26 @@ class Incoming {
     connectToServiceByNameWithChannel(serviceName, channel);
   }
 
-  /// Connects to the incoming service specified by [serviceName] through the
-  /// [channel] endpoint supplied by the caller.
+  /// Takes ownership of the Directory's request object for binding
+  /// to another processes outgoing services.
   ///
-  /// If the service provider is not willing or able to provide the requested
-  /// service, it should close the [channel].
-  void connectToServiceByNameWithChannel(String serviceName, Channel channel) {
-    if (serviceName == null) {
-      throw Exception(
-          'serviceName must not be null. Check the FIDL file for a missing '
-          '[Discoverable]');
-    }
-    if (channel == null) {
-      throw ArgumentError.notNull('channel');
-    }
+  /// The returned [InterfaceRequest] object is suitable to pass to
+  /// an object which can bind the directory.
+  ///
+  /// Subsequent calls to this method throw a FidlStateException
+  InterfaceRequest<Node> request() =>
+      InterfaceRequest(_dirProxy.ctrl.request().passChannel());
+}
 
-    // connection flags for service: can read & write from target object.
-    const int _openFlags = openRightReadable | openRightWritable;
-    // 0755
-    const int _openMode = 0x1ED;
+/// An Exception that can be thrown if the [Incoming] object is in
+/// a bad state.
+class IncomingStateException implements Exception {
+  /// An error message describing the reason for this exception.
+  final String message;
 
-    _dirProxy.open(
-        _openFlags, _openMode, serviceName, InterfaceRequest<Node>(channel));
-  }
+  /// Creates a new instance of this.
+  IncomingStateException(this.message);
 
-  /// Terminates connection and return Zircon status.
-  Future<int> close() async {
-    return _dirProxy.close();
-  }
+  @override
+  String toString() => 'IncomingStateException: $message';
 }
