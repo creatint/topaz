@@ -164,7 +164,6 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
                     SliverToBoxAdapter(child: SizedBox(height: topMargin)),
                     _buildHeader(),
                     _buildBody(),
-                    SliverToBoxAdapter(child: SizedBox(height: 8.0)),
                   ],
                 ),
               ),

@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 
 import 'ask_model.dart';
 
+const _kListItemHeight = 24.0;
+const _kListItemMargin = 8.0;
+
 class AskSuggestionList extends StatelessWidget {
   final AskModel model;
-  final _kListItemHeight = 50.0;
 
   const AskSuggestionList({this.model});
 
@@ -21,76 +23,59 @@ class AskSuggestionList extends StatelessWidget {
             focusNode: model.focusNode,
             child: SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final suggestion = model.suggestions.value[index];
-                  final iconImageNotifier =
-                      model.imageFromSuggestion(suggestion);
-                  return GestureDetector(
-                    onTap: () => model.onSelect(suggestion),
-                    child: AnimatedBuilder(
-                      animation: model.selection,
-                      builder: (context, child) {
-                        return Material(
-                          color: Colors.white,
-                          elevation: model.elevation,
-                          child: Container(
-                            alignment: Alignment.centerLeft,
-                            height: _kListItemHeight,
-                            color: model.selection.value == index
-                                ? Colors.lightBlue
-                                : Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 8),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-                                AnimatedBuilder(
-                                  animation: iconImageNotifier,
-                                  builder: (context, child) => Offstage(
-                                        offstage:
-                                            iconImageNotifier.value == null,
-                                        child: RawImage(
-                                          color: model.selection.value == index
-                                              ? Colors.white
-                                              : Colors.grey[900],
-                                          image: iconImageNotifier.value,
-                                          width: 24,
-                                          height: 24,
-                                          filterQuality: FilterQuality.medium,
-                                        ),
-                                      ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(left: 8),
-                                ),
-                                Text(
-                                  suggestion.display.headline,
-                                  maxLines: 1,
-                                  softWrap: false,
-                                  overflow: TextOverflow.fade,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                    color: model.selection.value == index
-                                        ? Colors.white
-                                        : Colors.grey[900],
-                                    fontFamily: 'RobotoMono',
-                                    fontWeight: model.selection.value == index
-                                        ? FontWeight.bold
-                                        : FontWeight.normal,
-                                    fontSize: 22.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
+                _buildItem,
                 childCount: model.suggestions.value.length,
               ),
             ),
           ),
+    );
+  }
+
+  Widget _buildItem(context, index) {
+    final suggestion = model.suggestions.value[index];
+    return Listener(
+      onPointerEnter: (_) {
+        model.selection.value = index;
+      },
+      onPointerExit: (_) {
+        if (model.selection.value == index) {
+          model.selection.value = -1;
+        }
+      },
+      child: GestureDetector(
+        onTap: () => model.onSelect(suggestion),
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: _kListItemMargin),
+          child: AnimatedBuilder(
+            animation: model.selection,
+            builder: (context, child) {
+              return Material(
+                color: model.selection.value == index
+                    ? Color(0xFFFF8BCB)
+                    : Colors.white,
+                elevation: model.elevation,
+                child: child,
+              );
+            },
+            child: Container(
+              alignment: Alignment.centerLeft,
+              height: _kListItemHeight,
+              child: Text(
+                suggestion.display.headline,
+                maxLines: 1,
+                softWrap: false,
+                overflow: TextOverflow.fade,
+                textAlign: TextAlign.start,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'RobotoMono',
+                  fontSize: 18.0,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

@@ -14,38 +14,41 @@ class AskTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black,
+      color: Colors.white,
       elevation: model.elevation,
-      child: TextField(
-        controller: model.controller,
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            Icons.search,
-            color: Colors.white54,
-            size: 24.0,
-          ),
-          border: InputBorder.none,
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.zero,
-            borderSide: BorderSide(color: Colors.white),
-          ),
-          hintText: '#Ask for anything',
-          hintStyle: Theme.of(context).textTheme.subhead.merge(
-                TextStyle(
-                  color: Colors.white30,
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: TextField(
+          controller: model.controller,
+          decoration: InputDecoration(
+            fillColor: Colors.black,
+            filled: true,
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 16,
+            ),
+            border: InputBorder.none,
+            hintText: '#Ask for anything',
+            hintStyle: Theme.of(context).textTheme.body1.copyWith(
+                  color: Color(0xFF9AA0A6),
                   fontFamily: 'RobotoMono',
+                  fontSize: 18.0,
+                ),
+          ),
+          cursorColor: Color(0xFFFF8BCB),
+          cursorRadius: Radius.zero,
+          cursorWidth: 10.0,
+          style: Theme.of(context).textTheme.subhead.merge(
+                TextStyle(
+                  color: Colors.white,
+                  fontFamily: 'RobotoMono',
+                  fontSize: 18.0,
                 ),
               ),
+          focusNode: model.focusNode,
+          onChanged: model.onQuery,
+          onSubmitted: model.onAsk,
         ),
-        style: Theme.of(context).textTheme.subhead.merge(
-              TextStyle(
-                color: Colors.white,
-                fontFamily: 'RobotoMono',
-              ),
-            ),
-        focusNode: model.focusNode,
-        onChanged: model.onQuery,
-        onSubmitted: model.onAsk,
       ),
     );
   }

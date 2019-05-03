@@ -27,11 +27,14 @@ class AskModule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark().copyWith(
+        textSelectionColor: Color(0xFFFF8BCB),
+      ),
       home: DefaultTextStyle(
         style: Theme.of(context).primaryTextTheme.body1.copyWith(
               fontFamily: 'RobotoMono',
               fontWeight: FontWeight.w400,
-              fontSize: 24.0,
+              fontSize: 18.0,
               color: Colors.white,
             ),
         child: Align(
