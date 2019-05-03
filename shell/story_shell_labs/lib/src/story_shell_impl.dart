@@ -3,29 +3,35 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:fidl/fidl.dart' as fidl;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as fidl_modular;
+import 'package:fidl_fuchsia_ui_views/fidl_async.dart' show ViewHolderToken;
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular/lifecycle.dart';
-
+import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
+// TODO: figure out how to include layout.dart instead
+import 'package:story_shell_labs_lib/layout/deja_layout.dart';
+import 'package:meta/meta.dart';
+import 'package:zircon/zircon.dart';
 import 'story_visual_state_watcher_impl.dart';
 
-/// An implementation of the [StoryShell] interface leveraging the "Deja Layout"
-/// strategy.
+/// An implementation of the [StoryShell] interface for Story Shell Labs.
 class StoryShellImpl extends fidl_modular.StoryShell {
   final _storyShellContext = fidl_modular.StoryShellContextProxy();
   final _visualStateWatcherBinding =
       fidl_modular.StoryVisualStateWatcherBinding();
+  final DejaLayout layoutManager;
 
   fidl_modular.StoryShellBinding _storyShellBinding;
   StoryVisualStateWatcherImpl _storyVisualStateWatcher;
 
-  // TODO(miguelfrde): add to this stream when a surface focus changes in
+  // TODO: add to this stream when a surface focus changes in
   // DejaCompose presenter.
   final _focusEventStreamController = StreamController<String>.broadcast();
 
-  StoryShellImpl() {
+  StoryShellImpl({@required this.layoutManager}) {
     Lifecycle().addTerminateListener(_onLifecycleTerminate);
   }
 
@@ -43,7 +49,7 @@ class StoryShellImpl extends fidl_modular.StoryShell {
     _storyVisualStateWatcher = StoryVisualStateWatcherImpl();
     await _storyShellContext.watchVisualState(
         _visualStateWatcherBinding.wrap(_storyVisualStateWatcher));
-    // TODO(miguelfrde): we can reload story state from the link. Links are
+    // TODO: we can reload story state from the link. Links are
     // deprecated though. New solution needed.
   }
 
@@ -53,30 +59,38 @@ class StoryShellImpl extends fidl_modular.StoryShell {
     fidl_modular.ViewConnection viewConnection,
     fidl_modular.SurfaceInfo surfaceInfo,
   ) async {
-    // TODO(miguelfrde): route to deja compose strategy.
+    log.info('addSurface ${viewConnection.surfaceId}');
+    layoutManager.addSurface(
+        // TODO: get the intent and parameters from the addSurface call.
+        intent: 'no action yet',
+        parameters: UnmodifiableListView<String>([]),
+        surfaceId: viewConnection.surfaceId,
+        view: ChildViewConnection(ViewHolderToken(
+            value:
+                EventPair(viewConnection.owner.passChannel().passHandle()))));
   }
 
   /// Focus the surface with this id
   @override
   Future<void> focusSurface(String surfaceId) async {
-    // TODO(miguelfrde): route to deja compose strategy.
+    log.warning('focusSurface not implemented');
   }
 
   /// Defocus the surface with this id
   @override
   Future<void> defocusSurface(String surfaceId) async {
-    // TODO(miguelfrde): route to deja compose strategy.
+    log.warning('defocusSurface not implemented');
   }
 
   @override
   Future<void> removeSurface(String surfaceId) async {
-    // TODO(miguelfrde); route to deja compose strategy.
+    log.info('removeSurface $surfaceId');
+    layoutManager.removeSurface([surfaceId]);
   }
 
   @override
   Future<void> reconnectView(fidl_modular.ViewConnection viewConnection) async {
-    // TODO(miguelfrde): not sure what this is for. We probably don't need it
-    // (yet).
+    log.warning('reconnectView not implemented ${viewConnection.surfaceId}');
   }
 
   @override
@@ -84,8 +98,7 @@ class StoryShellImpl extends fidl_modular.StoryShell {
     fidl_modular.ViewConnection viewConnection,
     fidl_modular.SurfaceInfo surfaceInfo,
   ) async {
-    // TODO(miguelfrde): route to deja compose strategy, although we probably
-    // don't need it (yet).
+    log.warning('updateSurface no implemented');
   }
 
   @override

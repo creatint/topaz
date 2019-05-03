@@ -11,7 +11,7 @@ class StoryVisualStateWatcherImpl extends fidl_modular.StoryVisualStateWatcher {
   @override
   Future<void> onVisualStateChange(
       fidl_modular.StoryVisualState visualState) async {
-    // TODO(miguelfrde): implement if needed.
-    log.info('Got visual state: $visualState');
+    // TODO: implement if needed.
+    log.warning('Got visual state: $visualState');
   }
 }
