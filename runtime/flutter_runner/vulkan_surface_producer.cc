@@ -22,8 +22,16 @@ namespace flutter_runner {
 
 namespace {
 
-// TODO(FL-153): Properly tune these values.
 constexpr int kGrCacheMaxCount = 8192;
+// Tuning advice:
+// If you see the following 3 things happening simultaneously in a trace:
+//   * Over budget ("flutter", "GPURasterizer::Draw") durations
+//   * Many ("skia", "GrGpu::createTexture") events within the
+//     "GPURasterizer::Draw"s
+//   * The Skia GPU resource cache is full, as indicated by the
+//     "SkiaCacheBytes" field in the ("flutter", "SurfacePool") trace counter
+//     (compare it to the bytes value here)
+// then you should consider increasing the size of the GPU resource cache.
 constexpr size_t kGrCacheMaxByteSize = 16 * (1 << 20);
 
 }  // namespace
