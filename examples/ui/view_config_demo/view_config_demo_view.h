@@ -30,10 +30,6 @@ class ViewConfigDemoView : public scenic::SkiaView {
   void OnSceneInvalidated(
       fuchsia::images::PresentationInfo presentation_info) override;
 
-  // |scenic::BaseView|
-  void OnConfigChanged(
-      const fuchsia::ui::views::ViewConfig& old_config) override;
-
   // Draw a solid background and some centered text.
   void Draw(SkCanvas* canvas);
 
