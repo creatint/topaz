@@ -7,8 +7,7 @@ import 'package:fuchsia_services/services.dart' show StartupContext;
 import 'package:fuchsia_logger/logger.dart';
 
 import 'ask_model.dart';
-import 'ask_suggestion_list.dart';
-import 'ask_text_field.dart';
+import 'ask_sheet.dart';
 
 void main() {
   setupLogger(name: 'ermine_ask_module');
@@ -35,42 +34,12 @@ class AskModule extends StatelessWidget {
               fontSize: 24.0,
               color: Colors.white,
             ),
-        child: Builder(
-          builder: (context) => GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onLongPress: model.show,
-                onTap: model.hide,
-                child: AnimatedBuilder(
-                  animation: model.visibility,
-                  child: Column(
-                    children: <Widget>[
-                      Expanded(
-                        child: Offstage(),
-                      ),
-                      AskTextField(
-                        model: model,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 5),
-                      ),
-                      Expanded(
-                        child: AskSuggestionList(
-                          model: model,
-                        ),
-                      ),
-                    ],
-                  ),
-                  builder: (context, child) {
-                    if (model.isVisible) {
-                      model.focus(context);
-                      return child;
-                    } else {
-                      model.unfocus();
-                      return Offstage(child: child);
-                    }
-                  },
-                ),
-              ),
+        child: Align(
+          alignment: Alignment.bottomRight,
+          child: SizedBox(
+            width: 500.0,
+            child: AskSheet(model: model),
+          ),
         ),
       ),
     );

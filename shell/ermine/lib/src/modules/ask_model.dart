@@ -22,7 +22,6 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart'
 import 'package:fidl_fuchsia_shell_ermine/fidl_async.dart'
     show AskBar, AskBarBinding;
 import 'package:fuchsia_services/services.dart' show StartupContext;
-import 'package:lib.widgets/model.dart' show SpringModel;
 import 'package:zircon/zircon.dart' show Vmo;
 
 const int _kMaxSuggestions = 20;
@@ -43,7 +42,6 @@ class AskModel extends ChangeNotifier {
   final ValueNotifier<List<Suggestion>> suggestions =
       ValueNotifier(<Suggestion>[]);
   final ValueNotifier<int> selection = ValueNotifier(-1);
-  final SpringModel animation = SpringModel();
 
   double autoCompleteTop = 0;
   double elevation = 200.0;
@@ -96,9 +94,6 @@ class AskModel extends ChangeNotifier {
   void show() {
     visibility.value = true;
     _ask.fireVisible();
-    animation
-      ..jump(0.8)
-      ..target = 1.0;
     controller.clear();
     onQuery('');
   }
@@ -107,10 +102,13 @@ class AskModel extends ChangeNotifier {
     _suggestions = <Suggestion>[];
     suggestions.value = _suggestions;
     selection.value = -1;
-    _ask.fireHidden();
     visibility.value = false;
-    animation.jump(0.8);
     controller.clear();
+  }
+
+  /// Called from ui when hiding animation has completed.
+  void hideAnimationCompleted() {
+    _ask.fireHidden();
   }
 
   void onAsk(String query) {

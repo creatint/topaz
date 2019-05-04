@@ -41,6 +41,7 @@ dart_library("ermine_library") {
     "src/models/web_proposer.dart",
     "src/modules/ask_model.dart",
     "src/modules/ask_module.dart",
+    "src/modules/ask_sheet.dart",
     "src/modules/ask_suggestion_list.dart",
     "src/modules/ask_text_field.dart",
     "src/utils/elevations.dart",
