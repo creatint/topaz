@@ -52,13 +52,16 @@ const char* kDartVMArgs[] = {
     "--enable_interpreter",
 #endif
 
-#if !defined(DART_PRODUCT)
+    // No asserts in debug or release product.
+    // No asserts in release with flutter_profile=true (non-product)
+    // Yes asserts in non-product debug.
+#if !defined(DART_PRODUCT) && (!defined(FLUTTER_PROFILE) || !defined(NDEBUG))
     "--enable_asserts",
-#endif  // !defined(DART_PRODUCT)
+#endif
     // clang-format on
 };
 
-Dart_Isolate IsolateCreateCallback(const char* uri, const char* main,
+Dart_Isolate IsolateCreateCallback(const char* uri, const char* name,
                                    const char* package_root,
                                    const char* package_config,
                                    Dart_IsolateFlags* flags,

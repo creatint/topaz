@@ -122,7 +122,8 @@ Dart_Isolate CreateServiceIsolate(const char* uri, Dart_IsolateFlags* flags,
 
   auto state = new std::shared_ptr<tonic::DartState>(new tonic::DartState());
   Dart_Isolate isolate =
-      Dart_CreateIsolate(uri, "main", mapped_isolate_snapshot_data.address(),
+      Dart_CreateIsolate(uri, DART_VM_SERVICE_ISOLATE_NAME,
+                         mapped_isolate_snapshot_data.address(),
                          mapped_isolate_snapshot_instructions.address(),
                          mapped_shared_snapshot_data.address(),
                          mapped_shared_snapshot_instructions.address(),
@@ -169,6 +170,12 @@ Dart_Isolate CreateServiceIsolate(const char* uri, Dart_IsolateFlags* flags,
   // _originCheckDisabled = false
   result =
       Dart_SetField(library, Dart_NewStringFromCString("_originCheckDisabled"),
+                    Dart_NewBoolean(false));
+  SHUTDOWN_ON_ERROR(result);
+
+  // _authCodesDisabled = false
+  result =
+      Dart_SetField(library, Dart_NewStringFromCString("_authCodesDisabled"),
                     Dart_NewBoolean(false));
   SHUTDOWN_ON_ERROR(result);
 
