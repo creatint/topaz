@@ -17,6 +17,7 @@ const String _optionHelp = 'help';
 const String _optionRootDir = 'root';
 const String _optionProject = 'project';
 const String _optionDotFile = 'dot-file';
+const String _optionLocalLinksOnly = 'local-links-only';
 
 // The fuchsia Gerrit host.
 const String _fuchsiaHost = 'fuchsia.googlesource.com';
@@ -110,6 +111,11 @@ Future<Null> main(List<String> args) async {
       _optionDotFile,
       help: 'Path to the dotfile to generate',
       defaultsTo: '',
+    )
+    ..addFlag(
+      _optionLocalLinksOnly,
+      help: 'Don\'t attempt to resolve http(s) links',
+      negatable: false,
     );
   final ArgResults options = parser.parse(args);
 
@@ -206,12 +212,14 @@ Future<Null> main(List<String> args) async {
   }));
 
   // Verify http links pointing outside the tree.
-  await verifyLinks(outOfTreeLinks, (Link<String> link, bool isValid) {
-    if (!isValid) {
-      errors.add(
-          Error(ErrorType.brokenLink, link.payload, link.uri.toString()));
-    }
-  });
+  if (!options[_optionLocalLinksOnly]) {
+    await verifyLinks(outOfTreeLinks, (Link<String> link, bool isValid) {
+      if (!isValid) {
+        errors.add(
+            Error(ErrorType.brokenLink, link.payload, link.uri.toString()));
+      }
+    });
+  }
 
   // Verify singletons and orphans.
   final List<Node> unreachable = graph.removeSingletons()
