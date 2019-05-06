@@ -70,7 +70,6 @@ group("misc") {
     "//garnet/packages/prod:drivers",
     "//topaz/examples/ledger/todo_list",
     "//topaz/examples/ledger/todo_list_sledge",
-    "//topaz/examples/media/vu_meter:package",
     "//topaz/examples/mediaplayer/mediaplayer_flutter",
     "//topaz/examples/mediaplayer/mediaplayer_skia",
     "//topaz/examples/mine_digger",
