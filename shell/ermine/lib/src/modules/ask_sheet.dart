@@ -146,30 +146,27 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Offstage(
-      offstage: _expandedState == _ExpandStatus.collapsed,
-      child: IgnorePointer(
-        ignoring: !_expanded,
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final topMargin = constraints.maxHeight - _kDefaultHeight;
-            return _buildExpandAnimationWidget(
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: CustomScrollView(
-                  shrinkWrap: true,
-                  controller: _scrollController,
-                  physics: _DismissablePhysics(onDismiss: _close),
-                  slivers: <Widget>[
-                    SliverToBoxAdapter(child: SizedBox(height: topMargin)),
-                    _buildHeader(),
-                    _buildBody(),
-                  ],
-                ),
+    return IgnorePointer(
+      ignoring: !_expanded,
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final topMargin = max(constraints.maxHeight - _kDefaultHeight, 0.0);
+          return _buildExpandAnimationWidget(
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: CustomScrollView(
+                shrinkWrap: true,
+                controller: _scrollController,
+                physics: _DismissablePhysics(onDismiss: _close),
+                slivers: <Widget>[
+                  SliverToBoxAdapter(child: SizedBox(height: topMargin)),
+                  _buildHeader(),
+                  _buildBody(),
+                ],
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
   }

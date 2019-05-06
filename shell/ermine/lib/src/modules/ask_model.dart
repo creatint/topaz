@@ -99,15 +99,15 @@ class AskModel extends ChangeNotifier {
   }
 
   void hide() {
-    _suggestions = <Suggestion>[];
-    suggestions.value = _suggestions;
-    selection.value = -1;
     visibility.value = false;
-    controller.clear();
   }
 
   /// Called from ui when hiding animation has completed.
   void hideAnimationCompleted() {
+    _suggestions = <Suggestion>[];
+    suggestions.value = _suggestions;
+    selection.value = -1;
+    controller.clear();
     _ask.fireHidden();
   }
 

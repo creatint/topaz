@@ -56,14 +56,14 @@ class App extends StatelessWidget {
                             model.askVisibility,
                             model.askChildViewConnection
                           ]),
-                          builder: (context, child) => Offstage(
-                                offstage: !model.askVisibility.value ||
-                                    model.askChildViewConnection.value == null,
-                                child: ChildView(
-                                  connection:
-                                      model.askChildViewConnection.value,
-                                ),
-                              ),
+                          builder: (context, child) =>
+                              !model.askVisibility.value ||
+                                      model.askChildViewConnection.value == null
+                                  ? Offstage()
+                                  : ChildView(
+                                      connection:
+                                          model.askChildViewConnection.value,
+                                    ),
                         ),
                       ),
                     ),
