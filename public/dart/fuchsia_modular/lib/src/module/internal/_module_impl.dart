@@ -5,12 +5,10 @@
 import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_mem/fidl_async.dart' as mem;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as modular;
-import 'package:fidl_fuchsia_ui_views/fidl_async.dart' as views;
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart' as deprecated;
 import 'package:fuchsia_modular/lifecycle.dart';
+import 'package:fuchsia_scenic/views.dart';
 import 'package:meta/meta.dart';
 import 'package:zircon/zircon.dart' as zx;
 
@@ -130,18 +128,16 @@ class ModuleImpl implements Module {
       throw ArgumentError.notNull('intent');
     }
 
+    final tokenPair = ViewTokenPair();
     final moduleController = modular.ModuleControllerProxy();
-    final viewOwner = InterfacePair<deprecated.ViewOwner>();
-    final status = await _getContext().embedModule(
-        name, intent, moduleController.ctrl.request(), viewOwner.passRequest());
+    final status = await _getContext().embedModule2(
+        name, intent, moduleController.ctrl.request(), tokenPair.viewToken);
 
     _validateStartModuleStatus(status, name, intent);
 
     return EmbeddedModule(
         moduleController: moduleController,
-        viewHolderToken: views.ViewHolderToken(
-            value: zx.EventPair(
-                viewOwner.passHandle().passChannel().passHandle())));
+        viewHolderToken: tokenPair.viewHolderToken);
   }
 
   @override
