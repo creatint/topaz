@@ -21,9 +21,16 @@ class _Property<T> {
   _Property(String name, int parentIndex, this._writer)
       : index = _writer.createProperty(parentIndex, name);
 
+  /// Creates a _Property that never does anything.
+  ///
+  /// These are returned when calling create<*>Property on a deleted [Node].
+  _Property.deleted()
+      : _writer = null,
+        index = invalidIndex;
+
   bool get _isDeleted => _writer == null;
 
-  /// Sets the value of this property in the VMO.
+  /// Sets the value of this Property in the Inspect data.
   void setValue(T value) {
     _writer?.setProperty(index, value);
   }
@@ -43,10 +50,14 @@ class _Property<T> {
 class StringProperty extends _Property<String> {
   StringProperty._(String name, int parentIndex, VmoWriter writer)
       : super(name, parentIndex, writer);
+
+  StringProperty._deleted() : super.deleted();
 }
 
 /// A VMO-backed key-value pair with a [String] key and [ByteData] value.
 class ByteDataProperty extends _Property<ByteData> {
   ByteDataProperty._(String name, int parentIndex, VmoWriter writer)
       : super(name, parentIndex, writer);
+
+  ByteDataProperty._deleted() : super.deleted();
 }

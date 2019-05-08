@@ -20,7 +20,7 @@ const int _defaultVmoSizeBytes = 256 * 1024;
 
 /// Thrown when the programmer misuses Inspect.
 class InspectStateError extends StateError {
-  ///
+  /// Constructor
   InspectStateError(String message) : super(message);
 }
 
@@ -35,5 +35,7 @@ abstract class Inspect {
   }
 
   /// The root [Node] of this Inspect tree.
+  ///
+  /// This node can't be deleted; trying to delete it is a NOP.
   Node get root;
 }

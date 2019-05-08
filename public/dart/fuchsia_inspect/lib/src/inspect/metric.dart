@@ -25,9 +25,16 @@ abstract class _Metric<T extends num> {
     }
   }
 
+  /// Creates a [_Metric] that never does anything.
+  ///
+  /// These are returned when calling create__Metric on a deleted [Node].
+  _Metric.deleted()
+      : _writer = null,
+        index = invalidIndex;
+
   bool get _isDeleted => _writer == null;
 
-  /// Sets the value of this metric in the VMO.
+  /// Sets the value of this [_Metric].
   void setValue(T value) {
     _writer?.setMetric(index, value);
   }
@@ -64,6 +71,8 @@ class IntMetric extends _Metric<int> {
   IntMetric._(String name, int parentIndex, VmoWriter writer)
       : super(name, parentIndex, writer, 0);
 
+  IntMetric._deleted() : super.deleted();
+
   @override
   void increment() => add(1);
 
@@ -75,6 +84,8 @@ class IntMetric extends _Metric<int> {
 class DoubleMetric extends _Metric<double> {
   DoubleMetric._(String name, int parentIndex, VmoWriter writer)
       : super(name, parentIndex, writer, 0.0);
+
+  DoubleMetric._deleted() : super.deleted();
 
   @override
   void increment() => add(1.0);

@@ -185,6 +185,10 @@ ByteData readProperty(FakeVmo vmo, int propertyIndex) {
   return data;
 }
 
+/// Returns the name index of [node] in [vmo].
+int readNameIndex(FakeVmo vmo, Node node) =>
+    Block.read(vmo, node.index).nameIndex;
+
 /// Returns the int value of [metric] in [vmo].
 int readInt(FakeVmo vmo, IntMetric metric) =>
     Block.read(vmo, metric.index).intValue;
