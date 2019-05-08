@@ -15,9 +15,9 @@ dart_library("fuchsia_scenic_flutter") {
   sources = [
     "child_view.dart",
     "child_view_connection.dart",
-    "src/child_scene_layer.dart",
     "src/child_view.dart",
     "src/child_view_connection.dart",
+    "src/child_view_render_box.dart",
   ]
 
   deps = [
