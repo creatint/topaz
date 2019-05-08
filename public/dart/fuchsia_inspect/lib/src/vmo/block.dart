@@ -33,6 +33,7 @@ class Block {
   }
 
   /// Create a block with arbitrary type.
+  /// @nodoc
   @visibleForTesting
   Block.createWithType(this._vmo, this.index, BlockType type) {
     _header..write(typeBits, type.value)..write(orderBits, defaultBlockOrder);
@@ -47,6 +48,7 @@ class Block {
 
   /// The block's payload as a string of bytes (for [BlockType.nameUtf8] or
   /// [BlockType.extent]).
+  /// @nodoc
   @visibleForTesting
   ByteData get payloadBytes =>
       _vmo.read(_payloadOffset, size - headerSizeBytes);
@@ -343,6 +345,7 @@ class Block {
   }
 
   /// Gets the utf8 name from a NAME block
+  /// @nodoc
   @visibleForTesting
   ByteData get nameUtf8 {
     _checkType(BlockType.nameUtf8);

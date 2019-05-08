@@ -63,36 +63,45 @@ class VmoWriter {
   /// Creates and writes a Node block
   int createNode(int parent, String name) {
     _beginWork();
-    var node = _createValue(parent, name);
-    if (node == null) {
-      return 0;
+    try {
+      var node = _createValue(parent, name);
+      if (node == null) {
+        return invalidIndex;
+      }
+      node.becomeNode();
+      return node.index;
+    } finally {
+      _commit();
     }
-    node.becomeNode();
-    _commit();
-    return node.index;
   }
 
   /// Deletes the Node.
   void deleteNode(int nodeIndex) {
     _beginWork();
-    if (nodeIndex < heapStartIndex) {
-      throw Exception('Invalid index {nodeIndex}');
+    try {
+      if (nodeIndex < heapStartIndex) {
+        throw Exception('Invalid index {nodeIndex}');
+      }
+      var node = Block.read(_vmo, nodeIndex);
+      _deleteValue(node);
+    } finally {
+      _commit();
     }
-    var node = Block.read(_vmo, nodeIndex);
-    _deleteValue(node);
-    _commit();
   }
 
   /// Adds a named Property to a Node.
   int createProperty(int parent, String name) {
     _beginWork();
-    var property = _createValue(parent, name);
-    if (property == null) {
-      return 0;
+    try {
+      var property = _createValue(parent, name);
+      if (property == null) {
+        return invalidIndex;
+      }
+      property.becomeProperty();
+      return property.index;
+    } finally {
+      _commit();
     }
-    property.becomeProperty();
-    _commit();
-    return property.index;
   }
 
   /// Sets a Property's value from [String] or [ByteData].
@@ -104,102 +113,123 @@ class VmoWriter {
   /// Throws ArgumentError if [value] is not [String] or [ByteData].
   void setProperty(int propertyIndex, dynamic value) {
     _beginWork();
-    if (!(value is String || value is ByteData)) {
-      throw ArgumentError('Property value must be String or ByteData.');
-    }
-
-    var property = Block.read(_vmo, propertyIndex);
-    _freeExtents(property.propertyExtentIndex);
-    ByteData valueToWrite;
-    if (value is String) {
-      valueToWrite = toByteData(value);
-      property.propertyFlags = propertyUtf8Flag;
-    } else if (value is ByteData) {
-      valueToWrite = value;
-      property.propertyFlags = propertyBinaryFlag;
-    }
-
-    if (valueToWrite == null || valueToWrite.lengthInBytes == 0) {
-      property.propertyExtentIndex = 0;
-    } else {
-      property.propertyExtentIndex =
-          _allocateExtents(valueToWrite.lengthInBytes);
-      if (property.propertyExtentIndex == invalidIndex) {
-        property.propertyTotalLength = 0;
-      } else {
-        _copyToExtents(property.propertyExtentIndex, valueToWrite);
-        property.propertyTotalLength = valueToWrite.lengthInBytes;
+    try {
+      if (!(value is String || value is ByteData)) {
+        throw ArgumentError('Property value must be String or ByteData.');
       }
+
+      var property = Block.read(_vmo, propertyIndex);
+      _freeExtents(property.propertyExtentIndex);
+      ByteData valueToWrite;
+      if (value is String) {
+        valueToWrite = toByteData(value);
+        property.propertyFlags = propertyUtf8Flag;
+      } else if (value is ByteData) {
+        valueToWrite = value;
+        property.propertyFlags = propertyBinaryFlag;
+      }
+
+      if (valueToWrite == null || valueToWrite.lengthInBytes == 0) {
+        property.propertyExtentIndex = 0;
+      } else {
+        property.propertyExtentIndex =
+            _allocateExtents(valueToWrite.lengthInBytes);
+        if (property.propertyExtentIndex == invalidIndex) {
+          property.propertyTotalLength = 0;
+        } else {
+          _copyToExtents(property.propertyExtentIndex, valueToWrite);
+          property.propertyTotalLength = valueToWrite.lengthInBytes;
+        }
+      }
+    } finally {
+      _commit();
     }
-    _commit();
   }
 
   /// Deletes a Property.
   void deleteProperty(int propertyIndex) {
     _beginWork();
-    var property = Block.read(_vmo, propertyIndex);
-    _freeExtents(property.propertyExtentIndex);
-    _deleteValue(property);
-    _commit();
+    try {
+      var property = Block.read(_vmo, propertyIndex);
+      _freeExtents(property.propertyExtentIndex);
+      _deleteValue(property);
+    } finally {
+      _commit();
+    }
   }
 
   /// Creates and assigns value.
   int createMetric<T extends num>(int parent, String name, T value) {
     _beginWork();
-    Block metric = _createValue(parent, name);
-    if (metric == null) {
-      return 0;
+    try {
+      Block metric = _createValue(parent, name);
+      if (metric == null) {
+        return invalidIndex;
+      }
+      if (value is double) {
+        metric.becomeDoubleMetric(value.toDouble());
+      } else {
+        metric.becomeIntMetric(value.toInt());
+      }
+      return metric.index;
+    } finally {
+      _commit();
     }
-    if (value is double) {
-      metric.becomeDoubleMetric(value.toDouble());
-    } else {
-      metric.becomeIntMetric(value.toInt());
-    }
-    _commit();
-    return metric.index;
   }
 
   /// Set the metric's value.
   void setMetric<T extends num>(int metricIndex, T value) {
     _beginWork();
-    var metric = Block.read(_vmo, metricIndex);
-    if (value is double) {
-      metric.doubleValue = value.toDouble();
-    } else {
-      metric.intValue = value.toInt();
+    try {
+      var metric = Block.read(_vmo, metricIndex);
+      if (value is double) {
+        metric.doubleValue = value.toDouble();
+      } else {
+        metric.intValue = value.toInt();
+      }
+    } finally {
+      _commit();
     }
-    _commit();
   }
 
   /// Adds to existing value.
   void addMetric<T extends num>(int metricIndex, T value) {
     _beginWork();
-    var metric = Block.read(_vmo, metricIndex);
-    if (T is double || metric.type == BlockType.doubleValue) {
-      metric.doubleValue += value;
-    } else {
-      metric.intValue += value;
+    try {
+      var metric = Block.read(_vmo, metricIndex);
+      if (T is double || metric.type == BlockType.doubleValue) {
+        metric.doubleValue += value;
+      } else {
+        metric.intValue += value;
+      }
+    } finally {
+      _commit();
     }
-    _commit();
   }
 
   /// Subtracts from existing value.
   void subMetric<T extends num>(int metricIndex, T value) {
     _beginWork();
-    var metric = Block.read(_vmo, metricIndex);
-    if (T is double || metric.type == BlockType.doubleValue) {
-      metric.doubleValue -= value;
-    } else {
-      metric.intValue -= value;
+    try {
+      var metric = Block.read(_vmo, metricIndex);
+      if (T is double || metric.type == BlockType.doubleValue) {
+        metric.doubleValue -= value;
+      } else {
+        metric.intValue -= value;
+      }
+    } finally {
+      _commit();
     }
-    _commit();
   }
 
   /// Deletes the Metric.
   void deleteMetric(int metricIndex) {
     _beginWork();
-    _deleteValue(Block.read(_vmo, metricIndex));
-    _commit();
+    try {
+      _deleteValue(Block.read(_vmo, metricIndex));
+    } finally {
+      _commit();
+    }
   }
 
   // Creates a new *_VALUE node inside the tree.

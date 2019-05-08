@@ -40,6 +40,32 @@ void main() {
       expect(countFreeBlocks(vmo), 6);
     });
 
+    test('failed createNode leaves VMO sequence number even (valid VMO)', () {
+      final vmo = FakeVmo(64); // No space for anything
+      final writer = VmoWriter(vmo);
+      final h = hexChar(BlockType.header.value);
+      writer.createNode(writer.rootNode, 'child');
+      compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+      writer.createProperty(writer.rootNode, 'property');
+    });
+
+    test('failed createProperty leaves VMO sequence number even (valid VMO)',
+        () {
+      final vmo = FakeVmo(64); // No space for anything
+      final writer = VmoWriter(vmo);
+      final h = hexChar(BlockType.header.value);
+      writer.createProperty(writer.rootNode, 'property');
+      compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+    });
+
+    test('failed createMetric leaves VMO sequence number even (valid VMO)', () {
+      final vmo = FakeVmo(64); // No space for anything
+      final writer = VmoWriter(vmo);
+      final h = hexChar(BlockType.header.value);
+      writer.createMetric(writer.rootNode, 'metric', 0);
+      compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+    });
+
     test('make, modify, and free Node', () {
       final vmo = FakeVmo(1024);
       final checker = Checker(vmo);
