@@ -34,13 +34,16 @@ import 'package:zircon/zircon.dart';
 class Incoming {
   DirectoryProxy _dirProxy;
 
+  /// Initializes [Incoming] with an unbound [DirectoryProxy] which can be used
+  /// to bind to a launched component's services.
+  Incoming() : this.withDirectory(DirectoryProxy());
+
   /// Initializes [Incoming] with a [Directory] that should be bound to `/svc`
   /// of this component.
   ///
-  /// [dir] is now optional to aid in soft transition. It will soon be removed.
-  /// If [dir] is not bound before connecting to a service an
-  /// [IncomingStateException] will be thrown
-  Incoming([DirectoryProxy dir]) : _dirProxy = dir ?? DirectoryProxy();
+  /// If you are launching a component use the [Incoming()] constructor
+  /// to get an unbound directory.
+  Incoming.withDirectory(this._dirProxy) : assert(_dirProxy != null);
 
   /// Terminates connection and return Zircon status.
   Future<int> close() async {

@@ -48,6 +48,5 @@ dart_aot_app("dart_aot_runner_test") {
     "//third_party/dart-pkg/pub/test",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/runtime/dart_runner/examples/hello_app_dart/interfaces:interfaces",
-    "//zircon/public/fidl/fuchsia-io",
   ]
 }

@@ -7,7 +7,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:fidl_fuchsia_ledger/fidl_async.dart';
-import 'package:fidl_fuchsia_io/fidl_async.dart' as io;
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_xi/fidl_async.dart' as service;
@@ -69,7 +68,7 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
   XiFuchsiaClient(InterfaceHandle<Ledger> _ledgerHandle) {
     // Note: _ledgerHandle is currently unused, but we're hoping to bring it back.
   }
-  final _dirProxy = io.DirectoryProxy();
+  final _incoming = Incoming();
   final service.JsonProxy _jsonProxy = service.JsonProxy();
 
   @override
@@ -88,14 +87,14 @@ class XiFuchsiaClient extends FuchsiaSocketClient {
     // Use the launcher services launch echo server via launchInfo
     final LaunchInfo launchInfo = LaunchInfo(
         url: 'fuchsia-pkg://fuchsia.com/xi_core#meta/xi_core.cmx',
-        directoryRequest: _dirProxy.ctrl.request().passChannel());
+        directoryRequest: _incoming.request().passChannel());
     await launcherProxy.createComponent(
         launchInfo, componentController.ctrl.request());
 
     // Close launcher connection since we no longer need the launcher service.
     launcherProxy.ctrl.close();
 
-    Incoming(_dirProxy).connectToService(_jsonProxy);
+    _incoming.connectToService(_jsonProxy);
 
     final SocketPair pair = SocketPair();
     await _jsonProxy.connectSocket(pair.first);

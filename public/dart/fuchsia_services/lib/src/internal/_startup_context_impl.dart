@@ -53,26 +53,24 @@ class StartupContextImpl implements StartupContext {
   /// of instantiating one on their own as it will bind and connect to all the
   /// underlying services for them.
   factory StartupContextImpl.fromStartupInfo() {
-    final directoryProxy = fidl_io.DirectoryProxy();
-
     if (Directory(_serviceRootPath).existsSync()) {
       final channel = Channel.fromFile(_serviceRootPath);
-      final directoryProxy = fidl_io.DirectoryProxy()
+      final directory = fidl_io.DirectoryProxy()
         ..ctrl.bind(InterfaceHandle<fidl_io.Directory>(channel));
+      final incoming = Incoming.withDirectory(directory);
 
       // Note takeOutgoingServices shouldn't be called more than once per pid
       final outgoingServicesHandle = MxStartupInfo.takeOutgoingServices();
 
-      final incomingServices = Incoming(directoryProxy);
       return StartupContextImpl(
-        incoming: incomingServices,
+        incoming: incoming,
         outgoing: _getOutgoingFromHandle(outgoingServicesHandle),
       );
     }
 
     // The following is required to enable host side tests.
     return StartupContextImpl(
-      incoming: Incoming(directoryProxy),
+      incoming: Incoming(),
       outgoing: Outgoing(),
     );
   }
@@ -99,9 +97,9 @@ class StartupContextImpl implements StartupContext {
       }
     }
 
-    final dirProxy = fidl_io.DirectoryProxy();
-    dirProxy.ctrl.bind(InterfaceHandle(serviceRoot));
-    final incomingSvc = Incoming(dirProxy);
+    final dirProxy = fidl_io.DirectoryProxy()
+      ..ctrl.bind(InterfaceHandle(serviceRoot));
+    final incomingSvc = Incoming.withDirectory(dirProxy);
 
     Channel dirRequestChannel = startupInfo.launchInfo.directoryRequest;
 

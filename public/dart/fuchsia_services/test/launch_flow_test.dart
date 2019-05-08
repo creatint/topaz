@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_test_fuchsia_service_foo/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
@@ -13,9 +12,9 @@ const String server =
 
 void main() {
   test('launching and connecting to the foo service', () async {
-    final dirProxy = DirectoryProxy();
+    final incoming = Incoming();
     final launchInfo = LaunchInfo(
-        url: server, directoryRequest: dirProxy.ctrl.request().passChannel());
+        url: server, directoryRequest: incoming.request().passChannel());
     final launcherProxy = LauncherProxy();
 
     StartupContext.fromStartupInfo().incoming.connectToService(launcherProxy);
@@ -24,7 +23,7 @@ void main() {
     launcherProxy.ctrl.close();
 
     final fooProxy = FooProxy();
-    Incoming(dirProxy).connectToService(fooProxy);
+    incoming.connectToService(fooProxy);
 
     final response = await fooProxy.echo('foo');
     expect(response, 'foo');

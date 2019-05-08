@@ -6,7 +6,6 @@ import 'dart:async';
 
 import 'package:fidl/fidl.dart' show InterfaceRequest;
 import 'package:fidl_fidl_test_compatibility/fidl_async.dart';
-import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 
@@ -28,16 +27,16 @@ class EchoImpl extends Echo {
   Future<Struct> proxyEcho(Struct value, String forwardToServer) async {
     assert(forwardToServer.isNotEmpty);
 
-    final dirProxy = DirectoryProxy();
+    final incoming = Incoming();
     final launchInfo = LaunchInfo(
         url: forwardToServer,
-        directoryRequest: dirProxy.ctrl.request().passChannel());
+        directoryRequest: incoming.request().passChannel());
     final controller = ComponentControllerProxy();
     final launcher = LauncherProxy();
     _context.incoming.connectToService(launcher);
     await launcher.createComponent(launchInfo, controller.ctrl.request());
     final echo = EchoProxy();
-    Incoming(dirProxy).connectToService(echo);
+    incoming.connectToService(echo);
 
     return echo.echoStruct(value, '');
   }
@@ -60,16 +59,16 @@ class EchoImpl extends Echo {
   @override
   Future<void> echoStructNoRetVal(Struct value, String forwardToServer) async {
     if (forwardToServer != null && forwardToServer.isNotEmpty) {
-      final dirProxy = DirectoryProxy();
+      final incoming = Incoming();
       final launchInfo = LaunchInfo(
           url: forwardToServer,
-          directoryRequest: dirProxy.ctrl.request().passChannel());
+          directoryRequest: incoming.request().passChannel());
       final controller = ComponentControllerProxy();
       final launcher = LauncherProxy();
       _context.incoming.connectToService(launcher);
       await launcher.createComponent(launchInfo, controller.ctrl.request());
       final echo = EchoProxy();
-      Incoming(dirProxy).connectToService(echo);
+      incoming.connectToService(echo);
       // Keep echo around until we process the expected event.
       proxies[forwardToServer] = echo;
       echo.echoEvent.listen((Struct val) {

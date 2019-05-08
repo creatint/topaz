@@ -134,7 +134,6 @@ flutter_test("dart_sledge_tests") {
     "//third_party/dart-pkg/pub/test",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/dart/zircon",
-    "//zircon/public/fidl/fuchsia-io",
   ]
 }
 

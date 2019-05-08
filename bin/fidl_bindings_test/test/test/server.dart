@@ -5,7 +5,6 @@
 import 'dart:async';
 
 import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
-import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 
@@ -21,16 +20,15 @@ class TestServerInstance {
     final launcherProxy = LauncherProxy();
     StartupContext.fromStartupInfo().incoming.connectToService(launcherProxy);
 
-    final dirProxy = DirectoryProxy();
+    final incoming = Incoming();
     final launchInfo = LaunchInfo(
-        url: _kServerName,
-        directoryRequest: dirProxy.ctrl.request().passChannel());
+        url: _kServerName, directoryRequest: incoming.request().passChannel());
     // Use the launcher services launch echo server via launchInfo
     await launcherProxy.createComponent(launchInfo, controller.ctrl.request());
     // Close connection to launcher service
     launcherProxy.ctrl.close();
 
-    Incoming(dirProxy).connectToService(proxy);
+    incoming.connectToService(proxy);
   }
 
   Future<void> stop() async {

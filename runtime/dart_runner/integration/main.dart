@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:fidl_fuchsia_examples_hello/fidl_async.dart';
-import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
@@ -40,16 +39,16 @@ void main(List<String> args) {
 
   test('communicate with a fidl service (hello_app_dart)', () async {
     final HelloProxy service = HelloProxy();
-    final dirProxy = DirectoryProxy();
+    final incoming = Incoming();
 
     final ComponentControllerProxy actl = ComponentControllerProxy();
 
     final LaunchInfo info = LaunchInfo(
         url:
             'fuchsia-pkg://fuchsia.com/hello_app_dart_jit#meta/hello_app_dart_jit.cmx',
-        directoryRequest: dirProxy.ctrl.request().passChannel());
+        directoryRequest: incoming.request().passChannel());
     await launcher.createComponent(info, actl.ctrl.request());
-    Incoming(dirProxy).connectToService(service);
+    incoming.connectToService(service);
 
     expect(await service.say('hello'), equals('hola from Dart!'));
 

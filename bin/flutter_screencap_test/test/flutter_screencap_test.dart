@@ -10,7 +10,6 @@ import 'package:collection/collection.dart' show SetEquality;
 import 'package:test/test.dart';
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_app/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
@@ -95,17 +94,15 @@ Future<void> _startAppAsRootView(
     InterfaceRequest<ComponentController> controllerRequest) async {
   final context = StartupContext.fromStartupInfo();
 
-  final directory = DirectoryProxy();
+  final incoming = Incoming();
   final launchInfo = LaunchInfo(
-      url: _testAppUrl,
-      directoryRequest: directory.ctrl.request().passChannel());
+      url: _testAppUrl, directoryRequest: incoming.request().passChannel());
   final launcher = LauncherProxy();
   context.incoming.connectToService(launcher);
   await launcher.createComponent(launchInfo, controllerRequest);
   launcher.ctrl.close();
 
   final viewProvider = ViewProviderProxy();
-  final incoming = Incoming(directory);
   try {
     incoming.connectToService(viewProvider);
     await viewProvider.createView(

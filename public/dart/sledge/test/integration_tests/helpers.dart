@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl/fidl.dart' as fidl;
 import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
 import 'package:fidl_fuchsia_sys/fidl_async.dart'
@@ -32,9 +31,9 @@ Future<LedgerTestInstanceProvider> newLedgerTestInstanceProvider() async {
   String server =
       'fuchsia-pkg://fuchsia.com/ledger_test_instance_provider#meta/ledger_test_instance_provider.cmx';
 
-  final dirProxy = DirectoryProxy();
+  final incoming = Incoming();
   final LaunchInfo launchInfo = LaunchInfo(
-      url: server, directoryRequest: dirProxy.ctrl.request().passChannel());
+      url: server, directoryRequest: incoming.request().passChannel());
   final context = StartupContext.fromStartupInfo();
   final ComponentControllerProxy controller = ComponentControllerProxy();
 
@@ -42,7 +41,7 @@ Future<LedgerTestInstanceProvider> newLedgerTestInstanceProvider() async {
   context.incoming.connectToService(launcher);
   await launcher.createComponent(launchInfo, controller.ctrl.request());
 
-  return LedgerTestInstanceProvider(Incoming(dirProxy), controller);
+  return LedgerTestInstanceProvider(incoming, controller);
 }
 
 /// Sledge subclass that makes sure the ComponentControllerProxy does not get GCed.

@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_modular/fidl_async.dart'
     show
         SessionShellContextProxy,
@@ -140,14 +139,14 @@ class AppModel extends Model {
   }
 
   void _loadAskBar() {
-    final dirProxy = DirectoryProxy();
+    final incoming = Incoming();
     final launcherProxy = LauncherProxy();
     startupContext.incoming.connectToService(launcherProxy);
 
     launcherProxy.createComponent(
       LaunchInfo(
         url: _kErmineAskModuleUrl,
-        directoryRequest: dirProxy.ctrl.request().passChannel(),
+        directoryRequest: incoming.request().passChannel(),
         additionalServices: ServiceList(
           names: <String>[
             PuppetMaster.$serviceName,
@@ -167,7 +166,7 @@ class AppModel extends Model {
     );
 
     final viewProvider = ViewProviderProxy();
-    Incoming(dirProxy)
+    incoming
       ..connectToService(viewProvider)
       ..connectToService(_ask)
       ..close();
