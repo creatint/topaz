@@ -111,7 +111,7 @@ class Tile<T> extends StatelessWidget {
                       );
               } else {
                 // Flatten all tiles to group them for tabbing between them.
-                final allTiles = flatten(availableTiles).toList();
+                final allTiles = flatten<T>(availableTiles).toList();
                 // Display tabs only when we have more than 1 tile.
                 if (allTiles.length > 1) {
                   return customTilesBuilder?.call(context, allTiles) ??

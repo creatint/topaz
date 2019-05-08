@@ -7,7 +7,7 @@ import 'dart:collection';
 import 'tile_model.dart';
 import 'tiler_model.dart';
 
-Iterable<TileModel> flatten(Iterable<TileModel> tiles) {
+Iterable<TileModel<T>> flatten<T>(Iterable<TileModel<T>> tiles) {
   return tiles
       .map((tile) => tile.isContent ? [tile] : flatten(tile.tiles))
       .expand((t) => t);
