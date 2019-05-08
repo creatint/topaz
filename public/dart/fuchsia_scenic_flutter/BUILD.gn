@@ -24,7 +24,6 @@ dart_library("fuchsia_scenic_flutter") {
     "//sdk/fidl/fuchsia.ui.views",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/meta",
-    "//topaz/public/dart/fuchsia_logger",
   ]
 }
 
