@@ -102,11 +102,11 @@ class _InspectHomePageState extends State<_InspectHomePage> {
         _colorIndex = 0;
 
         // Contrived example of removing an Inspect property:
-        // Once we've looped through the colors once, remove the property.
+        // Once we've looped through the colors once, delete the property.
         //
         // A more realistic example would be if something were being removed
         // from the UI, but this is intended to be super simple.
-        _backgroundProperty.remove();
+        _backgroundProperty.delete();
         _backgroundProperty = null;
       }
 

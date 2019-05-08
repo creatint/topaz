@@ -45,30 +45,30 @@ void main() {
           equalsByteData(toByteData('waffles')));
     });
 
-    test('can be removed', () {
+    test('can be deleted', () {
       var property = node.createStringProperty('scallops');
       var index = property.index;
 
-      property.remove();
+      property.delete();
 
       expect(() => readProperty(vmo, index), throwsA(anything),
-          reason: 'cannot read VMO values from a removed property');
+          reason: 'cannot read VMO values from a deleted property');
     });
 
-    test('setting a value on an already removed property is a no-op', () {
+    test('setting a value on an already deleted property is a no-op', () {
       var property = node.createStringProperty('paella');
       var index = property.index;
-      property.remove();
+      property.delete();
 
       expect(() => property.value = 'this will not set', returnsNormally);
       expect(() => readProperty(vmo, index), throwsA(anything),
-          reason: 'cannot read VMO values from a removed property');
+          reason: 'cannot read VMO values from a deleted property');
     });
 
-    test('removing an already removed property is a no-op', () {
-      var property = node.createStringProperty('nothing-here')..remove();
+    test('removing an already deleted property is a no-op', () {
+      var property = node.createStringProperty('nothing-here')..delete();
 
-      expect(() => property.remove(), returnsNormally);
+      expect(() => property.delete(), returnsNormally);
     });
   });
 
@@ -91,31 +91,31 @@ void main() {
       expect(readProperty(vmo, property.index), equalsByteData(waffles));
     });
 
-    test('can be removed', () {
+    test('can be deleted', () {
       var property = node.createByteDataProperty('scallops');
       var index = property.index;
 
-      property.remove();
+      property.delete();
 
       expect(() => readProperty(vmo, index), throwsA(anything),
-          reason: 'cannot read VMO values from a removed property');
+          reason: 'cannot read VMO values from a deleted property');
     });
 
-    test('setting a value on an already removed property is a no-op', () {
+    test('setting a value on an already deleted property is a no-op', () {
       var property = node.createByteDataProperty('paella');
       var index = property.index;
-      property.remove();
+      property.delete();
 
       var bytes = toByteData('this will not set');
       expect(() => property.value = bytes, returnsNormally);
       expect(() => readProperty(vmo, index), throwsA(anything),
-          reason: 'cannot read VMO values from a removed property');
+          reason: 'cannot read VMO values from a deleted property');
     });
 
-    test('removing an already removed property is a no-op', () {
-      var property = node.createByteDataProperty('nothing-here')..remove();
+    test('removing an already deleted property is a no-op', () {
+      var property = node.createByteDataProperty('nothing-here')..delete();
 
-      expect(() => property.remove(), returnsNormally);
+      expect(() => property.delete(), returnsNormally);
     });
   });
 }

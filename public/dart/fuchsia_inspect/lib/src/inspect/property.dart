@@ -27,12 +27,11 @@ class _Property<T> {
   final int index;
 
   /// The writer for the underlying VMO.
-  final VmoWriter _writer;
-
-  /// Whether this property has been removed from the VMO.
   ///
-  /// If so, all actions on this property should be no-ops and not throw.
-  bool _isRemoved = false;
+  /// Will be set to null if the property has been deleted or could not be
+  ///  created in the VMO.
+  /// If so, all actions on this property will be no-ops and not throw.
+  VmoWriter _writer;
 
   /// Creates a [_Property] with [name] under the [parentIndex].
   _Property(String name, int parentIndex, this._writer)
@@ -40,25 +39,17 @@ class _Property<T> {
 
   /// Sets the value of this property in the VMO.
   set value(T value) {
-    if (_isRemoved) {
-      return;
-    }
-
-    _writer.setProperty(index, value);
+    _writer?.setProperty(index, value);
   }
 
-  /// Remove this property from the VMO.
+  /// Delete this property from the VMO.
   ///
-  /// After a property has been removed, it should no longer be used, so callers
-  /// should clear their references to this property after calling remove.
-  /// Any calls on an already removed property will be no-ops.
-  void remove() {
-    if (_isRemoved) {
-      return;
-    }
-
-    _writer.deleteProperty(index);
-    _isRemoved = true;
+  /// After a property has been deleted, it should no longer be used, so callers
+  /// should clear their references to this property after calling delete.
+  /// Any calls on an already deleted property will be no-ops.
+  void delete() {
+    _writer?.deleteProperty(index);
+    _writer = null;
   }
 }
 

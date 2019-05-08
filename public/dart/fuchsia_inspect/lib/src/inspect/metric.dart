@@ -25,33 +25,28 @@ abstract class _Metric<T extends num> {
   final int index;
 
   /// The writer for the underlying VMO.
-  final VmoWriter _writer;
-
-  /// Whether this metric has been removed from the VMO.
   ///
+  /// Will be set to null if the metric has been deleted or could not be
+  /// created in the VMO.
   /// If so, all actions on this metric should be no-ops and not throw.
-  bool _isRemoved = false;
+  VmoWriter _writer;
 
   /// Creates a [_Metric] with [name] and [value] under the [parentIndex].
   _Metric(String name, int parentIndex, this._writer, T value)
-      : index = _writer.createMetric(parentIndex, name, value);
+      : index = _writer.createMetric(parentIndex, name, value) {
+    if (index == invalidIndex) {
+      _writer = null;
+    }
+  }
 
   /// Sets the value of this metric in the VMO.
   set value(T value) {
-    if (_isRemoved) {
-      return;
-    }
-
-    _writer.setMetric(index, value);
+    _writer?.setMetric(index, value);
   }
 
   /// Adds [delta] to the value of this metric in the VMO.
   void add(T delta) {
-    if (_isRemoved) {
-      return;
-    }
-
-    _writer.addMetric(index, delta);
+    _writer?.addMetric(index, delta);
   }
 
   /// Increments the value of this metric by 1.
@@ -62,25 +57,17 @@ abstract class _Metric<T extends num> {
 
   /// Subtracts [delta] from the value of this metric in the VMO.
   void subtract(T delta) {
-    if (_isRemoved) {
-      return;
-    }
-
-    _writer.subMetric(index, delta);
+    _writer?.subMetric(index, delta);
   }
 
-  /// Remove this metric from the VMO.
+  /// Delete this metric from the VMO.
   ///
-  /// After a metric has been removed, it should no longer be used, so callers
-  /// should clear their references to this metric after calling remove.
-  /// Any calls on an already removed metric will be no-ops.
-  void remove() {
-    if (_isRemoved) {
-      return;
-    }
-
-    _writer.deleteMetric(index);
-    _isRemoved = true;
+  /// After a metric has been deleted, it should no longer be used, so callers
+  /// should clear their references to this metric after calling delete.
+  /// Any calls on an already deleted metric will be no-ops.
+  void delete() {
+    _writer?.deleteMetric(index);
+    _writer = null;
   }
 }
 

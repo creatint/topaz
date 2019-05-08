@@ -86,32 +86,32 @@ void main() {
       expect(readInt(vmo, metric), 0);
     });
 
-    test('can be removed', () {
-      var metric = node.createIntMetric('sheep')..remove();
+    test('can be deleted', () {
+      var metric = node.createIntMetric('sheep')..delete();
 
       expect(() => readInt(vmo, metric), throwsA(anything),
-          reason: 'cannot read VMO values from a removed metric');
+          reason: 'cannot read VMO values from a deleted metric');
     });
 
-    test('setting a value on an already removed metric is a no-op', () {
-      var metric = node.createIntMetric('webpages')..remove();
+    test('setting a value on an already deleted metric is a no-op', () {
+      var metric = node.createIntMetric('webpages')..delete();
 
       expect(() => metric.value = 404, returnsNormally);
       expect(() => readInt(vmo, metric), throwsA(anything),
-          reason: 'cannot read VMO values from a removed metric');
+          reason: 'cannot read VMO values from a deleted metric');
     });
 
-    test('incrementing on an already removed metric is a no-op', () {
-      var metric = node.createIntMetric('apples')..remove();
+    test('incrementing on an already deleted metric is a no-op', () {
+      var metric = node.createIntMetric('apples')..delete();
 
       expect(() => metric.increment(), returnsNormally);
       expect(() => readInt(vmo, metric), throwsA(anything),
-          reason: 'cannot read VMO values from a removed metric');
+          reason: 'cannot read VMO values from a deleted metric');
     });
-    test('removing an already removed metric is a no-op', () {
-      var metric = node.createIntMetric('nothing-here')..remove();
+    test('removing an already deleted metric is a no-op', () {
+      var metric = node.createIntMetric('nothing-here')..delete();
 
-      expect(() => metric.remove(), returnsNormally);
+      expect(() => metric.delete(), returnsNormally);
     });
   });
 
@@ -173,25 +173,25 @@ void main() {
       expect(readDouble(vmo, metric), 11);
     });
 
-    test('can be removed', () {
-      var metric = node.createDoubleMetric('circumference')..remove();
+    test('can be deleted', () {
+      var metric = node.createDoubleMetric('circumference')..delete();
 
       expect(() => readDouble(vmo, metric), throwsA(anything),
-          reason: 'cannot read VMO values from a removed metric');
+          reason: 'cannot read VMO values from a deleted metric');
     });
 
-    test('setting a value on an already removed metric is a no-op', () {
-      var metric = node.createDoubleMetric('pounds')..remove();
+    test('setting a value on an already deleted metric is a no-op', () {
+      var metric = node.createDoubleMetric('pounds')..delete();
 
       expect(() => metric.value = 50.6, returnsNormally);
       expect(() => readDouble(vmo, metric), throwsA(anything),
-          reason: 'cannot read VMO values from a removed metric');
+          reason: 'cannot read VMO values from a deleted metric');
     });
 
-    test('removing an already removed metric is a no-op', () {
-      var metric = node.createDoubleMetric('nothing-here')..remove();
+    test('removing an already deleted metric is a no-op', () {
+      var metric = node.createDoubleMetric('nothing-here')..delete();
 
-      expect(() => metric.remove(), returnsNormally);
+      expect(() => metric.delete(), returnsNormally);
     });
   });
 }
