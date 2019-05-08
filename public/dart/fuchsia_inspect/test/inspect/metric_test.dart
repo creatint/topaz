@@ -33,7 +33,7 @@ void main() {
     });
 
     test('are written to the VMO when the value is set', () {
-      var metric = node.createIntMetric('eggs', value: 12);
+      var metric = node.createIntMetric('eggs')..setValue(12);
 
       expect(readInt(vmo, metric), 12);
 
@@ -42,16 +42,16 @@ void main() {
     });
 
     test('can be mutated', () {
-      var metric = node.createIntMetric('locusts', value: 10);
+      var metric = node.createIntMetric('locusts')..setValue(10);
       expect(readInt(vmo, metric), 10);
 
-      metric.value = 1000;
+      metric.setValue(1000);
 
       expect(readInt(vmo, metric), 1000);
     });
 
     test('can add arbitrary values', () {
-      var metric = node.createIntMetric('bagels', value: 13);
+      var metric = node.createIntMetric('bagels')..setValue(13);
       expect(readInt(vmo, metric), 13);
 
       metric.add(13);
@@ -60,7 +60,7 @@ void main() {
     });
 
     test('can increment by 1', () {
-      var metric = node.createIntMetric('bagels', value: 12);
+      var metric = node.createIntMetric('bagels')..setValue(12);
       expect(readInt(vmo, metric), 12);
 
       metric.increment();
@@ -69,7 +69,7 @@ void main() {
     });
 
     test('can subtract arbitrary values', () {
-      var metric = node.createIntMetric('bagels', value: 13);
+      var metric = node.createIntMetric('bagels')..setValue(13);
       expect(readInt(vmo, metric), 13);
 
       metric.subtract(6);
@@ -78,7 +78,7 @@ void main() {
     });
 
     test('can decrement by 1', () {
-      var metric = node.createIntMetric('soup-for-you', value: 1);
+      var metric = node.createIntMetric('soup-for-you')..setValue(1);
       expect(readInt(vmo, metric), 1);
 
       metric.decrement();
@@ -96,7 +96,7 @@ void main() {
     test('setting a value on an already deleted metric is a no-op', () {
       var metric = node.createIntMetric('webpages')..delete();
 
-      expect(() => metric.value = 404, returnsNormally);
+      expect(() => metric.setValue(404), returnsNormally);
       expect(() => readInt(vmo, metric), throwsA(anything),
           reason: 'cannot read VMO values from a deleted metric');
     });
@@ -123,22 +123,22 @@ void main() {
     });
 
     test('are written to the VMO when the value is set', () {
-      var metric = node.createDoubleMetric('foo', value: 2.5);
+      var metric = node.createDoubleMetric('foo')..setValue(2.5);
 
       expect(readDouble(vmo, metric), 2.5);
     });
 
     test('can be mutated', () {
-      var metric = node.createDoubleMetric('bar', value: 3.0);
+      var metric = node.createDoubleMetric('bar')..setValue(3.0);
       expect(readDouble(vmo, metric), 3.0);
 
-      metric.value = 3.5;
+      metric.setValue(3.5);
 
       expect(readDouble(vmo, metric), 3.5);
     });
 
     test('can add arbitrary values', () {
-      var metric = node.createDoubleMetric('cake', value: 1.5);
+      var metric = node.createDoubleMetric('cake')..setValue(1.5);
       expect(readDouble(vmo, metric), 1.5);
 
       metric.add(1.5);
@@ -147,7 +147,7 @@ void main() {
     });
 
     test('can increment by 1', () {
-      var metric = node.createDoubleMetric('cake', value: 1.5);
+      var metric = node.createDoubleMetric('cake')..setValue(1.5);
       expect(readDouble(vmo, metric), 1.5);
 
       metric.increment();
@@ -156,7 +156,7 @@ void main() {
     });
 
     test('can subtract arbitrary values', () {
-      var metric = node.createDoubleMetric('cake', value: 5);
+      var metric = node.createDoubleMetric('cake')..setValue(5);
       expect(readDouble(vmo, metric), 5);
 
       metric.subtract(0.5);
@@ -165,7 +165,7 @@ void main() {
     });
 
     test('can decrement by 1', () {
-      var metric = node.createDoubleMetric('donuts', value: 12);
+      var metric = node.createDoubleMetric('donuts')..setValue(12);
       expect(readDouble(vmo, metric), 12);
 
       metric.decrement();
@@ -183,7 +183,7 @@ void main() {
     test('setting a value on an already deleted metric is a no-op', () {
       var metric = node.createDoubleMetric('pounds')..delete();
 
-      expect(() => metric.value = 50.6, returnsNormally);
+      expect(() => metric.setValue(50.6), returnsNormally);
       expect(() => readDouble(vmo, metric), throwsA(anything),
           reason: 'cannot read VMO values from a deleted metric');
     });

@@ -30,7 +30,7 @@ class InspectExampleApp extends StatelessWidget {
 
   /// Initializes the [Inspect] metrics for this widget.
   void _initMetrics() {
-    _inspectNode.createStringProperty('app-color', value: '$_appColor');
+    _inspectNode.createStringProperty('app-color').setValue('$_appColor');
   }
 }
 
@@ -39,7 +39,7 @@ class _InspectHomePage extends StatefulWidget {
   final inspect.Node inspectNode;
 
   _InspectHomePage({Key key, this.title, this.inspectNode}) : super(key: key) {
-    inspectNode.createStringProperty('title', value: title);
+    inspectNode.createStringProperty('title').setValue(title);
   }
 
   @override
@@ -66,8 +66,8 @@ class _InspectHomePageState extends State<_InspectHomePage> {
 
   _InspectHomePageState(this._inspectNode)
       : _counterMetric = _inspectNode.createIntMetric('counter') {
-    _backgroundProperty = _inspectNode.createStringProperty('background-color',
-        value: '$_backgroundColor');
+    _backgroundProperty = _inspectNode.createStringProperty('background-color')
+      ..setValue('$_backgroundColor');
   }
 
   Color get _backgroundColor => _colors[_colorIndex];
@@ -110,7 +110,7 @@ class _InspectHomePageState extends State<_InspectHomePage> {
         _backgroundProperty = null;
       }
 
-      _backgroundProperty?.value = '$_backgroundColor';
+      _backgroundProperty?.setValue('$_backgroundColor');
     });
   }
 

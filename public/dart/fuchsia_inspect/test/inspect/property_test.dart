@@ -28,19 +28,20 @@ void main() {
 
   group('String properties', () {
     test('are written to the VMO when the value is set', () {
-      var property = node.createStringProperty('color', value: 'fuchsia');
+      var property = node.createStringProperty('color')..setValue('fuchsia');
 
       expect(readProperty(vmo, property.index),
           equalsByteData(toByteData('fuchsia')));
     });
 
     test('can be mutated', () {
-      var property = node.createStringProperty('breakfast')..value = 'pancakes';
+      var property = node.createStringProperty('breakfast')
+        ..setValue('pancakes');
 
       expect(readProperty(vmo, property.index),
           equalsByteData(toByteData('pancakes')));
 
-      property.value = 'waffles';
+      property.setValue('waffles');
       expect(readProperty(vmo, property.index),
           equalsByteData(toByteData('waffles')));
     });
@@ -60,7 +61,7 @@ void main() {
       var index = property.index;
       property.delete();
 
-      expect(() => property.value = 'this will not set', returnsNormally);
+      expect(() => property.setValue('this will not set'), returnsNormally);
       expect(() => readProperty(vmo, index), throwsA(anything),
           reason: 'cannot read VMO values from a deleted property');
     });
@@ -75,19 +76,20 @@ void main() {
   group('ByteData properties', () {
     test('are written to the VMO when the value is set', () {
       var bytes = toByteData('fuchsia');
-      var property = node.createByteDataProperty('color', value: bytes);
+      var property = node.createByteDataProperty('color')..setValue(bytes);
 
       expect(readProperty(vmo, property.index), equalsByteData(bytes));
     });
 
     test('can be mutated', () {
       var pancakes = toByteData('pancakes');
-      var property = node.createByteDataProperty('breakfast', value: pancakes);
+      var property = node.createByteDataProperty('breakfast')
+        ..setValue(pancakes);
 
       expect(readProperty(vmo, property.index), equalsByteData(pancakes));
 
       var waffles = toByteData('waffles');
-      property.value = waffles;
+      property.setValue(waffles);
       expect(readProperty(vmo, property.index), equalsByteData(waffles));
     });
 
@@ -107,7 +109,7 @@ void main() {
       property.delete();
 
       var bytes = toByteData('this will not set');
-      expect(() => property.value = bytes, returnsNormally);
+      expect(() => property.setValue(bytes), returnsNormally);
       expect(() => readProperty(vmo, index), throwsA(anything),
           reason: 'cannot read VMO values from a deleted property');
     });

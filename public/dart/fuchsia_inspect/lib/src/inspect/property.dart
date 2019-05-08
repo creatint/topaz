@@ -22,7 +22,7 @@ class _Property<T> {
       : index = _writer.createProperty(parentIndex, name);
 
   /// Sets the value of this property in the VMO.
-  set value(T value) {
+  void setValue(T value) {
     _writer?.setProperty(index, value);
   }
 

@@ -36,12 +36,8 @@ class Node {
   /// Does not check whether the property already exists. This method is not
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [StringProperty]s.
-  StringProperty createStringProperty(String name, {String value}) {
+  StringProperty createStringProperty(String name) {
     var property = StringProperty._(name, index, _writer);
-
-    if (value != null) {
-      property.value = value;
-    }
 
     return property;
   }
@@ -53,12 +49,8 @@ class Node {
   /// Does not check whether the property already exists. This method is not
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [ByteDataProperty]s.
-  ByteDataProperty createByteDataProperty(String name, {ByteData value}) {
+  ByteDataProperty createByteDataProperty(String name) {
     var property = ByteDataProperty._(name, index, _writer);
-
-    if (value != null) {
-      property.value = value;
-    }
 
     return property;
   }
@@ -70,8 +62,7 @@ class Node {
   /// Does not check whether the metric already exists. This method is not
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [IntMetric]s.
-  IntMetric createIntMetric(String name, {int value = 0}) =>
-      IntMetric._(name, index, _writer, value);
+  IntMetric createIntMetric(String name) => IntMetric._(name, index, _writer);
 
   /// Creates a [DoubleMetric] with [name] on this node.
   ///
@@ -80,8 +71,8 @@ class Node {
   /// Does not check whether the metric already exists. This method is not
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [DoubleMetric]s.
-  DoubleMetric createDoubleMetric(String name, {double value = 0.0}) =>
-      DoubleMetric._(name, index, _writer, value);
+  DoubleMetric createDoubleMetric(String name) =>
+      DoubleMetric._(name, index, _writer);
 }
 
 /// RootNode wraps the root node of the VMO.

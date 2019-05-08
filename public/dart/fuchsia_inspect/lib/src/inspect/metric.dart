@@ -26,7 +26,7 @@ abstract class _Metric<T extends num> {
   }
 
   /// Sets the value of this metric in the VMO.
-  set value(T value) {
+  void setValue(T value) {
     _writer?.setMetric(index, value);
   }
 
@@ -59,8 +59,8 @@ abstract class _Metric<T extends num> {
 
 /// A VMO-backed key-value pair with a [String] key and [int] value.
 class IntMetric extends _Metric<int> {
-  IntMetric._(String name, int parentIndex, VmoWriter writer, int value)
-      : super(name, parentIndex, writer, value);
+  IntMetric._(String name, int parentIndex, VmoWriter writer)
+      : super(name, parentIndex, writer, 0);
 
   @override
   void increment() => add(1);
@@ -71,8 +71,8 @@ class IntMetric extends _Metric<int> {
 
 /// A VMO-backed key-value pair with a [String] key and [double] value.
 class DoubleMetric extends _Metric<double> {
-  DoubleMetric._(String name, int parentIndex, VmoWriter writer, double value)
-      : super(name, parentIndex, writer, value);
+  DoubleMetric._(String name, int parentIndex, VmoWriter writer)
+      : super(name, parentIndex, writer, 0.0);
 
   @override
   void increment() => add(1.0);
