@@ -2,17 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:typed_data';
-
-import 'package:meta/meta.dart';
-
-import '../vmo/vmo_writer.dart';
-import 'metric.dart';
-import 'property.dart';
-
-/// Exposes internal constructor to other implementation files within the
-/// package but should be hidden to clients of the package.
-Node internalNode(int index, VmoWriter writer) => Node._(index, writer);
+part of 'inspect.dart';
 
 /// A node in the [Inspect] tree that can have associated key-values (KVs).
 class Node {
@@ -23,18 +13,21 @@ class Node {
   /// The writer for the VMO that backs this node.
   final VmoWriter _writer;
 
-  /// Creates a [Node] with the VMO [index] and [writer].
+  /// Creates a [Node] with [name] under the [parentIndex].
   ///
   /// Private as an implementation detail to code that understands VMO indices.
   /// Client code that wishes to create [Node]s should use [createChild].
-  Node._(this.index, this._writer);
+  Node._(String name, int parentIndex, this._writer)
+      : index = _writer.createNode(parentIndex, name);
+
+  /// Wraps the special root node.
+  Node._root(this._writer) : index = _writer.rootNode;
 
   /// Creates a child [Node] with [name].
   ///
   /// This method is not idempotent: calling it multiple times with the same
   /// [name] will create multiple children with the same name.
-  Node createChild(String name) =>
-      Node._(_writer.createNode(index, name), _writer);
+  Node createChild(String name) => Node._(name, index, _writer);
 
   /// Creates a [StringProperty] with [name] on this node.
   ///
@@ -44,7 +37,7 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [StringProperty]s.
   StringProperty createStringProperty(String name, {String value}) {
-    var property = internalStringProperty(name, index, _writer);
+    var property = StringProperty._(name, index, _writer);
 
     if (value != null) {
       property.value = value;
@@ -61,7 +54,7 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [ByteDataProperty]s.
   ByteDataProperty createByteDataProperty(String name, {ByteData value}) {
-    var property = internalByteDataProperty(name, index, _writer);
+    var property = ByteDataProperty._(name, index, _writer);
 
     if (value != null) {
       property.value = value;
@@ -78,7 +71,7 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [IntMetric]s.
   IntMetric createIntMetric(String name, {int value = 0}) =>
-      internalIntMetric(name, index, _writer, value);
+      IntMetric._(name, index, _writer, value);
 
   /// Creates a [DoubleMetric] with [name] on this node.
   ///
@@ -88,5 +81,15 @@ class Node {
   /// idempotent and calling it multiple times with the same [name] will
   /// create multiple [DoubleMetric]s.
   DoubleMetric createDoubleMetric(String name, {double value = 0.0}) =>
-      internalDoubleMetric(name, index, _writer, value);
+      DoubleMetric._(name, index, _writer, value);
+}
+
+/// RootNode wraps the root node of the VMO.
+///
+/// The root node will have special behavior: Delete is a NOP.
+///
+/// This class should be hidden from the public API.
+class RootNode extends Node {
+  /// Creates a Node wrapping the root of the Inspect hierarchy.
+  RootNode(VmoWriter writer) : super._root(writer);
 }

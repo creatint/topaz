@@ -2,11 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+library topaz.public.dart.fuchsia_inspect.inspect.inspect;
+
+import 'dart:typed_data';
+
 import 'package:fuchsia_services/services.dart';
+import 'package:meta/meta.dart';
 
 import '../vmo/vmo_writer.dart';
 import 'internal/_inspect_impl.dart';
-import 'node.dart';
+
+part 'node.dart';
+part 'metric.dart';
+part 'property.dart';
 
 const int _defaultVmoSizeBytes = 256 * 1024;
 

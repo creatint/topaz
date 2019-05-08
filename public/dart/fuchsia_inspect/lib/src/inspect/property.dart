@@ -2,23 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:typed_data';
-
-import 'package:meta/meta.dart';
-
-import '../vmo/vmo_writer.dart';
-
-/// Exposes internal constructor to other implementation files within the
-/// package but should be hidden to clients of the package.
-StringProperty internalStringProperty(
-        String name, int parentIndex, VmoWriter writer) =>
-    StringProperty._(name, parentIndex, writer);
-
-/// Exposes internal constructor to other implementation files within the
-/// package but should be hidden to clients of the package.
-ByteDataProperty internalByteDataProperty(
-        String name, int parentIndex, VmoWriter writer) =>
-    ByteDataProperty._(name, parentIndex, writer);
+part of 'inspect.dart';
 
 /// A VMO-backed key-value pair with a [String] key and [T] value.
 class _Property<T> {

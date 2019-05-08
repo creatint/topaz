@@ -3,8 +3,4 @@
 // found in the LICENSE file.
 
 /// The Inspect API for Dart.
-export 'src/inspect/inspect.dart';
-export 'src/inspect/metric.dart' hide internalIntMetric, internalDoubleMetric;
-export 'src/inspect/node.dart' hide internalNode;
-export 'src/inspect/property.dart'
-    hide internalStringProperty, internalByteDataProperty;
+export 'src/inspect/inspect.dart' hide RootNode;

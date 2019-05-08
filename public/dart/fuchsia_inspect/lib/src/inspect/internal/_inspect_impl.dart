@@ -6,7 +6,6 @@ import 'package:fuchsia_services/services.dart';
 
 import '../../vmo/vmo_writer.dart';
 import '../inspect.dart';
-import '../node.dart';
 
 /// A concrete implementation of the [Inspect] interface.
 ///
@@ -19,7 +18,7 @@ class InspectImpl implements Inspect {
   InspectImpl(StartupContext context, VmoWriter writer) {
     context.outgoing.debugDir().addNode('root.inspect', writer.vmoNode);
 
-    _root = internalNode(writer.rootNode, writer);
+    _root = RootNode(writer);
   }
 
   @override

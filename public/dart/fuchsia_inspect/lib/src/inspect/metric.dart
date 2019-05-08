@@ -2,21 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'package:meta/meta.dart';
-
-import '../vmo/vmo_writer.dart';
-
-/// Exposes internal constructor to other implementation files within the
-/// package but should be hidden to clients of the package.
-IntMetric internalIntMetric(
-        String name, int parentIndex, VmoWriter writer, int value) =>
-    IntMetric._(name, parentIndex, writer, value);
-
-/// Exposes internal constructor to other implementation files within the
-/// package but should be hidden to clients of the package.
-DoubleMetric internalDoubleMetric(
-        String name, int parentIndex, VmoWriter writer, double value) =>
-    DoubleMetric._(name, parentIndex, writer, value);
+part of 'inspect.dart';
 
 /// A VMO-backed key-value pair with a [String] key and num value.
 abstract class _Metric<T extends num> {
