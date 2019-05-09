@@ -13,6 +13,10 @@ class Node {
   /// The writer for the VMO that backs this node.
   final VmoWriter _writer;
 
+  final _properties = <String, _Property>{};
+  final _metrics = <String, _Metric>{};
+  final _children = <String, Node>{};
+
   /// Creates a [Node] with [name] under the [parentIndex].
   ///
   /// Private as an implementation detail to code that understands VMO indices.
@@ -23,56 +27,97 @@ class Node {
   /// Wraps the special root node.
   Node._root(this._writer) : index = _writer.rootNode;
 
-  /// Creates a child [Node] with [name].
+  /// Returns a child [Node] with [name].
   ///
-  /// This method is not idempotent: calling it multiple times with the same
-  /// [name] will create multiple children with the same name.
-  Node createChild(String name) => Node._(name, index, _writer);
+  /// If a child with [name] already exists, this
+  /// method returns it. Otherwise, it creates a new [Node].
+  Node createChild(String name) {
+    if (_children.containsKey(name)) {
+      return _children[name];
+    }
+    return _children[name] = Node._(name, index, _writer);
+  }
 
   /// Creates a [StringProperty] with [name] on this node.
   ///
-  /// Optionally sets the [value], if specified.
+  /// If a [StringPproperty] with [name] already exists and is not deleted,
+  /// this method returns it.
   ///
-  /// Does not check whether the property already exists. This method is not
-  /// idempotent and calling it multiple times with the same [name] will
-  /// create multiple [StringProperty]s.
+  /// Otherwise, it creates a new property initialized to the empty string.
+  ///
+  /// Throws [StateError] if a non-deleted property with [name] already exists
+  /// but it is not a [StringProperty].
   StringProperty createStringProperty(String name) {
-    var property = StringProperty._(name, index, _writer);
-
-    return property;
+    if (_properties.containsKey(name) && !_properties[name]._isDeleted) {
+      if (_properties[name] is! StringProperty) {
+        throw InspectStateError("Can't create StringProperty named $name;"
+            ' a different type exists.');
+      }
+      return _properties[name];
+    }
+    return _properties[name] = StringProperty._(name, index, _writer);
   }
 
   /// Creates a [ByteDataProperty] with [name] on this node.
   ///
-  /// Optionally sets the [value], if specified.
+  /// If a [ByteDataProperty] with [name] already exists and is not deleted,
+  /// this method returns it.
   ///
-  /// Does not check whether the property already exists. This method is not
-  /// idempotent and calling it multiple times with the same [name] will
-  /// create multiple [ByteDataProperty]s.
+  /// Otherwise, it creates a new property initialized to the empty
+  /// byte data container.
+  ///
+  /// Throws [StateError] if a non-deleted property with [name] already exists
+  /// but it is not a [ByteDataProperty].
   ByteDataProperty createByteDataProperty(String name) {
-    var property = ByteDataProperty._(name, index, _writer);
-
-    return property;
+    if (_properties.containsKey(name) && !_properties[name]._isDeleted) {
+      if (_properties[name] is! ByteDataProperty) {
+        throw InspectStateError("Can't create ByteDataProperty named $name;"
+            ' a different type exists.');
+      }
+      return _properties[name];
+    }
+    return _properties[name] = ByteDataProperty._(name, index, _writer);
   }
 
-  /// Creates a [IntMetric] with [name] on this node.
+  /// Creates an [IntMetric] with [name] on this node.
   ///
-  /// Optionally sets the [value], if specified.
+  /// If an [IntMetric] with [name] already exists and is not
+  /// deleted, this method returns it.
   ///
-  /// Does not check whether the metric already exists. This method is not
-  /// idempotent and calling it multiple times with the same [name] will
-  /// create multiple [IntMetric]s.
-  IntMetric createIntMetric(String name) => IntMetric._(name, index, _writer);
+  /// Otherwise, it creates a new metric initialized to 0.
+  ///
+  /// Throws [StateError] if a non-deleted metric with [name]
+  /// already exists but it is not an [IntMetric].
+  IntMetric createIntMetric(String name) {
+    if (_metrics.containsKey(name) && !_metrics[name]._isDeleted) {
+      if (_metrics[name] is! IntMetric) {
+        throw InspectStateError(
+            "Can't create IntMetric named $name;" ' a different type exists.');
+      }
+      return _metrics[name];
+    }
+    return _metrics[name] = IntMetric._(name, index, _writer);
+  }
 
   /// Creates a [DoubleMetric] with [name] on this node.
   ///
-  /// Optionally sets the [value], if specified.
+  /// If a [DoubleMetric] with [name] already exists and is not
+  /// deleted, this method returns it.
   ///
-  /// Does not check whether the metric already exists. This method is not
-  /// idempotent and calling it multiple times with the same [name] will
-  /// create multiple [DoubleMetric]s.
-  DoubleMetric createDoubleMetric(String name) =>
-      DoubleMetric._(name, index, _writer);
+  /// Otherwise, it creates a new metric initialized to 0.0.
+  ///
+  /// Throws [StateError] if a non-deleted metric with [name]
+  /// already exists but it is not a [DoubleMetric].
+  DoubleMetric createDoubleMetric(String name) {
+    if (_metrics.containsKey(name) && !_metrics[name]._isDeleted) {
+      if (_metrics[name] is! DoubleMetric) {
+        throw InspectStateError("Can't create DoubleMetric named $name;"
+            ' a different type exists.');
+      }
+      return _metrics[name];
+    }
+    return _metrics[name] = DoubleMetric._(name, index, _writer);
+  }
 }
 
 /// RootNode wraps the root node of the VMO.

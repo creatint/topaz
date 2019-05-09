@@ -18,6 +18,12 @@ part 'property.dart';
 
 const int _defaultVmoSizeBytes = 256 * 1024;
 
+/// Thrown when the programmer misuses Inspect.
+class InspectStateError extends StateError {
+  ///
+  InspectStateError(String message) : super(message);
+}
+
 /// Inspect exposes a structured tree of internal component state in a VMO.
 abstract class Inspect {
   /// Initializes an [Inspect] instance backed by a VMO of size [vmoSize] in

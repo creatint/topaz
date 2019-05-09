@@ -120,4 +120,54 @@ void main() {
       expect(() => property.delete(), returnsNormally);
     });
   });
+
+  group('Property creation', () {
+    test('StringProperties created twice return the same object', () {
+      var childMetric = node.createStringProperty('banana');
+      var childMetric2 = node.createStringProperty('banana');
+
+      expect(childMetric, isNotNull);
+      expect(childMetric2, isNotNull);
+      expect(childMetric, same(childMetric2));
+    });
+
+    test('StringProperties created after deletion return different objects',
+        () {
+      var childMetric = node.createStringProperty('banana')..delete();
+      var childMetric2 = node.createStringProperty('banana');
+
+      expect(childMetric, isNotNull);
+      expect(childMetric2, isNotNull);
+      expect(childMetric, isNot(equals(childMetric2)));
+    });
+
+    test('ByteDataProperties created twice return the same object', () {
+      var childMetric = node.createByteDataProperty('banana');
+      var childMetric2 = node.createByteDataProperty('banana');
+
+      expect(childMetric, isNotNull);
+      expect(childMetric2, isNotNull);
+      expect(childMetric, same(childMetric2));
+    });
+
+    test('ByteDataProperties created after deletion return different objects',
+        () {
+      var childMetric = node.createByteDataProperty('banana')..delete();
+      var childMetric2 = node.createByteDataProperty('banana');
+
+      expect(childMetric, isNotNull);
+      expect(childMetric2, isNotNull);
+      expect(childMetric, isNot(equals(childMetric2)));
+    });
+
+    test('Changing StringProperty to ByteDataProperty throws', () {
+      node.createStringProperty('banana');
+      expect(() => node.createByteDataProperty('banana'), throwsA(anything));
+    });
+
+    test('Changing ByteDataProperty to StringProperty throws', () {
+      node.createByteDataProperty('banana');
+      expect(() => node.createStringProperty('banana'), throwsA(anything));
+    });
+  });
 }

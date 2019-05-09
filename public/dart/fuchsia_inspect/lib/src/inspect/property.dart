@@ -21,6 +21,8 @@ class _Property<T> {
   _Property(String name, int parentIndex, this._writer)
       : index = _writer.createProperty(parentIndex, name);
 
+  bool get _isDeleted => _writer == null;
+
   /// Sets the value of this property in the VMO.
   void setValue(T value) {
     _writer?.setProperty(index, value);

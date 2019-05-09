@@ -194,4 +194,52 @@ void main() {
       expect(() => metric.delete(), returnsNormally);
     });
   });
+
+  group('Metric creation', () {
+    test('IntMetrics created twice return the same object', () {
+      var childMetric = node.createIntMetric('banana');
+      var childMetric2 = node.createIntMetric('banana');
+
+      expect(childMetric, isNotNull);
+      expect(childMetric2, isNotNull);
+      expect(childMetric, same(childMetric2));
+    });
+
+    test('IntMetrics created after deletion return different objects', () {
+      var childMetric = node.createIntMetric('banana')..delete();
+      var childMetric2 = node.createIntMetric('banana');
+
+      expect(childMetric, isNotNull);
+      expect(childMetric2, isNotNull);
+      expect(childMetric, isNot(equals(childMetric2)));
+    });
+
+    test('DoubleMetrics created twice return the same object', () {
+      var childMetric = node.createDoubleMetric('banana');
+      var childMetric2 = node.createDoubleMetric('banana');
+
+      expect(childMetric, isNotNull);
+      expect(childMetric2, isNotNull);
+      expect(childMetric, same(childMetric2));
+    });
+
+    test('DoubleMetrics created after deletion return different objects', () {
+      var childMetric = node.createDoubleMetric('banana')..delete();
+      var childMetric2 = node.createDoubleMetric('banana');
+
+      expect(childMetric, isNotNull);
+      expect(childMetric2, isNotNull);
+      expect(childMetric, isNot(equals(childMetric2)));
+    });
+
+    test('Changing IntMetric to DoubleMetric throws', () {
+      node.createIntMetric('banana');
+      expect(() => node.createDoubleMetric('banana'), throwsA(anything));
+    });
+
+    test('Changing DoubleMetric to IntMetric throws', () {
+      node.createDoubleMetric('banana');
+      expect(() => node.createIntMetric('banana'), throwsA(anything));
+    });
+  });
 }

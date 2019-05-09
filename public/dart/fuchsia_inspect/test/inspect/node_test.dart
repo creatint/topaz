@@ -32,6 +32,15 @@ void main() {
     expect(childNode.index, isNot(node.index));
   });
 
+  test('Child nodes created twice return the same object', () {
+    var childNode = node.createChild('banana');
+    var childNode2 = node.createChild('banana');
+
+    expect(childNode, isNotNull);
+    expect(childNode2, isNotNull);
+    expect(childNode, equals(childNode2));
+  });
+
   test('Child nodes have unique indices from their siblings', () {
     var child1 = node.createChild('thing1');
     var child2 = node.createChild('thing2');

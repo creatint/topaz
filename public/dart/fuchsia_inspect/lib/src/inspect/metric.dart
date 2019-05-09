@@ -25,6 +25,8 @@ abstract class _Metric<T extends num> {
     }
   }
 
+  bool get _isDeleted => _writer == null;
+
   /// Sets the value of this metric in the VMO.
   void setValue(T value) {
     _writer?.setMetric(index, value);
