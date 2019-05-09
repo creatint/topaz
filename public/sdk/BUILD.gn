@@ -23,6 +23,10 @@ sdk("fuchsia_dart") {
 
   deps = [
     "//sdk/docs:modular_config_schema",
+    # TODO(SCN-1343): Remove this temporary dependency.
+    # Temporarily added as a direct dependency so that it can be removed from
+    # //sdk/fidl/fuchsia.ui.views.
+    "//sdk/fidl/fuchsia.intl:fuchsia.intl_sdk",
     "//topaz/bin/fidlgen_dart:fidlgen_dart_sdk($host_toolchain)",
     "//topaz/public/dart/composition_delegate:composition_delegate_sdk($dart_toolchain)",
     "//topaz/public/dart/fidl:fidl_sdk($dart_toolchain)",
