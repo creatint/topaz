@@ -23,7 +23,6 @@ dart_library("flutter") {
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/public/dart/fuchsia_scenic",
     "//topaz/public/dart/fuchsia_scenic_flutter",
-    "//topaz/public/lib/app/dart",
     "//topaz/public/lib/mediaplayer/dart",
   ]
 }

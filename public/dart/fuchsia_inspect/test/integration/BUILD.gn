@@ -53,7 +53,6 @@ dart_app("dart_inspect_vmo_test_writer") {
         "//topaz/public/dart/fidl",
         "//topaz/public/dart/fuchsia_inspect",
         "//topaz/public/dart/fuchsia_services",
-        "//topaz/public/lib/app/dart",
       ]
     },
   ]

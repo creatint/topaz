@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:fidl_dart_fidl_json_test_fidl_json/json.dart';
-import 'package:fidl_test_dart_fidl_json/fidl.dart';
+import 'package:fidl_test_dart_fidl_json/fidl_async.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -14,9 +14,9 @@ void main() {
     const ExampleEnum sourceEnum = ExampleEnum.val1;
 
     expect(
-        sourceEnum,
         ExampleEnumConverter.fromJson(
-            jsonDecode(jsonEncode(ExampleEnumConverter.toJson(sourceEnum)))));
+            jsonDecode(jsonEncode(ExampleEnumConverter.toJson(sourceEnum)))),
+            sourceEnum);
   });
 
   // Ensure struct encode/decode.

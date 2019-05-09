@@ -8,9 +8,10 @@ import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:flutter/widgets.dart';
-import 'package:lib.app.dart/logging.dart';
 import 'package:lib.widgets/model.dart';
+import 'package:lib.widgets/utils.dart';
 import 'package:lib.widgets/widgets.dart';
+
 
 const RK4SpringDescription _kSimulationDesc =
     RK4SpringDescription(tension: 10.0, friction: 50.0);

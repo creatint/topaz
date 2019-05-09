@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
-import 'package:lib.app.dart/app_async.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:meta/meta.dart';
 import 'package:zircon/zircon.dart';
 
@@ -88,9 +88,11 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
   void _launchApp() {
     _applicationController = ComponentControllerProxy();
 
-    Services incomingServices = Services();
+    final incomingServices = Incoming();
     widget.launcher.createComponent(
-      LaunchInfo(url: widget.url, directoryRequest: incomingServices.request()),
+      LaunchInfo(
+          url: widget.url,
+          directoryRequest: incomingServices.request().passChannel()),
       _applicationController.ctrl.request(),
     );
 
@@ -105,10 +107,10 @@ class _ApplicationWidgetState extends State<ApplicationWidget> {
 
   /// Creates a [ViewProviderProxy] from a [Services], closing it in the
   /// process.
-  ViewProviderProxy _consumeServices(Services services) {
+  ViewProviderProxy _consumeServices(Incoming services) {
     ViewProviderProxy viewProvider = ViewProviderProxy();
     services
-      ..connectToService(viewProvider.ctrl)
+      ..connectToService(viewProvider)
       ..close();
     return viewProvider;
   }

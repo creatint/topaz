@@ -8,7 +8,6 @@ group("dart_unittests") {
   deps = [
     "examples/test/flutter_widget_test:flutter_widget_test",
     "public/dart/sledge:dart_sledge_tests",
-    "public/lib/app/dart:dart_app_tests",
     "shell:tests",
   ]
 }

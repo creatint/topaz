@@ -13,10 +13,10 @@ import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:lib.app.dart/logging.dart';
 import 'package:lib.base_shell/base_model.dart';
 import 'package:lib.widgets/model.dart';
 import 'package:zircon/zircon.dart';
+import 'package:fuchsia_logger/logger.dart';
 
 export 'package:lib.widgets/model.dart'
     show ScopedModel, ScopedModelDescendant, ModelFinder;

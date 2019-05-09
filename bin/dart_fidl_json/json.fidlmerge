@@ -19,7 +19,7 @@ FidlMerge Template for JSON generation.
 
 {{- define "FidlInclude" }}
 import 'dart:typed_data';
-import 'package:fidl{{- range .Name.Parts }}_{{ . }}{{ end }}/fidl.dart';
+import 'package:fidl{{- range .Name.Parts }}_{{ . }}{{ end }}/fidl_async.dart';
 {{ end }}
 
 {{/*

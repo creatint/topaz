@@ -47,3 +47,7 @@ shas are provided for reference only. Code can be checked out with:
 * topaz/public/lib/schemas: e5810dfa1
 * topaz/public/lib/entity: e5810dfa1
 * topaz/public/lib/component: e5810dfa1
+* public/lib/app/dart: 12404bc
+* examples/fidl/echo_client_dart: 12404bc
+* examples/fidl/echo_server_dart: 12404bc
+* examples/fidl/fidl_bindings_performance: 12404bc
