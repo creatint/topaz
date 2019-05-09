@@ -26,7 +26,7 @@ void main() {
   });
 
   group('Int metrics', () {
-    test('default to 0 if the value is unspecified on creation', () {
+    test('are created with value 0', () {
       var metric = node.createIntMetric('foo');
 
       expect(readInt(vmo, metric), isZero);
@@ -116,7 +116,7 @@ void main() {
   });
 
   group('Double metrics', () {
-    test('default to 0 if the value is unspecified on creation', () {
+    test('are created with value 0', () {
       var metric = node.createDoubleMetric('foo');
 
       expect(readDouble(vmo, metric), isZero);

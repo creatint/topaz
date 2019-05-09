@@ -39,7 +39,7 @@ void main() {
 
     expect(childNode, isNotNull);
     expect(childNode2, isNotNull);
-    expect(childNode, equals(childNode2));
+    expect(childNode, same(childNode2));
   });
 
   test('Nodes created after deletion return different objects', () {
@@ -64,106 +64,157 @@ void main() {
     expect(() => readNameIndex(vmo, child), returnsNormally);
   });
 
-  group('Removed node tests:', () {
-    test('can be removed (more than once)', () {
-      var child = root.createChild('sheep')..delete();
+  group('Deleted node tests:', () {
+    Node deletedNode;
 
+    setUp(() {
+      deletedNode = root.createChild('sheep')..delete();
+    });
+
+    test('can be deleted (more than once)', () {
+      var child = deletedNode.createChild('sheep')..delete();
+      expect(() => readNameIndex(vmo, deletedNode), throwsA(anything),
+          reason: 'cannot read VMO values from a deleted node');
+      expect(() => deletedNode.delete(), returnsNormally);
       expect(() => readNameIndex(vmo, child), throwsA(anything),
-          reason: 'cannot read VMO values from a removed node');
+          reason: 'cannot read VMO values from a deleted node');
       expect(() => child.delete(), returnsNormally);
     });
 
-    test('Creating a child on an already removed node is a no-op', () {
-      var child = root.createChild('sheep')..delete();
-
+    test('Creating a child on an already deleted node is a no-op', () {
       Node grandchild;
-      expect(() => grandchild = child.createChild('404'), returnsNormally);
+      expect(
+          () => grandchild = deletedNode.createChild('404'), returnsNormally);
       expect(() => grandchild.createChild('404'), returnsNormally);
       expect(() => readNameIndex(vmo, grandchild), throwsA(anything),
-          reason: 'cannot read VMO values from a removed node');
+          reason: 'cannot read VMO values from a deleted node');
     });
 
-    test('Creating an IntMetric on an already removed node is a no-op', () {
-      var child = root.createChild('sheep')..delete();
-
+    test('Creating an IntMetric on an already deleted node is a no-op', () {
       IntMetric metric;
-      expect(() => metric = child.createIntMetric('404'), returnsNormally);
+      expect(
+          () => metric = deletedNode.createIntMetric('404'), returnsNormally);
       expect(() => metric.setValue(404), returnsNormally);
       expect(() => readInt(vmo, metric), throwsA(anything),
-          reason: 'cannot read VMO values from a removed node');
+          reason: 'cannot read VMO values from a deleted node');
     });
 
-    test('Creating a DoubleMetric on an already removed node is a no-op', () {
-      var child = root.createChild('sheep')..delete();
-
+    test('Creating a DoubleMetric on an already deleted node is a no-op', () {
       DoubleMetric metric;
-      expect(() => metric = child.createDoubleMetric('404'), returnsNormally);
+      expect(() => metric = deletedNode.createDoubleMetric('404'),
+          returnsNormally);
       expect(() => metric.setValue(404), returnsNormally);
       expect(() => readDouble(vmo, metric), throwsA(anything),
-          reason: 'cannot read VMO values from a removed node');
+          reason: 'cannot read VMO values from a deleted node');
     });
 
-    test('Creating a StringProperty on an already removed node is a no-op', () {
-      var child = root.createChild('sheep')..delete();
-
+    test('Creating a StringProperty on an already deleted node is a no-op', () {
       StringProperty property;
-      expect(
-          () => property = child.createStringProperty('404'), returnsNormally);
+      expect(() => property = deletedNode.createStringProperty('404'),
+          returnsNormally);
       expect(() => property.setValue('404'), returnsNormally);
       expect(() => readProperty(vmo, property.index), throwsA(anything),
-          reason: 'cannot read VMO values from a removed property');
+          reason: 'cannot read VMO values from a deleted property');
     });
 
-    test('Creating a ByteDataProperty on an already removed node is a no-op',
+    test('Creating a ByteDataProperty on an already deleted node is a no-op',
         () {
-      var child = root.createChild('sheep')..delete();
-
       ByteDataProperty property;
-      expect(() => property = child.createByteDataProperty('404'),
+      expect(() => property = deletedNode.createByteDataProperty('404'),
           returnsNormally);
       expect(() => property.setValue(toByteData('fuchsia')), returnsNormally);
       expect(() => readProperty(vmo, property.index), throwsA(anything),
-          reason: 'cannot read VMO values from a removed property');
+          reason: 'cannot read VMO values from a deleted property');
+    });
+  });
+
+  group('Effects of deletion include: ', () {
+    Node normalNode;
+
+    setUp(() {
+      normalNode = root.createChild('sheep');
     });
 
-    test('child Node of removed Node is removed', () {
-      var child = root.createChild('sheep');
-      var grandchild = child.createChild('goats');
-      child.delete();
+    test('child Node of deleted Node is deleted', () {
+      var grandchild = normalNode.createChild('goats');
+      normalNode.delete();
       expect(() => readNameIndex(vmo, grandchild), throwsA(anything),
           reason: 'child Node of deleted Node should be deleted');
     });
 
-    test('child IntMetric of removed Node is removed', () {
-      var child = root.createChild('sheep');
-      var intMetric = child.createIntMetric('llamas');
-      child.delete();
+    test('child IntMetric of deleted Node is deleted', () {
+      var intMetric = normalNode.createIntMetric('llamas');
+      normalNode.delete();
       expect(() => readInt(vmo, intMetric), throwsA(anything),
           reason: 'child IntMetric of deleted Node should be deleted');
     });
 
-    test('child DoubleMetric of removed Node is removed', () {
-      var child = root.createChild('sheep');
-      var doubleMetric = child.createDoubleMetric('emus');
-      child.delete();
+    test('child DoubleMetric of deleted Node is deleted', () {
+      var doubleMetric = normalNode.createDoubleMetric('emus');
+      normalNode.delete();
       expect(() => readDouble(vmo, doubleMetric), throwsA(anything),
           reason: 'child DoubleMetric of deleted Node should be deleted');
     });
 
-    test('child StringProperty of removed Node is removed', () {
-      var child = root.createChild('sheep');
-      var stringProperty = child.createStringProperty('okapis');
-      child.delete();
+    test('child StringProperty of deleted Node is deleted', () {
+      var stringProperty = normalNode.createStringProperty('okapis');
+      normalNode.delete();
       expect(() => readProperty(vmo, stringProperty.index), throwsA(anything),
           reason: 'child StringProperty of deleted Node should be deleted');
     });
 
-    test('child ByteDataProperty of removed Node is removed', () {
-      var child = root.createChild('sheep');
-      var byteDataProperty = child.createByteDataProperty('capybaras');
-      child.delete();
+    test('child ByteDataProperty of deleted Node is deleted', () {
+      var byteDataProperty = normalNode.createByteDataProperty('capybaras');
+      normalNode.delete();
       expect(() => readProperty(vmo, byteDataProperty.index), throwsA(anything),
           reason: 'child ByteDataProperty of deleted Node should be deleted');
+    });
+  });
+
+  group('VMO too small', () {
+    Node tinyRoot;
+    setUp(() {
+      var tinyVmo = FakeVmo(64);
+      var writer = VmoWriter(tinyVmo);
+      var context = StartupContext.fromStartupInfo();
+      Inspect inspect = InspectImpl(context, writer);
+      tinyRoot = inspect.root;
+    });
+
+    test('If no space, creation gives a deleted Node', () {
+      var missingNode = tinyRoot.createChild('missing');
+      expect(() => missingNode.createChild('more missing'), returnsNormally);
+      expect(() => readNameIndex(vmo, missingNode), throwsA(anything),
+          reason: 'cannot read VMO values from a deleted property');
+    });
+
+    test('If no space, creation gives a deleted IntMetric', () {
+      var missingMetric = tinyRoot.createIntMetric('missing');
+      expect(() => missingMetric.setValue(1), returnsNormally);
+      expect(() => readInt(vmo, missingMetric), throwsA(anything),
+          reason: 'cannot read VMO values from a deleted property');
+    });
+
+    test('If no space, creation gives a deleted DoubleMetric', () {
+      var missingMetric = tinyRoot.createDoubleMetric('missing');
+      expect(() => missingMetric.setValue(1.0), returnsNormally);
+      expect(() => readDouble(vmo, missingMetric), throwsA(anything),
+          reason: 'cannot read VMO values from a deleted property');
+    });
+
+    test('If no space, creation gives a deleted StringProperty', () {
+      var missingProperty = tinyRoot.createStringProperty('missing');
+      expect(() => missingProperty.setValue('something'), returnsNormally);
+      expect(() => readProperty(vmo, missingProperty.index), throwsA(anything),
+          reason: 'cannot read VMO values from a deleted property');
+    });
+
+    test('If no space, creation gives a deleted ByteDataProperty', () {
+      var bytes = toByteData('this will not set');
+      var missingProperty = tinyRoot.createByteDataProperty('missing');
+      expect(() => missingProperty.setValue(bytes), returnsNormally);
+      expect(() => readProperty(vmo, missingProperty.index), throwsA(anything),
+          reason: 'cannot read VMO values from a deleted property');
     });
   });
 }

@@ -7,6 +7,7 @@ part of 'inspect.dart';
 /// A VMO-backed key-value pair with a [String] key and [T] value.
 class _Property<T> {
   /// The VMO index for this property.
+  /// @nodoc
   @visibleForTesting
   final int index;
 
@@ -19,7 +20,11 @@ class _Property<T> {
 
   /// Creates a [_Property] with [name] under the [parentIndex].
   _Property(String name, int parentIndex, this._writer)
-      : index = _writer.createProperty(parentIndex, name);
+      : index = _writer.createProperty(parentIndex, name) {
+    if (index == invalidIndex) {
+      _writer = null;
+    }
+  }
 
   /// Creates a _Property that never does anything.
   ///

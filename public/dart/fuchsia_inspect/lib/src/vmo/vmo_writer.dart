@@ -130,7 +130,7 @@ class VmoWriter {
       }
 
       if (valueToWrite == null || valueToWrite.lengthInBytes == 0) {
-        property.propertyExtentIndex = 0;
+        property.propertyExtentIndex = invalidIndex;
       } else {
         property.propertyExtentIndex =
             _allocateExtents(valueToWrite.lengthInBytes);

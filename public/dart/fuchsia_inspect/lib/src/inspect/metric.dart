@@ -7,6 +7,7 @@ part of 'inspect.dart';
 /// A VMO-backed key-value pair with a [String] key and num value.
 abstract class _Metric<T extends num> {
   /// The VMO index for this metric.
+  /// @nodoc
   @visibleForTesting
   final int index;
 

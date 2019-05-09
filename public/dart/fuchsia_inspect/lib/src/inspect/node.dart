@@ -7,6 +7,7 @@ part of 'inspect.dart';
 /// A node in the [Inspect] tree that can have associated key-values (KVs).
 class Node {
   /// The VMO index of this node.
+  /// @nodoc
   @visibleForTesting
   final int index;
 
@@ -85,7 +86,7 @@ class Node {
 
   /// Creates a [StringProperty] with [name] on this node.
   ///
-  /// If a [StringPproperty] with [name] already exists and is not deleted,
+  /// If a [StringProperty] with [name] already exists and is not deleted,
   /// this method returns it.
   ///
   /// Otherwise, it creates a new property initialized to the empty string.
