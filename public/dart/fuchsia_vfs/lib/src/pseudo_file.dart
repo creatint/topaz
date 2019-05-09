@@ -284,19 +284,26 @@ class _FileConnection extends File {
       file.sendErrorEvent(flags, ZX.ERR_INVALID_ARGS, object);
       return;
     }
-    // TODO(ZX-3673): After soft transition, enforce the invariant that if
-    // SAME_RIGHTS is specified, the client cannot request any specific rights.
+    if (Flags.shouldCloneWithSameRights(flags)) {
+      if ((flags & Flags.fsRightsSpace) != 0) {
+        file.sendErrorEvent(flags, ZX.ERR_INVALID_ARGS, object);
+        return;
+      }
+    }
 
     // If SAME_RIGHTS is requested, cloned connection will inherit the same
     // rights as those from the originating connection.
     var newFlags = flags;
     if (Flags.shouldCloneWithSameRights(flags)) {
       newFlags &= (~Flags.fsRights);
-      newFlags |= (flags & Flags.fsRights);
+      newFlags |= (this.flags & Flags.fsRights);
       newFlags &= ~cloneFlagSameRights;
     }
-    // TODO(ZX-3673): After soft transition, enforce that the requested rights
-    // are less than or equal to the originating rights.
+
+    if (!Flags.stricterOrSameRights(newFlags, this.flags)) {
+      file.sendErrorEvent(flags, ZX.ERR_ACCESS_DENIED, object);
+      return;
+    }
 
     file.connect(newFlags, mode, object, this.flags);
   }

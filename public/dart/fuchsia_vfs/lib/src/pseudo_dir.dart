@@ -302,8 +302,12 @@ class _DirConnection extends Directory {
       _dir.sendErrorEvent(flags, ZX.ERR_INVALID_ARGS, object);
       return;
     }
-    // TODO(ZX-3673): After soft transition, enforce the invariant that if
-    // SAME_RIGHTS is specified, the client cannot request any specific rights.
+    if (Flags.shouldCloneWithSameRights(flags)) {
+      if ((flags & Flags.fsRightsSpace) != 0) {
+        _dir.sendErrorEvent(flags, ZX.ERR_INVALID_ARGS, object);
+        return;
+      }
+    }
 
     // If SAME_RIGHTS is requested, cloned connection will inherit the same
     // rights as those from the originating connection.
@@ -313,8 +317,11 @@ class _DirConnection extends Directory {
       newFlags |= (_flags & Flags.fsRights);
       newFlags &= ~cloneFlagSameRights;
     }
-    // TODO(ZX-3673): After soft transition, enforce that the requested rights
-    // are less than or equal to the originating rights.
+
+    if (!Flags.stricterOrSameRights(newFlags, _flags)) {
+      _dir.sendErrorEvent(flags, ZX.ERR_ACCESS_DENIED, object);
+      return;
+    }
 
     _dir.connect(newFlags, _mode, object);
   }

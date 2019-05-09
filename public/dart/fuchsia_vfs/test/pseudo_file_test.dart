@@ -279,7 +279,8 @@ void main() {
       var file = _createReadOnlyFile('test_str', openRightReadable);
 
       var clonedProxy = FileProxy();
-      await file.proxy.clone(openRightReadable | openFlagDescribe | openFlagPosix,
+      await file.proxy.clone(
+          openRightReadable | openFlagDescribe | openFlagPosix,
           _getNodeInterfaceRequest(clonedProxy));
 
       await clonedProxy.onOpen.first.then((response) {
@@ -339,7 +340,8 @@ void main() {
       });
     });
 
-    test('clone should fail if parent\'s flag doesn\'t match up', () async {
+    test('clone should fail if requested rights exceed source rights',
+        () async {
       var file = _createReadWriteFile('test_str', createProxy: false);
       var flagsToTest = [openRightReadable, openRightWritable];
 

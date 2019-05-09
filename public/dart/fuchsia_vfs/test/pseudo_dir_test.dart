@@ -973,6 +973,23 @@ void main() {
       });
     });
 
+    test('clone should fail if requested rights exceed source rights',
+        () async {
+      PseudoDir dir = PseudoDir();
+      var proxy = _getProxyForDir(dir, openRightReadable);
+
+      var clonedProxy = DirectoryProxy();
+      await proxy.clone(openRightWritable | openFlagDescribe,
+          InterfaceRequest(clonedProxy.ctrl.request().passChannel()));
+
+      await clonedProxy.onOpen.first.then((response) {
+        expect(response.s, ZX.ERR_ACCESS_DENIED);
+        expect(response.info, isNull);
+      }).catchError((err) async {
+        fail(err.toString());
+      });
+    });
+
     test('test clone fails for invalid flags', () async {
       PseudoDir dir = PseudoDir();
 
@@ -984,6 +1001,24 @@ void main() {
 
       await newProxy.onOpen.first.then((response) {
         expect(response.s, isNot(ZX.OK));
+        expect(response.info, isNull);
+      }).catchError((err) async {
+        fail(err.toString());
+      });
+    });
+
+    test('test clone disallows both cloneFlagSameRights and specific rights',
+        () async {
+      PseudoDir dir = PseudoDir();
+      var proxy = _getProxyForDir(dir, openRightReadable);
+
+      var clonedProxy = DirectoryProxy();
+      await proxy.clone(
+          openRightReadable | cloneFlagSameRights | openFlagDescribe,
+          InterfaceRequest(clonedProxy.ctrl.request().passChannel()));
+
+      await clonedProxy.onOpen.first.then((response) {
+        expect(response.s, ZX.ERR_INVALID_ARGS);
         expect(response.info, isNull);
       }).catchError((err) async {
         fail(err.toString());
