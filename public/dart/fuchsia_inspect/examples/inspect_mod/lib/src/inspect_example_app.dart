@@ -79,15 +79,15 @@ class _InspectHomePageState extends State<_InspectHomePage> {
       // Note: an alternate approach that is also valid is to set the metric to
       // the new value:
       //
-      //     _buttonMetric.value = _counter;
-      _counterMetric.increment();
+      //     _counterMetric.value = _counter;
+      _counterMetric.add(1);
     });
   }
 
   void _decrementCounter() {
     setState(() {
       _counter--;
-      _counterMetric.decrement();
+      _counterMetric.subtract(1);
     });
   }
 

@@ -36,9 +36,6 @@ void main() {
       var metric = node.createIntMetric('eggs')..setValue(12);
 
       expect(readInt(vmo, metric), 12);
-
-      var foo = node.createIntMetric('locusts')..increment();
-      expect(readInt(vmo, foo), 1);
     });
 
     test('can be mutated', () {
@@ -59,15 +56,6 @@ void main() {
       expect(readInt(vmo, metric), 26);
     });
 
-    test('can increment by 1', () {
-      var metric = node.createIntMetric('bagels')..setValue(12);
-      expect(readInt(vmo, metric), 12);
-
-      metric.increment();
-
-      expect(readInt(vmo, metric), 13);
-    });
-
     test('can subtract arbitrary values', () {
       var metric = node.createIntMetric('bagels')..setValue(13);
       expect(readInt(vmo, metric), 13);
@@ -75,15 +63,6 @@ void main() {
       metric.subtract(6);
 
       expect(readInt(vmo, metric), 7);
-    });
-
-    test('can decrement by 1', () {
-      var metric = node.createIntMetric('soup-for-you')..setValue(1);
-      expect(readInt(vmo, metric), 1);
-
-      metric.decrement();
-
-      expect(readInt(vmo, metric), 0);
     });
 
     test('can be deleted', () {
@@ -101,13 +80,6 @@ void main() {
           reason: 'cannot read VMO values from a deleted metric');
     });
 
-    test('incrementing on an already deleted metric is a no-op', () {
-      var metric = node.createIntMetric('apples')..delete();
-
-      expect(() => metric.increment(), returnsNormally);
-      expect(() => readInt(vmo, metric), throwsA(anything),
-          reason: 'cannot read VMO values from a deleted metric');
-    });
     test('removing an already deleted metric is a no-op', () {
       var metric = node.createIntMetric('nothing-here')..delete();
 
@@ -146,15 +118,6 @@ void main() {
       expect(readDouble(vmo, metric), 3);
     });
 
-    test('can increment by 1', () {
-      var metric = node.createDoubleMetric('cake')..setValue(1.5);
-      expect(readDouble(vmo, metric), 1.5);
-
-      metric.increment();
-
-      expect(readDouble(vmo, metric), 2.5);
-    });
-
     test('can subtract arbitrary values', () {
       var metric = node.createDoubleMetric('cake')..setValue(5);
       expect(readDouble(vmo, metric), 5);
@@ -162,15 +125,6 @@ void main() {
       metric.subtract(0.5);
 
       expect(readDouble(vmo, metric), 4.5);
-    });
-
-    test('can decrement by 1', () {
-      var metric = node.createDoubleMetric('donuts')..setValue(12);
-      expect(readDouble(vmo, metric), 12);
-
-      metric.decrement();
-
-      expect(readDouble(vmo, metric), 11);
     });
 
     test('can be deleted', () {

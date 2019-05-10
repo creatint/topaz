@@ -45,12 +45,6 @@ abstract class _Metric<T extends num> {
     _writer?.addMetric(index, delta);
   }
 
-  /// Increments the value of this metric by 1.
-  void increment();
-
-  /// Decrements the value of this metric by 1.
-  void decrement();
-
   /// Subtracts [delta] from the value of this metric in the VMO.
   void subtract(T delta) {
     _writer?.subMetric(index, delta);
@@ -73,12 +67,6 @@ class IntMetric extends _Metric<int> {
       : super(name, parentIndex, writer, 0);
 
   IntMetric._deleted() : super.deleted();
-
-  @override
-  void increment() => add(1);
-
-  @override
-  void decrement() => subtract(1);
 }
 
 /// A VMO-backed key-value pair with a [String] key and [double] value.
@@ -87,10 +75,4 @@ class DoubleMetric extends _Metric<double> {
       : super(name, parentIndex, writer, 0.0);
 
   DoubleMetric._deleted() : super.deleted();
-
-  @override
-  void increment() => add(1.0);
-
-  @override
-  void decrement() => subtract(1.0);
 }
