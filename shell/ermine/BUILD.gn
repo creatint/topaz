@@ -58,7 +58,6 @@ dart_library("ermine_library") {
     "//sdk/fidl/fuchsia.ui.input",
     "//sdk/fidl/fuchsia.ui.policy",
     "//sdk/fidl/fuchsia.ui.views",
-    "//sdk/fidl/fuchsia.ui.viewsv1token",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/flutter_svg",
     "//third_party/dart-pkg/pub/uuid",

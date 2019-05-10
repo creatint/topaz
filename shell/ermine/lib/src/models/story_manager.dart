@@ -4,9 +4,8 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:fidl/fidl.dart' show InterfaceHandle, InterfaceRequest;
+import 'package:fidl/fidl.dart' show InterfaceRequest;
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart' show ViewHolderToken;
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart' show ViewOwner;
 import 'package:fidl_fuchsia_modular/fidl_async.dart'
     show
         FocusControllerProxy,
@@ -24,7 +23,6 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart'
         StoryVisibilityState,
         ViewIdentifier;
 import 'package:fuchsia_services/services.dart' show StartupContext;
-import 'package:zircon/zircon.dart';
 
 import 'story_model.dart';
 
@@ -226,15 +224,6 @@ class _SessionShellImpl extends SessionShell {
   final StoryManager _storyManager;
 
   _SessionShellImpl(this._storyManager);
-
-  @override
-  Future<void> attachView(
-      ViewIdentifier viewId, InterfaceHandle<ViewOwner> viewOwner) async {
-    return attachView2(
-        viewId,
-        ViewHolderToken(
-            value: EventPair(viewOwner.passChannel().passHandle())));
-  }
 
   @override
   // ignore: override_on_non_overriding_method
