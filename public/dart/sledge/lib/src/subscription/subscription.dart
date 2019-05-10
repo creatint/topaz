@@ -42,7 +42,7 @@ class Subscription extends ledger.PageWatcher {
       _applyChangeCallback(_currentChange);
       _currentChange.clear();
     }
-    return null;
+    return Future.value(null);
   }
 
   /// Ends subscription.
