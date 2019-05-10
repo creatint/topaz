@@ -66,13 +66,29 @@ class StoryShellImpl extends StoryShell {
     _storyShellBinding.bind(this, request);
   }
 
-  /// Introduce a new Surface and corresponding [ViewHolderToken] to the current
-  /// Story.
+  /// Introduce a new Surface and corresponding [ViewHolderToken] to this Story.
   ///
   /// The Surface may have a relationship with its parent surface.
   @override
+  // ignore: override_on_non_overriding_method
   Future<void> addSurface(
     ViewConnection viewConnection,
+    SurfaceInfo surfaceInfo,
+  ) async {
+    return addSurface2(
+        ViewConnection2(
+            surfaceId: viewConnection.surfaceId,
+            viewHolderToken: ViewHolderToken(
+                value: EventPair(
+                    viewConnection.owner.passChannel().passHandle()))),
+        surfaceInfo);
+  }
+
+  /// DEPRECATED:  For transition purposes only.
+  @override
+  // ignore: override_on_non_overriding_method
+  Future<void> addSurface2(
+    ViewConnection2 viewConnection,
     SurfaceInfo surfaceInfo,
   ) async {
     Timeline.instantSync(
@@ -96,10 +112,7 @@ class StoryShellImpl extends StoryShell {
             : '',
       )
       ..connectViewFromViewHolderToken(
-          viewConnection.surfaceId,
-          ViewHolderToken(
-              value:
-                  EventPair(viewConnection.owner.passChannel().passHandle())));
+          viewConnection.surfaceId, viewConnection.viewHolderToken);
   }
 
   /// Focus the surface with this id
@@ -122,6 +135,7 @@ class StoryShellImpl extends StoryShell {
 
   @Deprecated('Deprecated')
   @override
+  // ignore: override_on_non_overriding_method
   Future<void> addContainer(
     String containerName,
     String parentId,
@@ -129,6 +143,31 @@ class StoryShellImpl extends StoryShell {
     List<ContainerLayout> layouts,
     List<ContainerRelationEntry> relationships,
     List<ContainerView> views,
+  ) async {
+    return addContainer2(
+        containerName,
+        parentId,
+        relation,
+        layouts,
+        relationships,
+        views
+            .map((view) => ContainerView2(
+                nodeName: view.nodeName,
+                viewHolderToken: ViewHolderToken(
+                    value: EventPair(view.owner.passChannel().passHandle()))))
+            .toList());
+  }
+
+  @Deprecated('Deprecated')
+  @override
+  // ignore: override_on_non_overriding_method
+  Future<void> addContainer2(
+    String containerName,
+    String parentId,
+    SurfaceRelation relation,
+    List<ContainerLayout> layouts,
+    List<ContainerRelationEntry> relationships,
+    List<ContainerView2> views,
   ) async {
     // Add a root node for the container
     Timeline.instantSync('adding container', arguments: {
@@ -146,9 +185,8 @@ class StoryShellImpl extends StoryShell {
         <String, ContainerRelationEntry>{};
     Map<String, List<String>> parentChildrenMap = <String, List<String>>{};
     Map<String, ViewHolderToken> viewMap = <String, ViewHolderToken>{};
-    for (ContainerView view in views) {
-      viewMap[view.nodeName] = ViewHolderToken(
-          value: EventPair(view.owner.passChannel().passHandle()));
+    for (ContainerView2 view in views) {
+      viewMap[view.nodeName] = view.viewHolderToken;
     }
     for (ContainerRelationEntry relatedNode in relationships) {
       nodeMap[relatedNode.nodeName] = relatedNode;
@@ -157,7 +195,7 @@ class StoryShellImpl extends StoryShell {
           .add(relatedNode.nodeName);
     }
     List<String> nodeQueue =
-        views.map((ContainerView v) => v.nodeName).toList();
+        views.map((ContainerView2 v) => v.nodeName).toList();
     List<String> addedParents = <String>[containerName];
     int i = 0;
     while (nodeQueue.isNotEmpty) {
