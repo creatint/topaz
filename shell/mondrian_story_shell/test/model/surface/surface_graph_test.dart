@@ -24,8 +24,7 @@ void main() {
     );
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.focusStack.length, 1);
     String encoded = json.encode(graph);
@@ -54,8 +53,7 @@ void main() {
     );
     graph
       ..addSurface('parent', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'parent', ViewHolderToken(value: EventPair(null)))
+      ..connectView('parent', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('parent');
     expect(graph.focusStack.length, 1);
 
@@ -67,8 +65,7 @@ void main() {
     );
     graph
       ..addSurface('child', properties, 'parent', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'child', ViewHolderToken(value: EventPair(null)))
+      ..connectView('child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('child');
     expect(graph.focusStack.length, 2);
 
@@ -110,8 +107,7 @@ void main() {
     );
     graph
       ..addSurface('parent', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'parent', ViewHolderToken(value: EventPair(null)))
+      ..connectView('parent', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('parent');
     expect(graph.focusStack.length, 1);
 
@@ -123,8 +119,7 @@ void main() {
     );
     graph
       ..addSurface('child1', properties, 'parent', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'child', ViewHolderToken(value: EventPair(null)))
+      ..connectView('child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('child1');
     expect(graph.focusStack.length, 2);
 
@@ -136,8 +131,7 @@ void main() {
     );
     graph
       ..addSurface('child2', properties, 'parent', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'child2', ViewHolderToken(value: EventPair(null)))
+      ..connectView('child2', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('child2');
     expect(graph.focusStack.length, 3);
 
@@ -184,16 +178,14 @@ void main() {
     SurfaceProperties externalProp =
         SurfaceProperties(source: ModuleSource.external);
     graph
-      ..addSurface('parent', SurfaceProperties(), '', SurfaceRelation(),
-          null, '')
-      ..connectViewFromViewHolderToken(
-          'parent', ViewHolderToken(value: EventPair(null)))
+      ..addSurface(
+          'parent', SurfaceProperties(), '', SurfaceRelation(), null, '')
+      ..connectView('parent', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('parent')
       // Now add external surface
       ..addSurface(
           'external', externalProp, 'parent', SurfaceRelation(), null, '')
-      ..connectViewFromViewHolderToken(
-          'external', ViewHolderToken(value: EventPair(null)))
+      ..connectView('external', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('external')
       // Now dismiss the external surface
       ..dismissSurface('external');
@@ -212,15 +204,13 @@ void main() {
     );
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.treeSize, 2);
 
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.treeSize, 2);
   });
@@ -236,22 +226,19 @@ void main() {
     );
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.treeSize, 2);
 
     graph
       ..addSurface('value.child', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value.child', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value.child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value.child');
     expect(graph.treeSize, 3);
 
     graph
       ..addSurface('value.child', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value.child', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value.child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value.child');
     expect(graph.treeSize, 3);
   });
@@ -267,22 +254,19 @@ void main() {
     );
     graph
       ..addSurface('value', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value');
     expect(graph.treeSize, 2);
 
     graph
       ..addSurface('value.child', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value.child', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value.child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value.child');
     expect(graph.treeSize, 3);
 
     graph
       ..addSurface('value.child', properties, '', relation, null, '')
-      ..connectViewFromViewHolderToken(
-          'value.child', ViewHolderToken(value: EventPair(null)))
+      ..connectView('value.child', ViewHolderToken(value: EventPair(null)))
       ..focusSurface('value.child');
     expect(graph.treeSize, 3);
   });

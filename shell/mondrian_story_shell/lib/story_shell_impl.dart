@@ -69,21 +69,6 @@ class StoryShellImpl extends StoryShell {
   /// Introduce a new Surface and corresponding [ViewHolderToken] to this Story.
   ///
   /// The Surface may have a relationship with its parent surface.
-  @override
-  // ignore: override_on_non_overriding_method
-  Future<void> addSurface(
-    ViewConnection viewConnection,
-    SurfaceInfo surfaceInfo,
-  ) async {
-    return addSurface2(
-        ViewConnection2(
-            surfaceId: viewConnection.surfaceId,
-            viewHolderToken: ViewHolderToken(
-                value: EventPair(
-                    viewConnection.owner.passChannel().passHandle()))),
-        surfaceInfo);
-  }
-
   /// DEPRECATED:  For transition purposes only.
   @override
   // ignore: override_on_non_overriding_method
@@ -111,8 +96,7 @@ class StoryShellImpl extends StoryShell {
             ? surfaceInfo.moduleManifest.placeholderColor
             : '',
       )
-      ..connectViewFromViewHolderToken(
-          viewConnection.surfaceId, viewConnection.viewHolderToken);
+      ..connectView(viewConnection.surfaceId, viewConnection.viewHolderToken);
   }
 
   /// Focus the surface with this id
@@ -131,31 +115,6 @@ class StoryShellImpl extends StoryShell {
         arguments: {'surfaceId': '$surfaceId'});
     surfaceGraph.dismissSurface(surfaceId);
     return persistStoryState();
-  }
-
-  @Deprecated('Deprecated')
-  @override
-  // ignore: override_on_non_overriding_method
-  Future<void> addContainer(
-    String containerName,
-    String parentId,
-    SurfaceRelation relation,
-    List<ContainerLayout> layouts,
-    List<ContainerRelationEntry> relationships,
-    List<ContainerView> views,
-  ) async {
-    return addContainer2(
-        containerName,
-        parentId,
-        relation,
-        layouts,
-        relationships,
-        views
-            .map((view) => ContainerView2(
-                nodeName: view.nodeName,
-                viewHolderToken: ViewHolderToken(
-                    value: EventPair(view.owner.passChannel().passHandle()))))
-            .toList());
   }
 
   @Deprecated('Deprecated')
@@ -209,7 +168,7 @@ class StoryShellImpl extends StoryShell {
           surfaceGraph.addSurface(
               nodeId, prop, parentId, nodeMap[nodeId].relationship, null, '');
           addedParents.add(nodeId);
-          surfaceGraph.connectViewFromViewHolderToken(nodeId, viewMap[nodeId]);
+          surfaceGraph.connectView(nodeId, viewMap[nodeId]);
           nodeQueue.remove(nodeId);
           surfaceGraph.focusSurface(nodeId);
         }

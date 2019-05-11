@@ -7,14 +7,13 @@ import 'dart:collection';
 
 import 'package:fidl/fidl.dart' as fidl;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as fidl_modular;
-import 'package:fidl_fuchsia_ui_views/fidl_async.dart' show ViewHolderToken;
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular/lifecycle.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
 // TODO: figure out how to include layout.dart instead
 import 'package:story_shell_labs_lib/layout/deja_layout.dart';
 import 'package:meta/meta.dart';
-import 'package:zircon/zircon.dart';
+
 import 'story_visual_state_watcher_impl.dart';
 
 /// An implementation of the [StoryShell] interface for Story Shell Labs.
@@ -54,21 +53,7 @@ class StoryShellImpl extends fidl_modular.StoryShell {
   }
 
   /// Add a new surface to the story.
-  @override
-  // ignore: override_on_non_overriding_method
-  Future<void> addSurface(
-    fidl_modular.ViewConnection viewConnection,
-    fidl_modular.SurfaceInfo surfaceInfo,
-  ) async {
-    return addSurface2(
-        fidl_modular.ViewConnection2(
-            surfaceId: viewConnection.surfaceId,
-            viewHolderToken: ViewHolderToken(
-                value: EventPair(
-                    viewConnection.owner.passChannel().passHandle()))),
-        surfaceInfo);
-  }
-
+  /// DEPRECATED:  For transition purposes only.
   @override
   // ignore: override_on_non_overriding_method
   Future<void> addSurface2(

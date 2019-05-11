@@ -30,8 +30,7 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'root_of_test', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('root_of_test', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -57,8 +56,7 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'root_of_test', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for the copresent surface
     properties = SurfaceProperties();
@@ -69,7 +67,7 @@ void main() {
     );
     Surface copresentSurface = graph.addSurface('copresentSurface', properties,
         'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
+    graph.connectView(
         'copresentSurface', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
@@ -101,8 +99,7 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'root_of_test', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for the sequential surface
     properties = SurfaceProperties();
@@ -113,7 +110,7 @@ void main() {
     );
     Surface sequentialSurface = graph.addSurface('copresentSurface', properties,
         'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
+    graph.connectView(
         'copresentSurface', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
@@ -141,8 +138,7 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'root_of_test', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for the ontop surface
     properties = SurfaceProperties();
@@ -153,8 +149,7 @@ void main() {
     );
     Surface ontopSurface = graph.addSurface(
         'ontop', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'ontop', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('ontop', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -186,8 +181,7 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'root_of_test', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for root surface
     properties = SurfaceProperties();
@@ -198,8 +192,7 @@ void main() {
     );
     Surface copresentSurface = graph.addSurface(
         'copresent', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'copresent', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('copresent', ViewHolderToken(value: EventPair(null)));
 
     // properties for the ontop surface
     properties = SurfaceProperties();
@@ -210,8 +203,7 @@ void main() {
     );
     Surface ontopSurface = graph.addSurface(
         'ontop', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'ontop', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('ontop', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -249,8 +241,7 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'root_of_test', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for root surface
     properties = SurfaceProperties();
@@ -261,8 +252,7 @@ void main() {
     );
     Surface copresentSurface = graph.addSurface(
         'copresent', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'copresent', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('copresent', ViewHolderToken(value: EventPair(null)));
 
     // properties for the ontop surface
     properties = SurfaceProperties();
@@ -273,8 +263,7 @@ void main() {
     );
     Surface ontopSurface = graph.addSurface(
         'ontop', properties, 'copresent', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'ontop', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('ontop', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,
@@ -310,8 +299,7 @@ void main() {
     );
     Surface root = graph.addSurface(
         'root_of_test', properties, '', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'root_of_test', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('root_of_test', ViewHolderToken(value: EventPair(null)));
 
     // properties for root surface
     properties = SurfaceProperties();
@@ -322,8 +310,7 @@ void main() {
     );
     Surface firstOnTop = graph.addSurface(
         'ontop1', properties, 'root_of_test', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'ontop1', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('ontop1', ViewHolderToken(value: EventPair(null)));
 
     // properties for the ontop surface
     properties = SurfaceProperties();
@@ -334,8 +321,7 @@ void main() {
     );
     Surface secondOntop = graph.addSurface(
         'ontop2', properties, 'ontop1', surfaceRelation, '', '');
-    graph.connectViewFromViewHolderToken(
-        'ontop2', ViewHolderToken(value: EventPair(null)));
+    graph.connectView('ontop2', ViewHolderToken(value: EventPair(null)));
 
     List<Surface> surfaces = [
       root,

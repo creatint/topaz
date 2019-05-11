@@ -4,15 +4,11 @@
 
 import 'dart:developer' show Timeline;
 
-import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_modular/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
-import 'package:fidl_fuchsia_ui_viewsv1token/fidl_async.dart';
-import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
-    show ChildViewConnection;
+import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:lib.widgets/model.dart';
-import 'package:zircon/zircon.dart' show EventPair;
 
 import '../tree/spanning_tree.dart';
 import '../tree/tree.dart';
@@ -82,8 +78,8 @@ class SurfaceGraph extends Model {
     assert(parent != null);
     assert(relation != null);
     Surface oldSurface = _surfaces[id];
-    Surface updatedSurface = Surface(
-        this, node, properties, relation, pattern, placeholderColor);
+    Surface updatedSurface =
+        Surface(this, node, properties, relation, pattern, placeholderColor);
     // if this is an external surface, create an association between this and
     // the most focused surface.
     if (properties.source == ModuleSource.external &&
@@ -216,16 +212,8 @@ class SurfaceGraph extends Model {
   /// True if surface has been dismissed and not subsequently focused
   bool isDismissed(String id) => _dismissedSurfaces.contains(id);
 
-  void connectView(String id, InterfaceHandle<ViewOwner> viewOwner) {
-    connectViewFromViewHolderToken(
-        id,
-        ViewHolderToken(
-            value: EventPair(viewOwner.passChannel().passHandle())));
-  }
-
   /// Used to update a [Surface] with a live ChildViewConnection
-  void connectViewFromViewHolderToken(
-      String id, ViewHolderToken viewHolderToken) {
+  void connectView(String id, ViewHolderToken viewHolderToken) {
     final Surface surface = _surfaces[id];
     if (surface != null) {
       if (surface.connection != null) {

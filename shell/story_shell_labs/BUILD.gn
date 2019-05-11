@@ -19,13 +19,11 @@ flutter_app("story_shell_labs") {
   sources = [
     "src/story_shell_impl.dart",
     "src/story_visual_state_watcher_impl.dart",
-    "src/widgets/story_widget.dart"
+    "src/widgets/story_widget.dart",
   ]
 
   deps = [
     "//sdk/fidl/fuchsia.modular",
-    "//sdk/fidl/fuchsia.ui.views",
-    "//sdk/fidl/fuchsia.ui.viewsv1token",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/lib/tiler:tiler",
     "//topaz/public/dart/fidl",
