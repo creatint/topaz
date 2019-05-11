@@ -3,4 +3,12 @@
 // found in the LICENSE file.
 
 /// The Inspect API for Dart.
-export 'src/inspect/inspect.dart' hide RootNode;
+export 'src/inspect/inspect.dart'
+    show
+        Inspect,
+        InspectStateError,
+        Node,
+        IntValue,
+        DoubleValue,
+        StringValue,
+        ByteDataValue;

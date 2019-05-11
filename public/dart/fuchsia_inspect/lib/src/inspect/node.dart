@@ -4,7 +4,8 @@
 
 part of 'inspect.dart';
 
-/// A node in the [Inspect] tree that can have associated key-values (KVs).
+/// A named node in the Inspect tree that can have [Node]s and
+/// values under it.
 class Node {
   /// The VMO index of this node.
   /// @nodoc
@@ -13,19 +14,18 @@ class Node {
 
   /// The writer for the underlying VMO.
   ///
-  /// Will be set to null if the Metric has been deleted or could not be
+  /// Will be set to null if the Node has been deleted or could not be
   /// created in the VMO.
-  /// If so, all actions on this Metric should be no-ops and not throw.
+  /// If so, all actions on this Node should be no-ops and not throw.
   VmoWriter _writer;
 
-  final _properties = <String, _Property>{};
-  final _metrics = <String, _Metric>{};
+  final _values = <String, Value>{};
   final _children = <String, Node>{};
 
   /// Creates a [Node] with [name] under the [parentIndex].
   ///
   /// Private as an implementation detail to code that understands VMO indices.
-  /// Client code that wishes to create [Node]s should use [createChild].
+  /// Client code that wishes to create [Node]s should use [child].
   Node._(String name, int parentIndex, this._writer)
       : index = _writer.createNode(parentIndex, name) {
     if (index == invalidIndex) {
@@ -45,11 +45,11 @@ class Node {
 
   bool get _isDeleted => _writer == null;
 
-  /// Creates a child [Node] with [name].
+  /// Returns a child [Node] with [name].
   ///
-  /// If a child with [name] already exists, this
+  /// If a child with [name] already exists and was not deleted, this
   /// method returns it. Otherwise, it creates a new [Node].
-  Node createChild(String name) {
+  Node child(String name) {
     if (_writer == null) {
       return Node._deleted();
     }
@@ -62,119 +62,117 @@ class Node {
     return _children[name] = Node._(name, index, _writer);
   }
 
-  /// Delete this node and any children from underlying storage.
+  /// Deletes this node and any children from underlying storage.
   ///
-  /// After a node has been deleted, all calls on it and its children will have
-  /// no effect, but will not result in an error.
+  /// After a node has been deleted, all calls on it and its children have
+  /// no effect and do not result in an error. Calls on a deleted node that
+  /// return a Node or Value return an already-deleted object.
   void delete() {
     if (_writer == null) {
       return;
     }
-    _properties
-      ..forEach((_, property) => property.delete())
-      ..clear();
-    _metrics
-      ..forEach((_, metric) => metric.delete())
+    _values
+      ..forEach((_, value) => value.delete())
       ..clear();
     _children
       ..forEach((_, node) => node.delete())
       ..clear();
 
-    _writer.deleteNode(index);
+    _writer.deleteEntity(index);
     _writer = null;
   }
 
-  /// Creates a [StringProperty] with [name] on this node.
+  /// Returns a [StringValue] with [name] on this node.
   ///
-  /// If a [StringProperty] with [name] already exists and is not deleted,
+  /// If a [StringValue] with [name] already exists and is not deleted,
   /// this method returns it.
   ///
-  /// Otherwise, it creates a new property initialized to the empty string.
+  /// Otherwise, it creates a new value initialized to the empty string.
   ///
-  /// Throws [StateError] if a non-deleted property with [name] already exists
-  /// but it is not a [StringProperty].
-  StringProperty createStringProperty(String name) {
+  /// Throws [InspectStateError] if a non-deleted value with [name] already
+  /// exists but it is not a [StringValue].
+  StringValue stringValue(String name) {
     if (_writer == null) {
-      return StringProperty._deleted();
+      return StringValue._deleted();
     }
-    if (_properties.containsKey(name) && !_properties[name]._isDeleted) {
-      if (_properties[name] is! StringProperty) {
-        throw InspectStateError("Can't create StringProperty named $name;"
+    if (_values.containsKey(name) && !_values[name]._isDeleted) {
+      if (_values[name] is! StringValue) {
+        throw InspectStateError("Can't create StringValue named $name;"
             ' a different type exists.');
       }
-      return _properties[name];
+      return _values[name];
     }
-    return _properties[name] = StringProperty._(name, index, _writer);
+    return _values[name] = StringValue._(name, index, _writer);
   }
 
-  /// Creates a [ByteDataProperty] with [name] on this node.
+  /// Returns a [ByteDataValue] with [name] on this node.
   ///
-  /// If a [ByteDataProperty] with [name] already exists and is not deleted,
+  /// If a [ByteDataValue] with [name] already exists and is not deleted,
   /// this method returns it.
   ///
-  /// Otherwise, it creates a new property initialized to the empty
+  /// Otherwise, it creates a new value initialized to the empty
   /// byte data container.
   ///
-  /// Throws [StateError] if a non-deleted property with [name] already exists
-  /// but it is not a [ByteDataProperty].
-  ByteDataProperty createByteDataProperty(String name) {
+  /// Throws [InspectStateError] if a non-deleted value with [name] already exists
+  /// but it is not a [ByteDataValue].
+  ByteDataValue byteDataValue(String name) {
     if (_writer == null) {
-      return ByteDataProperty._deleted();
+      return ByteDataValue._deleted();
     }
-    if (_properties.containsKey(name) && !_properties[name]._isDeleted) {
-      if (_properties[name] is! ByteDataProperty) {
-        throw InspectStateError("Can't create ByteDataProperty named $name;"
+    if (_values.containsKey(name) && !_values[name]._isDeleted) {
+      if (_values[name] is! ByteDataValue) {
+        throw InspectStateError("Can't create ByteDataValue named $name;"
             ' a different type exists.');
       }
-      return _properties[name];
+      return _values[name];
     }
-    return _properties[name] = ByteDataProperty._(name, index, _writer);
+    return _values[name] = ByteDataValue._(name, index, _writer);
   }
 
-  /// Creates an [IntMetric] with [name] on this node.
+  /// Returns an [IntValue] with [name] on this node.
   ///
-  /// If an [IntMetric] with [name] already exists and is not
+  /// If an [IntValue] with [name] already exists and is not
   /// deleted, this method returns it.
   ///
-  /// Otherwise, it creates a new metric initialized to 0.
+  /// Otherwise, it creates a new value initialized to 0.
   ///
-  /// Throws [StateError] if a non-deleted metric with [name]
-  /// already exists but it is not an [IntMetric].
-  IntMetric createIntMetric(String name) {
+  /// Throws [InspectStateError] if a non-deleted value with [name]
+  /// already exists but it is not an [IntValue].
+  IntValue intValue(String name) {
     if (_writer == null) {
-      return IntMetric._deleted();
+      return IntValue._deleted();
     }
-    if (_metrics.containsKey(name) && !_metrics[name]._isDeleted) {
-      if (_metrics[name] is! IntMetric) {
+    if (_values.containsKey(name) && !_values[name]._isDeleted) {
+      if (_values[name] is! IntValue) {
         throw InspectStateError(
-            "Can't create IntMetric named $name; a different type exists.");
+            "Can't create IntValue named $name; a different type exists.");
       }
-      return _metrics[name];
+      return _values[name];
     }
-    return _metrics[name] = IntMetric._(name, index, _writer);
+    return _values[name] = IntValue._(name, index, _writer);
   }
 
-  /// Creates a [DoubleMetric] with [name] on this node.
+  /// Returns a [DoubleValue] with [name] on this node.
   ///
-  /// If a [DoubleMetric] with [name] already exists and is not
+  /// If a [DoubleValue] with [name] already exists and is not
   /// deleted, this method returns it.
   ///
-  /// Otherwise, it creates a new metric initialized to 0.0.
+  /// Otherwise, it creates a new value initialized to 0.0.
   ///
-  /// Throws [StateError] if a non-deleted metric with [name]
-  /// already exists but it is not a [DoubleMetric].
-  DoubleMetric createDoubleMetric(String name) {
+  /// Throws [InspectStateError] if a non-deleted value with [name]
+  /// already exists but it is not a [DoubleValue].
+  DoubleValue doubleValue(String name) {
     if (_writer == null) {
-      return DoubleMetric._deleted();
+      return DoubleValue._deleted();
     }
-    if (_metrics.containsKey(name) && !_metrics[name]._isDeleted) {
-      if (_metrics[name] is! DoubleMetric) {
-        throw InspectStateError("Can't create DoubleMetric named $name;"
+    if (_values.containsKey(name) && !_values[name]._isDeleted) {
+      if (_values[name] is! DoubleValue) {
+        throw InspectStateError("Can't create DoubleValue named $name;"
             ' a different type exists.');
       }
-      return _metrics[name];
+      return _values[name];
     }
-    return _metrics[name] = DoubleMetric._(name, index, _writer);
+    return _values[name] = DoubleValue._(name, index, _writer);
   }
 }
 
@@ -183,6 +181,7 @@ class Node {
 /// The root node has special behavior: Delete is a NOP.
 ///
 /// This class should be hidden from the public API.
+/// @nodoc
 class RootNode extends Node {
   /// Creates a Node wrapping the root of the Inspect hierarchy.
   RootNode(VmoWriter writer) : super._root(writer);

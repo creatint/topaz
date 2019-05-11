@@ -76,7 +76,7 @@ void main() {
         Test(_nameFor(vmo, child), toByteData('child')),
         Test(writer.rootNode, 1)
       ]);
-      writer.deleteNode(child);
+      writer.deleteEntity(child);
       // Deleting a node without children should free it and its name.
       // root node should have 0 children.
       checker.check(-2, [Test(writer.rootNode, 0)]);
@@ -99,7 +99,7 @@ void main() {
       checker.check(0, [Test(intMetric, -1)]);
       writer.setMetric(intMetric, 2);
       checker.check(0, [Test(intMetric, 2)]);
-      writer.deleteMetric(intMetric);
+      writer.deleteEntity(intMetric);
       checker.check(-2, [Test(writer.rootNode, 0)]);
     });
 
@@ -121,7 +121,7 @@ void main() {
       checker.check(0, [Test(doubleMetric, -0.5)]);
       writer.setMetric(doubleMetric, 1.5);
       checker.check(0, [Test(doubleMetric, 1.5)]);
-      writer.deleteMetric(doubleMetric);
+      writer.deleteEntity(doubleMetric);
       checker.check(-2, [Test(writer.rootNode, 0)]);
     });
 
@@ -139,7 +139,7 @@ void main() {
       final bytes = ByteData(8)..setFloat64(0, 1.23);
       writer.setProperty(property, bytes);
       checker.check(1, [Test(_extentFor(vmo, property), bytes)]);
-      writer.deleteProperty(property);
+      writer.deleteEntity(property);
       // Property, its extent, and its name should be freed. Its parent should
       // have one fewer children (0 in this case).
       checker.check(-3, [Test(writer.rootNode, 0)]);
@@ -156,13 +156,13 @@ void main() {
       checker.check(2, [Test(writer.rootNode, 1), Test(parent, 1)]);
       final metric = writer.createMetric(child, 'metric', 1);
       checker.check(2, [Test(child, 1), Test(parent, 1)]);
-      writer.deleteNode(child);
+      writer.deleteEntity(child);
       // Now child should be a tombstone; only its name should be freed.
       checker.check(-1, [Test(child, 1), Test(parent, 0)]);
-      writer.deleteNode(parent);
+      writer.deleteEntity(parent);
       // Parent, plus its name, should be freed; root should have no children.
       checker.check(-2, [Test(writer.rootNode, 0)]);
-      writer.deleteNode(metric);
+      writer.deleteEntity(metric);
       // Metric, its name, and child should be freed.
       checker.check(-3, []);
       // Make sure we can still create nodes on the root

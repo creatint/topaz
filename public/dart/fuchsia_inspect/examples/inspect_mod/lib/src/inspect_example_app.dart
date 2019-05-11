@@ -12,7 +12,7 @@ class InspectExampleApp extends StatelessWidget {
   final inspect.Node _inspectNode;
 
   InspectExampleApp(this._inspectNode) {
-    _initMetrics();
+    _initValues();
   }
 
   @override
@@ -24,13 +24,13 @@ class InspectExampleApp extends StatelessWidget {
       ),
       home: _InspectHomePage(
           title: 'Hello Inspect!',
-          inspectNode: _inspectNode.createChild('home-page')),
+          inspectNode: _inspectNode.child('home-page')),
     );
   }
 
-  /// Initializes the [Inspect] metrics for this widget.
-  void _initMetrics() {
-    _inspectNode.createStringProperty('app-color').setValue('$_appColor');
+  /// Initializes the [Inspect] values for this widget.
+  void _initValues() {
+    _inspectNode.stringValue('app-color').setValue('$_appColor');
   }
 }
 
@@ -39,7 +39,7 @@ class _InspectHomePage extends StatefulWidget {
   final inspect.Node inspectNode;
 
   _InspectHomePage({Key key, this.title, this.inspectNode}) : super(key: key) {
-    inspectNode.createStringProperty('title').setValue(title);
+    inspectNode.stringValue('title').setValue(title);
   }
 
   @override
@@ -56,17 +56,17 @@ class _InspectHomePageState extends State<_InspectHomePage> {
 
   final inspect.Node _inspectNode;
 
-  /// A metric that tracks the value of [_counter].
-  final inspect.IntMetric _counterMetric;
+  /// A value that tracks [_counter].
+  final inspect.IntValue _counterValue;
 
-  inspect.StringProperty _backgroundProperty;
+  inspect.StringValue _backgroundValue;
 
   int _counter = 0;
   int _colorIndex = 0;
 
   _InspectHomePageState(this._inspectNode)
-      : _counterMetric = _inspectNode.createIntMetric('counter') {
-    _backgroundProperty = _inspectNode.createStringProperty('background-color')
+      : _counterValue = _inspectNode.intValue('counter') {
+    _backgroundValue = _inspectNode.stringValue('background-color')
       ..setValue('$_backgroundColor');
   }
 
@@ -76,18 +76,18 @@ class _InspectHomePageState extends State<_InspectHomePage> {
     setState(() {
       _counter++;
 
-      // Note: an alternate approach that is also valid is to set the metric to
+      // Note: an alternate approach that is also valid is to set the value to
       // the new value:
       //
-      //     _counterMetric.value = _counter;
-      _counterMetric.add(1);
+      //     _counterValue.value = _counter;
+      _counterValue.add(1);
     });
   }
 
   void _decrementCounter() {
     setState(() {
       _counter--;
-      _counterMetric.subtract(1);
+      _counterValue.subtract(1);
     });
   }
 
@@ -101,16 +101,16 @@ class _InspectHomePageState extends State<_InspectHomePage> {
       if (_colorIndex >= _colors.length) {
         _colorIndex = 0;
 
-        // Contrived example of removing an Inspect property:
-        // Once we've looped through the colors once, delete the property.
+        // Contrived example of removing an Inspect value:
+        // Once we've looped through the colors once, delete the value.
         //
         // A more realistic example would be if something were being removed
         // from the UI, but this is intended to be super simple.
-        _backgroundProperty.delete();
-        _backgroundProperty = null;
+        _backgroundValue.delete();
+        _backgroundValue = null;
       }
 
-      _backgroundProperty?.setValue('$_backgroundColor');
+      _backgroundValue?.setValue('$_backgroundColor');
     });
   }
 

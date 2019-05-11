@@ -75,20 +75,6 @@ class VmoWriter {
     }
   }
 
-  /// Deletes the Node.
-  void deleteNode(int nodeIndex) {
-    _beginWork();
-    try {
-      if (nodeIndex < heapStartIndex) {
-        throw Exception('Invalid index {nodeIndex}');
-      }
-      var node = Block.read(_vmo, nodeIndex);
-      _deleteValue(node);
-    } finally {
-      _commit();
-    }
-  }
-
   /// Adds a named Property to a Node.
   int createProperty(int parent, String name) {
     _beginWork();
@@ -141,18 +127,6 @@ class VmoWriter {
           property.propertyTotalLength = valueToWrite.lengthInBytes;
         }
       }
-    } finally {
-      _commit();
-    }
-  }
-
-  /// Deletes a Property.
-  void deleteProperty(int propertyIndex) {
-    _beginWork();
-    try {
-      var property = Block.read(_vmo, propertyIndex);
-      _freeExtents(property.propertyExtentIndex);
-      _deleteValue(property);
     } finally {
       _commit();
     }
@@ -222,16 +196,6 @@ class VmoWriter {
     }
   }
 
-  /// Deletes the Metric.
-  void deleteMetric(int metricIndex) {
-    _beginWork();
-    try {
-      _deleteValue(Block.read(_vmo, metricIndex));
-    } finally {
-      _commit();
-    }
-  }
-
   // Creates a new *_VALUE node inside the tree.
   Block _createValue(int parent, String name) {
     var block = _heap.allocateBlock();
@@ -249,19 +213,35 @@ class VmoWriter {
     return block;
   }
 
-  /// Deletes a *_VALUE block.
+  /// Deletes a *_VALUE block (Node, Property, Metric).
   ///
   /// This always unparents the block and frees its NAME block.
-  /// The block itself is freed unless it's a Node with children; in that
-  /// case it's converted to a TOMBSTONE and will be deleted later, when its
-  /// last child is deleted and unparented.
-  void _deleteValue(Block value) {
-    _unparent(value);
-    _heap.freeBlock(Block.read(_vmo, value.nameIndex));
-    if (value.type == BlockType.nodeValue && value.childCount != 0) {
-      value.becomeTombstone();
-    } else {
-      _heap.freeBlock(value);
+  ///
+  /// Special cases:
+  ///  - If index < heapStartIndex, throw.
+  ///  - If block is a Node with children, make it a [BlockType.tombstone]
+  ///   instead of freeing. It will be deleted later, when its
+  ///   last child is deleted and unparented.
+  ///  - If block is a [BlockType.propertyValue], free its extents as well.
+  void deleteEntity(int index) {
+    if (index < heapStartIndex) {
+      throw Exception('Invalid index {nodeIndex}');
+    }
+    _beginWork();
+    try {
+      Block value = Block.read(_vmo, index);
+      _unparent(value);
+      _heap.freeBlock(Block.read(_vmo, value.nameIndex));
+      if (value.type == BlockType.nodeValue && value.childCount != 0) {
+        value.becomeTombstone();
+      } else {
+        if (value.type == BlockType.propertyValue) {
+          _freeExtents(value.propertyExtentIndex);
+        }
+        _heap.freeBlock(value);
+      }
+    } finally {
+      _commit();
     }
   }
 

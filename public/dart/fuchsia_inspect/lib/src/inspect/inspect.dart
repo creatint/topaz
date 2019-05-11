@@ -13,8 +13,7 @@ import '../vmo/vmo_writer.dart';
 import 'internal/_inspect_impl.dart';
 
 part 'node.dart';
-part 'metric.dart';
-part 'property.dart';
+part 'value.dart';
 
 /// Unless reconfigured, the VMO will be this size.
 /// @nodoc
@@ -31,11 +30,15 @@ class InspectStateError extends StateError {
 // verify that Inspect() returns the same object on each call.
 // (It can't be tested in host unit tests.)
 
-/// Inspect exposes a structured tree of internal component state.
+/// [Inspect] exposes a structured tree of internal component state.
+///
+/// The [Inspect] object maintains a hierarchy of [Node] objects whose data are
+/// exposed for reading by specialized tools such as iquery.
+///
+/// The classes exposed by this library do not support reading.
 abstract class Inspect {
   /// Size of the VMO that was / will be created.
   /// @nodoc
-  @visibleForTesting
   static int vmoSize = defaultVmoSizeBytes;
   static InspectImpl _singleton;
 
@@ -53,8 +56,9 @@ abstract class Inspect {
   ///
   /// This may not be called after the first call to Inspect().
   ///
-  /// [vmoSizeBytes]: Sets the maximum size of the VMO used to store
-  /// inspection data for this program. Must be at least 64 bytes.
+  /// [vmoSizeBytes]: Sets the maximum size of the virtual memory object (VMO)
+  /// used to store inspection data for this program.
+  /// Must be at least 64 bytes.
   ///
   /// Throws [InspectStateError] if called after Inspect() or with an
   /// invalid vmoSizeBytes.

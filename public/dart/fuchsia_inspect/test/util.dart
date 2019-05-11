@@ -189,13 +189,13 @@ ByteData readProperty(FakeVmo vmo, int propertyIndex) {
 int readNameIndex(FakeVmo vmo, Node node) =>
     Block.read(vmo, node.index).nameIndex;
 
-/// Returns the int value of [metric] in [vmo].
-int readInt(FakeVmo vmo, IntMetric metric) =>
-    Block.read(vmo, metric.index).intValue;
+/// Returns the int value of [value] in [vmo].
+int readInt(FakeVmo vmo, IntValue value) =>
+    Block.read(vmo, value.index).intValue;
 
-/// Returns the double value of [metric] in [vmo].
-double readDouble(FakeVmo vmo, DoubleMetric metric) =>
-    Block.read(vmo, metric.index).doubleValue;
+/// Returns the double value of [value] in [vmo].
+double readDouble(FakeVmo vmo, DoubleValue value) =>
+    Block.read(vmo, value.index).doubleValue;
 
 /// A matcher that matches ByteData values as unit8 lists.
 Matcher equalsByteData(ByteData data) => _EqualsByteData(data);
