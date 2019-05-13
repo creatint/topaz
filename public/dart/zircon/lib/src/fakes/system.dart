@@ -192,10 +192,4 @@ class System {
     throw UnimplementedError(
         'System.connectToService() is not implemented on this platform.');
   }
-
-  //TODO(edcoyne): remove after cross-repo transition.
-  static int reboot() {
-    throw UnimplementedError(
-        'System.reboot() is not implemented on this platform.');
-  }
 }
