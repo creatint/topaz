@@ -6,17 +6,6 @@ import 'dart:convert';
 import 'dart:typed_data' show Uint8List;
 
 import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
-import 'package:fuchsia_logger/logger.dart';
-
-/// Takes a Ledger status and logs an error if the
-/// status is not OK.
-bool validateLedgerResponse(ledger.Status status, String description) {
-  if (status != ledger.Status.ok) {
-    log.info('Ledger error in $description: $status');
-    return false;
-  }
-  return true;
-}
 
 /// Retrieves all entries from a snapshot.
 ///

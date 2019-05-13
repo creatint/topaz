@@ -33,13 +33,6 @@ class LedgerObjectsFactoryImpl implements LedgerObjectsFactory {
       ledger.PageWatcherBinding();
 }
 
-/// Throws an exception containing [operation] if the status is not `ok`.
-void checkStatus(ledger.Status status, String operation) {
-  if (status != ledger.Status.ok) {
-    throw Exception('Ledger operation `$operation` failed.');
-  }
-}
-
 /// Returns data stored in [buffer].
 Uint8List readBuffer(Buffer buffer) {
   ReadResult readResult = buffer.vmo.read(buffer.size);
