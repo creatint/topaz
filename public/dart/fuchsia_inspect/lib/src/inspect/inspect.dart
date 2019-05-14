@@ -13,7 +13,7 @@ import '../vmo/vmo_writer.dart';
 import 'internal/_inspect_impl.dart';
 
 part 'node.dart';
-part 'value.dart';
+part 'property.dart';
 
 /// Unless reconfigured, the VMO will be this size.
 /// @nodoc
@@ -60,9 +60,9 @@ abstract class Inspect {
   /// used to store inspection data for this program.
   /// Must be at least 64 bytes.
   ///
-  /// Throws [InspectStateError] if called after Inspect() or with an
-  /// invalid vmoSizeBytes.
-  static void configureInspect({int vmoSizeBytes}) {
+  /// Throws [InspectStateError] if called after Inspect(), or [ArgumentError]
+  /// if called with an invalid vmoSizeBytes.
+  static void configure({int vmoSizeBytes}) {
 // TODO(cphoenix): In integration, test that we throw if called after
 // the factory is run.
     if (_singleton != null) {
@@ -72,7 +72,7 @@ abstract class Inspect {
 // TODO(cphoenix): In integration, test that the VMO is the specified size.
     if (vmoSizeBytes != null) {
       if (vmoSizeBytes < 64) {
-        throw InspectStateError('VMO size must be at least 64 bytes.');
+        throw ArgumentError('VMO size must be at least 64 bytes.');
       }
       vmoSize = vmoSizeBytes;
     }

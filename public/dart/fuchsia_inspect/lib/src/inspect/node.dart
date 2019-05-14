@@ -5,7 +5,7 @@
 part of 'inspect.dart';
 
 /// A named node in the Inspect tree that can have [Node]s and
-/// values under it.
+/// properties under it.
 class Node {
   /// The VMO index of this node.
   /// @nodoc
@@ -19,7 +19,7 @@ class Node {
   /// If so, all actions on this Node should be no-ops and not throw.
   VmoWriter _writer;
 
-  final _values = <String, Value>{};
+  final _properties = <String, Property>{};
   final _children = <String, Node>{};
 
   /// Creates a [Node] with [name] under the [parentIndex].
@@ -66,13 +66,13 @@ class Node {
   ///
   /// After a node has been deleted, all calls on it and its children have
   /// no effect and do not result in an error. Calls on a deleted node that
-  /// return a Node or Value return an already-deleted object.
+  /// return a Node or property return an already-deleted object.
   void delete() {
     if (_writer == null) {
       return;
     }
-    _values
-      ..forEach((_, value) => value.delete())
+    _properties
+      ..forEach((_, property) => property.delete())
       ..clear();
     _children
       ..forEach((_, node) => node.delete())
@@ -82,97 +82,97 @@ class Node {
     _writer = null;
   }
 
-  /// Returns a [StringValue] with [name] on this node.
+  /// Returns a [StringProperty] with [name] on this node.
   ///
-  /// If a [StringValue] with [name] already exists and is not deleted,
+  /// If a [StringProperty] with [name] already exists and is not deleted,
   /// this method returns it.
   ///
-  /// Otherwise, it creates a new value initialized to the empty string.
+  /// Otherwise, it creates a new property initialized to the empty string.
   ///
-  /// Throws [InspectStateError] if a non-deleted value with [name] already
-  /// exists but it is not a [StringValue].
-  StringValue stringValue(String name) {
+  /// Throws [InspectStateError] if a non-deleted property with [name] already
+  /// exists but it is not a [StringProperty].
+  StringProperty stringProperty(String name) {
     if (_writer == null) {
-      return StringValue._deleted();
+      return StringProperty._deleted();
     }
-    if (_values.containsKey(name) && !_values[name]._isDeleted) {
-      if (_values[name] is! StringValue) {
-        throw InspectStateError("Can't create StringValue named $name;"
+    if (_properties.containsKey(name) && !_properties[name]._isDeleted) {
+      if (_properties[name] is! StringProperty) {
+        throw InspectStateError("Can't create StringProperty named $name;"
             ' a different type exists.');
       }
-      return _values[name];
+      return _properties[name];
     }
-    return _values[name] = StringValue._(name, index, _writer);
+    return _properties[name] = StringProperty._(name, index, _writer);
   }
 
-  /// Returns a [ByteDataValue] with [name] on this node.
+  /// Returns a [ByteDataProperty] with [name] on this node.
   ///
-  /// If a [ByteDataValue] with [name] already exists and is not deleted,
+  /// If a [ByteDataProperty] with [name] already exists and is not deleted,
   /// this method returns it.
   ///
-  /// Otherwise, it creates a new value initialized to the empty
+  /// Otherwise, it creates a new property initialized to the empty
   /// byte data container.
   ///
-  /// Throws [InspectStateError] if a non-deleted value with [name] already exists
-  /// but it is not a [ByteDataValue].
-  ByteDataValue byteDataValue(String name) {
+  /// Throws [InspectStateError] if a non-deleted property with [name] already exists
+  /// but it is not a [ByteDataProperty].
+  ByteDataProperty byteDataProperty(String name) {
     if (_writer == null) {
-      return ByteDataValue._deleted();
+      return ByteDataProperty._deleted();
     }
-    if (_values.containsKey(name) && !_values[name]._isDeleted) {
-      if (_values[name] is! ByteDataValue) {
-        throw InspectStateError("Can't create ByteDataValue named $name;"
+    if (_properties.containsKey(name) && !_properties[name]._isDeleted) {
+      if (_properties[name] is! ByteDataProperty) {
+        throw InspectStateError("Can't create ByteDataProperty named $name;"
             ' a different type exists.');
       }
-      return _values[name];
+      return _properties[name];
     }
-    return _values[name] = ByteDataValue._(name, index, _writer);
+    return _properties[name] = ByteDataProperty._(name, index, _writer);
   }
 
-  /// Returns an [IntValue] with [name] on this node.
+  /// Returns an [IntProperty] with [name] on this node.
   ///
-  /// If an [IntValue] with [name] already exists and is not
+  /// If an [IntProperty] with [name] already exists and is not
   /// deleted, this method returns it.
   ///
-  /// Otherwise, it creates a new value initialized to 0.
+  /// Otherwise, it creates a new property initialized to 0.
   ///
-  /// Throws [InspectStateError] if a non-deleted value with [name]
-  /// already exists but it is not an [IntValue].
-  IntValue intValue(String name) {
+  /// Throws [InspectStateError] if a non-deleted property with [name]
+  /// already exists but it is not an [IntProperty].
+  IntProperty intProperty(String name) {
     if (_writer == null) {
-      return IntValue._deleted();
+      return IntProperty._deleted();
     }
-    if (_values.containsKey(name) && !_values[name]._isDeleted) {
-      if (_values[name] is! IntValue) {
+    if (_properties.containsKey(name) && !_properties[name]._isDeleted) {
+      if (_properties[name] is! IntProperty) {
         throw InspectStateError(
-            "Can't create IntValue named $name; a different type exists.");
+            "Can't create IntProperty named $name; a different type exists.");
       }
-      return _values[name];
+      return _properties[name];
     }
-    return _values[name] = IntValue._(name, index, _writer);
+    return _properties[name] = IntProperty._(name, index, _writer);
   }
 
-  /// Returns a [DoubleValue] with [name] on this node.
+  /// Returns a [DoubleProperty] with [name] on this node.
   ///
-  /// If a [DoubleValue] with [name] already exists and is not
+  /// If a [DoubleProperty] with [name] already exists and is not
   /// deleted, this method returns it.
   ///
-  /// Otherwise, it creates a new value initialized to 0.0.
+  /// Otherwise, it creates a new property initialized to 0.0.
   ///
-  /// Throws [InspectStateError] if a non-deleted value with [name]
-  /// already exists but it is not a [DoubleValue].
-  DoubleValue doubleValue(String name) {
+  /// Throws [InspectStateError] if a non-deleted property with [name]
+  /// already exists but it is not a [DoubleProperty].
+  DoubleProperty doubleProperty(String name) {
     if (_writer == null) {
-      return DoubleValue._deleted();
+      return DoubleProperty._deleted();
     }
-    if (_values.containsKey(name) && !_values[name]._isDeleted) {
-      if (_values[name] is! DoubleValue) {
-        throw InspectStateError("Can't create DoubleValue named $name;"
+    if (_properties.containsKey(name) && !_properties[name]._isDeleted) {
+      if (_properties[name] is! DoubleProperty) {
+        throw InspectStateError("Can't create DoubleProperty named $name;"
             ' a different type exists.');
       }
-      return _values[name];
+      return _properties[name];
     }
-    return _values[name] = DoubleValue._(name, index, _writer);
+    return _properties[name] = DoubleProperty._(name, index, _writer);
   }
 }
 

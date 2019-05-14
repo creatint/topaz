@@ -12,7 +12,7 @@ class InspectExampleApp extends StatelessWidget {
   final inspect.Node _inspectNode;
 
   InspectExampleApp(this._inspectNode) {
-    _initValues();
+    _initProperties();
   }
 
   @override
@@ -28,9 +28,9 @@ class InspectExampleApp extends StatelessWidget {
     );
   }
 
-  /// Initializes the [Inspect] values for this widget.
-  void _initValues() {
-    _inspectNode.stringValue('app-color').setValue('$_appColor');
+  /// Initializes the [Inspect] properties for this widget.
+  void _initProperties() {
+    _inspectNode.stringProperty('app-color').setValue('$_appColor');
   }
 }
 
@@ -39,7 +39,7 @@ class _InspectHomePage extends StatefulWidget {
   final inspect.Node inspectNode;
 
   _InspectHomePage({Key key, this.title, this.inspectNode}) : super(key: key) {
-    inspectNode.stringValue('title').setValue(title);
+    inspectNode.stringProperty('title').setValue(title);
   }
 
   @override
@@ -56,17 +56,17 @@ class _InspectHomePageState extends State<_InspectHomePage> {
 
   final inspect.Node _inspectNode;
 
-  /// A value that tracks [_counter].
-  final inspect.IntValue _counterValue;
+  /// A property that tracks [_counter].
+  final inspect.IntProperty _counterProperty;
 
-  inspect.StringValue _backgroundValue;
+  inspect.StringProperty _backgroundProperty;
 
   int _counter = 0;
   int _colorIndex = 0;
 
   _InspectHomePageState(this._inspectNode)
-      : _counterValue = _inspectNode.intValue('counter') {
-    _backgroundValue = _inspectNode.stringValue('background-color')
+      : _counterProperty = _inspectNode.intProperty('counter') {
+    _backgroundProperty = _inspectNode.stringProperty('background-color')
       ..setValue('$_backgroundColor');
   }
 
@@ -76,18 +76,18 @@ class _InspectHomePageState extends State<_InspectHomePage> {
     setState(() {
       _counter++;
 
-      // Note: an alternate approach that is also valid is to set the value to
-      // the new value:
+      // Note: an alternate approach that is also valid is to set the property
+      // to the new value:
       //
-      //     _counterValue.value = _counter;
-      _counterValue.add(1);
+      //     _counterProperty.setValue(_counter);
+      _counterProperty.add(1);
     });
   }
 
   void _decrementCounter() {
     setState(() {
       _counter--;
-      _counterValue.subtract(1);
+      _counterProperty.subtract(1);
     });
   }
 
@@ -101,16 +101,18 @@ class _InspectHomePageState extends State<_InspectHomePage> {
       if (_colorIndex >= _colors.length) {
         _colorIndex = 0;
 
-        // Contrived example of removing an Inspect value:
-        // Once we've looped through the colors once, delete the value.
+        // Contrived example of removing an Inspect property:
+        // Once we've looped through the colors once, delete the  to.
         //
         // A more realistic example would be if something were being removed
         // from the UI, but this is intended to be super simple.
-        _backgroundValue.delete();
-        _backgroundValue = null;
+        _backgroundProperty.delete();
+        // Setting _backgroundProperty to null is optional; it's fine to
+        // call setValue() on a deleted property - it will just have no effect.
+        _backgroundProperty = null;
       }
 
-      _backgroundValue?.setValue('$_backgroundColor');
+      _backgroundProperty?.setValue('$_backgroundColor');
     });
   }
 

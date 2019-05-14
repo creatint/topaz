@@ -7,24 +7,26 @@ import 'package:test/test.dart';
 
 void main() {
   test('configureInspect changes the VMO size each time', () {
-    Inspect.configureInspect(vmoSizeBytes: 1024);
+    Inspect.configure(vmoSizeBytes: 1024);
     expect(Inspect.vmoSize, 1024);
-    Inspect.configureInspect(vmoSizeBytes: 2048);
+    Inspect.configure(vmoSizeBytes: 2048);
     expect(Inspect.vmoSize, 2048);
   });
 
   test('configureInspect rejects negative or too-small VMO size', () {
-    expect(
-        () => Inspect.configureInspect(vmoSizeBytes: -1024), throwsA(anything));
-    expect(() => Inspect.configureInspect(vmoSizeBytes: 0), throwsA(anything));
-    expect(() => Inspect.configureInspect(vmoSizeBytes: 16), throwsA(anything));
+    expect(() => Inspect.configure(vmoSizeBytes: -1024),
+        throwsA(const TypeMatcher<ArgumentError>()));
+    expect(() => Inspect.configure(vmoSizeBytes: 0),
+        throwsA(const TypeMatcher<ArgumentError>()));
+    expect(() => Inspect.configure(vmoSizeBytes: 16),
+        throwsA(const TypeMatcher<ArgumentError>()));
     expect(Inspect.vmoSize, greaterThanOrEqualTo(64));
   });
 
   test('configureInspect does nothing if called with no parameters', () {
-    Inspect.configureInspect(vmoSizeBytes: 2048);
+    Inspect.configure(vmoSizeBytes: 2048);
     expect(Inspect.vmoSize, 2048);
-    Inspect.configureInspect();
+    Inspect.configure();
     expect(Inspect.vmoSize, 2048);
   });
 }

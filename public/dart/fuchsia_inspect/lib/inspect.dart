@@ -8,7 +8,7 @@ export 'src/inspect/inspect.dart'
         Inspect,
         InspectStateError,
         Node,
-        IntValue,
-        DoubleValue,
-        StringValue,
-        ByteDataValue;
+        IntProperty,
+        DoubleProperty,
+        StringProperty,
+        ByteDataProperty;

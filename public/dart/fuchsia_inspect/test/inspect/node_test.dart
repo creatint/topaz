@@ -89,35 +89,39 @@ void main() {
           reason: 'cannot read VMO values from a deleted node');
     });
 
-    test('Creating an IntValue on an already deleted node is a no-op', () {
-      IntValue value;
-      expect(() => value = deletedNode.intValue('404'), returnsNormally);
-      expect(() => value.setValue(404), returnsNormally);
-      expect(() => readInt(vmo, value), throwsA(anything),
+    test('Creating an IntProperty on an already deleted node is a no-op', () {
+      IntProperty property;
+      expect(() => property = deletedNode.intProperty('404'), returnsNormally);
+      expect(() => property.setValue(404), returnsNormally);
+      expect(() => readInt(vmo, property), throwsA(anything),
           reason: 'cannot read VMO values from a deleted node');
     });
 
-    test('Creating a DoubleValue on an already deleted node is a no-op', () {
-      DoubleValue value;
-      expect(() => value = deletedNode.doubleValue('404'), returnsNormally);
-      expect(() => value.setValue(404), returnsNormally);
-      expect(() => readDouble(vmo, value), throwsA(anything),
+    test('Creating a DoubleProperty on an already deleted node is a no-op', () {
+      DoubleProperty property;
+      expect(
+          () => property = deletedNode.doubleProperty('404'), returnsNormally);
+      expect(() => property.setValue(404), returnsNormally);
+      expect(() => readDouble(vmo, property), throwsA(anything),
           reason: 'cannot read VMO values from a deleted node');
     });
 
-    test('Creating a StringValue on an already deleted node is a no-op', () {
-      StringValue value;
-      expect(() => value = deletedNode.stringValue('404'), returnsNormally);
-      expect(() => value.setValue('404'), returnsNormally);
-      expect(() => readProperty(vmo, value.index), throwsA(anything),
+    test('Creating a StringProperty on an already deleted node is a no-op', () {
+      StringProperty property;
+      expect(
+          () => property = deletedNode.stringProperty('404'), returnsNormally);
+      expect(() => property.setValue('404'), returnsNormally);
+      expect(() => readProperty(vmo, property.index), throwsA(anything),
           reason: 'cannot read VMO values from a deleted property');
     });
 
-    test('Creating a ByteDataValue on an already deleted node is a no-op', () {
-      ByteDataValue value;
-      expect(() => value = deletedNode.byteDataValue('404'), returnsNormally);
-      expect(() => value.setValue(toByteData('fuchsia')), returnsNormally);
-      expect(() => readProperty(vmo, value.index), throwsA(anything),
+    test('Creating a ByteDataProperty on an already deleted node is a no-op',
+        () {
+      ByteDataProperty property;
+      expect(() => property = deletedNode.byteDataProperty('404'),
+          returnsNormally);
+      expect(() => property.setValue(toByteData('fuchsia')), returnsNormally);
+      expect(() => readProperty(vmo, property.index), throwsA(anything),
           reason: 'cannot read VMO values from a deleted property');
     });
   });
@@ -136,32 +140,32 @@ void main() {
           reason: 'child Node of deleted Node should be deleted');
     });
 
-    test('child IntValue of deleted Node is deleted', () {
-      var intValue = normalNode.intValue('llamas');
+    test('child IntProperty of deleted Node is deleted', () {
+      var intProperty = normalNode.intProperty('llamas');
       normalNode.delete();
-      expect(() => readInt(vmo, intValue), throwsA(anything),
-          reason: 'child IntValue of deleted Node should be deleted');
+      expect(() => readInt(vmo, intProperty), throwsA(anything),
+          reason: 'child IntProperty of deleted Node should be deleted');
     });
 
-    test('child DoubleValue of deleted Node is deleted', () {
-      var doubleValue = normalNode.doubleValue('emus');
+    test('child DoubleProperty of deleted Node is deleted', () {
+      var doubleProperty = normalNode.doubleProperty('emus');
       normalNode.delete();
-      expect(() => readDouble(vmo, doubleValue), throwsA(anything),
-          reason: 'child DoubleValue of deleted Node should be deleted');
+      expect(() => readDouble(vmo, doubleProperty), throwsA(anything),
+          reason: 'child DoubleProperty of deleted Node should be deleted');
     });
 
-    test('child StringValue of deleted Node is deleted', () {
-      var stringValue = normalNode.stringValue('okapis');
+    test('child StringProperty of deleted Node is deleted', () {
+      var stringProperty = normalNode.stringProperty('okapis');
       normalNode.delete();
-      expect(() => readProperty(vmo, stringValue.index), throwsA(anything),
-          reason: 'child StringValue of deleted Node should be deleted');
+      expect(() => readProperty(vmo, stringProperty.index), throwsA(anything),
+          reason: 'child StringProperty of deleted Node should be deleted');
     });
 
-    test('child ByteDataValue of deleted Node is deleted', () {
-      var byteDataValue = normalNode.byteDataValue('capybaras');
+    test('child ByteDataProperty of deleted Node is deleted', () {
+      var byteDataProperty = normalNode.byteDataProperty('capybaras');
       normalNode.delete();
-      expect(() => readProperty(vmo, byteDataValue.index), throwsA(anything),
-          reason: 'child ByteDataValue of deleted Node should be deleted');
+      expect(() => readProperty(vmo, byteDataProperty.index), throwsA(anything),
+          reason: 'child ByteDataProperty of deleted Node should be deleted');
     });
   });
 
@@ -182,32 +186,32 @@ void main() {
           reason: 'cannot read VMO values from a deleted node');
     });
 
-    test('If no space, creation gives a deleted IntValue', () {
-      var missingValue = tinyRoot.intValue('missing');
-      expect(() => missingValue.setValue(1), returnsNormally);
-      expect(() => readInt(vmo, missingValue), throwsA(anything),
+    test('If no space, creation gives a deleted IntProperty', () {
+      var missingProperty = tinyRoot.intProperty('missing');
+      expect(() => missingProperty.setValue(1), returnsNormally);
+      expect(() => readInt(vmo, missingProperty), throwsA(anything),
           reason: 'cannot read VMO values from a deleted metric');
     });
 
-    test('If no space, creation gives a deleted DoubleValue', () {
-      var missingValue = tinyRoot.doubleValue('missing');
-      expect(() => missingValue.setValue(1.0), returnsNormally);
-      expect(() => readDouble(vmo, missingValue), throwsA(anything),
+    test('If no space, creation gives a deleted DoubleProperty', () {
+      var missingProperty = tinyRoot.doubleProperty('missing');
+      expect(() => missingProperty.setValue(1.0), returnsNormally);
+      expect(() => readDouble(vmo, missingProperty), throwsA(anything),
           reason: 'cannot read VMO values from a deleted metric');
     });
 
-    test('If no space, creation gives a deleted StringValue', () {
-      var missingValue = tinyRoot.stringValue('missing');
-      expect(() => missingValue.setValue('something'), returnsNormally);
-      expect(() => readProperty(vmo, missingValue.index), throwsA(anything),
+    test('If no space, creation gives a deleted StringProperty', () {
+      var missingProperty = tinyRoot.stringProperty('missing');
+      expect(() => missingProperty.setValue('something'), returnsNormally);
+      expect(() => readProperty(vmo, missingProperty.index), throwsA(anything),
           reason: 'cannot read VMO values from a deleted property');
     });
 
-    test('If no space, creation gives a deleted ByteDataValue', () {
+    test('If no space, creation gives a deleted ByteDataProperty', () {
       var bytes = toByteData('this will not set');
-      var missingValue = tinyRoot.byteDataValue('missing');
-      expect(() => missingValue.setValue(bytes), returnsNormally);
-      expect(() => readProperty(vmo, missingValue.index), throwsA(anything),
+      var missingProperty = tinyRoot.byteDataProperty('missing');
+      expect(() => missingProperty.setValue(bytes), returnsNormally);
+      expect(() => readProperty(vmo, missingProperty.index), throwsA(anything),
           reason: 'cannot read VMO values from a deleted property');
     });
   });
