@@ -1,6 +1,7 @@
 sdk://dart/composition_delegate
 sdk://dart/fidl
 sdk://dart/fuchsia
+sdk://dart/fuchsia_inspect
 sdk://dart/fuchsia_logger
 sdk://dart/fuchsia_media
 sdk://dart/fuchsia_modular
