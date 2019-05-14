@@ -81,8 +81,6 @@ template("flutter_runner") {
       "platform_view.h",
       "runner.cc",
       "runner.h",
-      "runner_context.cc",
-      "runner_context.h",
       "session_connection.cc",
       "session_connection.h",
       "surface.cc",
@@ -261,7 +259,8 @@ template("aot_runner") {
           path = rebase_path(
                   get_label_info(
                       "//topaz/runtime/dart/profiler_symbols:libdart_precompiled_runtime",
-                      "target_gen_dir") + "/libdart_precompiled_runtime.dartprofilersymbols")
+                      "target_gen_dir") +
+                  "/libdart_precompiled_runtime.dartprofilersymbols")
           dest = "libdart_precompiled_runtime.dartprofilersymbols"
         },
         {

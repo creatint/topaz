@@ -16,11 +16,12 @@
 #include "flutter/fml/make_copyable.h"
 #include "flutter/lib/ui/text/font_collection.h"
 #include "fuchsia_font_manager.h"
+#include "lib/sys/cpp/component_context.h"
 #include "third_party/flutter/runtime/dart_vm.h"
 #include "third_party/icu/source/common/unicode/udata.h"
 #include "third_party/skia/include/core/SkGraphics.h"
-#include "topaz/runtime/dart/utils/vmo.h"
 #include "topaz/runtime/dart/utils/files.h"
+#include "topaz/runtime/dart/utils/vmo.h"
 #include "topaz/runtime/dart/utils/vmservice_object.h"
 
 namespace flutter_runner {
@@ -103,13 +104,12 @@ static void RegisterProfilerSymbols(const char* symbols_path,
 #endif  // !defined(DART_PRODUCT)
 
 Runner::Runner(async::Loop* loop)
-    : loop_(loop),
-      runner_context_(RunnerContext::CreateFromStartupInfo()) {
+    : loop_(loop), context_(sys::ComponentContext::Create()) {
 #if !defined(DART_PRODUCT)
   // The VM service isolate uses the process-wide namespace. It writes the
   // vm service protocol port under /tmp. The VMServiceObject exposes that
   // port number to The Hub.
-  runner_context_->debug_dir()->AddEntry(
+  context_->outgoing()->debug_dir()->AddEntry(
       dart_utils::VMServiceObject::kPortDirName,
       std::make_unique<dart_utils::VMServiceObject>());
 
@@ -124,13 +124,14 @@ Runner::Runner(async::Loop* loop)
 
   SetThreadName("io.flutter.runner.main");
 
-  runner_context_->AddPublicService<fuchsia::sys::Runner>(
+  context_->outgoing()->AddPublicService<fuchsia::sys::Runner>(
       std::bind(&Runner::RegisterApplication, this, std::placeholders::_1));
 
 #if !defined(DART_PRODUCT)
   if (Dart_IsPrecompiledRuntime()) {
-    RegisterProfilerSymbols("pkg/data/libdart_precompiled_runtime.dartprofilersymbols",
-                            "libdart_precompiled_runtime.so");
+    RegisterProfilerSymbols(
+        "pkg/data/libdart_precompiled_runtime.dartprofilersymbols",
+        "libdart_precompiled_runtime.so");
     RegisterProfilerSymbols("pkg/data/flutter_aot_runner.dartprofilersymbols",
                             "");
   } else {
@@ -143,7 +144,7 @@ Runner::Runner(async::Loop* loop)
 }
 
 Runner::~Runner() {
-  runner_context_->RemovePublicService<fuchsia::sys::Runner>();
+  context_->outgoing()->RemovePublicService<fuchsia::sys::Runner>();
 
 #if !defined(DART_PRODUCT)
   trace_observer_->Stop();
@@ -179,7 +180,7 @@ void Runner::StartComponent(
       std::move(termination_callback),  // termination callback
       std::move(package),               // application pacakge
       std::move(startup_info),          // startup info
-      runner_context_->svc(),           // runner incoming services
+      context_->svc(),                  // runner incoming services
       std::move(controller)             // controller request
   );
 
