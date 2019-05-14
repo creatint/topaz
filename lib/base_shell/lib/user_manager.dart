@@ -37,11 +37,11 @@ class BaseShellUserManager {
 
   /// Logs in the user given by [accountId].
   void login(String accountId) {
-    final UserLoginParams2 params = UserLoginParams2(
+    final UserLoginParams params = UserLoginParams(
       accountId: accountId,
     );
 
-    _userProvider.login2(params);
+    _userProvider.login(params);
   }
 
   Future<void> removeUser(String userId) {
