@@ -226,10 +226,15 @@ class _SessionShellImpl extends SessionShell {
   _SessionShellImpl(this._storyManager);
 
   @override
-  // ignore: override_on_non_overriding_method
-  Future<void> attachView2(
+  Future<void> attachView(
       ViewIdentifier viewId, ViewHolderToken viewHolderToken) async {
     return _storyManager.attachView(viewId, viewHolderToken);
+  }
+
+  @override
+  Future<void> attachView2(
+      ViewIdentifier viewId, ViewHolderToken viewHolderToken) async {
+    return attachView(viewId, viewHolderToken);
   }
 
   @override

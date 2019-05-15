@@ -69,11 +69,9 @@ class StoryShellImpl extends StoryShell {
   /// Introduce a new Surface and corresponding [ViewHolderToken] to this Story.
   ///
   /// The Surface may have a relationship with its parent surface.
-  /// DEPRECATED:  For transition purposes only.
   @override
-  // ignore: override_on_non_overriding_method
-  Future<void> addSurface2(
-    ViewConnection2 viewConnection,
+  Future<void> addSurface(
+    ViewConnection viewConnection,
     SurfaceInfo surfaceInfo,
   ) async {
     Timeline.instantSync(
@@ -99,6 +97,19 @@ class StoryShellImpl extends StoryShell {
       ..connectView(viewConnection.surfaceId, viewConnection.viewHolderToken);
   }
 
+  /// DEPRECATED:  For transition purposes only.
+  @override
+  Future<void> addSurface2(
+    ViewConnection2 viewConnection,
+    SurfaceInfo surfaceInfo,
+  ) async {
+    return addSurface(
+        ViewConnection(
+            surfaceId: viewConnection.surfaceId,
+            viewHolderToken: viewConnection.viewHolderToken),
+        surfaceInfo);
+  }
+
   /// Focus the surface with this id
   @override
   Future<void> focusSurface(String surfaceId) async {
@@ -119,14 +130,13 @@ class StoryShellImpl extends StoryShell {
 
   @Deprecated('Deprecated')
   @override
-  // ignore: override_on_non_overriding_method
-  Future<void> addContainer2(
+  Future<void> addContainer(
     String containerName,
     String parentId,
     SurfaceRelation relation,
     List<ContainerLayout> layouts,
     List<ContainerRelationEntry> relationships,
-    List<ContainerView2> views,
+    List<ContainerView> views,
   ) async {
     // Add a root node for the container
     Timeline.instantSync('adding container', arguments: {
@@ -144,7 +154,7 @@ class StoryShellImpl extends StoryShell {
         <String, ContainerRelationEntry>{};
     Map<String, List<String>> parentChildrenMap = <String, List<String>>{};
     Map<String, ViewHolderToken> viewMap = <String, ViewHolderToken>{};
-    for (ContainerView2 view in views) {
+    for (ContainerView view in views) {
       viewMap[view.nodeName] = view.viewHolderToken;
     }
     for (ContainerRelationEntry relatedNode in relationships) {
@@ -154,7 +164,7 @@ class StoryShellImpl extends StoryShell {
           .add(relatedNode.nodeName);
     }
     List<String> nodeQueue =
-        views.map((ContainerView2 v) => v.nodeName).toList();
+        views.map((ContainerView v) => v.nodeName).toList();
     List<String> addedParents = <String>[containerName];
     int i = 0;
     while (nodeQueue.isNotEmpty) {

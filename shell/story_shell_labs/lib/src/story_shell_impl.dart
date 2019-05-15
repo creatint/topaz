@@ -53,11 +53,9 @@ class StoryShellImpl extends fidl_modular.StoryShell {
   }
 
   /// Add a new surface to the story.
-  /// DEPRECATED:  For transition purposes only.
   @override
-  // ignore: override_on_non_overriding_method
-  Future<void> addSurface2(
-    fidl_modular.ViewConnection2 viewConnection,
+  Future<void> addSurface(
+    fidl_modular.ViewConnection viewConnection,
     fidl_modular.SurfaceInfo surfaceInfo,
   ) async {
     log.info('addSurface ${viewConnection.surfaceId}');
@@ -67,6 +65,19 @@ class StoryShellImpl extends fidl_modular.StoryShell {
         parameters: UnmodifiableListView<String>([]),
         surfaceId: viewConnection.surfaceId,
         view: ChildViewConnection(viewConnection.viewHolderToken));
+  }
+
+  /// DEPRECATED:  For transition purposes only.
+  @override
+  Future<void> addSurface2(
+    fidl_modular.ViewConnection2 viewConnection,
+    fidl_modular.SurfaceInfo surfaceInfo,
+  ) async {
+    return addSurface(
+        fidl_modular.ViewConnection(
+            surfaceId: viewConnection.surfaceId,
+            viewHolderToken: viewConnection.viewHolderToken),
+        surfaceInfo);
   }
 
   /// Focus the surface with this id
