@@ -78,8 +78,8 @@ Future<void> _startTestHarness() async {
 Future<void> _launchModUnderTest() async {
   // get the puppetMaster service from the encapsulated test env
   final puppetMasterProxy = PuppetMasterProxy();
-  await testHarnessProxy.getService(
-      TestHarnessService.withPuppetMaster(puppetMasterProxy.ctrl.request()));
+  await testHarnessProxy.connectToModularService(
+      ModularService.withPuppetMaster(puppetMasterProxy.ctrl.request()));
   // use puppetMaster to start a fake story an launch the mod under test
   final storyPuppetMasterProxy = StoryPuppetMasterProxy();
   await puppetMasterProxy.controlStory(
