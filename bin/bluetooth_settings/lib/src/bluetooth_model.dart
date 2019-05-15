@@ -20,10 +20,12 @@ class BluetoothSettingsModel extends Model {
 
   List<AdapterInfo> _adapters;
   AdapterInfo _activeAdapter;
-  final List<RemoteDevice> _remoteDevices = [];
+  List<RemoteDevice> _remoteDevices = [];
   Timer _sortListTimer;
   bool _discoverable = true;
   final List<StreamSubscription> _listeners = [];
+
+  bool _debugMode = false;
 
   BluetoothSettingsModel() {
     _onStart();
@@ -35,7 +37,13 @@ class BluetoothSettingsModel extends Model {
     notifyListeners();
   }
 
+  set debugMode(bool enabled) {
+    _debugMode = enabled;
+    notifyListeners();
+  }
+
   bool get discoverable => _discoverable;
+  bool get debugMode => _debugMode;
 
   /// TODO(ejia): handle failures and error messages
   Future<void> connect(RemoteDevice device) async {
@@ -63,6 +71,14 @@ class BluetoothSettingsModel extends Model {
       [];
 
   PairingStatus get pairingStatus => _pairingDelegate.pairingStatus;
+
+  void acceptPairing(String passkeyInput) {
+    _pairingDelegate?.completePairing(accept: true, passkeyInput: passkeyInput);
+  }
+
+  void rejectPairing() {
+    _pairingDelegate?.completePairing(accept: false);
+  }
 
   Future<void> _onStart() async {
     StartupContext.fromStartupInfo().incoming.connectToService(_control);
@@ -112,6 +128,7 @@ class BluetoothSettingsModel extends Model {
   Future<void> _refresh() async {
     _adapters = await _control.getAdapters();
     _activeAdapter = await _control.getActiveAdapterInfo();
+    _remoteDevices = await _control.getKnownRemoteDevices();
     notifyListeners();
   }
 
@@ -128,18 +145,19 @@ class BluetoothSettingsModel extends Model {
 }
 
 class PairingStatus {
-  final String displayedPassKey;
+  final String displayedPasskey;
   final PairingMethod pairingMethod;
   final RemoteDevice device;
   int digitsEntered = 0;
   bool completing = false;
 
-  PairingStatus(this.displayedPassKey, this.pairingMethod, this.device);
+  PairingStatus(this.displayedPasskey, this.pairingMethod, this.device);
 }
 
 /// Used to capture events from bluetooth pairing.
 class BluetoothSettingsPairingDelegate extends PairingDelegate
     with ChangeNotifier {
+  Completer<PairingDelegate$OnPairingRequest$Response> _completer;
   PairingStatus pairingStatus;
 
   final StreamController<PairingDelegate$OnLocalKeypress$Response>
@@ -150,13 +168,22 @@ class BluetoothSettingsPairingDelegate extends PairingDelegate
         pairingStatus.device.identifier, pressType));
   }
 
+  void completePairing({bool accept, String passkeyInput}) {
+    _completer?.complete(
+        PairingDelegate$OnPairingRequest$Response(accept, passkeyInput));
+    _completer = null;
+    notifyListeners();
+  }
+
   @override
   Stream<PairingDelegate$OnLocalKeypress$Response> get onLocalKeypress =>
       _localKeypressController.stream;
 
   @override
   Future<void> onPairingComplete(String deviceId, Status status) async {
+    // TODO(armansito): Display an error message when pairing fails.
     pairingStatus = null;
+    _completer = null;
     notifyListeners();
   }
 
@@ -165,8 +192,17 @@ class BluetoothSettingsPairingDelegate extends PairingDelegate
       RemoteDevice device,
       PairingMethod method,
       String displayedPasskey) async {
-    // TODO: properly display passkey before accepting request
-    return PairingDelegate$OnPairingRequest$Response(true, displayedPasskey);
+    // End existing pairing.
+    _completer
+        ?.complete(PairingDelegate$OnPairingRequest$Response(false, null));
+
+    // TODO(armansito): It would be better to handle multiple pairing requests
+    // simultaneously via separate dialogs.
+    pairingStatus = PairingStatus(displayedPasskey, method, device);
+    notifyListeners();
+
+    _completer = Completer<PairingDelegate$OnPairingRequest$Response>();
+    return _completer.future;
   }
 
   @override
