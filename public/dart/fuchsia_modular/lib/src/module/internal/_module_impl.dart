@@ -130,7 +130,7 @@ class ModuleImpl implements Module {
 
     final tokenPair = ViewTokenPair();
     final moduleController = modular.ModuleControllerProxy();
-    final status = await _getContext().embedModule2(
+    final status = await _getContext().embedModule(
         name, intent, moduleController.ctrl.request(), tokenPair.viewToken);
 
     _validateStartModuleStatus(status, name, intent);

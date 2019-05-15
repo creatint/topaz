@@ -76,7 +76,7 @@ void main() {
   test('embedModule should throw ModuleResolutionException if no module found',
       () {
     final context = MockModuleContext();
-    when(context.embedModule2(any, any, any, any))
+    when(context.embedModule(any, any, any, any))
         .thenAnswer((_) => Future.value(fidl.StartModuleStatus.noModulesFound));
 
     final moduleImpl =
@@ -88,7 +88,7 @@ void main() {
 
   test('embedModule should throw ModuleStateException for unknown errors', () {
     final context = MockModuleContext();
-    when(context.embedModule2(any, any, any, any))
+    when(context.embedModule(any, any, any, any))
         .thenAnswer((_) => Future.value(fidl.StartModuleStatus.success));
 
     final moduleImpl =
@@ -100,7 +100,7 @@ void main() {
 
   test('embedModule should throw ArgumentError for invalid name', () {
     final context = MockModuleContext();
-    when(context.embedModule2(any, any, any, any))
+    when(context.embedModule(any, any, any, any))
         .thenAnswer((_) => Future.value(fidl.StartModuleStatus(-99)));
 
     final moduleImpl =
