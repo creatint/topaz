@@ -25,11 +25,13 @@ import "dart:io";
 import "dart:typed_data";
 
 import "package:args/args.dart";
+import "package:path/path.dart" as path;
 
 Future<void> main(List<String> args) async {
   final parser = new ArgParser();
   parser.addOption("nm", help: "Path to `nm` tool");
-  parser.addOption("binary", help: "Path to the ELF file to extract symbols from");
+  parser.addOption("binary",
+      help: "Path to the ELF file to extract symbols from");
   parser.addOption("output", help: "Path to output symbol table");
   final usage = """
 Usage: dart_profiler_symbols.dart [options]
@@ -73,6 +75,10 @@ class Symbol {
 }
 
 Future<void> run(String nm, String binary, String output) async {
+  var unstrippedFile = findUnstrippedFile(binary);
+  if (unstrippedFile == null) {
+    throw "Cannot find unstripped file for: $binary";
+  }
   final args = ["--demangle", "--numeric-sort", "--print-size", binary];
   final result = await Process.run(nm, args);
   if (result.exitCode != 0) {
@@ -87,7 +93,7 @@ Future<void> run(String nm, String binary, String output) async {
   for (final line in result.stdout.split("\n")) {
     var match = regex.firstMatch(line);
     if (match == null) {
-      continue;  // Ignore non-text symbols.
+      continue; // Ignore non-text symbols.
     }
 
     final symbol = new Symbol();
@@ -98,7 +104,7 @@ Future<void> run(String nm, String binary, String output) async {
     symbol.name = match[4].split("(")[0];
 
     if (symbol.name.startsWith("\$")) {
-      continue;  // Ignore compiler/assembler temps.
+      continue; // Ignore compiler/assembler temps.
     }
 
     symbols.add(symbol);
@@ -124,4 +130,44 @@ Future<void> run(String nm, String binary, String output) async {
   sink.add(binarySearchTable.buffer.asUint8List());
   sink.add(nameTable.takeBytes());
   await sink.close();
+}
+
+String findUnstrippedFile(String filename) {
+  var file = new File(filename);
+  var dirname = path.dirname(filename);
+  var basename = path.basename(filename);
+  var subdir = basename.endsWith(".so") || basename.contains(".so.")
+      ? "lib.unstripped"
+      : "exe.unstripped";
+
+  // Check the subdirectory with unstripped files.
+  var debugfile = path.join(dirname, subdir, basename);
+  if (new File(debugfile).existsSync()) {
+    return debugfile;
+  }
+
+  // Next look through variant subdirectories.
+  var contents = new Directory(dirname).listSync();
+  for (var fileOrDir in contents) {
+    if (fileOrDir is Directory) {
+      var contents = fileOrDir.listSync();
+      for (var fileOrDir in contents) {
+        if (fileOrDir is File) {
+          // Check if it's the same file (variant linked to out directory).
+          if (FileSystemEntity.identicalSync(file.path, fileOrDir.path)) {
+            var basename = path.basename(fileOrDir.path);
+            var dirname = path.dirname(fileOrDir.path);
+
+            // Check the subdirectory with unstripped files.
+            var debugfile = path.join(dirname, subdir, basename);
+            if (new File(debugfile).existsSync()) {
+              return debugfile;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return null;
 }
