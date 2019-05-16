@@ -258,6 +258,7 @@ group("xi") {
 group("ermine") {
   testonly = true
   public_deps = [
+    "//topaz/packages/prod:bluetooth_settings",
     "//topaz/packages/prod:chromium",
     "//topaz/packages/prod:dart_jit_product_runner",
     "//topaz/packages/prod:dart_jit_runner",
