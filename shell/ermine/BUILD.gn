@@ -33,13 +33,10 @@ dart_library("ermine_library") {
   sources = [
     "main.dart",
     "src/models/app_model.dart",
-    "src/models/default_proposer.dart",
     "src/models/ermine_service_provider.dart",
-    "src/models/package_proposer.dart",
+    "src/models/status_model.dart",
     "src/models/story_manager.dart",
     "src/models/story_model.dart",
-    "src/models/web_proposer.dart",
-    "src/models/status_model.dart",
     "src/modules/ask_model.dart",
     "src/modules/ask_module.dart",
     "src/modules/ask_sheet.dart",
@@ -55,6 +52,7 @@ dart_library("ermine_library") {
 
   deps = [
     ":shell.ermine",
+    "//sdk/fidl/fuchsia.app.discover",
     "//sdk/fidl/fuchsia.modular",
     "//sdk/fidl/fuchsia.ui.app",
     "//sdk/fidl/fuchsia.ui.input",
@@ -87,6 +85,7 @@ flutter_app("ermine_ask_module") {
 
   deps = [
     ":shell.ermine",
+    "//sdk/fidl/fuchsia.app.discover",
     "//sdk/fidl/fuchsia.modular",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/public/dart/widgets:lib.widgets",

@@ -13,10 +13,9 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart'
         PuppetMaster,
         PuppetMasterProxy,
         StoryProviderProxy,
-        StoryProviderWatcherBinding,
-        SuggestionProvider,
-        SuggestionProviderBinding,
-        SuggestionProviderProxy;
+        StoryProviderWatcherBinding;
+import 'package:fidl_fuchsia_app_discover/fidl_async.dart'
+    show Suggestions, SuggestionsBinding, SuggestionsProxy;
 import 'package:fidl_fuchsia_shell_ermine/fidl_async.dart' show AskBarProxy;
 import 'package:fidl_fuchsia_sys/fidl_async.dart'
     show
@@ -40,12 +39,9 @@ import 'package:zircon/zircon.dart';
 import '../utils/elevations.dart';
 import '../utils/key_chord_listener.dart' show KeyChordListener;
 import '../utils/session_shell_services.dart' show SessionShellServices;
-import 'default_proposer.dart' show DefaultProposer;
 import 'ermine_service_provider.dart' show ErmineServiceProvider;
-import 'package_proposer.dart' show PackageProposer;
 import 'story_manager.dart'
     show FocusRequestWatcherImpl, StoryManager, StoryProviderWatcherImpl;
-import 'web_proposer.dart' show WebProposer;
 
 const _kErmineAskModuleUrl =
     'fuchsia-pkg://fuchsia.com/ermine_ask_module#meta/ermine_ask_module.cmx';
@@ -62,11 +58,8 @@ class AppModel extends Model {
   final _focusController = FocusControllerProxy();
   final _focusRequestWatcherBinding = FocusRequestWatcherBinding();
   final _componentControllerProxy = ComponentControllerProxy();
-  final _suggestionProvider = SuggestionProviderProxy();
+  final _suggestionsService = SuggestionsProxy();
   final _ask = AskBarProxy();
-  final _defaultProposer = DefaultProposer();
-  final _packageProposer = PackageProposer();
-  final _webProposer = WebProposer();
 
   // ignore: unused_field
   SessionShellServices _sessionShellServices;
@@ -91,9 +84,9 @@ class AppModel extends Model {
         .incoming
         .connectToService(_componentContext);
     StartupContext.fromStartupInfo().incoming.connectToService(_puppetMaster);
-    _defaultProposer.start();
-    _packageProposer.start();
-    _webProposer.start();
+    StartupContext.fromStartupInfo()
+        .incoming
+        .connectToService(_suggestionsService);
 
     _sessionShellServices = SessionShellServices(
       sessionShellContext: _sessionShellContext,
@@ -102,17 +95,12 @@ class AppModel extends Model {
     _sessionShellContext
       ..getFocusController(_focusController.ctrl.request())
       ..getPresentation(_presentation.ctrl.request())
-      ..getStoryProvider(_storyProvider.ctrl.request())
-      ..getSuggestionProvider(_suggestionProvider.ctrl.request());
+      ..getStoryProvider(_storyProvider.ctrl.request());
 
     storyManager = StoryManager(
       context: _sessionShellContext,
       puppetMaster: _puppetMaster,
-    )
-      ..advertise(startupContext)
-      ..addListener(() {
-        _packageProposer.focusedStoryId = storyManager.focusedStoryId;
-      });
+    )..advertise(startupContext);
 
     _storyProvider.watch(
       _storyProviderWatcherBinding.wrap(StoryProviderWatcherImpl(storyManager)),
@@ -153,14 +141,14 @@ class AppModel extends Model {
         additionalServices: ServiceList(
           names: <String>[
             PuppetMaster.$serviceName,
-            SuggestionProvider.$serviceName
+            Suggestions.$serviceName,
           ],
           provider: ServiceProviderBinding().wrap(
             ErmineServiceProvider()
-              ..advertise<SuggestionProvider>(
-                name: SuggestionProvider.$serviceName,
-                service: _suggestionProvider,
-                binding: SuggestionProviderBinding(),
+              ..advertise<Suggestions>(
+                name: Suggestions.$serviceName,
+                service: _suggestionsService,
+                binding: SuggestionsBinding(),
               ),
           ),
         ),
@@ -208,9 +196,6 @@ class AppModel extends Model {
     _sessionShellContext.logout();
     storyManager.stop();
     _pointerEventsListener.stop();
-    _defaultProposer.stop();
-    _packageProposer.stop();
-    _webProposer.stop();
 
     _storyProviderWatcherBinding.close();
     _focusRequestWatcherBinding.close();
@@ -222,7 +207,7 @@ class AppModel extends Model {
     _puppetMaster.ctrl.close();
     _focusController.ctrl.close();
     _componentControllerProxy.ctrl.close();
-    _suggestionProvider.ctrl.close();
+    _suggestionsService.ctrl.close();
     _ask.ctrl.close();
   }
 }

@@ -3,26 +3,16 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show RawKeyDownEvent, RawKeyEventDataFuchsia;
 
 import 'package:fidl/fidl.dart' show InterfaceRequest;
-import 'package:fidl_fuchsia_modular/fidl_async.dart'
-    show
-        Interaction,
-        InteractionType,
-        QueryListener,
-        QueryListenerBinding,
-        Suggestion,
-        SuggestionProviderProxy,
-        UserInput;
+import 'package:fidl_fuchsia_app_discover/fidl_async.dart';
 import 'package:fidl_fuchsia_shell_ermine/fidl_async.dart'
     show AskBar, AskBarBinding;
 import 'package:fuchsia_services/services.dart' show StartupContext;
-import 'package:zircon/zircon.dart' show Vmo;
 
 const int _kMaxSuggestions = 20;
 
@@ -50,7 +40,7 @@ class AskModel extends ChangeNotifier {
   String _currentQuery;
 
   final _askBinding = AskBarBinding();
-  final _suggestionProvider = SuggestionProviderProxy();
+  final _suggestionService = SuggestionsProxy();
 
   // Holds the suggestion results until query completes.
   List<Suggestion> _suggestions = <Suggestion>[];
@@ -59,7 +49,7 @@ class AskModel extends ChangeNotifier {
     _ask = _AskImpl(this);
     StartupContext.fromStartupInfo()
         .incoming
-        .connectToService(_suggestionProvider);
+        .connectToService(_suggestionService);
   }
 
   void focus(BuildContext context) =>
@@ -69,21 +59,11 @@ class AskModel extends ChangeNotifier {
 
   bool get isVisible => visibility.value;
 
-  ValueNotifier<ui.Image> imageFromSuggestion(Suggestion suggestion) {
-    final image = ValueNotifier<ui.Image>(null);
-    if (suggestion?.display?.icons?.first?.image?.vmo != null) {
-      final vmo = suggestion.display.icons.first.image.vmo;
-      _imageFromVmo(vmo).then((img) => image.value = img);
+  ValueNotifier<ImageProvider> imageFromSuggestion(Suggestion suggestion) {
+    final image = ValueNotifier<ImageProvider>(null);
+    if (suggestion?.displayInfo?.icon != null) {
+      image.value = NetworkImage(suggestion.displayInfo.icon);
     }
-    return image;
-  }
-
-  Future<ui.Image> _imageFromVmo(Vmo vmo) async {
-    final bytes = vmo.read(vmo.getSize().size).bytesAsUint8List();
-    final codec = await ui.instantiateImageCodec(bytes);
-    final frameInfo = await codec.getNextFrame();
-    final image = frameInfo.image;
-    codec.dispose();
     return image;
   }
 
@@ -155,36 +135,37 @@ class AskModel extends ChangeNotifier {
       }
       selection.value = newSelection.clamp(0, suggestions.value.length - 1);
       controller.value = controller.value.copyWith(
-        text: suggestions.value[selection.value].display.details,
+        text: suggestions.value[selection.value].displayInfo.title,
         selection: TextSelection(
           baseOffset: 0,
           extentOffset:
-              suggestions.value[selection.value].display.details.length,
+              suggestions.value[selection.value].displayInfo.title.length,
         ),
       );
     }
   }
 
-  void onQuery(String query) {
+  void onQuery(String query) async {
     if (query == _currentQuery || !controller.selection.isCollapsed) {
       return;
     }
     _currentQuery = query;
     _suggestions = <Suggestion>[];
 
-    final queryListenerBinding = QueryListenerBinding();
-    _suggestionProvider.query(
-      queryListenerBinding.wrap(_QueryListenerImpl(this)),
-      UserInput(text: query),
-      _kMaxSuggestions,
-    );
+    final iterator = SuggestionsIteratorProxy();
+    await _suggestionService.getSuggestions(query, iterator.ctrl.request());
+
+    Iterable<Suggestion> partialResults;
+    while ((partialResults = await iterator.next()).isNotEmpty &&
+        _suggestions.length < _kMaxSuggestions) {
+      _suggestions.addAll(partialResults);
+      suggestions.value = List.from(_suggestions.take(_kMaxSuggestions));
+    }
   }
 
   void onSelect(Suggestion suggestion) {
-    _suggestionProvider.notifyInteraction(
-      suggestion.uuid,
-      Interaction(type: InteractionType.selected),
-    );
+    _suggestionService.notifyInteraction(
+        suggestion.id, InteractionType.selected);
     hide();
   }
 
@@ -193,23 +174,6 @@ class AskModel extends ChangeNotifier {
       (InterfaceRequest<AskBar> request) => _askBinding.bind(_ask, request),
       AskBar.$serviceName,
     );
-  }
-
-  /// QueryListener.
-  void onQueryComplete() {
-    // Display suggestion list if Ask bar is still visible.
-    if (visibility.value) {
-      selection.value = -1;
-      suggestions.value = _suggestions;
-    }
-  }
-
-  // ignore: use_setters_to_change_properties
-  /// QueryListener.
-  void onQueryResults(List<Suggestion> suggestions) {
-    // Hold onto the suggestion in _suggestions until onQueryComplete is
-    // called.
-    _suggestions = suggestions;
   }
 }
 
@@ -243,17 +207,4 @@ class _AskImpl extends AskBar {
 
   @override
   Stream<void> get onVisible => _onVisibleStream.stream;
-}
-
-class _QueryListenerImpl extends QueryListener {
-  final AskModel askModel;
-
-  _QueryListenerImpl(this.askModel);
-
-  @override
-  Future<void> onQueryComplete() async => askModel.onQueryComplete();
-
-  @override
-  Future<void> onQueryResults(List<Suggestion> suggestions) async =>
-      askModel.onQueryResults(suggestions);
 }

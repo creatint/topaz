@@ -3,16 +3,17 @@
         "data": "data/ermine_ask_module"
     },
     "sandbox": {
-        "pkgfs": [ "packages" ],
+        "pkgfs": [
+            "packages"
+        ],
         "services": [
             "fuchsia.cobalt.LoggerFactory",
             "fuchsia.fonts.Provider",
             "fuchsia.logger.LogSink",
+            "fuchsia.app.discover.Suggestions",
             "fuchsia.modular.Clipboard",
             "fuchsia.modular.ComponentContext",
-            "fuchsia.modular.ContextWriter",
             "fuchsia.modular.SessionShellContext",
-            "fuchsia.modular.SuggestionProvider",
             "fuchsia.modular.ModuleContext",
             "fuchsia.sys.Environment",
             "fuchsia.sys.Launcher",

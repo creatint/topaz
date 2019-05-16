@@ -61,7 +61,7 @@ class AskSuggestionList extends StatelessWidget {
               alignment: Alignment.centerLeft,
               height: _kListItemHeight,
               child: Text(
-                suggestion.display.headline,
+                suggestion.displayInfo.title,
                 maxLines: 1,
                 softWrap: false,
                 overflow: TextOverflow.fade,
