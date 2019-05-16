@@ -47,6 +47,7 @@ class AskModel extends ChangeNotifier {
   double elevation = 200.0;
 
   _AskImpl _ask;
+  String _currentQuery;
 
   final _askBinding = AskBarBinding();
   final _suggestionProvider = SuggestionProviderProxy();
@@ -153,15 +154,22 @@ class AskModel extends ChangeNotifier {
           return;
       }
       selection.value = newSelection.clamp(0, suggestions.value.length - 1);
-      controller
-        ..text = suggestions.value[selection.value].display.details
-        ..selection = TextSelection.fromPosition(TextPosition(
-          offset: controller.text.length,
-        ));
+      controller.value = controller.value.copyWith(
+        text: suggestions.value[selection.value].display.details,
+        selection: TextSelection(
+          baseOffset: 0,
+          extentOffset:
+              suggestions.value[selection.value].display.details.length,
+        ),
+      );
     }
   }
 
   void onQuery(String query) {
+    if (query == _currentQuery || !controller.selection.isCollapsed) {
+      return;
+    }
+    _currentQuery = query;
     _suggestions = <Suggestion>[];
 
     final queryListenerBinding = QueryListenerBinding();
