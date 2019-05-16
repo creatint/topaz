@@ -32,8 +32,12 @@ class DeviceSettingsModel extends Model {
   /// TODO: replace with better status info from update service
   DateTime _lastUpdate;
 
+  /// Holds the build tag if a release build, otherwise holds
+  /// the time the source code was updated.
+  String _buildTag;
+
   /// Holds the time the source code was updated.
-  DateTime _sourceDate;
+  String _sourceDate;
 
   /// Length of time since system bootup.
   Duration _uptime;
@@ -61,7 +65,9 @@ class DeviceSettingsModel extends Model {
   /// be displayed.
   bool get showResetConfirmation => _showResetConfirmation;
 
-  DateTime get sourceDate => _sourceDate;
+  String get buildTag => _buildTag;
+
+  String get sourceDate => _sourceDate;
 
   Duration get uptime => _uptime;
 
@@ -102,7 +108,8 @@ class DeviceSettingsModel extends Model {
   }
 
   Future<void> _onStart() async {
-    _sourceDate = DeviceInfo.getSourceDate();
+    _buildTag = DeviceInfo.buildTag;
+    _sourceDate = DeviceInfo.sourceDate;
 
     updateUptime();
     _uptimeRefreshTimer =
@@ -132,11 +139,12 @@ class DeviceSettingsModel extends Model {
       }
 
       int status = System.connectToService(
-        '/svc/${devmgr.Administrator.$serviceName}',
-        channels.second.passHandle());
-      if (status != 0 ) {
+          '/svc/${devmgr.Administrator.$serviceName}',
+          channels.second.passHandle());
+      if (status != 0) {
         channels.first.close();
-        log.severe('Unable to connect to device administrator service: $status');
+        log.severe(
+            'Unable to connect to device administrator service: $status');
         return;
       }
 

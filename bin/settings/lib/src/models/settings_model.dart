@@ -12,7 +12,6 @@ import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular/module.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
-import 'package:intl/intl.dart';
 import 'package:lib.settings/device_info.dart';
 import 'package:lib.widgets/model.dart';
 
@@ -32,7 +31,7 @@ class SettingsModel extends Model {
 
   HashMap<String, _CachedModule> _cachedModules;
 
-  DateTime _testDeviceSourceDate;
+  String _testBuildTag;
 
   /// Constructor.
   SettingsModel() {
@@ -78,18 +77,11 @@ class SettingsModel extends Model {
 
   /// Returns the build info, if build info file is found on the system image.
   String get buildInfo {
-    final DateTime buildTimeStamp = _testDeviceSourceDate != null
-        ? _testDeviceSourceDate
-        : DeviceInfo.getSourceDate();
+    final String buildTag =
+        _testBuildTag != null ? _testBuildTag : DeviceInfo.buildTag;
 
-    if (buildTimeStamp != null) {
-      final builtAt =
-          DateFormat('H:mm', 'en_US').format(buildTimeStamp).toLowerCase();
-      final builtOn =
-          DateFormat('MMM dd, yyyy', 'en_US').format(buildTimeStamp);
-      // The time zone is hardcoded because DateFormat and DateTime currently doesn't
-      // support time zones.
-      return 'Built at $builtAt UTC on $builtOn';
+    if (buildTag != null) {
+      return buildTag;
     } else {
       log.warning('Last built time doesn\'t exist!');
     }
@@ -102,8 +94,7 @@ class SettingsModel extends Model {
   /// Returns the datetime status.
   String get datetimeStatus => _settingsStatus.timezoneStatus;
 
-  set testDeviceSourceDate(DateTime testDeviceSourceDate) =>
-      _testDeviceSourceDate = testDeviceSourceDate;
+  set testBuildTag(String testBuildTag) => _testBuildTag = testBuildTag;
 }
 
 /// A helper class which holds a reference to the [EmbeddedModule]
