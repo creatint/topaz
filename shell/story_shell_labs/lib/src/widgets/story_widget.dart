@@ -11,6 +11,8 @@ import 'package:tiler/tiler.dart';
 import 'package:story_shell_labs_lib/layout/tile_model.dart';
 import 'package:story_shell_labs_lib/layout/tile_presenter.dart';
 
+import 'remove_button_target_widget.dart';
+
 final List<Color> _kColors = [
   Colors.red,
   Colors.blue,
@@ -116,7 +118,7 @@ class _StoryWidgetState extends State<StoryWidget> {
                 parametersToColors: _parametersToColors,
                 setTilerModel: (model) {
                   setState(() {
-                    _tilerModel = model;
+                    _tilerModel = cloneTiler(model);
                   });
                 },
               ),
@@ -160,25 +162,36 @@ class _StoryWidgetState extends State<StoryWidget> {
               alignment: Alignment.bottomCenter,
               child: SizedBox(
                 height: 84,
-                child: LayoutSuggestionsWidget(
-                  presenter: widget.presenter,
-                  focusedMod: _focusedMod,
-                  onSelect: (model) {
-                    setState(() {
-                      _tilerModel = model;
-                    });
-                  },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    LayoutSuggestionsWidget(
+                      presenter: widget.presenter,
+                      focusedMod: _focusedMod,
+                      onSelect: (model) {
+                        setState(() {
+                          _tilerModel = cloneTiler(model);
+                        });
+                      },
+                    ),
+                    RemoveButtonTargetWidget(
+                      onTap: () {
+                        getTileContent(_tilerModel)
+                            .where((TileModel tile) =>
+                                tile.content.modName == _focusedMod.value)
+                            .forEach(_tilerModel.remove);
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
           );
         },
       );
-      print('adding overlay $_layoutSuggestionsOverlay');
       Overlay.of(context).insert(_layoutSuggestionsOverlay);
     }
     if (!_isEditing && _layoutSuggestionsOverlay != null) {
-      print('removing overlay $_layoutSuggestionsOverlay');
       _layoutSuggestionsOverlay.remove();
       _layoutSuggestionsOverlay = null;
     }

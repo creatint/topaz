@@ -83,69 +83,62 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Positioned.fill(
-          child: Draggable(
-            onDragStarted: () {
-              widget.willStartDrag();
-              widget.focusedMod.value = widget.modName;
-              _isDragging.value = true;
-              widget.tilerModel.remove(widget.tile);
-            },
-            onDragEnd: (_) {
-              _isDragging.value = false;
-            },
-            onDraggableCanceled: (_, __) {
-              widget.didCancelDrag();
-            },
-            key: Key(widget.modName),
-            data: widget.tile,
-            feedback: _buildFeedback(),
-            dragAnchor: DragAnchor.pointer,
-            childWhenDragging: const Offstage(),
-            child: Stack(
-              children: [
-                AnimatedBuilder(
-                  animation: _hoverDirection,
-                  builder: (_, child) => AnimatedPositioned(
-                        duration: Duration(milliseconds: 400),
-                        curve: Curves.easeOutExpo,
-                        top: _hoverDirection.value == AxisDirection.up
-                            ? widget.editingSize.height * 0.5 + 12
-                            : 0,
-                        bottom: _hoverDirection.value == AxisDirection.down
-                            ? widget.editingSize.height * 0.5 + 12
-                            : 0,
-                        left: _hoverDirection.value == AxisDirection.left
-                            ? widget.editingSize.width * 0.5 + 12
-                            : 0,
-                        right: _hoverDirection.value == AxisDirection.right
-                            ? widget.editingSize.width * 0.5 + 12
-                            : 0,
-                        child: child,
-                      ),
-                  child: AnimatedBuilder(
-                    animation: widget.focusedMod,
-                    builder: (_, child) => Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: widget.focusedMod.value == widget.modName
-                                  ? Color(0xFFFF8BCB)
-                                  : Colors.black,
-                              width: _kBorderWidth,
-                            ),
-                          ),
-                          child: widget.childView,
-                        ),
-                  ),
+    return Draggable(
+      onDragStarted: () {
+        widget.willStartDrag();
+        widget.focusedMod.value = widget.modName;
+        _isDragging.value = true;
+        widget.tilerModel.remove(widget.tile);
+      },
+      onDragEnd: (_) {
+        _isDragging.value = false;
+      },
+      onDraggableCanceled: (_, __) {
+        widget.didCancelDrag();
+      },
+      key: Key(widget.modName),
+      data: widget.tile,
+      feedback: _buildFeedback(),
+      dragAnchor: DragAnchor.pointer,
+      childWhenDragging: const Offstage(),
+      child: Stack(
+        children: [
+          AnimatedBuilder(
+            animation: _hoverDirection,
+            builder: (_, child) => AnimatedPositioned(
+                  duration: Duration(milliseconds: 400),
+                  curve: Curves.easeOutExpo,
+                  top: _hoverDirection.value == AxisDirection.up
+                      ? widget.editingSize.height * 0.5 + 12
+                      : 0,
+                  bottom: _hoverDirection.value == AxisDirection.down
+                      ? widget.editingSize.height * 0.5 + 12
+                      : 0,
+                  left: _hoverDirection.value == AxisDirection.left
+                      ? widget.editingSize.width * 0.5 + 12
+                      : 0,
+                  right: _hoverDirection.value == AxisDirection.right
+                      ? widget.editingSize.width * 0.5 + 12
+                      : 0,
+                  child: child,
                 ),
-              ]..addAll(_buildSplitTargets(widget.editingSize)),
+            child: AnimatedBuilder(
+              animation: widget.focusedMod,
+              builder: (_, child) => Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: widget.focusedMod.value == widget.modName
+                            ? Color(0xFFFF8BCB)
+                            : Colors.black,
+                        width: _kBorderWidth,
+                      ),
+                    ),
+                    child: widget.childView,
+                  ),
             ),
           ),
-        ),
-        _buildCornerItems(),
-      ],
+        ]..addAll(_buildSplitTargets(widget.editingSize)),
+      ),
     );
   }
 
@@ -187,52 +180,6 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
             padding: const EdgeInsets.all(_kBorderWidth),
             child: widget.childView,
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildCornerItems() {
-    final parameterIndicators = Row(
-      children: widget.parameterColors
-          .expand((color) => [
-                Material(
-                  elevation: 4.0,
-                  clipBehavior: Clip.antiAlias,
-                  shape: CircleBorder(),
-                  color: color,
-                  child: SizedBox(width: 24, height: 24),
-                ),
-                SizedBox(width: 8.0),
-              ])
-          .toList(),
-    );
-
-    return Positioned(
-      top: 8,
-      right: 8,
-      child: AnimatedBuilder(
-        animation: Listenable.merge([_isDragging, _hoverDirection]),
-        builder: (_, child) => Offstage(
-            offstage: _isDragging.value ||
-                _hoverDirection.value == AxisDirection.up ||
-                _hoverDirection.value == AxisDirection.right,
-            child: child),
-        child: Row(
-          children: <Widget>[
-            parameterIndicators,
-            Material(
-              elevation: 4.0,
-              clipBehavior: Clip.antiAlias,
-              shape: CircleBorder(),
-              child: InkWell(
-                onTap: () {
-                  widget.tilerModel.remove(widget.tile);
-                },
-                child: Icon(Icons.close),
-              ),
-            ),
-          ],
         ),
       ),
     );
