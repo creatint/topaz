@@ -46,13 +46,18 @@ import 'fidl.dart' as $strongly_connect_sync;
 // ignore_for_file: comment_references
 
 class MyBits extends $fidl.Bits {
-  static const MyBits myFirstBit = MyBits._(1);
-  static const MyBits myOtherBit = MyBits._(2);
+  static const MyBits myFirstBit = MyBits._(0x1);
+  static const MyBits myOtherBit = MyBits._(0x2);
+  static const MyBits $none = MyBits._(0);
 
   const MyBits._(this.$value);
 
   MyBits operator |(MyBits other) {
     return MyBits._($value | other.$value);
+  }
+
+  MyBits operator &(MyBits other) {
+    return MyBits._($value & other.$value);
   }
 
   @override
@@ -64,10 +69,10 @@ class MyBits extends $fidl.Bits {
       return null;
     }
     List<String> parts = [];
-    if ($value & 1 != 0) {
+    if ($value & 0x1 != 0) {
       parts.add(r'MyBits.myFirstBit');
     }
-    if ($value & 2 != 0) {
+    if ($value & 0x2 != 0) {
       parts.add(r'MyBits.myOtherBit');
     }
     if (parts.isEmpty) {

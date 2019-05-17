@@ -39,8 +39,6 @@ for json_name in `find "${EXAMPLE_DIR}" -name '*.json'`; do
         -json "${GOLDENS_DIR}/${json_name}" \
         -output-base "${GOLDENS_DIR}" \
         -include-base "${GOLDENS_DIR}"
-    mv "${GOLDENS_DIR}/fidl.dart" "${GOLDENS_DIR}/${dart_sync_name}"
-    $DARTFMT -w "${GOLDENS_DIR}/${dart_sync_name}"
     mv "${GOLDENS_DIR}/fidl_async.dart" "${GOLDENS_DIR}/${dart_async_name}"
     $DARTFMT -w "${GOLDENS_DIR}/${dart_async_name}"
     mv "${GOLDENS_DIR}/fidl_test.dart" "${GOLDENS_DIR}/${dart_test_name}"

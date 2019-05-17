@@ -24,14 +24,26 @@ import './fidl_async.dart';
 // ignore_for_file: library_prefixes
 // ignore_for_file: unused_shown_name
 
-class Interface$TestBase extends Interface {
+class Child$TestBase extends Child {}
+
+class Parent$TestBase extends Parent {
   @override
-  $async.Future<void> method() {
+  $async.Future<$fidl.InterfaceHandle<Child>> getChild() {
     return $async.Future.error(UnimplementedError());
   }
 
   @override
-  $async.Stream<void> get onEvent {
-    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
+  $async.Future<$fidl.InterfaceRequest<Child>> getChildRequest() {
+    return $async.Future.error(UnimplementedError());
+  }
+
+  @override
+  $async.Future<void> takeChild($fidl.InterfaceHandle<Child> c) {
+    return $async.Future.error(UnimplementedError());
+  }
+
+  @override
+  $async.Future<void> takeChildRequest($fidl.InterfaceRequest<Child> r) {
+    return $async.Future.error(UnimplementedError());
   }
 }

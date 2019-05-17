@@ -1235,7 +1235,6 @@ func Compile(r types.Root) Root {
 		}
 		library := types.ParseLibraryName(l.Name)
 		root.Imports = append(root.Imports, Import{
-			URL:       fmt.Sprintf("package:fidl_%s/fidl.dart", formatLibraryName(library)),
 			LocalName: libraryPrefix(library),
 			AsyncURL:  fmt.Sprintf("package:fidl_%s/fidl_async.dart", formatLibraryName(library)),
 		})

@@ -94,6 +94,11 @@ class OvernetInternalProtocol$TestBase extends OvernetInternalProtocol {
   $async.Future<int> methodB(int a, int b) {
     return $async.Future.error(UnimplementedError());
   }
+
+  @override
+  $async.Future<$zx.Socket> mutateSocket($zx.Socket a) {
+    return $async.Future.error(UnimplementedError());
+  }
 }
 
 class SocketControlProtocol$TestBase extends SocketControlProtocol {
@@ -109,6 +114,11 @@ class SocketControlProtocol$TestBase extends SocketControlProtocol {
 
   @override
   $async.Future<int> methodB(int a, int b) {
+    return $async.Future.error(UnimplementedError());
+  }
+
+  @override
+  $async.Future<$zx.Socket> mutateSocket($zx.Socket a) {
     return $async.Future.error(UnimplementedError());
   }
 }
@@ -128,6 +138,11 @@ class ChannelProtocol$TestBase extends ChannelProtocol {
   $async.Future<int> methodB(int a, int b) {
     return $async.Future.error(UnimplementedError());
   }
+
+  @override
+  $async.Future<$zx.Socket> mutateSocket($zx.Socket a) {
+    return $async.Future.error(UnimplementedError());
+  }
 }
 
 class KitchenSink$TestBase extends KitchenSink {
@@ -143,6 +158,11 @@ class KitchenSink$TestBase extends KitchenSink {
 
   @override
   $async.Future<int> methodB(int a, int b) {
+    return $async.Future.error(UnimplementedError());
+  }
+
+  @override
+  $async.Future<$zx.Socket> mutateSocket($zx.Socket a) {
     return $async.Future.error(UnimplementedError());
   }
 }

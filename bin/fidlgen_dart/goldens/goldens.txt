@@ -14,6 +14,10 @@ ordinal_switch.test.fidl.json
 ordinal_switch.test.fidl.json_async.dart.golden
 ordinal_switch.test.fidl.json_sync.dart.golden
 ordinal_switch.test.fidl.json_test.dart.golden
+protocol_request.test.fidl.json
+protocol_request.test.fidl.json_async.dart.golden
+protocol_request.test.fidl.json_sync.dart.golden
+protocol_request.test.fidl.json_test.dart.golden
 protocols.test.fidl.json
 protocols.test.fidl.json_async.dart.golden
 protocols.test.fidl.json_sync.dart.golden

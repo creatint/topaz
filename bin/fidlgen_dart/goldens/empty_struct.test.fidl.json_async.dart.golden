@@ -47,7 +47,7 @@ import 'fidl.dart' as $strongly_connect_sync;
 
 class Empty extends $fidl.Struct {
   const Empty({
-    this.reserved: 0,
+    this.reserved: 0x0,
   });
   Empty.clone(
     Empty $orig, {
