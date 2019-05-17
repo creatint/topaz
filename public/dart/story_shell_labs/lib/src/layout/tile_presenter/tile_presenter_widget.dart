@@ -14,13 +14,9 @@ import '../tile_model/tile_model_serializer.dart';
 import 'widgets/drop_target_widget.dart';
 import 'widgets/editing_tile_chrome.dart';
 
-const _kSizerThickness = 24.0;
-const _kSizerHandleThickness = 4.0;
-
-final _kSizerHandleDecoration = BoxDecoration(
-  border: Border.all(color: Color(0xFFBDBDBD)),
-  borderRadius: BorderRadius.circular(2),
-);
+const _kSizerThickness = 48.0;
+const _kSizerHandleThickness = 8.0;
+const _kSizerHandleLength = 32.0;
 
 /// Tiling layout Layout presenter widget.
 @immutable
@@ -112,12 +108,12 @@ class LayoutPresenter extends StatelessWidget {
               child: Center(
                 child: Container(
                   width: axis == Axis.horizontal
-                      ? _kSizerThickness
+                      ? _kSizerHandleLength
                       : _kSizerHandleThickness,
                   height: axis == Axis.vertical
-                      ? _kSizerThickness
+                      ? _kSizerHandleLength
                       : _kSizerHandleThickness,
-                  decoration: _kSizerHandleDecoration,
+                  decoration: const BoxDecoration(color: Colors.black),
                 ),
               ),
             ),

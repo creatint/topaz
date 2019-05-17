@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tiler/tiler.dart';
 import 'drop_target_widget.dart';
 
-const _kBorderWidth = 1.0;
+const _kBorderWidth = 2.0;
 
 /// Chrome for a tiling layout presenter.
 class EditingTileChrome extends StatefulWidget {
