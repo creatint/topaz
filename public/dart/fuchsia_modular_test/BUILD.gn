@@ -14,8 +14,9 @@ dart_library("fuchsia_modular_test") {
   sdk_category = "partner"
 
   sources = [
-    "test.dart",
     "src/test_harness_fixtures.dart",
+    "src/test_harness_spec_builder.dart",
+    "test.dart",
   ]
 
   deps = [
@@ -30,6 +31,7 @@ dart_library("fuchsia_modular_test") {
     "//topaz/public/dart/fuchsia_modular",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/dart/zircon",
+    "//zircon/public/fidl/fuchsia-mem",
   ]
 }
 
@@ -45,6 +47,7 @@ dart_fuchsia_test("fuchsia_modular_test_package_integration_tests") {
 
   sources = [
     "launch_harness_test.dart",
+    "test_harness_spec_builder_test.dart",
   ]
 
   deps = [

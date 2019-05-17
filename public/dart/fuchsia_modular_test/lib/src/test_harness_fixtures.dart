@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:fidl_fuchsia_modular_testing/fidl_async.dart' as fidl_testing;
 import 'package:fidl_fuchsia_sys/fidl_async.dart' as fidl_sys;
@@ -39,4 +40,11 @@ Future<fidl_testing.TestHarnessProxy> launchTestHarness() async {
   incoming.connectToService(harness);
 
   return harness;
+}
+
+/// Generates a random component url with the correct format
+String generateComponentUrl() {
+  final rand = Random();
+  final name = List.generate(10, (_) => rand.nextInt(9).toString()).join('');
+  return 'fuchsia-pkg://example.com/$name#meta/$name.cmx';
 }

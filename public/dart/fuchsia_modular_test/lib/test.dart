@@ -5,3 +5,4 @@
 /// A collection of utilities to help with writing tests
 /// against the fuchsia_modular package.
 export 'src/test_harness_fixtures.dart';
+export 'src/test_harness_spec_builder.dart';
