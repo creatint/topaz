@@ -33,21 +33,17 @@ class LayoutPresenter extends StatelessWidget {
   /// Maps a surface id to the view.
   final BuiltMap<String, ChildViewConnection> connections;
 
-  /// Border color for the mod.
-  final Color Function(String modName) colorForMod;
-
   /// Maps a parameter id to a color.
   final Map<String, Color> parametersToColors;
 
   /// Currently focused mod.
-  final ValueNotifier focusedMod;
+  final ValueNotifier<String> focusedMod;
 
   /// Constructor for a tiling layout presenter.
   const LayoutPresenter({
     @required this.tilerModel,
     @required this.isEditing,
     @required this.connections,
-    @required this.colorForMod,
     @required this.parametersToColors,
     @required this.focusedMod,
   });
@@ -141,7 +137,6 @@ class LayoutPresenter extends StatelessWidget {
     return LayoutBuilder(
         builder: (context, constraints) => EditingTileChrome(
               focusedMod: focusedMod,
-              borderColor: colorForMod(modName),
               parameterColors:
                   content.parameters.map((p) => parametersToColors[p]),
               tilerModel: tilerModel,

@@ -38,9 +38,8 @@ class _StoryWidgetState extends State<StoryWidget> {
   StreamSubscription _tilerUpdateListener;
   bool _isEditing = false;
   OverlayEntry _layoutSuggestionsOverlay;
-  Map<String, Color> _modNamesToColors;
   Map<String, Color> _parametersToColors;
-  final ValueNotifier _focusedMod = ValueNotifier(null);
+  final ValueNotifier _focusedMod = ValueNotifier<String>(null);
 
   @override
   void initState() {
@@ -66,10 +65,6 @@ class _StoryWidgetState extends State<StoryWidget> {
     update ??= widget.presenter.currentState;
     _tilerModel = update.model;
     _connections = update.connections;
-    _modNamesToColors = _mapFromKeysAndCircularValues(
-      _connections.keys,
-      _kColors,
-    );
     _parametersToColors = _mapFromKeysAndCircularValues(
       _allParametersInModel(_tilerModel),
       _kColors,
@@ -113,15 +108,12 @@ class _StoryWidgetState extends State<StoryWidget> {
               left: 4,
               bottom: 4,
               right: 4,
-              child: _layoutSuggestionColorModeBuilder(
-                (colorForMod) => LayoutPresenter(
-                      tilerModel: _tilerModel,
-                      connections: _connections,
-                      isEditing: _isEditing,
-                      focusedMod: _focusedMod,
-                      colorForMod: colorForMod,
-                      parametersToColors: _parametersToColors,
-                    ),
+              child: LayoutPresenter(
+                tilerModel: _tilerModel,
+                connections: _connections,
+                isEditing: _isEditing,
+                focusedMod: _focusedMod,
+                parametersToColors: _parametersToColors,
               ),
             ),
           ],
@@ -163,16 +155,14 @@ class _StoryWidgetState extends State<StoryWidget> {
               alignment: Alignment.bottomCenter,
               child: SizedBox(
                 height: 84,
-                child: _layoutSuggestionColorModeBuilder(
-                  (colorForMod) => LayoutSuggestionsWidget(
-                        presenter: widget.presenter,
-                        colorForMod: colorForMod,
-                        onSelect: (model) {
-                          setState(() {
-                            _tilerModel = model;
-                          });
-                        },
-                      ),
+                child: LayoutSuggestionsWidget(
+                  presenter: widget.presenter,
+                  focusedMod: _focusedMod,
+                  onSelect: (model) {
+                    setState(() {
+                      _tilerModel = model;
+                    });
+                  },
                 ),
               ),
             ),
@@ -188,11 +178,6 @@ class _StoryWidgetState extends State<StoryWidget> {
       _layoutSuggestionsOverlay = null;
     }
   }
-
-  Widget _layoutSuggestionColorModeBuilder(
-    Widget Function(Color Function(String) colorForMod) builder,
-  ) =>
-      builder((modName) => _modNamesToColors[modName]);
 
   Widget _buildTitleBarTextButton(String title, VoidCallback onTap) => InkWell(
         onTap: onTap,

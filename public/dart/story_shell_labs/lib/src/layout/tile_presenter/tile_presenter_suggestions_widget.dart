@@ -15,8 +15,8 @@ class LayoutSuggestionsWidget extends StatelessWidget {
   /// Presenter for a tile.
   final TilePresenter presenter;
 
-  /// Returns border color for a given surface id.
-  final Color Function(String modName) colorForMod;
+  /// Value notifier with name of currently focused mod
+  final ValueNotifier<String> focusedMod;
 
   /// Called when a suggestion is selected.
   final void Function(TilerModel) onSelect;
@@ -25,7 +25,7 @@ class LayoutSuggestionsWidget extends StatelessWidget {
   const LayoutSuggestionsWidget({
     @required this.presenter,
     @required this.onSelect,
-    @required this.colorForMod,
+    @required this.focusedMod,
   });
 
   @override
@@ -59,12 +59,16 @@ class LayoutSuggestionsWidget extends StatelessWidget {
                   sizerThickness: 0,
                   model: model,
                   chromeBuilder: (BuildContext context, TileModel tile) {
-                    return Padding(
-                      padding: EdgeInsets.all(1),
-                      child: Container(
-                        color: colorForMod(tile.content.modName),
-                      ),
-                    );
+                    return AnimatedBuilder(
+                        animation: focusedMod,
+                        builder: (_, __) {
+                          return Container(
+                            margin: EdgeInsets.all(1),
+                            color: focusedMod.value == tile.content.modName
+                                ? Color(0xFFFF8BCB)
+                                : Colors.black,
+                          );
+                        });
                   },
                 ),
               ),

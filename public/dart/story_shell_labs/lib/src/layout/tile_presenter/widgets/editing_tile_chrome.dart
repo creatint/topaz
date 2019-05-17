@@ -19,7 +19,6 @@ class EditingTileChrome extends StatefulWidget {
   /// Constructor for a tiling layout presenter.
   const EditingTileChrome({
     @required this.focusedMod,
-    @required this.borderColor,
     @required this.parameterColors,
     @required this.tilerModel,
     @required this.tile,
@@ -29,10 +28,7 @@ class EditingTileChrome extends StatefulWidget {
   });
 
   /// Currently focused mod.
-  final ValueNotifier focusedMod;
-
-  /// Chrome border color.
-  final Color borderColor;
+  final ValueNotifier<String> focusedMod;
 
   /// Intent parameter circle colors.
   final Iterable<Color> parameterColors;
@@ -76,13 +72,19 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
             data: widget.tile,
             feedback: _buildFeedback(),
             childWhenDragging: _kTilePlaceholderWhenDragging,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: widget.borderColor,
-                  width: _kBorderWidth,
-                ),
-              ),
+            child: AnimatedBuilder(
+              animation: widget.focusedMod,
+              builder: (_, child) => Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: widget.focusedMod.value == widget.modName
+                            ? Color(0xFFFF8BCB)
+                            : Colors.black,
+                        width: _kBorderWidth,
+                      ),
+                    ),
+                    child: child,
+                  ),
               child: Stack(
                 children: [widget.childView]
                   ..addAll(_buildSplitTargets(widget.editingSize)),
@@ -110,7 +112,7 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
             child: Container(
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: widget.borderColor,
+                  color: Color(0xFFFF8BCB),
                   width: _kHighlightedBorderWidth,
                 ),
               ),
