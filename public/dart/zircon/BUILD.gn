@@ -111,6 +111,7 @@ if (is_linux || is_mac) {
 
   # This is effectively a host test target.
   copy("test_extract_zircon_constants") {
+    testonly = true
     sources = [
       "test-extract-zircon-constants.sh",
     ]
