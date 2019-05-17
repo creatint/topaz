@@ -114,6 +114,11 @@ class _StoryWidgetState extends State<StoryWidget> {
                 isEditing: _isEditing,
                 focusedMod: _focusedMod,
                 parametersToColors: _parametersToColors,
+                setTilerModel: (model) {
+                  setState(() {
+                    _tilerModel = model;
+                  });
+                },
               ),
             ),
           ],

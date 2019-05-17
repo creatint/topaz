@@ -10,6 +10,7 @@ import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
 import 'package:tiler/tiler.dart';
 
 import '../tile_model/module_info.dart';
+import '../tile_model/tile_model_serializer.dart';
 import 'widgets/drop_target_widget.dart';
 import 'widgets/editing_tile_chrome.dart';
 
@@ -39,6 +40,11 @@ class LayoutPresenter extends StatelessWidget {
   /// Currently focused mod.
   final ValueNotifier<String> focusedMod;
 
+  /// Called when tiler model should be set to model.
+  ///
+  /// This should be implemented by the story_widget.
+  final void Function(TilerModel model) setTilerModel;
+
   /// Constructor for a tiling layout presenter.
   const LayoutPresenter({
     @required this.tilerModel,
@@ -46,6 +52,7 @@ class LayoutPresenter extends StatelessWidget {
     @required this.connections,
     @required this.parametersToColors,
     @required this.focusedMod,
+    @required this.setTilerModel,
   });
 
   @override
@@ -134,6 +141,8 @@ class LayoutPresenter extends StatelessWidget {
       return ChildView(connection: connection);
     }
 
+    TilerModel tilerModelForCancel;
+
     return LayoutBuilder(
         builder: (context, constraints) => EditingTileChrome(
               focusedMod: focusedMod,
@@ -148,6 +157,12 @@ class LayoutPresenter extends StatelessWidget {
                 connection: connection,
               ),
               editingSize: constraints.biggest,
+              willStartDrag: () {
+                tilerModelForCancel = cloneTiler(tilerModel);
+              },
+              didCancelDrag: () {
+                setTilerModel(tilerModelForCancel);
+              },
             ));
   }
 

@@ -10,10 +10,6 @@ const _kHighlightedBorderWidth = 3.0;
 const _kBorderWidth = 1.0;
 const _kBorderWidthDiff = _kHighlightedBorderWidth - _kBorderWidth;
 
-const _kTilePlaceholderWhenDragging = DecoratedBox(
-  decoration: BoxDecoration(color: Color(0xFFFAFAFA)),
-);
-
 /// Chrome for a tiling layout presenter.
 class EditingTileChrome extends StatefulWidget {
   /// Constructor for a tiling layout presenter.
@@ -25,6 +21,8 @@ class EditingTileChrome extends StatefulWidget {
     @required this.childView,
     @required this.modName,
     @required this.editingSize,
+    @required this.willStartDrag,
+    @required this.didCancelDrag,
   });
 
   /// Currently focused mod.
@@ -48,6 +46,12 @@ class EditingTileChrome extends StatefulWidget {
   /// Editing size
   final Size editingSize;
 
+  /// Called before user starts dragging this tile.
+  final VoidCallback willStartDrag;
+
+  /// Called after drag was cancelled, either by dropping outside of an accepting target, or because the action was interrupted.
+  final VoidCallback didCancelDrag;
+
   @override
   _EditingTileChromeState createState() => _EditingTileChromeState();
 }
@@ -62,16 +66,21 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
         Positioned.fill(
           child: Draggable(
             onDragStarted: () {
+              widget.willStartDrag();
               widget.focusedMod.value = widget.modName;
               _isDragging.value = true;
+              widget.tilerModel.remove(widget.tile);
             },
             onDragEnd: (_) {
               _isDragging.value = false;
             },
+            onDraggableCanceled: (_, __) {
+              widget.didCancelDrag();
+            },
             key: Key(widget.modName),
             data: widget.tile,
             feedback: _buildFeedback(),
-            childWhenDragging: _kTilePlaceholderWhenDragging,
+            childWhenDragging: const Offstage(),
             child: AnimatedBuilder(
               animation: widget.focusedMod,
               builder: (_, child) => Container(
@@ -209,7 +218,7 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
               tile: nearTile,
             );
           },
-          onWillAccept: (_) => true,
+          onWillAccept: (tile) => tile != nearTile,
           axis: axisDirectionToAxis(direction),
           baseSize: 50.0,
           hoverSize: parentSizeOnAxis * .33,
