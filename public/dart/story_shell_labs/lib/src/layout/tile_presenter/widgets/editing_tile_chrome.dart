@@ -59,6 +59,9 @@ class EditingTileChrome extends StatefulWidget {
 class _EditingTileChromeState extends State<EditingTileChrome> {
   final _isDragging = ValueNotifier(false);
 
+  // the direction that the tile is being hovered over by another tile, null if nothing is hovering
+  final _hoverDirection = ValueNotifier<AxisDirection>(null);
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -81,23 +84,43 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
             data: widget.tile,
             feedback: _buildFeedback(),
             childWhenDragging: const Offstage(),
-            child: AnimatedBuilder(
-              animation: widget.focusedMod,
-              builder: (_, child) => Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: widget.focusedMod.value == widget.modName
-                            ? Color(0xFFFF8BCB)
-                            : Colors.black,
-                        width: _kBorderWidth,
+            child: Stack(
+              children: [
+                AnimatedBuilder(
+                  animation: _hoverDirection,
+                  builder: (_, child) => AnimatedPositioned(
+                        duration: Duration(milliseconds: 400),
+                        curve: Curves.easeOutExpo,
+                        top: _hoverDirection.value == AxisDirection.up
+                            ? widget.editingSize.height * 0.5 + 12
+                            : 0,
+                        bottom: _hoverDirection.value == AxisDirection.down
+                            ? widget.editingSize.height * 0.5 + 12
+                            : 0,
+                        left: _hoverDirection.value == AxisDirection.left
+                            ? widget.editingSize.width * 0.5 + 12
+                            : 0,
+                        right: _hoverDirection.value == AxisDirection.right
+                            ? widget.editingSize.width * 0.5 + 12
+                            : 0,
+                        child: child,
                       ),
-                    ),
-                    child: child,
+                  child: AnimatedBuilder(
+                    animation: widget.focusedMod,
+                    builder: (_, child) => Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: widget.focusedMod.value == widget.modName
+                                  ? Color(0xFFFF8BCB)
+                                  : Colors.black,
+                              width: _kBorderWidth,
+                            ),
+                          ),
+                          child: widget.childView,
+                        ),
                   ),
-              child: Stack(
-                children: [widget.childView]
-                  ..addAll(_buildSplitTargets(widget.editingSize)),
-              ),
+                ),
+              ]..addAll(_buildSplitTargets(widget.editingSize)),
             ),
           ),
         ),
@@ -153,9 +176,12 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
       top: 8,
       right: 8,
       child: AnimatedBuilder(
-        animation: _isDragging,
-        builder: (_, child) =>
-            Offstage(offstage: _isDragging.value, child: child),
+        animation: Listenable.merge([_isDragging, _hoverDirection]),
+        builder: (_, child) => Offstage(
+            offstage: _isDragging.value ||
+                _hoverDirection.value == AxisDirection.up ||
+                _hoverDirection.value == AxisDirection.right,
+            child: child),
         child: Row(
           children: <Widget>[
             parameterIndicators,
@@ -169,7 +195,7 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
                 },
                 child: Icon(Icons.close),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -211,6 +237,7 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
         right: direction == AxisDirection.left ? null : 0,
         child: DropTargetWidget(
           onAccept: (tile) {
+            _hoverDirection.value = null;
             widget.tilerModel.remove(tile);
             widget.tilerModel.split(
               content: tile.content,
@@ -218,7 +245,16 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
               tile: nearTile,
             );
           },
-          onWillAccept: (tile) => tile != nearTile,
+          onWillAccept: (tile) {
+            if (tile == nearTile) {
+              return false;
+            }
+            _hoverDirection.value = direction;
+            return true;
+          },
+          onLeave: (_) {
+            _hoverDirection.value = null;
+          },
           axis: axisDirectionToAxis(direction),
           baseSize: 50.0,
           hoverSize: parentSizeOnAxis * .33,
