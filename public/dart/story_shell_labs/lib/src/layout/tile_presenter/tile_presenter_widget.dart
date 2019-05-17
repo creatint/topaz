@@ -153,8 +153,6 @@ class LayoutPresenter extends StatelessWidget {
                 connection: connection,
               ),
               editingSize: constraints.biggest,
-              originalSize: constraints.biggest +
-                  Offset(_kSizerThickness, _kSizerThickness),
             ));
   }
 

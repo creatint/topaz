@@ -25,7 +25,6 @@ class EditingTileChrome extends StatefulWidget {
     @required this.tile,
     @required this.childView,
     @required this.modName,
-    @required this.originalSize,
     @required this.editingSize,
   });
 
@@ -50,10 +49,7 @@ class EditingTileChrome extends StatefulWidget {
   /// Surface id of the view displayed here.
   final String modName;
 
-  /// Original size
-  final Size originalSize;
-
-  /// Eiditing size
+  /// Editing size
   final Size editingSize;
 
   @override
@@ -65,97 +61,60 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: AspectRatio(
-        aspectRatio:
-            (widget.originalSize + Offset(_kBorderWidth, _kBorderWidth) * 2.0)
-                .aspectRatio,
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-              child: Draggable(
-                onDragStarted: () {
-                  widget.focusedMod.value = widget.modName;
-                  _isDragging.value = true;
-                },
-                onDragEnd: (_) {
-                  _isDragging.value = false;
-                },
-                key: Key(widget.modName),
-                data: widget.tile,
-                feedback: _buildFeedback(),
-                childWhenDragging: _kTilePlaceholderWhenDragging,
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: widget.borderColor,
-                      width: _kBorderWidth,
-                    ),
-                  ),
-                  child: Stack(
-                    children: [
-                      Positioned.fill(
-                        child: FittedBox(
-                          fit: BoxFit.contain,
-                          child: SizedBox.fromSize(
-                            size: widget.originalSize,
-                            child: widget.childView,
-                          ),
-                        ),
-                      )
-                    ]..addAll(_buildSplitTargets(widget.editingSize)),
-                  ),
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: Draggable(
+            onDragStarted: () {
+              widget.focusedMod.value = widget.modName;
+              _isDragging.value = true;
+            },
+            onDragEnd: (_) {
+              _isDragging.value = false;
+            },
+            key: Key(widget.modName),
+            data: widget.tile,
+            feedback: _buildFeedback(),
+            childWhenDragging: _kTilePlaceholderWhenDragging,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: widget.borderColor,
+                  width: _kBorderWidth,
                 ),
               ),
+              child: Stack(
+                children: [widget.childView]
+                  ..addAll(_buildSplitTargets(widget.editingSize)),
+              ),
             ),
-            _buildCornerItems(),
-          ],
+          ),
         ),
-      ),
+        _buildCornerItems(),
+      ],
     );
   }
 
   Widget _buildFeedback() {
-    // to get the offset between the draggable object and the feeback
-
-    // we need the difference between the border width of the original widget and the feedback
     final borderWidthDifference =
         Offset(-_kBorderWidthDiff, -_kBorderWidthDiff);
-    // and half the space lost to containing the original size within the editing size (the tile after reducing sizers)
-    final boxFitDifference = (widget.editingSize * .5 -
-        applyBoxFit(BoxFit.contain, widget.originalSize, widget.editingSize)
-                .destination *
-            0.5);
 
     return Transform.translate(
-      offset: borderWidthDifference - boxFitDifference,
+      offset: borderWidthDifference,
       child: SizedBox.fromSize(
         size: widget.editingSize +
             Offset(_kBorderWidthDiff, _kBorderWidthDiff) * 2,
         child: Center(
-          child: AspectRatio(
-            // aspect ratio of original box plus highlighted border
-            aspectRatio: (widget.originalSize +
-                    Offset(_kHighlightedBorderWidth, _kHighlightedBorderWidth) *
-                        2.0)
-                .aspectRatio,
-            child: Material(
-              elevation: 16.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: widget.borderColor,
-                    width: _kHighlightedBorderWidth,
-                  ),
-                ),
-                child: FittedBox(
-                  fit: BoxFit.contain,
-                  child: SizedBox.fromSize(
-                    size: widget.originalSize,
-                    child: widget.childView,
-                  ),
+          child: Material(
+            elevation: 16.0,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: widget.borderColor,
+                  width: _kHighlightedBorderWidth,
                 ),
               ),
+              child: widget.childView,
             ),
           ),
         ),
