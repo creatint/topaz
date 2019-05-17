@@ -6,9 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tiler/tiler.dart';
 import 'drop_target_widget.dart';
 
-const _kHighlightedBorderWidth = 3.0;
 const _kBorderWidth = 1.0;
-const _kBorderWidthDiff = _kHighlightedBorderWidth - _kBorderWidth;
 
 /// Chrome for a tiling layout presenter.
 class EditingTileChrome extends StatefulWidget {
@@ -57,10 +55,31 @@ class EditingTileChrome extends StatefulWidget {
 }
 
 class _EditingTileChromeState extends State<EditingTileChrome> {
+  // whether this tile is currently being dragged
   final _isDragging = ValueNotifier(false);
+
+  // equal to isDragging, but with 1 frame delay, useful for starting the feedback animation
+  final _isDraggingDelayed = ValueNotifier(false);
 
   // the direction that the tile is being hovered over by another tile, null if nothing is hovering
   final _hoverDirection = ValueNotifier<AxisDirection>(null);
+
+  @override
+  void initState() {
+    _isDragging.addListener(_isDraggingListener);
+    super.initState();
+  }
+
+  void _isDraggingListener() async {
+    await Future.delayed(Duration(milliseconds: 100));
+    _isDraggingDelayed.value = _isDragging.value;
+  }
+
+  @override
+  void dispose() {
+    _isDragging.removeListener(_isDraggingListener);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +102,7 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
             key: Key(widget.modName),
             data: widget.tile,
             feedback: _buildFeedback(),
+            dragAnchor: DragAnchor.pointer,
             childWhenDragging: const Offstage(),
             child: Stack(
               children: [
@@ -130,26 +150,42 @@ class _EditingTileChromeState extends State<EditingTileChrome> {
   }
 
   Widget _buildFeedback() {
-    final borderWidthDifference =
-        Offset(-_kBorderWidthDiff, -_kBorderWidthDiff);
+    final contentSize = widget.editingSize;
+    return AnimatedBuilder(
+      animation: _isDraggingDelayed,
+      builder: (_, child) {
+        final size = _isDraggingDelayed.value ? contentSize * .5 : contentSize;
+        return AnimatedContainer(
+          // ease in Quad -> ease out Expo:
+          curve: Cubic(0.455, 0.03, 0.0, 1.0),
 
-    return Transform.translate(
-      offset: borderWidthDifference,
-      child: SizedBox.fromSize(
-        size: widget.editingSize +
-            Offset(_kBorderWidthDiff, _kBorderWidthDiff) * 2,
-        child: Center(
+          // can have a long duration because  it's interactive the whole time
+          // and has a strong out easing curve so it spends most of the time at the end
+          duration: Duration(milliseconds: 500),
+
+          width: size.width,
+          height: size.height,
+          transform: Matrix4.translationValues(
+            size.width * -.5,
+            size.height * -.5,
+            0,
+          ),
           child: Material(
-            elevation: 16.0,
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Color(0xFFFF8BCB),
-                  width: _kHighlightedBorderWidth,
-                ),
-              ),
-              child: widget.childView,
-            ),
+            color: Color(0xFFFF8BCB),
+            elevation: _isDraggingDelayed.value ? 16.0 : 8.5,
+            animationDuration: Duration(milliseconds: 500),
+            child: child,
+          ),
+        );
+      },
+      child: FittedBox(
+        fit: BoxFit.contain,
+        child: SizedBox(
+          width: contentSize.width,
+          height: contentSize.height,
+          child: Padding(
+            padding: const EdgeInsets.all(_kBorderWidth),
+            child: widget.childView,
           ),
         ),
       ),
