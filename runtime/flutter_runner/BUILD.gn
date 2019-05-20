@@ -17,6 +17,7 @@ shell_gpu_configuration("fuchsia_gpu_configuration") {
   enable_software = false
   enable_gl = false
   enable_vulkan = true
+  enable_metal = false
 }
 
 # Dependencies for flutter tooling

@@ -97,7 +97,7 @@ class Keyboard extends StatefulWidget {
   final VoidCallback onHide;
 
   /// Constructor.
-  Keyboard(
+  const Keyboard(
       {Key key,
       this.onText,
       this.onSuggestion,
