@@ -37,16 +37,6 @@ class DeviceInfo {
     return null;
   }
 
-  /// Backwards compatibility, TODO: remove later [SU-246]
-  static DateTime getSourceDate() {
-    try {
-      return DateTime.parse(sourceDate.trim());
-    } on FormatException {
-      log.warning('Could not parse build timestamp!');
-    }
-    return null;
-  }
-
   /// Sets a flag to determine whether the device should be reset to factory
   /// settings or not.
   ///
