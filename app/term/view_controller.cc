@@ -67,7 +67,7 @@ void ViewController::ComputeMetrics() {
   // To figure out the advance width, measure an X. Better hope the font
   // is monospace.
   advance_width_ = static_cast<int>(
-      ceilf(fg_font.measureText("X", 1, kUTF8_SkTextEncoding)));
+      ceilf(fg_font.measureText("X", 1, SkTextEncoding::kUTF8)));
   FXL_DCHECK(advance_width_ > 0);
 }
 
