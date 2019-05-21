@@ -19,7 +19,7 @@ int main(int argc, const char** argv) {
   trace::TraceProvider trace_provider(loop.dispatcher());
 
   scenic::ViewProviderComponent component(
-      [&loop](scenic::ViewContext view_context) {
+      [](scenic::ViewContext view_context) {
         return std::make_unique<skottie::View>(std::move(view_context));
       },
       &loop);

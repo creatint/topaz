@@ -19,7 +19,7 @@ int main(int argc, const char** argv) {
     return 1;
 
   scenic::ViewProviderComponent component(
-      [&loop](scenic::ViewContext view_context) {
+      [](scenic::ViewContext view_context) {
         auto font_provider =
             view_context.startup_context
                 ->ConnectToEnvironmentService<fuchsia::fonts::Provider>();

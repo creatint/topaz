@@ -20,7 +20,7 @@ void SkiaFontLoader::LoadFont(fuchsia::fonts::Request request,
                               FontCallback callback) {
   // TODO(jeffbrown): Handle errors in case the font provider itself dies.
   font_provider_->GetFont(
-      std::move(request), [this, callback = std::move(callback)](
+      std::move(request), [callback = std::move(callback)](
                               fuchsia::fonts::ResponsePtr response) {
         if (response) {
           fsl::SizedVmo vmo;

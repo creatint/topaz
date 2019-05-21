@@ -21,7 +21,7 @@ int main(int argc, const char** argv) {
 
   FXL_LOG(INFO) << "Creating ViewProviderComponent";
   scenic::ViewProviderComponent component(
-      [&loop](scenic::ViewContext view_context) {
+      [](scenic::ViewContext view_context) {
         FXL_LOG(INFO) << "Calling ViewFactory";
         auto view = std::make_unique<examples::ViewConfigDemoView>(
             std::move(view_context));

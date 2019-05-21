@@ -19,7 +19,7 @@ int main(int argc, const char** argv) {
     return 1;
 
   scenic::ViewProviderComponent component(
-      [&loop](scenic::ViewContext view_context) {
+      [](scenic::ViewContext view_context) {
         return std::make_unique<examples::PaintView>(std::move(view_context));
       },
       &loop);
