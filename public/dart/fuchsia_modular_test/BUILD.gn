@@ -14,6 +14,7 @@ dart_library("fuchsia_modular_test") {
   sdk_category = "partner"
 
   sources = [
+    "src/agent_interceptor.dart",
     "src/test_harness_fixtures.dart",
     "src/test_harness_spec_builder.dart",
     "test.dart",
@@ -28,10 +29,20 @@ dart_library("fuchsia_modular_test") {
     "//third_party/dart-pkg/pub/test_api",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia",
+    "//topaz/public/dart/fuchsia_logger",
     "//topaz/public/dart/fuchsia_modular",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/dart/zircon",
     "//zircon/public/fidl/fuchsia-mem",
+  ]
+}
+
+
+fidl("test_fidl") {
+  name = "test.modular.dart"
+
+  sources = [
+    "test_support/fidl/testing.fidl",
   ]
 }
 
@@ -46,12 +57,14 @@ dart_fuchsia_test("fuchsia_modular_test_package_integration_tests") {
   ]
 
   sources = [
+    "agent_interceptor_test.dart",
     "launch_harness_test.dart",
     "test_harness_spec_builder_test.dart",
   ]
 
   deps = [
     ":fuchsia_modular_test",
+    ":test_fidl",
     "//third_party/dart-pkg/pub/test",
   ]
   environments = basic_envs

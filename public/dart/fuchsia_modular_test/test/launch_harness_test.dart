@@ -40,6 +40,7 @@ void main() {
 
       final storyPuppetMaster = fidl_modular.StoryPuppetMasterProxy();
       await puppetMaster.controlStory('foo', storyPuppetMaster.ctrl.request());
+      puppetMaster.ctrl.close();
 
       final addMod = fidl_modular.AddMod(
         intent: fidl_modular.Intent(action: '', handler: url),
@@ -51,6 +52,7 @@ void main() {
       await storyPuppetMaster
           .enqueue([fidl_modular.StoryCommand.withAddMod(addMod)]);
       await storyPuppetMaster.execute();
+      storyPuppetMaster.ctrl.close();
     });
   });
 }

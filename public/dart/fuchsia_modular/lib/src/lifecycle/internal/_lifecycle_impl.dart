@@ -32,8 +32,8 @@ class LifecycleImpl extends fidl.Lifecycle implements Lifecycle {
   final _terminateListeners = <Future<void> Function()>{};
 
   /// Initializes this [LifecycleImpl] instance
-  LifecycleImpl() {
-    _exposeService();
+  LifecycleImpl({StartupContext context}) {
+    _exposeService(context ?? StartupContext.fromStartupInfo());
   }
 
   /// Adds a terminate [listener] which will be called when the system starts to
@@ -62,8 +62,7 @@ class LifecycleImpl extends fidl.Lifecycle implements Lifecycle {
   // Exposes this instance to the [StartupContext#outgoingServices].
   //
   // This class be must called before the first iteration of the event loop.
-  void _exposeService() {
-    StartupContext startupContext = StartupContext.fromStartupInfo();
+  void _exposeService(StartupContext startupContext) {
     startupContext.outgoing.addPublicService(
       (InterfaceRequest<fidl.Lifecycle> request) {
         _lifecycleBinding.bind(this, request);
