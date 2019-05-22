@@ -26,10 +26,6 @@ class InspectStateError extends StateError {
   InspectStateError(String message) : super(message);
 }
 
-// TODO(cphoenix): In the integration test (when one is written)
-// verify that Inspect() returns the same object on each call.
-// (It can't be tested in host unit tests.)
-
 /// [Inspect] exposes a structured tree of internal component state.
 ///
 /// The [Inspect] object maintains a hierarchy of [Node] objects whose data are
@@ -63,13 +59,10 @@ abstract class Inspect {
   /// Throws [InspectStateError] if called after Inspect(), or [ArgumentError]
   /// if called with an invalid vmoSizeBytes.
   static void configure({int vmoSizeBytes}) {
-// TODO(cphoenix): In integration, test that we throw if called after
-// the factory is run.
     if (_singleton != null) {
       throw InspectStateError(
           'configureInspect cannot be called after factory runs');
     }
-// TODO(cphoenix): In integration, test that the VMO is the specified size.
     if (vmoSizeBytes != null) {
       if (vmoSizeBytes < 64) {
         throw ArgumentError('VMO size must be at least 64 bytes.');
