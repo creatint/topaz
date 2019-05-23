@@ -23,7 +23,7 @@ void main() {
       Uint8List fileData = fileVmo.map();
       String fileString = utf8.decode(fileData.sublist(0, fileVmo.size));
       expect(fileString, equals(fuchsia));
-    });
+    }, skip: 'FLK-221');
 
     test('duplicate', () {
       const String fuchsia = 'Fuchsia';
