@@ -239,5 +239,5 @@ void main() {
     } finally {
       controller.ctrl.close();
     }
-  });
+  }, skip: 'FLK-275');
 }
