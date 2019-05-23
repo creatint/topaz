@@ -9,6 +9,7 @@ import 'package:fidl_fuchsia_modular_testing/fidl_async.dart' as fidl_testing;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as fidl_modular;
 import 'package:fidl_fuchsia_sys/fidl_async.dart' as fidl_sys;
 import 'package:fuchsia_services/services.dart';
+import 'package:fuchsia_services/src/internal/_startup_context_impl.dart'; // ignore_for_file: implementation_imports
 
 const _modularTestHarnessURL =
     'fuchsia-pkg://fuchsia.com/modular_test_harness#meta/modular_test_harness.cmx';
@@ -61,3 +62,7 @@ Future<fidl_modular.ComponentContextProxy> getComponentContext(
       fidl_testing.ModularService.withComponentContext(proxy.ctrl.request()));
   return proxy;
 }
+
+/// Creates an instance of [StartupContext] from the given [startupInfo]
+StartupContext createStartupContext(fidl_sys.StartupInfo startupInfo) =>
+    StartupContextImpl.from(startupInfo);
