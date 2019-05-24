@@ -5,13 +5,19 @@
 import 'dart:io';
 
 import 'package:markdown/markdown.dart';
+import 'package:meta/meta.dart';
 
 /// Scrapes links in a markdown document.
 class LinkScraper {
   /// Extracts links from the given [file].
   Iterable<String> scrape(String file) {
-    final List<Node> nodes =
-        Document().parseLines(File(file).readAsLinesSync());
+    return scrapeLines(File(file).readAsLinesSync());
+  }
+
+  /// Extracts links from the given list of [lines].
+  @visibleForTesting
+  Iterable<String> scrapeLines(List<String> lines) {
+    final List<Node> nodes = Document().parseLines(lines);
     final _Visitor visitor = _Visitor();
     for (Node node in nodes) {
       node.accept(visitor);

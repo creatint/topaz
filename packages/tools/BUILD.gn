@@ -28,5 +28,6 @@ group("doc_checker") {
   testonly = true
   public_deps = [
     "//topaz/tools/doc_checker(//build/toolchain:host_x64)",
+    "//topaz/tools/doc_checker:tests(//build/toolchain:host_x64)",
   ]
 }
