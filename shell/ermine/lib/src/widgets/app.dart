@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 
 import '../models/app_model.dart';
+import '../widgets/status.dart';
 import '../widgets/stories.dart';
 
 /// Builds the main display of this session shell.
@@ -65,6 +66,19 @@ class App extends StatelessWidget {
                                           model.askChildViewConnection.value,
                                     ),
                         ),
+                      ),
+                    ),
+                    // Status.
+                    Positioned(
+                      bottom: 0,
+                      height: 600,
+                      left: 0,
+                      width: 400,
+                      child: AnimatedBuilder(
+                        animation: model.statusVisibility,
+                        builder: (context, _) => model.statusVisibility.value
+                            ? Status()
+                            : Offstage(),
                       ),
                     ),
                   ],

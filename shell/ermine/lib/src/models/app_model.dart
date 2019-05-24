@@ -79,6 +79,8 @@ class AppModel extends Model {
   ValueNotifier<ChildViewConnection> askChildViewConnection =
       ValueNotifier<ChildViewConnection>(null);
 
+  ValueNotifier<bool> statusVisibility = ValueNotifier(false);
+
   StoryManager storyManager;
 
   AppModel() {
@@ -124,6 +126,7 @@ class AppModel extends Model {
       onMeta: onMeta,
       onFullscreen: storyManager.toggleFullscreen,
       onLogout: onLogout,
+      onStatus: onStatus,
       onCancel: onCancel,
     ).listen(_presentation);
 
@@ -191,6 +194,9 @@ class AppModel extends Model {
 
   /// Shows the Ask bar and sets the focus on it.
   void onMeta() => _ask.show();
+
+  /// Toggles the Status menu on/off.
+  void onStatus() => statusVisibility.value = !statusVisibility.value;
 
   /// Called when tapped behind Ask bar, quick settings, notifications or the
   /// Escape key was pressed.

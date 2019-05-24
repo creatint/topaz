@@ -39,6 +39,7 @@ dart_library("ermine_library") {
     "src/models/story_manager.dart",
     "src/models/story_model.dart",
     "src/models/web_proposer.dart",
+    "src/models/status_model.dart",
     "src/modules/ask_model.dart",
     "src/modules/ask_module.dart",
     "src/modules/ask_sheet.dart",
@@ -48,6 +49,7 @@ dart_library("ermine_library") {
     "src/utils/key_chord_listener.dart",
     "src/utils/session_shell_services.dart",
     "src/widgets/app.dart",
+    "src/widgets/status.dart",
     "src/widgets/stories.dart",
   ]
 

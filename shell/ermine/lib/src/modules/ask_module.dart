@@ -27,6 +27,7 @@ class AskModule extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
         textSelectionColor: Color(0xFFFF8BCB),
       ),

@@ -18,6 +18,7 @@ class KeyChordListener extends KeyboardCaptureListenerHack {
   final VoidCallback onFullscreen;
   final VoidCallback onCancel;
   final VoidCallback onLogout;
+  final VoidCallback onStatus;
 
   // Key chords that the session shell listens to and the function to call
   // when the key is pressed.
@@ -44,7 +45,7 @@ class KeyChordListener extends KeyboardCaptureListenerHack {
     ): (listener) {
       listener.onFullscreen?.call();
     },
-    // Lower case o + Right Alt.
+    // Right Alt + Lower case o.
     KeyboardEvent(
       deviceId: 0,
       eventTime: 0,
@@ -54,6 +55,17 @@ class KeyChordListener extends KeyboardCaptureListenerHack {
       phase: KeyboardEventPhase.pressed,
     ): (listener) {
       listener.onLogout?.call();
+    },
+    // Right Alt + Lower case s.
+    KeyboardEvent(
+      deviceId: 0,
+      eventTime: 0,
+      hidUsage: 0,
+      codePoint: ascii.encode('s')[0],
+      modifiers: kModifierRightAlt,
+      phase: KeyboardEventPhase.pressed,
+    ): (listener) {
+      listener.onStatus?.call();
     },
     // Esc key.
     KeyboardEvent(
@@ -75,6 +87,7 @@ class KeyChordListener extends KeyboardCaptureListenerHack {
     this.onFullscreen,
     this.onLogout,
     this.onCancel,
+    this.onStatus,
   });
 
   /// Starts listening to key chords.

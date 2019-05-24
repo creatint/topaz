@@ -13,7 +13,8 @@ void main() {
   setupLogger(name: 'ermine');
 
   final model = AppModel();
-  final app = MaterialApp(home: App(model: model));
+  final app =
+      MaterialApp(debugShowCheckedModeBanner: false, home: App(model: model));
 
   runApp(app);
   model.onStarted();
