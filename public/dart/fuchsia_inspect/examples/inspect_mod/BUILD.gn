@@ -3,12 +3,15 @@
 # found in the LICENSE file.
 
 import("//topaz/runtime/flutter_runner/flutter_app.gni")
+import("//topaz/runtime/dart/dart_fuchsia_test.gni")
 
 flutter_app("inspect_mod") {
   main_dart = "lib/main.dart"
   package_name = "inspect_mod"
 
   fuchsia_package_name = "inspect_mod"
+
+  flutter_driver_extendable = true
 
   meta = [
     {
@@ -24,4 +27,39 @@ flutter_app("inspect_mod") {
     "//topaz/public/dart/fuchsia_inspect",
     "//topaz/public/dart/fuchsia_modular",
   ]
+}
+
+dart_fuchsia_test("inspect_mod_test") {
+  sources = [
+    "inspect_mod_test.dart",
+    "util.dart",
+    "vmo_reader.dart"
+  ]
+
+  deps = [
+    "//sdk/fidl/fuchsia.modular.testing",
+    "//sdk/fidl/fuchsia.sys",
+    "//third_party/dart-pkg/git/flutter/packages/flutter_driver",
+    "//third_party/dart-pkg/pub/test",
+    "//topaz/public/dart/fuchsia_inspect",
+    "//topaz/public/dart/fuchsia_services",
+  ]
+
+  meta = [
+    {
+      path = rebase_path("meta/inspect_mod_test.cmx")
+      dest = "inspect_mod_test.cmx"
+    },
+  ]
+
+  environments = []
+
+  # Flutter driver is only available in debug builds, so don't try to run in
+  # release CI/CQ.
+  if (is_debug) {
+    environments += [
+      nuc_env,
+      vim2_env,
+    ]
+  }
 }

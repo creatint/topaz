@@ -30,7 +30,6 @@ dart_library("fuchsia_inspect") {
   deps = [
     "//third_party/dart-pkg/pub/meta",
     "//topaz/public/dart/fuchsia_services",
-    "//topaz/public/dart/fuchsia_vfs",
     "//topaz/public/dart/zircon",
   ]
 }
@@ -40,8 +39,8 @@ dart_library("fuchsia_inspect") {
 
 dart_test("fuchsia_inspect_package_unittests") {
   sources = [
-    "inspect/inspect_test.dart",
     "inspect/internal/inspect_impl_test.dart",
+    "inspect/inspect_test.dart",
     "inspect/node_test.dart",
     "inspect/property_test.dart",
     "integration/writer.dart",

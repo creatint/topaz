@@ -25,6 +25,10 @@ class Block {
   /// Index of the block within the VMO
   final int index;
 
+  /// The VMO this Block lives inside.
+  @visibleForTesting
+  VmoHolder get vmo => _vmo;
+
   /// Initializes an empty [BlockType.reserved] block that isn't in the VMO yet.
   Block.create(this._vmo, this.index) {
     _header
