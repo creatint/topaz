@@ -22,7 +22,7 @@ Future<void> _getEntriesRecursive(
     Map<List<int>, String> items,
     ledger.Token token,
     void callback(Map<List<int>, String> items)) async {
-  final response = await snapshot.getEntriesInlineNew(Uint8List(0), token);
+  final response = await snapshot.getEntriesInline(Uint8List(0), token);
   final entries = response.entries;
   final nextToken = response.nextToken;
 

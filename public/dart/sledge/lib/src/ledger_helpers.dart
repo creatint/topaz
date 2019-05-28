@@ -52,8 +52,8 @@ Future<Null> _getFullEntriesRecursively(
   List<int> keyPrefix, {
   ledger.Token token,
 }) async {
-  final ledger.PageSnapshot$GetEntriesNew$Response response =
-      await snapshot.getEntriesNew(keyPrefix ?? Uint8List(0), token);
+  final ledger.PageSnapshot$GetEntries$Response response =
+      await snapshot.getEntries(keyPrefix ?? Uint8List(0), token);
 
   List<ledger.Entry> entries = response.entries;
   ledger.Token nextToken = response.nextToken;
