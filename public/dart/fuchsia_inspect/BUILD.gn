@@ -30,6 +30,7 @@ dart_library("fuchsia_inspect") {
   deps = [
     "//third_party/dart-pkg/pub/meta",
     "//topaz/public/dart/fuchsia_services",
+    "//topaz/public/dart/fuchsia_vfs",
     "//topaz/public/dart/zircon",
   ]
 }
