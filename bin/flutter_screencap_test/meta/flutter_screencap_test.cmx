@@ -21,10 +21,15 @@
             "shell"
         ],
         "services": [
+            "fuchsia.auth.account.AccountManager",
+            "fuchsia.devicesettings.DeviceSettingsManager",
+            "fuchsia.fonts.Provider",
             "fuchsia.sys.Environment",
             "fuchsia.sys.Launcher",
+            "fuchsia.sysmem.Allocator",
             "fuchsia.ui.policy.Presenter",
-            "fuchsia.ui.scenic.Scenic"
+            "fuchsia.ui.scenic.Scenic",
+            "fuchsia.vulkan.loader.Loader"
         ]
     }
 }
