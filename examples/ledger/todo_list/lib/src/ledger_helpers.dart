@@ -22,15 +22,14 @@ Future<void> _getEntriesRecursive(
     Map<List<int>, String> items,
     ledger.Token token,
     void callback(Map<List<int>, String> items)) async {
-  final response = await snapshot.getEntriesInline(Uint8List(0), token);
-  final status = response.status;
+  final response = await snapshot.getEntriesInlineNew(Uint8List(0), token);
   final entries = response.entries;
   final nextToken = response.nextToken;
 
   for (final ledger.InlinedEntry entry in entries) {
     items[entry.key] = utf8.decode(entry.inlinedValue.value);
   }
-  if (status == ledger.IterationStatus.ok) {
+  if (nextToken != null) {
     callback(items);
     return;
   }

@@ -27,10 +27,10 @@ class FakeLedgerPageSnapshot extends ledger.PageSnapshotProxy {
       _FakeProxyController<FakeLedgerPageSnapshot>();
 
   @override
-  Future<ledger.PageSnapshot$GetEntries$Response> getEntries(
+  Future<ledger.PageSnapshot$GetEntriesNew$Response> getEntriesNew(
       Uint8List keyStart, ledger.Token token) async {
-    final response = ledger.PageSnapshot$GetEntries$Response(
-        ledger.IterationStatus.ok, _fakeLedgerPage.getEntries(keyStart), token);
+    final response = ledger.PageSnapshot$GetEntriesNew$Response(
+        _fakeLedgerPage.getEntries(keyStart), token);
     return response;
   }
 }

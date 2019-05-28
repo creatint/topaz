@@ -52,16 +52,15 @@ Future<Null> _getFullEntriesRecursively(
   List<int> keyPrefix, {
   ledger.Token token,
 }) async {
-  final ledger.PageSnapshot$GetEntries$Response response =
-      await snapshot.getEntries(keyPrefix ?? Uint8List(0), token);
+  final ledger.PageSnapshot$GetEntriesNew$Response response =
+      await snapshot.getEntriesNew(keyPrefix ?? Uint8List(0), token);
 
   List<ledger.Entry> entries = response.entries;
   ledger.Token nextToken = response.nextToken;
-  ledger.IterationStatus status = response.status;
 
   result.addAll(entries.takeWhile((entry) => hasPrefix(entry.key, keyPrefix)));
 
-  if (status == ledger.IterationStatus.partialResult &&
+  if (nextToken != null &&
       hasPrefix(entries[entries.length - 1].key, keyPrefix)) {
     return _getFullEntriesRecursively(
       snapshot,
@@ -75,7 +74,7 @@ Future<Null> _getFullEntriesRecursively(
 /// Gets the full list of [Entry] objects from a given [PageSnapshot].
 ///
 /// This will continuously call the [PageSnapshot.getEntries] method in case the
-/// returned status code is [Status.partialResult].
+/// returned token is not null.
 Future<List<ledger.Entry>> getFullEntries(
   ledger.PageSnapshot snapshot, {
   List<int> keyPrefix,
