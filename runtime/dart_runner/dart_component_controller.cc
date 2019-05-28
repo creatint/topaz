@@ -156,7 +156,7 @@ bool DartComponentController::SetupNamespace() {
     return false;
   }
 
-  dart_utils::SetupComponentTemp(namespace_);
+  dart_utils::RunnerTemp::SetupComponent(namespace_);
 
   for (size_t i = 0; i < flat->paths.size(); ++i) {
     if (flat->paths.at(i) == kTmpPath) {
