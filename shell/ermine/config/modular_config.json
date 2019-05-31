@@ -8,7 +8,8 @@
         "url": "fuchsia-pkg://fuchsia.com/ermine#meta/ermine.cmx",
         "display_usage": "near"
       }
-    ]
+    ],
+    "story_shell_url": "fuchsia-pkg://fuchsia.com/story_shell_labs#meta/story_shell_labs.cmx"
   },
   "sessionmgr": {
     "startup_agents": [
