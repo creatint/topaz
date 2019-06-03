@@ -70,9 +70,9 @@ class App extends StatelessWidget {
                     ),
                     // Status.
                     Positioned(
-                      bottom: 0,
-                      height: 600,
-                      left: 0,
+                      top: 0,
+                      height: 315,
+                      right: 0,
                       width: 400,
                       child: AnimatedBuilder(
                         animation: model.statusVisibility,
