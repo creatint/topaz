@@ -34,6 +34,7 @@ class VisualStateWatcher extends StoryVisualStateWatcher {
       keyListener?.listen(presentationProxy);
       presentationProxy.ctrl.close();
     } else {
+      pointerEventsListener.stop();
       keyListener?.stop();
     }
   }
