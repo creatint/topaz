@@ -79,7 +79,7 @@ Future<void> run(String nm, String binary, String output) async {
   if (unstrippedFile == null) {
     throw "Cannot find unstripped file for: $binary";
   }
-  final args = ["--demangle", "--numeric-sort", "--print-size", binary];
+  final args = ["--demangle", "--numeric-sort", "--print-size", unstrippedFile];
   final result = await Process.run(nm, args);
   if (result.exitCode != 0) {
     print(result.stdout);
@@ -108,6 +108,10 @@ Future<void> run(String nm, String binary, String output) async {
     }
 
     symbols.add(symbol);
+  }
+
+  if (symbols.isEmpty) {
+    throw "$unstrippedFile has no symbols";
   }
 
   var nameTable = new BytesBuilder();
