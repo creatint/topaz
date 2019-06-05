@@ -150,17 +150,19 @@ class AskModel extends ChangeNotifier {
       return;
     }
     _currentQuery = query;
-    _suggestions = <Suggestion>[];
+    final newSuggestions = <Suggestion>[];
 
     final iterator = SuggestionsIteratorProxy();
     await _suggestionService.getSuggestions(query, iterator.ctrl.request());
 
     Iterable<Suggestion> partialResults;
     while ((partialResults = await iterator.next()).isNotEmpty &&
-        _suggestions.length < _kMaxSuggestions) {
-      _suggestions.addAll(partialResults);
-      suggestions.value = List.from(_suggestions.take(_kMaxSuggestions));
+        newSuggestions.length < _kMaxSuggestions) {
+      newSuggestions.addAll(partialResults);
     }
+    final result = List<Suggestion>.from(newSuggestions.take(_kMaxSuggestions));
+    _suggestions = result;
+    suggestions.value = result;
   }
 
   void onSelect(Suggestion suggestion) {
