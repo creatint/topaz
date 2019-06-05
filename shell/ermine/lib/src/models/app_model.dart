@@ -3,17 +3,8 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:io';
 
-import 'package:fidl_fuchsia_modular/fidl_async.dart'
-    show
-        SessionShellContextProxy,
-        ComponentContextProxy,
-        FocusControllerProxy,
-        FocusRequestWatcherBinding,
-        PuppetMaster,
-        PuppetMasterProxy,
-        StoryProviderProxy,
-        StoryProviderWatcherBinding;
 import 'package:fidl_fuchsia_app_discover/fidl_async.dart'
     show Suggestions, SuggestionsBinding, SuggestionsProxy;
 import 'package:fidl_fuchsia_shell_ermine/fidl_async.dart' show AskBarProxy;
@@ -27,104 +18,88 @@ import 'package:fidl_fuchsia_sys/fidl_async.dart'
 import 'package:fidl_fuchsia_ui_app/fidl_async.dart' show ViewProviderProxy;
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart'
     show ViewToken, ViewHolderToken;
-import 'package:fidl_fuchsia_ui_policy/fidl_async.dart' show PresentationProxy;
 import 'package:flutter/material.dart';
+import 'package:fuchsia_modular_flutter/session_shell.dart' show SessionShell;
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
-import 'package:fuchsia_services/services.dart';
-import 'package:lib.widgets/model.dart' show Model;
+import 'package:fuchsia_services/services.dart' show Incoming, StartupContext;
 import 'package:lib.widgets/utils.dart' show PointerEventsListener;
 import 'package:zircon/zircon.dart';
 
 import '../utils/elevations.dart';
-import '../utils/key_chord_listener.dart' show KeyChordListener;
-import '../utils/session_shell_services.dart' show SessionShellServices;
+import '../utils/key_chord_listener.dart'
+    show KeyChordListener, KeyChordBinding;
+import 'cluster_model.dart';
 import 'ermine_service_provider.dart' show ErmineServiceProvider;
-import 'story_manager.dart'
-    show FocusRequestWatcherImpl, StoryManager, StoryProviderWatcherImpl;
 
 const _kErmineAskModuleUrl =
     'fuchsia-pkg://fuchsia.com/ermine_ask_module#meta/ermine_ask_module.cmx';
 
 /// Model that manages all the application state of this session shell.
-class AppModel extends Model {
-  final _sessionShellContext = SessionShellContextProxy();
-  final _componentContext = ComponentContextProxy();
+class AppModel {
   final _pointerEventsListener = PointerEventsListener();
-  final _presentation = PresentationProxy();
-  final _storyProvider = StoryProviderProxy();
-  final _puppetMaster = PuppetMasterProxy();
-  final _storyProviderWatcherBinding = StoryProviderWatcherBinding();
-  final _focusController = FocusControllerProxy();
-  final _focusRequestWatcherBinding = FocusRequestWatcherBinding();
   final _componentControllerProxy = ComponentControllerProxy();
   final _suggestionsService = SuggestionsProxy();
   final _ask = AskBarProxy();
+  final _cancelActionBinding =
+      KeyChordBinding(action: 'cancel', hidUsage: 0x29);
 
-  // ignore: unused_field
-  SessionShellServices _sessionShellServices;
+  SessionShell sessionShell;
 
   final String backgroundImageUrl = 'assets/images/fuchsia.png';
   final Color backgroundColor = Colors.grey[850];
-  final StartupContext startupContext = StartupContext.fromStartupInfo();
+  final _startupContext = StartupContext.fromStartupInfo();
 
+  final ClustersModel clustersModel = ClustersModel();
   ValueNotifier<bool> askVisibility = ValueNotifier(false);
   ValueNotifier<ChildViewConnection> askChildViewConnection =
       ValueNotifier<ChildViewConnection>(null);
-
   ValueNotifier<bool> statusVisibility = ValueNotifier(false);
-
-  StoryManager storyManager;
+  KeyChordListener _keyboardListener;
 
   AppModel() {
     StartupContext.fromStartupInfo()
         .incoming
-        .connectToService(_sessionShellContext);
-    StartupContext.fromStartupInfo()
-        .incoming
-        .connectToService(_componentContext);
-    StartupContext.fromStartupInfo().incoming.connectToService(_puppetMaster);
-    StartupContext.fromStartupInfo()
-        .incoming
         .connectToService(_suggestionsService);
 
-    _sessionShellServices = SessionShellServices(
-      sessionShellContext: _sessionShellContext,
-    )..advertise();
-
-    _sessionShellContext
-      ..getFocusController(_focusController.ctrl.request())
-      ..getPresentation(_presentation.ctrl.request())
-      ..getStoryProvider(_storyProvider.ctrl.request());
-
-    storyManager = StoryManager(
-      context: _sessionShellContext,
-      puppetMaster: _puppetMaster,
-    )..advertise(startupContext);
-
-    _storyProvider.watch(
-      _storyProviderWatcherBinding.wrap(StoryProviderWatcherImpl(storyManager)),
-    );
-
-    _focusController.watchRequest(
-      _focusRequestWatcherBinding.wrap(FocusRequestWatcherImpl(storyManager)),
-    );
-
-    KeyChordListener(
-      onMeta: onMeta,
-      onFullscreen: storyManager.toggleFullscreen,
-      onLogout: onLogout,
-      onStatus: onStatus,
-      onCancel: onCancel,
-    ).listen(_presentation);
+    sessionShell = SessionShell(
+      startupContext: _startupContext,
+      onStoryStarted: clustersModel.addStory,
+      onStoryDeleted: clustersModel.removeStory,
+    )..start();
 
     // Load the ask bar.
     _loadAskBar();
   }
 
   /// Called after runApp which initializes flutter's gesture system.
-  void onStarted() {
-    _pointerEventsListener.listen(_presentation);
+  Future<void> onStarted() async {
+    // Capture pointer events directly from Scenic.
+    _pointerEventsListener.listen(sessionShell.presentation);
+
+    // Capture key pressess for key bindings in keyboard_shortcuts.json.
+    File file = File('/pkg/data/keyboard_shortcuts.json');
+    if (file.existsSync()) {
+      final bindings = await file.readAsString();
+      _keyboardListener = KeyChordListener(
+        presentation: sessionShell.presentation,
+        actions: {
+          'ask': onMeta,
+          'fullscreen': onFullscreen,
+          'cancel': onCancel,
+          'close': onClose,
+          'status': onStatus,
+          'nextCluster': clustersModel.nextCluster,
+          'previousCluster': clustersModel.previousCluster,
+          'logout': onLogout,
+        },
+        bindings: bindings,
+      )..listen();
+    } else {
+      throw ArgumentError.value(
+          'keyboard_shortcuts.json', 'fileName', 'File does not exist');
+    }
+
     // Display the Ask bar after a brief duration.
     Timer(Duration(milliseconds: 500), onMeta);
   }
@@ -132,17 +107,14 @@ class AppModel extends Model {
   void _loadAskBar() {
     final incoming = Incoming();
     final launcherProxy = LauncherProxy();
-    startupContext.incoming.connectToService(launcherProxy);
+    _startupContext.incoming.connectToService(launcherProxy);
 
     launcherProxy.createComponent(
       LaunchInfo(
         url: _kErmineAskModuleUrl,
         directoryRequest: incoming.request().passChannel(),
         additionalServices: ServiceList(
-          names: <String>[
-            PuppetMaster.$serviceName,
-            Suggestions.$serviceName,
-          ],
+          names: <String>[Suggestions.$serviceName],
           provider: ServiceProviderBinding().wrap(
             ErmineServiceProvider()
               ..advertise<Suggestions>(
@@ -180,34 +152,51 @@ class AppModel extends Model {
     askChildViewConnection.value = ChildViewConnection(viewHolderToken);
   }
 
+  void onFullscreen() {
+    if (clustersModel.fullscreenStory != null) {
+      clustersModel.fullscreenStory.restore();
+    } else if (sessionShell.focusedStory != null) {
+      clustersModel.maximize(sessionShell.focusedStory.id);
+      // Hide the ask bar if visible.
+      if (askVisibility.value) {
+        onCancel();
+      }
+    }
+  }
+
   /// Shows the Ask bar and sets the focus on it.
-  void onMeta() => _ask.show();
+  void onMeta() {
+    _ask.show();
+    _keyboardListener.add(_cancelActionBinding);
+  }
 
   /// Toggles the Status menu on/off.
   void onStatus() => statusVisibility.value = !statusVisibility.value;
 
   /// Called when tapped behind Ask bar, quick settings, notifications or the
   /// Escape key was pressed.
-  void onCancel() => _ask.hide();
+  void onCancel() {
+    _ask.hide();
+    statusVisibility.value = false;
+    _keyboardListener.release(_cancelActionBinding);
+  }
+
+  /// Called when the user wants to delete the story.
+  void onClose() {
+    sessionShell.focusedStory?.delete();
+  }
 
   /// Called when the user initiates logout (using keyboard or UI).
   void onLogout() {
     askChildViewConnection.value = null;
-    _sessionShellContext.logout();
-    storyManager.stop();
     _pointerEventsListener.stop();
 
-    _storyProviderWatcherBinding.close();
-    _focusRequestWatcherBinding.close();
-
-    _sessionShellContext.ctrl.close();
-    _componentContext.ctrl.close();
-    _presentation.ctrl.close();
-    _storyProvider.ctrl.close();
-    _puppetMaster.ctrl.close();
-    _focusController.ctrl.close();
     _componentControllerProxy.ctrl.close();
     _suggestionsService.ctrl.close();
     _ask.ctrl.close();
+    _keyboardListener.close();
+    sessionShell
+      ..context.logout()
+      ..stop();
   }
 }

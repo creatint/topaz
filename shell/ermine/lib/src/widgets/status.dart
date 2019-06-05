@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import '../models/status_model.dart';
+import '../utils/elevations.dart';
 
 const _listItemHeight = 35.0;
 const _leadingStyle = TextStyle(
@@ -32,6 +33,7 @@ class Status extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      elevation: elevations.systemOverlayElevation,
       color: Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(16.0),

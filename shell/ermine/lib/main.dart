@@ -9,13 +9,16 @@ import 'package:fuchsia_logger/logger.dart';
 import 'src/models/app_model.dart' show AppModel;
 import 'src/widgets/app.dart' show App;
 
-void main() {
+Future<void> main() async {
   setupLogger(name: 'ermine');
 
   final model = AppModel();
-  final app =
-      MaterialApp(debugShowCheckedModeBanner: false, home: App(model: model));
+  final app = MaterialApp(
+    home: App(model: model),
+    debugShowCheckedModeBanner: false,
+  );
 
   runApp(app);
-  model.onStarted();
+
+  await model.onStarted();
 }
