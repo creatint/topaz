@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/widgets.dart' hide Intent; // ignore:undefined_hidden_name
 
 /// White box grouping
 class Grouping extends StatelessWidget {

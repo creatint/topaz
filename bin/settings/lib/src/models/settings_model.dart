@@ -7,7 +7,7 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Intent; // ignore:undefined_hidden_name
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular/module.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
