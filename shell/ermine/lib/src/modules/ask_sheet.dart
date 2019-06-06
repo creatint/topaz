@@ -22,17 +22,17 @@ class AskSheet extends StatefulWidget {
   _AskSheetState createState() => _AskSheetState();
 }
 
-enum _ExpandStatus { expanded, expanding, collapsed, collapsing }
-_ExpandStatus _expandStatusForAnimationStatus(AnimationStatus status) {
+enum _VisibilityStatus { visible, appearing, hidden, disappearing }
+_VisibilityStatus _visibilityStatusForAnimationStatus(AnimationStatus status) {
   switch (status) {
     case AnimationStatus.completed:
-      return _ExpandStatus.expanded;
+      return _VisibilityStatus.visible;
     case AnimationStatus.dismissed:
-      return _ExpandStatus.collapsed;
+      return _VisibilityStatus.hidden;
     case AnimationStatus.forward:
-      return _ExpandStatus.expanding;
+      return _VisibilityStatus.appearing;
     case AnimationStatus.reverse:
-      return _ExpandStatus.collapsing;
+      return _VisibilityStatus.disappearing;
     default:
       return null;
   }
@@ -40,18 +40,18 @@ _ExpandStatus _expandStatusForAnimationStatus(AnimationStatus status) {
 
 class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
   ScrollController _scrollController;
-  _ExpandStatus _expandedState;
+  _VisibilityStatus _visibilityState;
 
-  bool get _expanded =>
-      _expandedState == _ExpandStatus.expanded ||
-      _expandedState == _ExpandStatus.expanding;
+  bool get _visible =>
+      _visibilityState == _VisibilityStatus.visible ||
+      _visibilityState == _VisibilityStatus.appearing;
 
   /// The initial velocity for the next fling animation.
   /// This is changed by [_DismissablePhysics] when starting the ballistics simulation,
   /// and return to default when the animation starts.
   double _dismissVelocity = 1.0;
 
-  AnimationController _expandedAnimationController;
+  AnimationController _appearAnimationController;
   Animation<double> _translateAnimation;
   final _translateTween = Tween<double>(
     // TODO(ahetzroni): update begin value based on number of items
@@ -61,31 +61,31 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    _expandedState = widget.model.isVisible
-        ? _ExpandStatus.expanded
-        : _ExpandStatus.collapsed;
+    _visibilityState = widget.model.isVisible
+        ? _VisibilityStatus.visible
+        : _VisibilityStatus.hidden;
 
     _scrollController = ScrollController();
 
-    _expandedAnimationController = AnimationController(
+    _appearAnimationController = AnimationController(
       vsync: this,
       duration: Duration(milliseconds: 300),
       lowerBound: 0,
       upperBound: 1,
-      value: _expanded ? 1 : 0,
+      value: _visible ? 1 : 0,
     )..addStatusListener((status) {
         setState(() {
-          _expandedState = _expandStatusForAnimationStatus(status);
+          _visibilityState = _visibilityStatusForAnimationStatus(status);
         });
         _updateFocus();
-        if (_expandedState == _ExpandStatus.collapsed) {
+        if (_visibilityState == _VisibilityStatus.hidden) {
           // currently invisible, reset ui and update model that hide animation is complete
           _reset();
           widget.model.hideAnimationCompleted();
         }
       });
 
-    _translateAnimation = _translateTween.animate(_expandedAnimationController);
+    _translateAnimation = _translateTween.animate(_appearAnimationController);
 
     widget.model.visibility.addListener(_visibilityListener);
 
@@ -93,7 +93,7 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
   }
 
   void _updateFocus() {
-    if (_expanded) {
+    if (_visible) {
       widget.model.focus(context);
     } else {
       widget.model.unfocus();
@@ -104,15 +104,15 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
     _scrollController.jumpTo(0);
   }
 
-  void _runAnimationController(bool expand) {
+  void _runAnimationController(bool visible) {
     double dismissVelocity = _dismissVelocity;
     _dismissVelocity = 1;
-    _expandedAnimationController.fling(
+    _appearAnimationController.fling(
       // Set a minimum velocity above zero so the animation will not go in the
-      // wrong direction when collpasing but being flung slightly towards the expand direction.
+      // wrong direction when collpasing but being flung slightly towards the appear direction.
       // This is needed due to the implementation of fling that doesn't offer a distinction
       // between initial velocity and animation direction
-      velocity: max(dismissVelocity, 0.01) * (expand ? 1 : -1),
+      velocity: max(dismissVelocity, 0.01) * (visible ? 1 : -1),
     );
   }
 
@@ -137,7 +137,7 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _expandedAnimationController.dispose();
+    _appearAnimationController.dispose();
     _scrollController.dispose();
     widget.model.visibility.removeListener(_visibilityListener);
     super.dispose();
@@ -145,12 +145,12 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) => Offstage(
-        offstage: _expandedState == _ExpandStatus.collapsed,
+        offstage: _visibilityState == _VisibilityStatus.hidden,
         child: IgnorePointer(
-          ignoring: !_expanded,
+          ignoring: !_visible,
           child: LayoutBuilder(
             builder: (context, constraints) {
-              return _buildExpandAnimationWidget(
+              return _buildAppearAnimationWidget(
                 child: Align(
                   alignment: Alignment.topRight,
                   child: Column(
@@ -198,7 +198,7 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
         ),
       );
 
-  Widget _buildExpandAnimationWidget({Widget child}) => AnimatedBuilder(
+  Widget _buildAppearAnimationWidget({Widget child}) => AnimatedBuilder(
         animation: Listenable.merge([
           _translateAnimation,
           _scrollController,
