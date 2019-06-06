@@ -55,6 +55,8 @@ group("fidl") {
 group("tests") {
   testonly = true
   public_deps = [
+    "//peridot/packages:peridot",
+
     # modular_test_harness is a dep for any test that uses test_harness_fixture
     # (all of the tests below). Add it here so that an fx set --with
     # //topaz/packages/examples:tests includes it.
