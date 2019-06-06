@@ -219,7 +219,11 @@ class PseudoDir extends Vnode {
   }
 
   void _onClose(_DirConnection obj) {
-    assert(_connections.remove(obj));
+    final result = _connections.remove(obj);
+    scheduleMicrotask(() {
+      obj.closeBinding();
+    });
+    assert(result);
   }
 
   int _validateFlags(int flags) {
@@ -331,7 +335,9 @@ class _DirConnection extends Directory {
     if (_isClosed) {
       return ZX.OK;
     }
-    _dir._onClose(this);
+    scheduleMicrotask(() {
+      _dir._onClose(this);
+    });
     _isClosed = true;
 
     return ZX.OK;
