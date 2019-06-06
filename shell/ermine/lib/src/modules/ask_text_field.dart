@@ -24,7 +24,7 @@ class AskTextField extends StatelessWidget {
             fillColor: Colors.black,
             filled: true,
             contentPadding: EdgeInsets.symmetric(
-              horizontal: 12,
+              horizontal: 8,
               vertical: 16,
             ),
             border: InputBorder.none,

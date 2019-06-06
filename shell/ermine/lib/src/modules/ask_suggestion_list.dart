@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 
 import 'ask_model.dart';
 
-const _kListItemHeight = 24.0;
-const _kListItemMargin = 8.0;
+const _kTextColor = Colors.white;
+const _kTextColorHighlight = Color(0xFFFF8BCA);
 
 class AskSuggestionList extends StatelessWidget {
+  static const double kListItemHeight = 56.0;
+
   final AskModel model;
 
   const AskSuggestionList({this.model});
@@ -21,7 +23,8 @@ class AskSuggestionList extends StatelessWidget {
       builder: (context, child) => RawKeyboardListener(
             onKey: model.onKey,
             focusNode: model.focusNode,
-            child: SliverList(
+            child: SliverFixedExtentList(
+              itemExtent: kListItemHeight,
               delegate: SliverChildBuilderDelegate(
                 _buildItem,
                 childCount: model.suggestions.value.length,
@@ -44,35 +47,28 @@ class AskSuggestionList extends StatelessWidget {
       },
       child: GestureDetector(
         onTap: () => model.onSelect(suggestion),
-        child: Padding(
-          padding: const EdgeInsets.only(bottom: _kListItemMargin),
+        child: Container(
+          alignment: Alignment.centerLeft,
+          height: kListItemHeight,
+          padding: EdgeInsets.symmetric(horizontal: 22.0),
           child: AnimatedBuilder(
             animation: model.selection,
             builder: (context, child) {
-              return Material(
-                color: model.selection.value == index
-                    ? Color(0xFFFF8BCB)
-                    : Colors.white,
-                elevation: model.elevation,
-                child: child,
-              );
-            },
-            child: Container(
-              alignment: Alignment.centerLeft,
-              height: _kListItemHeight,
-              child: Text(
+              return Text(
                 suggestion.displayInfo.title,
                 maxLines: 1,
                 softWrap: false,
                 overflow: TextOverflow.fade,
                 textAlign: TextAlign.start,
                 style: TextStyle(
-                  color: Colors.black,
+                  color: model.selection.value == index
+                      ? _kTextColorHighlight
+                      : _kTextColor,
                   fontFamily: 'RobotoMono',
                   fontSize: 18.0,
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ),
       ),

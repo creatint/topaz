@@ -10,7 +10,8 @@ import 'ask_model.dart';
 import 'ask_suggestion_list.dart';
 import 'ask_text_field.dart';
 
-const _kDefaultHeight = 320.0;
+const _kDefaultListHeight = 320.0;
+const _kAskFieldHeight = 88.0;
 
 class AskSheet extends StatefulWidget {
   final AskModel model;
@@ -53,9 +54,8 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
   AnimationController _expandedAnimationController;
   Animation<double> _translateAnimation;
   final _translateTween = Tween<double>(
-    // begin value will be updated as the user scrolls
-    // will be inaccurate when under default height but works well enough for our purposes
-    begin: _kDefaultHeight,
+    // TODO(ahetzroni): update begin value based on number of items
+    begin: -(_kDefaultListHeight + _kAskFieldHeight),
     end: 0,
   );
 
@@ -89,10 +89,6 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
 
     widget.model.visibility.addListener(_visibilityListener);
 
-    _scrollController.addListener(() {
-      _translateTween.begin = _kDefaultHeight + _scrollOffset;
-    });
-
     super.initState();
   }
 
@@ -121,7 +117,10 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
   }
 
   double get _scrollOffset =>
-      (_scrollController.hasClients ? _scrollController.offset : 0.0);
+      _scrollController.hasClients ? _scrollController.offset : 0.0;
+  double get _maxScrollExtent => _scrollController.hasClients
+      ? _scrollController.position.maxScrollExtent
+      : 0.0;
 
   /// Sets dismiss velocity before beginning collapse.
   /// velocity is in aboslute pixels and is converted here.
@@ -145,42 +144,59 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      ignoring: !_expanded,
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final topMargin = max(constraints.maxHeight - _kDefaultHeight, 0.0);
-          return _buildExpandAnimationWidget(
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: CustomScrollView(
-                shrinkWrap: true,
-                controller: _scrollController,
-                physics: _DismissablePhysics(onDismiss: _close),
-                slivers: <Widget>[
-                  SliverToBoxAdapter(child: SizedBox(height: topMargin)),
-                  _buildHeader(),
-                  _buildBody(),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildHeader() => SliverToBoxAdapter(
-        child: Column(
-          children: <Widget>[
-            AskTextField(model: widget.model),
-            SizedBox(height: 8.0),
-          ],
+  Widget build(BuildContext context) => Offstage(
+        offstage: _expandedState == _ExpandStatus.collapsed,
+        child: IgnorePointer(
+          ignoring: !_expanded,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return _buildExpandAnimationWidget(
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      AskTextField(model: widget.model),
+                      _buildBody(),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
         ),
       );
 
-  Widget _buildBody() => AskSuggestionList(model: widget.model);
+  Widget _buildBody() => Material(
+        color: Colors.white,
+        elevation: widget.model.elevation,
+        child: Container(
+          color: Colors.black,
+          margin: const EdgeInsets.all(2.0),
+          child: AnimatedSize(
+            vsync: this,
+            curve: Curves.easeOutExpo,
+            alignment: Alignment.topRight,
+            duration: Duration(milliseconds: 300),
+            child: AnimatedBuilder(
+              animation: widget.model.suggestions,
+              builder: (_, child) => SizedBox(
+                    height: min(
+                      _kDefaultListHeight,
+                      AskSuggestionList.kListItemHeight *
+                          widget.model.suggestions.value.length,
+                    ),
+                    child: child,
+                  ),
+              child: CustomScrollView(
+                controller: _scrollController,
+                physics: _DismissablePhysics(onDismiss: _close),
+                slivers: <Widget>[AskSuggestionList(model: widget.model)],
+              ),
+            ),
+          ),
+        ),
+      );
 
   Widget _buildExpandAnimationWidget({Widget child}) => AnimatedBuilder(
         animation: Listenable.merge([
@@ -190,7 +206,12 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
         builder: (_, child) {
           // any negative scroll offset is added here to make up for shrinkWrap
           // absorbing negative bounce in the scrollview.
-          final dy = _translateAnimation.value - min(_scrollOffset, 0.0);
+          final dy = _translateAnimation.value +
+              -min(_scrollOffset, 0.0) +
+              -max(
+                _scrollOffset - _maxScrollExtent,
+                0,
+              );
           return Transform.translate(
             offset: Offset(0, dy),
             child: child,
@@ -233,8 +254,8 @@ class _DismissablePhysics extends ScrollPhysics {
   ) {
     final estimatedTarget = position.pixels + velocity * 2.0;
 
-    if (position.pixels < position.minScrollExtent &&
-        estimatedTarget < position.minScrollExtent) {
+    if (position.pixels > position.maxScrollExtent &&
+        estimatedTarget > position.maxScrollExtent) {
       onDismiss(velocity: velocity);
       return null;
     } else {
