@@ -55,12 +55,16 @@ group("fidl") {
 group("tests") {
   testonly = true
   public_deps = [
+    # modular_test_harness is a dep for any test that uses test_harness_fixture
+    # (all of the tests below). Add it here so that an fx set --with
+    # //topaz/packages/examples:tests includes it.
+    "//peridot/packages/tests:modular_test_harness",
     "//topaz/examples/test/driver_example_mod",
     "//topaz/examples/test/driver_example_mod:driver_example_mod_tests",
-    "//topaz/public/dart/fuchsia_modular/examples/slider_mod",
-    "//topaz/public/dart/fuchsia_modular/examples/slider_mod:slider_mod_tests",
     "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod",
     "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod:inspect_mod_test",
+    "//topaz/public/dart/fuchsia_modular/examples/slider_mod",
+    "//topaz/public/dart/fuchsia_modular/examples/slider_mod:slider_mod_tests",
   ]
 }
 
