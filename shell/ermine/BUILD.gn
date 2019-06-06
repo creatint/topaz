@@ -59,6 +59,7 @@ dart_library("ermine_library") {
     "src/widgets/tile_chrome.dart",
     "src/widgets/tile_sizer.dart",
     "src/widgets/tile_tab.dart",
+    "src/widgets/status_bar_visualizer.dart"
   ]
 
   deps = [

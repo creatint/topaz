@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../models/status_model.dart';
 import '../utils/elevations.dart';
+import '../widgets/status_bar_visualizer.dart';
 
 const _listItemHeight = 35.0;
 const _leadingStyle = TextStyle(
@@ -79,7 +80,12 @@ class Status extends StatelessWidget {
                     'CPU Usage',
                     style: _leadingStyle,
                   ),
-                  // TODO(cwhitten): Add visualization
+                  title: StatusBarVisualizer(
+                    barValue: '35%',
+                    barFill: 35,
+                    barMax: 100,
+                    barSize: 25,
+                  ),
                 ),
               ),
               // Memory Usage
@@ -91,7 +97,12 @@ class Status extends StatelessWidget {
                     'Mem Usage',
                     style: _leadingStyle,
                   ),
-                  // TODO(cwhitten): Add visualization
+                  title: StatusBarVisualizer(
+                    barValue: '7.6G / 16.1G',
+                    barFill: 7.6,
+                    barMax: 16.1,
+                    barSize: 25,
+                  ),
                 ),
               ),
               // Tasks
