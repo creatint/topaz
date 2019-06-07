@@ -116,31 +116,27 @@ void main() {
       });
     });
 
-    group('adding environment services to inject', () {
-      test('can add additional env_services_to_inject after build', () {
+    group('adding environment services from components', () {
+      test('can add additional servicesFromComponents after build', () {
         expect(
-            () => builder
-                .build()
-                .envServicesToInject
-                .add(InjectedService(name: 'foo', url: generateComponentUrl())),
+            () => builder.build().envServices.servicesFromComponents.add(
+                ComponentService(name: 'foo', url: generateComponentUrl())),
             returnsNormally);
       });
 
       test('throws argument error for null input values', () {
         expect(
-            () => builder.addEnvironmentServiceToInject(
-                null, generateComponentUrl()),
+            () => builder.addServiceFromComponent(null, generateComponentUrl()),
             throwsArgumentError);
-        expect(() => builder.addEnvironmentServiceToInject('name', null),
+        expect(() => builder.addServiceFromComponent('name', null),
             throwsArgumentError);
       });
 
       test('throws argument error for empty name and component url', () {
         expect(
-            () => builder.addEnvironmentServiceToInject(
-                '', generateComponentUrl()),
+            () => builder.addServiceFromComponent('', generateComponentUrl()),
             throwsArgumentError);
-        expect(() => builder.addEnvironmentServiceToInject('name', ''),
+        expect(() => builder.addServiceFromComponent('name', ''),
             throwsArgumentError);
       });
 
@@ -148,17 +144,18 @@ void main() {
         const name = 'myService';
         final url = generateComponentUrl();
 
-        builder.addEnvironmentServiceToInject(name, url);
-        expect(() => builder.addEnvironmentServiceToInject(name, url),
-            throwsException);
+        builder.addServiceFromComponent(name, url);
+        expect(
+            () => builder.addServiceFromComponent(name, url), throwsException);
       });
 
-      test('addEnvServiceToInject adds the service to the injected services',
+      test(
+          'addServiceFromComponent adds the service to environment, served by the component',
           () {
         final url = generateComponentUrl();
-        builder.addEnvironmentServiceToInject('fuchsia.my.Service', url);
-        expect(builder.build().envServicesToInject,
-            contains(InjectedService(name: 'fuchsia.my.Service', url: url)));
+        builder.addServiceFromComponent('fuchsia.my.Service', url);
+        expect(builder.build().envServices.servicesFromComponents,
+            contains(ComponentService(name: 'fuchsia.my.Service', url: url)));
       });
     });
   });

@@ -45,40 +45,40 @@ Future<void> _startTestHarness() async {
   incoming.connectToService(testHarnessProxy);
 
   // helper function to convert a map of service to url into list of
-  // [InjectedService]
-  List<InjectedService> _toInjectedServices(Map<String, String> serviceToUrl) {
-    final injectedServices = <InjectedService>[];
+  // [ComponentService]
+  List<ComponentService> _toComponentServices(
+      Map<String, String> serviceToUrl) {
+    final componentServices = <ComponentService>[];
     for (final svcName in serviceToUrl.keys) {
-      injectedServices
-          .add(InjectedService(name: svcName, url: serviceToUrl[svcName]));
+      componentServices
+          .add(ComponentService(name: svcName, url: serviceToUrl[svcName]));
     }
-    return injectedServices;
+    return componentServices;
   }
 
   final testHarnessSpec = TestHarnessSpec(
       envServicesToInherit: ['fuchsia.net.SocketProvider'],
-      envServicesToInject: _toInjectedServices(
-        {
-          'fuchsia.auth.account.AccountManager':
-              'fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx',
-          'fuchsia.devicesettings.DeviceSettingsManager':
-              'fuchsia-pkg://fuchsia.com/device_settings_manager#meta/device_settings_manager.cmx',
-          'fuchsia.fonts.Provider':
-              'fuchsia-pkg://fuchsia.com/fonts#meta/fonts.cmx',
-          'fuchsia.sysmem.Allocator':
-              'fuchsia-pkg://fuchsia.com/sysmem_connector#meta/sysmem_connector.cmx',
-          'fuchsia.tracelink.Registry':
-              'fuchsia-pkg://fuchsia.com/trace_manager#meta/trace_manager.cmx',
-          'fuchsia.ui.input.ImeService':
-              'fuchsia-pkg://fuchsia.com/ime_service#meta/ime_service.cmx',
-          'fuchsia.ui.policy.Presenter':
-              'fuchsia-pkg://fuchsia.com/root_presenter#meta/root_presenter.cmx',
-          'fuchsia.ui.scenic.Scenic':
-              'fuchsia-pkg://fuchsia.com/scenic#meta/scenic.cmx',
-          'fuchsia.vulkan.loader.Loader':
-              'fuchsia-pkg://fuchsia.com/vulkan_loader#meta/vulkan_loader.cmx'
-        },
-      ));
+      envServices: EnvironmentServicesSpec(
+          servicesFromComponents: _toComponentServices({
+        'fuchsia.auth.account.AccountManager':
+            'fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx',
+        'fuchsia.devicesettings.DeviceSettingsManager':
+            'fuchsia-pkg://fuchsia.com/device_settings_manager#meta/device_settings_manager.cmx',
+        'fuchsia.fonts.Provider':
+            'fuchsia-pkg://fuchsia.com/fonts#meta/fonts.cmx',
+        'fuchsia.sysmem.Allocator':
+            'fuchsia-pkg://fuchsia.com/sysmem_connector#meta/sysmem_connector.cmx',
+        'fuchsia.tracelink.Registry':
+            'fuchsia-pkg://fuchsia.com/trace_manager#meta/trace_manager.cmx',
+        'fuchsia.ui.input.ImeService':
+            'fuchsia-pkg://fuchsia.com/ime_service#meta/ime_service.cmx',
+        'fuchsia.ui.policy.Presenter':
+            'fuchsia-pkg://fuchsia.com/root_presenter#meta/root_presenter.cmx',
+        'fuchsia.ui.scenic.Scenic':
+            'fuchsia-pkg://fuchsia.com/scenic#meta/scenic.cmx',
+        'fuchsia.vulkan.loader.Loader':
+            'fuchsia-pkg://fuchsia.com/vulkan_loader#meta/vulkan_loader.cmx'
+      })));
 
   // run the test harness which will create an encapsulated test env
   await testHarnessProxy.run(testHarnessSpec);

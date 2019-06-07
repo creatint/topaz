@@ -20,7 +20,7 @@ import 'package:zircon/zircon.dart';
 class TestHarnessSpecBuilder {
   final _componentsToIntercept = <InterceptSpec>[];
   final _envServicesToInherit = <String>['fuchsia.logger.LogSink'];
-  final _envServicesToInject = <InjectedService>[];
+  final _envComponentServices = <ComponentService>[];
 
   /// Registers the component url to be intercepted.
   ///
@@ -80,7 +80,7 @@ class TestHarnessSpecBuilder {
   ///
   /// The [TestHarness] will automatically create these services and add
   /// expose them to the environment under test.
-  void addEnvironmentServiceToInject(String name, String componentUrl) {
+  void addServiceFromComponent(String name, String componentUrl) {
     ArgumentError.checkNotNull(name, 'name');
     ArgumentError.checkNotNull(componentUrl, 'componentUrl');
 
@@ -88,13 +88,13 @@ class TestHarnessSpecBuilder {
       throw ArgumentError('name and componentUrl must not be an empty string');
     }
 
-    final service = InjectedService(name: name, url: componentUrl);
-    if (_envServicesToInject.contains(service)) {
+    final service = ComponentService(name: name, url: componentUrl);
+    if (_envComponentServices.contains(service)) {
       throw Exception(
           'Attempting to add [$service] twice. Services must be unique');
     }
 
-    _envServicesToInject.add(service);
+    _envComponentServices.add(service);
   }
 
   /// Returns the [TestHarnessSpec] object which can be passed to the [TestHarnessProxy]
@@ -103,10 +103,11 @@ class TestHarnessSpecBuilder {
   /// does not offer a method which satisfies your specific needs.
   TestHarnessSpec build() {
     return TestHarnessSpec(
-      componentsToIntercept: _componentsToIntercept,
-      envServicesToInherit: _envServicesToInherit,
-      envServicesToInject: _envServicesToInject,
-    );
+        componentsToIntercept: _componentsToIntercept,
+        envServicesToInherit: _envServicesToInherit,
+        envServices: EnvironmentServicesSpec(
+          servicesFromComponents: _envComponentServices,
+        ));
   }
 
   fuchsia_mem.Buffer _createCmxSandBox(Map<String, dynamic> contents) {

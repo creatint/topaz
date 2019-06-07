@@ -82,6 +82,7 @@ void main() {
           componentContextProxy: componentContext);
       componentContext.ctrl.close();
       proxy.ctrl.close();
+
       expect(await didCallCompleter.future, isTrue);
     });
 
