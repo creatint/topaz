@@ -5,7 +5,7 @@
 import 'dart:async';
 import 'dart:developer' show Timeline;
 
-import 'package:flutter/material.dart' hide Intent; // ignore:undefined_hidden_name
+import 'package:flutter/material.dart' hide Intent;
 import 'package:fuchsia_logger/logger.dart';
 
 import 'src/models/settings_model.dart';

@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:example_modular_models/shape.dart';
-import 'package:flutter/material.dart' hide Intent; // ignore: undefined_hidden_name
+import 'package:flutter/material.dart' hide Intent;
 import 'package:fuchsia_modular/module.dart';
 
 import '../blocs/app_bloc.dart';
