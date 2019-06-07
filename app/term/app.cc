@@ -28,6 +28,10 @@ App::App(TermParams params)
       [this](fidl::InterfaceRequest<fuchsia::ui::app::ViewProvider> request) {
         bindings_.AddBinding(this, std::move(request));
       });
+  context_->outgoing().AddPublicService<fuchsia::term::Term>(
+      [this](fidl::InterfaceRequest<fuchsia::term::Term> request) {
+        term_bindings_.AddBinding(this, std::move(request));
+      });
 }
 
 void App::CreateView(
@@ -37,7 +41,6 @@ void App::CreateView(
   auto scenic =
       context_->ConnectToEnvironmentService<fuchsia::ui::scenic::Scenic>();
   scenic::ViewContext view_context = {
-      .enable_ime = true,
       .session_and_listener_request =
           scenic::CreateScenicSessionPtrAndListenerRequest(scenic.get()),
       .view_token = scenic::ToViewToken(std::move(view_token)),
@@ -49,6 +52,16 @@ void App::CreateView(
   controllers_.push_back(std::make_unique<ViewController>(
       std::move(view_context), params_,
       [this](ViewController* controller) { DestroyController(controller); }));
+}
+
+void App::CreatePty(std::vector<std::string> command,
+                    fidl::InterfaceRequest<fuchsia::term::Pty> request,
+                    CreatePtyCallback callback) {
+  auto client =
+      std::make_unique<PtyClient>(std::move(command), std::move(callback));
+  pty_bindings_.AddBinding(std::move(client), std::move(request));
+  auto* binding = pty_bindings_.bindings().back().get();
+  binding->impl()->SetEventSender(binding->events());
 }
 
 void App::DestroyController(ViewController* controller) {
