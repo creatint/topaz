@@ -8,6 +8,8 @@
             "vulkan"
         ],
         "services": [
+            "fuchsia.accessibility.SettingsManager",
+            "fuchsia.accessibility.semantics.SemanticsManager",
             "fuchsia.crash.Analyzer",
             "fuchsia.fonts.Provider",
             "fuchsia.net.SocketProvider",

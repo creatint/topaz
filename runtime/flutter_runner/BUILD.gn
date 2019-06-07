@@ -70,6 +70,8 @@ template("flutter_runner") {
       "context_writer_bridge.h",
       "engine.cc",
       "engine.h",
+      "fuchsia_accessibility.cc",
+      "fuchsia_accessibility.h",
       "fuchsia_font_manager.cc",
       "fuchsia_font_manager.h",
       "isolate_configurator.cc",
@@ -435,6 +437,9 @@ executable("flutter_runner_unittests") {
   output_name = "flutter_runner_tests"
 
   sources = [
+    "fuchsia_accessibility.cc",
+    "fuchsia_accessibility.h",
+    "fuchsia_accessibility_unittest.cc",
     "fuchsia_font_manager.cc",
     "fuchsia_font_manager.h",
     "fuchsia_font_manager_unittest.cc",
@@ -443,9 +448,11 @@ executable("flutter_runner_unittests") {
 
   deps = [
     "//garnet/public/lib/gtest",
+    "//sdk/fidl/fuchsia.accessibility",
     "//sdk/fidl/fuchsia.fonts",
     "//sdk/fidl/fuchsia.sys",
     "//sdk/lib/sys/cpp",
+    "//sdk/lib/sys/cpp/testing:unit",
     "//third_party/googletest:gtest_main",
     "//third_party/icu",
     "//third_party/skia",

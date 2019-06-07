@@ -13,6 +13,7 @@
 #include "flutter/fml/logging.h"
 #include "flutter/lib/ui/compositing/scene_host.h"
 #include "flutter/lib/ui/window/pointer_data.h"
+#include "fuchsia/ui/views/cpp/fidl.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
@@ -79,7 +80,9 @@ void SetInterfaceErrorHandler(fidl::Binding<T>& binding, std::string name) {
 
 PlatformView::PlatformView(
     PlatformView::Delegate& delegate, std::string debug_label,
-    flutter::TaskRunners task_runners,
+    fuchsia::ui::views::ViewRefControl view_ref_control,
+    fuchsia::ui::views::ViewRef view_ref, flutter::TaskRunners task_runners,
+    std::shared_ptr<sys::ServiceDirectory> runner_services,
     fidl::InterfaceHandle<fuchsia::sys::ServiceProvider>
         parent_environment_service_provider_handle,
     fidl::InterfaceRequest<fuchsia::ui::scenic::SessionListener>
@@ -92,6 +95,8 @@ PlatformView::PlatformView(
     zx_handle_t vsync_event_handle)
     : flutter::PlatformView(delegate, std::move(task_runners)),
       debug_label_(std::move(debug_label)),
+      view_ref_control_(std::move(view_ref_control)),
+      view_ref_(std::move(view_ref)),
       session_listener_binding_(this, std::move(session_listener_request)),
       session_listener_error_callback_(
           std::move(session_listener_error_callback)),
@@ -122,10 +127,10 @@ PlatformView::PlatformView(
   // Finally! Register the native platform message handlers.
   RegisterPlatformMessageHandlers();
 
-  // TODO(SCN-975): Re-enable.  Likely that Engine should clone the ViewToken
-  // and pass the clone in here.
-  //   view_->GetToken(std::bind(&PlatformView::ConnectSemanticsProvider, this,
-  //                             std::placeholders::_1));
+  fuchsia::ui::views::ViewRef accessibility_view_ref;
+  view_ref_.Clone(&accessibility_view_ref);
+  accessibility_holder_ = FuchsiaAccessibility::Create(
+      std::move(runner_services), std::move(accessibility_view_ref));
 }
 
 PlatformView::~PlatformView() = default;

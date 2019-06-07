@@ -4,6 +4,8 @@
     },
     "sandbox": {
         "services": [
+            "fuchsia.accessibility.SettingsManager",
+            "fuchsia.accessibility.semantics.SemanticsManager",
             "fuchsia.sys.Launcher"
         ]
     }
