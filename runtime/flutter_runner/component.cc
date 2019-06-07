@@ -304,22 +304,23 @@ Application::Application(
   // Don't collect CPU samples from Dart VM C++ code.
   settings_.dart_flags.push_back("--no_profile_vm");
 
-  auto dispatcher = async_get_default_dispatcher();
-  FML_CHECK(dispatcher);
-  const std::string component_url = package.resolved_url;
-  settings_.unhandled_exception_callback =
-      [dispatcher, runner_incoming_services, component_url](
-          const std::string& error, const std::string& stack_trace) {
-        async::PostTask(dispatcher, [runner_incoming_services, component_url,
-                                     error, stack_trace]() {
-          dart_utils::HandleException(runner_incoming_services, component_url,
-                                      error, stack_trace);
-        });
+  // TODO(FL-256): Re-enable unhandled exception reporting
+  //auto dispatcher = async_get_default_dispatcher();
+  //FML_CHECK(dispatcher);
+  //const std::string component_url = package.resolved_url;
+  //settings_.unhandled_exception_callback =
+  //    [dispatcher, runner_incoming_services, component_url](
+  //        const std::string& error, const std::string& stack_trace) {
+  //      async::PostTask(dispatcher, [runner_incoming_services, component_url,
+  //                                   error, stack_trace]() {
+  //        dart_utils::HandleException(runner_incoming_services, component_url,
+  //                                    error, stack_trace);
+  //      });
         // Ideally we would return whether HandleException returned ZX_OK, but
         // short of knowing if the exception was correctly handled, we return
         // false to have the error and stack trace printed in the logs.
-        return false;
-      };
+  //      return false;
+  //    };
 
   AttemptVMLaunchWithCurrentSettings(settings_);
 }
