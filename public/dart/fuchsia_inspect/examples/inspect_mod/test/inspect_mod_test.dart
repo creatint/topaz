@@ -104,29 +104,20 @@ Future<void> _launchModUnderTest() async {
 }
 
 Future<String> _readInspect() async {
-  // WARNING: 0) These paths are extremely fragile.
-  var globs = [
-    // TODO(vickiecheng): remove this one once stories reuse session envs.
-    '/hub/r/modular_test_harness_*/*/r/session-*/*/r/*/*/c/flutter_*_runner.cmx/*/c/$_testAppName/*/out/debug/root.inspect',
-    '/hub/r/modular_test_harness_*/*/c/flutter_*_runner.cmx/*/c/$_testAppName/*/out/debug/root.inspect',
-  ];
-  for (final globString in globs) {
-    await for (var f in Glob(globString).list()) {
-      if (f is dartio.File) {
-        // WARNING: 1) This read is not atomic.
-        // WARNING: 2) This won't work with VMOs written in C++ and maybe elsewhere.
-        // TODO(CF-603): Use direct VMO read when possible.
-        var vmoBytes = await f.readAsBytes();
-        var vmoData = ByteData(vmoBytes.length);
-        for (int i = 0; i < vmoBytes.length; i++) {
-          vmoData.setUint8(i, vmoBytes[i]);
-        }
-        var vmo = FakeVmoReader.usingData(vmoData);
-        return VmoReader(vmo).toString();
-      }
-    }
+  String globString =
+      '/hub/r/modular_test_harness_*/*/r/session-*/*/r/*/*/c/flutter*/*/c/$_testAppName/*/out/debug/*';
+  String fileName = (await Glob(globString).list().toList())[0].path;
+  var f = dartio.File(fileName);
+  // WARNING: 1) This read is not atomic.
+  // WARNING: 2) This won't work with VMOs written in C++ and maybe elsewhere.
+  // TODO(CF-603): Use direct VMO read when possible.
+  var vmoBytes = await f.readAsBytes();
+  var vmoData = ByteData(vmoBytes.length);
+  for (int i = 0; i < vmoBytes.length; i++) {
+    vmoData.setUint8(i, vmoBytes[i]);
   }
-  throw Exception('could not find inspect node');
+  var vmo = FakeVmoReader.usingData(vmoData);
+  return VmoReader(vmo).toString();
 }
 
 void main() {
