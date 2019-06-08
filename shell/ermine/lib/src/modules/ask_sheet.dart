@@ -144,8 +144,12 @@ class _AskSheetState extends State<AskSheet> with TickerProviderStateMixin {
   }
 
   @override
-  Widget build(BuildContext context) => Offstage(
-        offstage: _visibilityState == _VisibilityStatus.hidden,
+  Widget build(BuildContext context) => Visibility(
+        maintainState: true,
+        maintainSize: true,
+        maintainAnimation: true,
+        maintainInteractivity: true,
+        visible: _visibilityState != _VisibilityStatus.hidden,
         child: IgnorePointer(
           ignoring: !_visible,
           child: LayoutBuilder(
