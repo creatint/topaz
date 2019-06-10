@@ -29,13 +29,13 @@ const _titleStyle = TextStyle(
 class Status extends StatelessWidget {
   final StatusModel model;
 
-  const Status({this.model});
+  const Status({@required this.model});
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: elevations.systemOverlayElevation,
       color: Colors.white,
+      elevation: elevations.systemOverlayElevation,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Container(
@@ -43,13 +43,13 @@ class Status extends StatelessWidget {
           child: ListView(
             physics: const NeverScrollableScrollPhysics(),
             children: <Widget>[
-              // Time & Date
+              // Date
               SizedBox(
                 height: _listItemHeight * 1.4,
                 child: ListTile(
                   dense: true,
                   leading: Text(
-                    'Tuesday, May 21 2019',
+                    model.getDate(),
                     textAlign: TextAlign.left,
                     style: _titleStyle,
                   ),
@@ -65,7 +65,7 @@ class Status extends StatelessWidget {
                     style: _leadingStyle,
                   ),
                   title: Text(
-                    'wireless / strong signal',
+                    model.getWireless(),
                     textAlign: TextAlign.right,
                     style: _titleStyle,
                   ),
@@ -81,9 +81,9 @@ class Status extends StatelessWidget {
                     style: _leadingStyle,
                   ),
                   title: StatusBarVisualizer(
-                    barValue: '35%',
-                    barFill: 35,
-                    barMax: 100,
+                    barValue: model.getCpu(),
+                    barFill: model.getCpuFill(),
+                    barMax: model.getCpuMax(),
                     barSize: 25,
                   ),
                 ),
@@ -98,9 +98,9 @@ class Status extends StatelessWidget {
                     style: _leadingStyle,
                   ),
                   title: StatusBarVisualizer(
-                    barValue: '7.6G / 16.1G',
-                    barFill: 7.6,
-                    barMax: 16.1,
+                    barValue: model.getMem(),
+                    barFill: model.getMemFill(),
+                    barMax: model.getMemMax(),
                     barSize: 25,
                   ),
                 ),
@@ -115,7 +115,7 @@ class Status extends StatelessWidget {
                     style: _leadingStyle,
                   ),
                   title: Text(
-                    '13, 1 thr; 1 running',
+                    model.getTasks(),
                     textAlign: TextAlign.right,
                     style: _titleStyle,
                   ),
@@ -131,7 +131,7 @@ class Status extends StatelessWidget {
                     style: _leadingStyle,
                   ),
                   title: Text(
-                    '16° / Sunny',
+                    model.getWeather(),
                     textAlign: TextAlign.right,
                     style: _titleStyle,
                   ),
@@ -147,7 +147,7 @@ class Status extends StatelessWidget {
                     style: _leadingStyle,
                   ),
                   title: Text(
-                    '99% - 3:15 left',
+                    model.getBattery(),
                     textAlign: TextAlign.right,
                     style: _titleStyle,
                   ),

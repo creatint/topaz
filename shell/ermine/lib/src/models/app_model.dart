@@ -31,6 +31,7 @@ import '../utils/key_chord_listener.dart'
     show KeyChordListener, KeyChordBinding;
 import 'cluster_model.dart';
 import 'ermine_service_provider.dart' show ErmineServiceProvider;
+import 'status_model.dart';
 
 const _kErmineAskModuleUrl =
     'fuchsia-pkg://fuchsia.com/ermine_ask_module#meta/ermine_ask_module.cmx';
@@ -56,6 +57,7 @@ class AppModel {
       ValueNotifier<ChildViewConnection>(null);
   ValueNotifier<bool> statusVisibility = ValueNotifier(false);
   KeyChordListener _keyboardListener;
+  StatusModel status = StatusModel();
 
   AppModel() {
     StartupContext.fromStartupInfo()

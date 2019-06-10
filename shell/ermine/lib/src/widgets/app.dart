@@ -78,8 +78,9 @@ class App extends StatelessWidget {
                     width: 400,
                     child: AnimatedBuilder(
                       animation: model.statusVisibility,
-                      builder: (context, _) =>
-                          model.statusVisibility.value ? Status() : Offstage(),
+                      builder: (context, _) => model.statusVisibility.value
+                          ? Status(model: model.status)
+                          : Offstage(),
                     ),
                   ),
                 ],
