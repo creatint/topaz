@@ -1,7 +1,3 @@
-// Copyright 2019 The Fuchsia Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
 import 'package:composition_delegate/composition_delegate.dart';
 import 'package:test/test.dart';
 
@@ -9,16 +5,17 @@ void main() {
   CompositionDelegate setupCompositionDelegate() {
     CompositionDelegate compDelegate = CompositionDelegate(
         layoutContext:
-            LayoutContext(size: Size(1280, 800), minSurfaceWidth: 320));
+            LayoutContext(size: Size(1280, 800), minSurfaceWidth: 320))
+      ..setLayoutStrategy(layoutStrategy: layoutStrategyType.copresentStrategy);
     return compDelegate;
   }
 
   group(
-    'Test stack layout determination',
+    'Test copresent layout determination',
     () {
       test('For no Surfaces is empty', () {
         CompositionDelegate compDelegate = setupCompositionDelegate();
-        expect(compDelegate.getLayout(), equals([]));
+        expect(compDelegate.getLayout(), isEmpty);
       });
 
       test('For one Surface is full screen', () {
@@ -36,7 +33,7 @@ void main() {
         expect(compDelegate.getLayout(), equals(expectedLayout));
       });
 
-      test('For two Surfaces with no relationship is stacked', () {
+      test('For two Surfaces with sequential is two layers', () {
         CompositionDelegate compDelegate = setupCompositionDelegate();
 
         Layer expectedUpper = Layer(
@@ -52,7 +49,38 @@ void main() {
         compDelegate
           ..addSurface(surface: Surface(surfaceId: 'first'))
           ..focusSurface(surfaceId: 'first')
-          ..addSurface(surface: Surface(surfaceId: 'second'))
+          ..addSurface(
+              surface: Surface(surfaceId: 'second'),
+              relation:
+                  SurfaceRelation(arrangement: SurfaceArrangement.sequential))
+          ..focusSurface(surfaceId: 'second');
+        expect(compDelegate.getLayout(), equals(expectedLayout));
+      });
+
+      test('For two Surfaces with co-present is split-screen', () {
+        CompositionDelegate compDelegate = setupCompositionDelegate();
+
+        Layer expectedUpper = Layer.fromList(
+          elements: [
+            SurfaceLayout(
+                x: 0.0, y: 0.0, w: 640.0, h: 800.0, surfaceId: 'first'),
+            SurfaceLayout(
+                x: 640.0, y: 0.0, w: 640.0, h: 800.0, surfaceId: 'second'),
+          ],
+        );
+        // expect a List of two Layers, with one SurfaceLayout in each
+        List<Layer> expectedLayout = [expectedUpper];
+        // This test relies on the surface being focused in the correct order as the focus list is
+        // maintained separaretly from what has been added to the tree.
+        compDelegate
+          ..addSurface(surface: Surface(surfaceId: 'first'))
+          ..focusSurface(surfaceId: 'first')
+          ..addSurface(
+            surface: Surface(surfaceId: 'second'),
+            parentId: 'first',
+            relation:
+                SurfaceRelation(arrangement: SurfaceArrangement.copresent),
+          )
           ..focusSurface(surfaceId: 'second');
         expect(compDelegate.getLayout(), equals(expectedLayout));
       });
