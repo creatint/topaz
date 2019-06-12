@@ -16,6 +16,7 @@ dart_library("fuchsia_vfs") {
   sources = [
     "src/internal/_error_node.dart",
     "src/internal/_flags.dart",
+    "src/composed_pseudo_dir.dart",
     "src/pseudo_dir.dart",
     "src/pseudo_file.dart",
     "src/service.dart",
@@ -42,6 +43,7 @@ dart_fuchsia_test("fuchsia_vfs_package_unittests") {
   ]
 
   sources = [
+    "composed_pseudo_dir_test.dart",
     "pseudo_dir_test.dart",
     "pseudo_file_test.dart",
     "service_test.dart",
