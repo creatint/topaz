@@ -206,6 +206,7 @@ group("dart_fidl_benchmarks") {
   ]
 }
 
+# TODO(mesch): Remove. Cf. topaz/shell/ermine/test/end_to_end/README.md
 group("end_to_end") {
   testonly = true
   public_deps = [
