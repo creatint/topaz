@@ -20,6 +20,15 @@ dart_test("ermine_session_shell_e2e_test") {
   if (is_debug) {
     args += [ "--debug" ]
   }
+
+  environments = [
+    {
+      dimensions = {
+        device_type = "Intel NUC Kit NUC7i5DNHE"
+      }
+      tags = [ "e2e-fyi" ]
+    },
+  ]
 }
 
 group("test") {
