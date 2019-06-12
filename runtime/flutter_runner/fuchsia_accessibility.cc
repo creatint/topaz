@@ -21,7 +21,7 @@ class FuchsiaAccessibilityImpl
     services->Connect(
         fuchsia::accessibility::semantics::SemanticsManager::Name_,
         manager_.NewRequest().TakeChannel());
-    manager_.set_error_handler([this](zx_status_t status) {
+    manager_.set_error_handler([](zx_status_t status) {
       FXL_LOG(ERROR)
           << "Flutter cannot connect to SemanticsManager with status: "
           << zx_status_get_string(status) << ".";
