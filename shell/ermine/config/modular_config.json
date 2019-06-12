@@ -9,7 +9,7 @@
         "display_usage": "near"
       }
     ],
-    "story_shell_url": "fuchsia-pkg://fuchsia.com/story_shell_labs#meta/story_shell_labs.cmx"
+    "use_session_shell_for_story_shell_factory": true
   },
   "sessionmgr": {
     "startup_agents": [

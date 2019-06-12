@@ -8,9 +8,10 @@ import '../utils/elevations.dart';
 
 /// Defines a widget that builds the tile chrome for a story.
 class TileChrome extends StatelessWidget {
-  static const _kBorderSize = 16.0;
+  static const _kBorderSize = 20.0;
 
   final bool focused;
+  final bool editing;
   final bool showTitle;
   final bool fullscreen;
   final bool draggable;
@@ -22,10 +23,15 @@ class TileChrome extends StatelessWidget {
   final VoidCallback onDelete;
   final VoidCallback onFullscreen;
   final VoidCallback onMinimize;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
+  final VoidCallback onCancelEdit;
+  final VoidCallback onConfirmEdit;
 
   const TileChrome({
     @required this.name,
     this.child,
+    this.editing = false,
     this.showTitle = true,
     this.fullscreen = false,
     this.focused = false,
@@ -36,44 +42,54 @@ class TileChrome extends StatelessWidget {
     this.onDelete,
     this.onFullscreen,
     this.onMinimize,
+    this.onTap,
+    this.onEdit,
+    this.onCancelEdit,
+    this.onConfirmEdit,
   });
 
   @override
   Widget build(BuildContext context) {
-    Widget chrome = Stack(
-      children: [
-        // Border.
-        Positioned.fill(
-          child: Container(
-            decoration: showTitle && !fullscreen
-                ? BoxDecoration(
-                    border: Border.all(
-                      color: focused ? Colors.white : Colors.grey,
-                      width: _kBorderSize,
-                    ),
-                  )
-                : null,
-            child: child ?? Container(color: Colors.transparent),
-          ),
-        ),
-
-        // Title.
-        Positioned(
-          left: 0,
-          top: 0,
-          right: 0,
-          height: _kBorderSize,
-          child: showTitle
-              ? fullscreen // Display title bar on top of story.
-                  ? Material(
-                      elevation: elevations.systemOverlayElevation,
-                      color: focused ? Colors.white : Colors.grey,
-                      child: _buildTitlebar(context),
+    Widget chrome = GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      // Disable listview scrolling on top of story.
+      onHorizontalDragStart: (_) {},
+      onTap: onTap,
+      child: Stack(
+        children: [
+          // Border.
+          Positioned.fill(
+            child: Container(
+              decoration: showTitle && !fullscreen
+                  ? BoxDecoration(
+                      border: Border.all(
+                        color: focused ? Colors.white : Colors.grey,
+                        width: _kBorderSize,
+                      ),
                     )
-                  : _buildTitlebar(context)
-              : Offstage(),
-        )
-      ],
+                  : null,
+              child: child ?? Container(color: Colors.transparent),
+            ),
+          ),
+
+          // Title.
+          Positioned(
+            left: 0,
+            top: 0,
+            right: 0,
+            height: _kBorderSize,
+            child: showTitle
+                ? fullscreen // Display title bar on top of story.
+                    ? Material(
+                        elevation: elevations.systemOverlayElevation,
+                        color: focused ? Colors.white : Colors.grey,
+                        child: _buildTitlebar(context),
+                      )
+                    : _buildTitlebar(context)
+                : Offstage(),
+          )
+        ],
+      ),
     );
     return draggable
         ? Draggable(
@@ -97,51 +113,84 @@ class TileChrome extends StatelessWidget {
           Padding(
             padding: EdgeInsets.only(left: 8),
           ),
+
+          // Cancel edit button.
+          if (editing)
+            _buildTitleBarTextButton(context, 'Cancel', () {
+              onEdit?.call();
+              onCancelEdit?.call();
+            }),
+
+          // Story name.
           Expanded(
-            child: Text(
-              name ?? '<>',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.caption.copyWith(
-                    color: focused ? Colors.black : Colors.white,
-                  ),
+            child: _buildTitleBarTextButton(context, name ?? '<>', onEdit),
+          ),
+
+          // Minimize button.
+          if (!editing)
+            _buildIconButton(context, Icons.remove, onMinimize),
+
+          if (!editing)
+            Padding(
+              padding: EdgeInsets.only(left: 8),
             ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 8),
-          ),
-          GestureDetector(
-            child: Icon(
-              Icons.remove,
-              size: _kBorderSize,
-              color: focused ? Colors.black : Colors.white,
+
+          // Maximize button.
+          if (!editing)
+            _buildIconButton(context, Icons.add, onFullscreen),
+
+          if (!editing)
+            Padding(
+              padding: EdgeInsets.only(left: 8),
             ),
-            onTap: onMinimize?.call,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 8),
-          ),
-          GestureDetector(
-            child: Icon(
-              Icons.add,
-              size: _kBorderSize,
-              color: focused ? Colors.black : Colors.white,
-            ),
-            onTap: onFullscreen?.call,
-          ),
-          Padding(
-            padding: EdgeInsets.only(left: 8),
-          ),
-          GestureDetector(
-            child: Icon(
-              Icons.clear,
-              size: _kBorderSize,
-              color: focused ? Colors.black : Colors.white,
-            ),
-            onTap: onDelete?.call,
-          ),
+
+          // Close button.
+          if (!editing)
+            _buildIconButton(context, Icons.clear, onDelete),
+
+          // Done edit button.
+          if (editing)
+            _buildTitleBarTextButton(context, 'Done', () {
+              onEdit?.call();
+              onConfirmEdit?.call();
+            }),
+
           Padding(
             padding: EdgeInsets.only(left: 8),
           ),
         ],
+      );
+
+  Widget _buildTitleBarTextButton(
+    BuildContext context,
+    String title,
+    VoidCallback onTap,
+  ) =>
+      GestureDetector(
+        onTap: onTap,
+        child: Center(
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: Theme.of(context)
+                .textTheme
+                .caption
+                .copyWith(color: focused ? Colors.black : Colors.white),
+          ),
+        ),
+      );
+
+  Widget _buildIconButton(
+    BuildContext context,
+    IconData icon,
+    VoidCallback onTap,
+  ) =>
+      GestureDetector(
+        child: Icon(
+          icon,
+          size: _kBorderSize,
+          color: focused ? Colors.black : Colors.white,
+        ),
+        onTap: onTap?.call,
       );
 }

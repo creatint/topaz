@@ -32,13 +32,19 @@ final _addModCommand = modular.AddMod(
     intent: modular.Intent(action: 'action', handler: _testAppUrl),
     surfaceRelation: modular.SurfaceRelation());
 
-final _ermineConfig = BasemgrConfig(sessionShellMap: [
-  SessionShellMapEntry(
+final _ermineConfig = BasemgrConfig(
+  sessionShellMap: [
+    SessionShellMapEntry(
       name: 'Ermine',
       config: SessionShellConfig(
-          appConfig: AppConfig(
-              url: 'fuchsia-pkg://fuchsia.com/ermine#meta/ermine.cmx')))
-]);
+        appConfig: AppConfig(
+          url: 'fuchsia-pkg://fuchsia.com/ermine#meta/ermine.cmx',
+        ),
+      ),
+    ),
+  ],
+  useSessionShellForStoryShellFactory: true,
+);
 
 // Use a custom timeout rather than the test framework's timeout so that we can
 // output a sensible failure message.

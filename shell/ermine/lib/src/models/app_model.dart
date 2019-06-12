@@ -20,6 +20,7 @@ import 'package:fidl_fuchsia_ui_views/fidl_async.dart'
     show ViewToken, ViewHolderToken;
 import 'package:flutter/material.dart';
 import 'package:fuchsia_modular_flutter/session_shell.dart' show SessionShell;
+import 'package:fuchsia_modular_flutter/story_shell.dart' show StoryShell;
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
 import 'package:fuchsia_services/services.dart' show Incoming, StartupContext;
@@ -70,6 +71,11 @@ class AppModel {
       onStoryDeleted: clustersModel.removeStory,
     )..start();
 
+    StoryShell.advertise(
+      startupContext: _startupContext,
+      onStoryAttached: clustersModel.getStory,
+    );
+
     // Load the ask bar.
     _loadAskBar();
   }
@@ -104,6 +110,16 @@ class AppModel {
 
     // Display the Ask bar after a brief duration.
     Timer(Duration(milliseconds: 500), onMeta);
+
+    // Hide the ask bar when:
+    // - a story is started from outside of ask bar.
+    // - a story toggles fullscreen state.
+    // - story cluster changes.
+    Listenable.merge([
+      clustersModel,
+      clustersModel.currentCluster,
+      clustersModel.fullscreenStoryNotifier,
+    ]).addListener(onCancel);
   }
 
   void _loadAskBar() {

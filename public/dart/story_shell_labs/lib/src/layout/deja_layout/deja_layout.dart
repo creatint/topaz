@@ -98,8 +98,8 @@ class DejaLayout extends Layout<TileLayoutModel> {
   void _userLayoutRequest(TilerModel<ModuleInfo> model) {
     final modsToRemove = getModsDifference(_tilerModel, model);
     _tilerModel = model;
-    removeSurface(modsToRemove);
     if (modsToRemove.isNotEmpty) {
+      removeSurface(modsToRemove);
       // Regenerate Layout Suggestions.
       final tilerModels = _layoutPolicy.getLayout(_tilerModel);
       _tilerModel = tilerModels.first;

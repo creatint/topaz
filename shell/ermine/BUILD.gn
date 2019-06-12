@@ -55,7 +55,9 @@ dart_library("ermine_library") {
     "src/widgets/cluster.dart",
     "src/widgets/clusters.dart",
     "src/widgets/fullscreen_story.dart",
+    "src/widgets/remove_button_target_widget.dart",
     "src/widgets/status.dart",
+    "src/widgets/story_widget.dart",
     "src/widgets/tile_chrome.dart",
     "src/widgets/tile_sizer.dart",
     "src/widgets/tile_tab.dart",
@@ -79,6 +81,7 @@ dart_library("ermine_library") {
     "//topaz/public/dart/fuchsia_modular_flutter",
     "//topaz/public/dart/fuchsia_scenic_flutter",
     "//topaz/public/dart/fuchsia_services",
+    "//topaz/public/dart/story_shell_labs:story_shell_labs_lib",
     "//topaz/public/dart/widgets:lib.widgets",
   ]
 }

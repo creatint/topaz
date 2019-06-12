@@ -4,11 +4,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:tiler/tiler.dart' show Tiler, TileModel;
-import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 
 import '../models/cluster_model.dart';
 import '../models/ermine_story.dart';
 
+import 'story_widget.dart';
 import 'tile_chrome.dart';
 import 'tile_sizer.dart';
 import 'tile_tab.dart';
@@ -49,33 +49,38 @@ class Cluster extends StatelessWidget {
   Widget _chromeBuilder(BuildContext context, TileModel<ErmineStory> tile,
       {bool custom = false}) {
     final story = tile.content;
+    final confirmEditNotifier = ValueNotifier<bool>(null);
     return AnimatedBuilder(
       animation: story.childViewConnectionNotifier,
       builder: (context, child) {
         return story.childViewConnection != null
             ? AnimatedBuilder(
-                animation: story.focusedNotifier,
+                animation: Listenable.merge([
+                  story.focusedNotifier,
+                  story.editStateNotifier,
+                ]),
                 builder: (context, child) => TileChrome(
                       name: story.id ?? '<title>',
                       showTitle: !custom,
+                      editing: story.editStateNotifier.value,
                       focused: story.focused,
                       child: AnimatedBuilder(
                         animation: story.visibilityStateNotifier,
                         builder: (context, child) => story.isImmersive
                             ? Offstage()
-                            : GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                // Disable listview scrolling on top of cluster.
-                                onHorizontalDragStart: (_) {},
-                                onTap: story.focus,
-                                child: ChildView(
-                                  connection: story.childViewConnection,
-                                ),
+                            : StoryWidget(
+                                editing: story.editStateNotifier.value,
+                                confirmEdit: confirmEditNotifier,
+                                presenter: story.layoutManager.presenter,
                               ),
                       ),
+                      onTap: story.focus,
                       onDelete: story.delete,
                       onFullscreen: story.maximize,
                       onMinimize: story.restore,
+                      onEdit: story.edit,
+                      onCancelEdit: () => confirmEditNotifier.value = false,
+                      onConfirmEdit: () => confirmEditNotifier.value = true,
                     ),
               )
             : Offstage();

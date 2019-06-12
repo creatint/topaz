@@ -126,7 +126,7 @@ class ClustersModel extends ChangeNotifier {
 
   /// Set's the [currentCluster] to the next cluster, if available.
   void nextCluster() {
-    if (currentCluster.value != clusters.last) {
+    if (fullscreenStory == null && currentCluster.value != clusters.last) {
       currentCluster.value =
           clusters[clusters.indexOf(currentCluster.value) + 1];
     }
@@ -134,7 +134,7 @@ class ClustersModel extends ChangeNotifier {
 
   /// Set's the [currentCluster] to the previous cluster, if available.
   void previousCluster() {
-    if (currentCluster.value != clusters.first) {
+    if (fullscreenStory == null && currentCluster.value != clusters.first) {
       currentCluster.value =
           clusters[clusters.indexOf(currentCluster.value) - 1];
     }

@@ -20,7 +20,7 @@ class LayoutStore {
   final int size;
 
   /// Constructor for layout storage.
-  LayoutStore({this.directory = '/data/layouts', this.size = 100});
+  LayoutStore({this.directory = '/pkg/data/layouts', this.size = 100});
 
   /// Clears the storage.
   ///

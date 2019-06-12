@@ -20,11 +20,16 @@ class Clusters extends StatelessWidget {
       if (pageController.hasClients) {
         int index = model.clusters.indexOf(model.currentCluster.value);
         if (index != pageController.page) {
-          pageController.animateToPage(
-            index,
-            duration: Duration(milliseconds: 200),
-            curve: Curves.easeOut,
-          );
+          if (model.clusters[index].isEmpty &&
+              model.clusters[pageController.page.toInt()].isEmpty) {
+            pageController.jumpToPage(index);
+          } else {
+            pageController.animateToPage(
+              index,
+              duration: Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+            );
+          }
         }
       }
     });

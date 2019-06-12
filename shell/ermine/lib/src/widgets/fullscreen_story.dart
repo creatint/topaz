@@ -3,9 +3,9 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 
 import '../models/app_model.dart';
+import 'story_widget.dart';
 import 'tile_chrome.dart';
 
 /// Defines a widget to display a story fullscreen.
@@ -22,13 +22,14 @@ class FullscreenStory extends StatelessWidget {
       animation: model.clustersModel.fullscreenStoryNotifier,
       builder: (context, child) {
         final story = model.clustersModel.fullscreenStory;
+        final confirmEditNotifier = ValueNotifier<bool>(null);
         return story != null
             ? AnimatedBuilder(
-                animation: showFullscreenTitle,
-                child: ChildView(
-                  connection: story.childViewConnection,
-                ),
-                builder: (context, child) {
+                animation: Listenable.merge([
+                  showFullscreenTitle,
+                  story.editStateNotifier,
+                ]),
+                builder: (context, _) {
                   return Listener(
                     onPointerHover: (event) {
                       if (event.position.dy == 0) {
@@ -41,10 +42,18 @@ class FullscreenStory extends StatelessWidget {
                       name: story.id,
                       focused: story.focused,
                       showTitle: showFullscreenTitle.value,
+                      editing: story.editStateNotifier.value,
                       fullscreen: true,
-                      child: child,
+                      child: StoryWidget(
+                        editing: story.editStateNotifier.value,
+                        presenter: story.layoutManager.presenter,
+                        confirmEdit: confirmEditNotifier,
+                      ),
                       onDelete: story.delete,
                       onMinimize: story.restore,
+                      onEdit: story.edit,
+                      onCancelEdit: () => confirmEditNotifier.value = false,
+                      onConfirmEdit: () => confirmEditNotifier.value = true,
                     ),
                   );
                 })
