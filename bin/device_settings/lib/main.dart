@@ -6,14 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:lib.widgets/model.dart';
 
-import 'src/model.dart';
+import 'model.dart';
 import 'src/widget.dart';
 
 /// Main entry point to the device settings module.
 void main() {
   setupLogger();
 
-  Providers providers = Providers()..provideValue(DeviceSettingsModel());
+  DeviceSettingsModel model = DeviceSettingsModel.withDefaultSystemInterface()
+    ..start();
+
+  Providers providers = Providers()..provideValue(model);
 
   Widget app = MaterialApp(
     home: Container(

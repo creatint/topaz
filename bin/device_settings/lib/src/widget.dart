@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:lib.settings/widgets.dart';
 import 'package:lib.widgets/model.dart';
 
-import 'model.dart';
+import '../model.dart';
 
 Widget _buildDeviceSettings(
     {@required DeviceSettingsModel model, @required double scale}) {
@@ -74,8 +74,13 @@ SettingsSection _update(DeviceSettingsModel model, double scale) {
       scale: scale, text: 'Current source: ${model.selectedChannels}');
 
   final changeSourceButton = SettingsButton(
-    text: 'Change source',
-    onTap: () => model.channelPopupShowing.value = true,
+    text: model.channelUpdating ? 'Updating source' : 'Change source',
+    onTap: () {
+      if (model.channelUpdating) {
+        return;
+      }
+      model.channelPopupShowing.value = true;
+    },
     scale: scale,
   );
 
