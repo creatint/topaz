@@ -11,7 +11,6 @@
             "fuchsia.logger.LogSink",
             "fuchsia.net.SocketProvider",
             "fuchsia.timezone.Timezone",
-            "fuchsia.tracelink.Registry",
             "fuchsia.tracing.provider.Registry"
         ]
     }
