@@ -30,6 +30,8 @@ flutter_app("inspect_mod") {
 }
 
 dart_fuchsia_test("inspect_mod_test") {
+  deprecated_shell = "//topaz"
+
   sources = [
     "inspect_mod_test.dart",
     "util.dart",

@@ -11,3 +11,28 @@ group("dart_unittests") {
     "shell:tests",
   ]
 }
+
+group("deprecated_shell_allowlist") {
+  #  ________  _________  ________  ________
+  # |\   ____\|\___   ___\\   __  \|\   __  \
+  # \ \  \___|\|___ \  \_\ \  \|\  \ \  \|\  \
+  #  \ \_____  \   \ \  \ \ \  \\\  \ \   ____\
+  #   \|____|\  \   \ \  \ \ \  \\\  \ \  \___|
+  #     ____\_\  \   \ \__\ \ \_______\ \__\
+  #    |\_________\   \|__|  \|_______|\|__|
+  #    \|_________|
+  # This is an allowlist of packages that have components manifests that include
+  # the "deprecated-shell" feature. Do not add to this list. If the manifest
+  # does not otherwise include the feature you need, please file a feature
+  # request for that fine-grained feature to help us support least-privileged
+  # components.
+  visibility = [
+    "//topaz/app/term:term",
+    "//topaz/bin/flutter_screencap_test:flutter_screencap_test_pkg",
+    "//topaz/examples/test/driver_example_mod:driver_example_mod_tests_pkg",
+    "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod:inspect_mod_test_pkg",
+    "//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test",
+    "//topaz/public/dart/fuchsia_modular/examples/slider_mod:slider_mod_tests_pkg",
+    "//topaz/tests/benchmarks/input_latency:topaz_input_latency_benchmarks",
+  ]
+}

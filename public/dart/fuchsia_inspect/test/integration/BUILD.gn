@@ -26,6 +26,8 @@ executable("test") {
 }
 
 test_package("dart_inspect_vmo_test") {
+  deprecated_shell = "//topaz"
+
   deps = [
     ":test",
   ]

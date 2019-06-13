@@ -110,6 +110,7 @@ template("_flutter_dart_jit_package") {
     forward_variables_from(invoker,
                            [
                              "deprecated_global_persistent_storage",
+                             "deprecated_shell",
                              "testonly",
                              "tests",
                            ])

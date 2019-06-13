@@ -62,6 +62,8 @@ fidl("fuchsia.term") {
 }
 
 package("term") {
+  deprecated_shell = "//topaz"
+
   deps = [
     ":bin",
   ]

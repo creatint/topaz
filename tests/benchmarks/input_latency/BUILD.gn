@@ -5,6 +5,8 @@
 import("//build/package.gni")
 
 package("topaz_input_latency_benchmarks") {
+  deprecated_shell = "//topaz"
+
   testonly = true
 
   deps = [
