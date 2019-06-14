@@ -70,6 +70,16 @@ class _StoryWidgetState extends State<StoryWidget> {
     _isEditing = widget.editing;
     oldWidget.confirmEdit.removeListener(_confirmEditListener);
     widget.confirmEdit.addListener(_confirmEditListener);
+    if (oldWidget.presenter != widget.presenter) {
+      _resetTilerModel();
+      _tilerUpdateListener = widget.presenter.update.listen((update) {
+        setState(() {
+          _isEditing = false;
+          _resetTilerModel(update: update);
+        });
+        updateLayoutSuggestionsOverlayVisibility();
+      });
+    }
   }
 
   @override
