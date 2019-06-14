@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 import '../models/status_model.dart';
 import '../utils/elevations.dart';
-import '../widgets/status_bar_visualizer.dart';
+import '../widgets/status_tick_bar_visualizer.dart';
 
 const _listItemHeight = 35.0;
 const _leadingStyle = TextStyle(
@@ -80,11 +80,14 @@ class Status extends StatelessWidget {
                     'CPU Usage',
                     style: _leadingStyle,
                   ),
-                  title: StatusBarVisualizer(
+                  title: StatusTickBarVisualizer(
                     barValue: model.getCpu(),
                     barFill: model.getCpuFill(),
                     barMax: model.getCpuMax(),
-                    barSize: 25,
+                    tickMax: 25,
+                    textStyle: _titleStyle,
+                    textAlignment: TextAlign.left,
+                    barFirst: true,
                   ),
                 ),
               ),
@@ -97,11 +100,14 @@ class Status extends StatelessWidget {
                     'Mem Usage',
                     style: _leadingStyle,
                   ),
-                  title: StatusBarVisualizer(
+                  title: StatusTickBarVisualizer(
                     barValue: model.getMem(),
                     barFill: model.getMemFill(),
                     barMax: model.getMemMax(),
-                    barSize: 25,
+                    tickMax: 25,
+                    textStyle: _titleStyle,
+                    textAlignment: TextAlign.left,
+                    barFirst: true,
                   ),
                 ),
               ),
