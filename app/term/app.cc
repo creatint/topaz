@@ -41,6 +41,7 @@ void App::CreateView(
   auto scenic =
       context_->ConnectToEnvironmentService<fuchsia::ui::scenic::Scenic>();
   scenic::ViewContext view_context = {
+      .enable_ime = true,
       .session_and_listener_request =
           scenic::CreateScenicSessionPtrAndListenerRequest(scenic.get()),
       .view_token = scenic::ToViewToken(std::move(view_token)),
