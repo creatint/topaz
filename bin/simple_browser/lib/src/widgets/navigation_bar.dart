@@ -36,6 +36,11 @@ class _NavigationBarState extends State<NavigationBar> {
     _controller = TextEditingController();
     _urlListener = widget.bloc.url.listen((url) {
       _controller.text = url;
+      // TODO: Should remove once system wide focus management works
+      //   This is a hack, focus should be removed because the user clicked anywhere in the page,
+      //   not because a new page has loaded. But we don't know the user clicked, because the
+      //   webpage is a separate process.
+      _focusNode.unfocus();
     });
     super.initState();
   }
