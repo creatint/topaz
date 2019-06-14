@@ -39,45 +39,25 @@ import 'package:zircon/zircon.dart' as $zx;
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: comment_references
 
-class Empty extends $fidl.Struct {
-  const Empty({
-    this.reserved: 0x0,
-  });
-  Empty.clone(
-    Empty $orig, {
-    int reserved,
-  }) : this(
-          reserved: reserved ?? $orig.reserved,
-        );
+const bool enabledFlag = true;
 
-  Empty._(List<Object> argv) : reserved = argv[0];
-  final int reserved;
+const int offset = -33;
 
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      reserved,
-    ];
-  }
+const int answer = 0x2a;
 
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'Empty' r'(reserved: ' + reserved.toString() + r')';
-  }
+const int answerInBinary = 0x2a;
 
-  static Empty _ctor(List<Object> argv) => Empty._(argv);
-}
+const int populationUsa2018 = 0x13ab6680;
 
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<Empty> kEmpty_Type = $fidl.StructType<Empty>(
-  encodedSize: 1,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
-  ],
-  ctor: Empty._ctor,
-);
+const int diamond = 0x183c7effff7e3c18;
+
+const int fuchsia = 0x3844828282453906;
+
+const String username = "\"squeenze\"";
+
+const double minTemp = -273.15;
+
+const double conversionFactor = 1.41421;
 
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();

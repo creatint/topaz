@@ -2,6 +2,10 @@ bits.test.test.fidl.json
 bits.test.test.fidl.json_async.dart.golden
 bits.test.test.fidl.json_sync.dart.golden
 bits.test.test.fidl.json_test.dart.golden
+consts.test.fidl.json
+consts.test.fidl.json_async.dart.golden
+consts.test.fidl.json_sync.dart.golden
+consts.test.fidl.json_test.dart.golden
 doc_comments.test.fidl.json
 doc_comments.test.fidl.json_async.dart.golden
 doc_comments.test.fidl.json_sync.dart.golden
