@@ -2,14 +2,40 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../blocs/browser_bloc.dart';
 import '../models/browse_action.dart';
 
-class NavigationBar extends StatelessWidget {
+class NavigationBar extends StatefulWidget {
   final BrowserBloc bloc;
 
   const NavigationBar({this.bloc});
+
+  @override
+  _NavigationBarState createState() => _NavigationBarState();
+}
+
+class _NavigationBarState extends State<NavigationBar> {
+  TextEditingController _controller;
+  StreamSubscription _urlListener;
+
+  @override
+  void initState() {
+    _controller = TextEditingController();
+    _urlListener = widget.bloc.url.listen((url) {
+      _controller.text = url;
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _urlListener.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +46,7 @@ class NavigationBar extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(right: 8.0),
               child: StreamBuilder<bool>(
-                stream: bloc.backState,
+                stream: widget.bloc.backState,
                 initialData: false,
                 builder: (context, snapshot) => RaisedButton(
                       padding: EdgeInsets.all(4),
@@ -28,7 +54,7 @@ class NavigationBar extends StatelessWidget {
                       color: Colors.grey[350],
                       disabledColor: Colors.grey[700],
                       onPressed: snapshot.data
-                          ? () => bloc.request.add(GoBackAction())
+                          ? () => widget.bloc.request.add(GoBackAction())
                           : null,
                     ),
               ),
@@ -36,7 +62,7 @@ class NavigationBar extends StatelessWidget {
             Padding(
               padding: EdgeInsets.only(right: 8.0),
               child: StreamBuilder<bool>(
-                stream: bloc.forwardState,
+                stream: widget.bloc.forwardState,
                 initialData: false,
                 builder: (context, snapshot) => RaisedButton(
                       padding: EdgeInsets.all(4),
@@ -44,43 +70,17 @@ class NavigationBar extends StatelessWidget {
                       color: Colors.grey[350],
                       disabledColor: Colors.grey[700],
                       onPressed: snapshot.data
-                          ? () => bloc.request.add(GoForwardAction())
+                          ? () => widget.bloc.request.add(GoForwardAction())
                           : null,
                     ),
               ),
             ),
-            NavigationBox(bloc: bloc),
+            _buildNavigationField(),
           ],
         ));
   }
-}
 
-class NavigationBox extends StatefulWidget {
-  final BrowserBloc bloc;
-
-  const NavigationBox({this.bloc});
-
-  @override
-  NavigationBoxState createState() => NavigationBoxState(bloc);
-}
-
-class NavigationBoxState extends State<NavigationBox> {
-  final TextEditingController _controller;
-
-  NavigationBoxState(BrowserBloc bloc) : _controller = TextEditingController() {
-    bloc.url.listen((url) {
-      _controller.text = url;
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildNavigationField() {
     return Expanded(
       child: TextField(
         controller: _controller,
