@@ -10,7 +10,7 @@ import 'src/widgets/navigation_bar.dart';
 
 class App extends StatefulWidget {
   @override
-  State<App> createState() => AppState();
+  AppState createState() => AppState();
 }
 
 class AppState extends State<App> {
@@ -34,7 +34,7 @@ class AppState extends State<App> {
     return MaterialApp(
       title: 'Browser',
       home: Scaffold(
-        backgroundColor: Colors.grey,
+        backgroundColor: Colors.white,
         body: Container(
           child: Column(
             children: <Widget>[
