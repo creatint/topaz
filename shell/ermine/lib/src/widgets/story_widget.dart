@@ -72,6 +72,7 @@ class _StoryWidgetState extends State<StoryWidget> {
     widget.confirmEdit.addListener(_confirmEditListener);
     if (oldWidget.presenter != widget.presenter) {
       _resetTilerModel();
+      _tilerUpdateListener.cancel();
       _tilerUpdateListener = widget.presenter.update.listen((update) {
         setState(() {
           _isEditing = false;
