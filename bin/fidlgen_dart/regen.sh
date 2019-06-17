@@ -22,13 +22,11 @@ GOLDENS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/goldens"
 GOLDENS=()
 for json_name in `find "${EXAMPLE_DIR}" -name '*.json'`; do
     json_name="$( basename $json_name )"
-    dart_sync_name=${json_name}_sync.dart.golden
     dart_async_name=${json_name}_async.dart.golden
     dart_test_name=${json_name}_test.dart.golden
 
     GOLDENS+=(
       $json_name,
-      $dart_sync_name,
       $dart_async_name,
       $dart_test_name,
     )
