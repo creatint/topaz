@@ -30,6 +30,8 @@ flutter_app("inspect_flutter_integration_tester") {
 }
 
 dart_fuchsia_test("inspect_dart_integration_test_driver") {
+  deprecated_shell = "//topaz"
+
   sources = [
     "integration_driver_test.dart",
   ]
