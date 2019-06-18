@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:core';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fidl_fuchsia_web/fidl_async.dart' as web;
 import 'package:meta/meta.dart';
@@ -62,7 +63,9 @@ class BrowserBloc extends web.NavigationEventListener {
       case BrowseActionType.navigateTo:
         final NavigateToAction navigate = action;
         await webView.controller.loadUrl(
-            navigate.url, web.LoadUrlParams(type: web.LoadUrlReason.typed));
+          _sanitizeUrl(navigate.url),
+          web.LoadUrlParams(type: web.LoadUrlReason.typed),
+        );
         break;
       case BrowseActionType.goBack:
         await webView.controller.goBack();
@@ -78,5 +81,15 @@ class BrowserBloc extends web.NavigationEventListener {
     _browseActionController.close();
     _forwardController.close();
     _backController.close();
+  }
+
+  String _sanitizeUrl(String url) {
+    if (url.startsWith('http')) {
+      return url;
+    } else if (url.endsWith('.com')) {
+      return 'https://$url';
+    } else {
+      return 'https://www.google.com/search?q=${Uri.encodeQueryComponent(url)}';
+    }
   }
 }
