@@ -32,34 +32,38 @@ void main() {
   fidl_web.NavigationControllerProxy mockNavigationController =
       MockNavigationControllerProxy();
 
-  group('Custom platform implementation', () {
-    setUpAll(() {
-      when(mockWebServices.navigationController)
-          .thenReturn(mockNavigationController);
-      WebView.platform = FuchsiaWebView(fuchsiaWebServices: mockWebServices);
-    });
+  setUpAll(() {
+    when(mockWebServices.navigationController)
+        .thenReturn(mockNavigationController);
+    WebView.platform = FuchsiaWebView(fuchsiaWebServices: mockWebServices);
+  });
 
-    tearDownAll(() {
-      WebView.platform = null;
-    });
+  tearDownAll(() {
+    WebView.platform = null;
+  });
 
-    testWidgets('Create WebView', (WidgetTester tester) async {
-      await tester.pumpWidget(const WebView());
+  testWidgets('Create WebView', (WidgetTester tester) async {
+    await tester.pumpWidget(const WebView());
+  });
+
+  group('navigation: ', () {
+    WebViewController webViewController;
+    WebView webView;
+
+    setUp(() {
+      webView = WebView(
+        onWebViewCreated: (WebViewController webViewCtl) {
+          webViewController = webViewCtl;
+        },
+      );
     });
 
     testWidgets('loadUrl', (WidgetTester tester) async {
-      WebViewController controller;
-      await tester.pumpWidget(
-        WebView(
-          onWebViewCreated: (WebViewController webViewController) {
-            controller = webViewController;
-          },
-        ),
-      );
+      await tester.pumpWidget(webView);
 
       final headers = <String, String>{'header': 'value'};
       String url = 'https://google.com';
-      await controller.loadUrl(url, headers: headers);
+      await webViewController.loadUrl(url, headers: headers);
 
       verify(mockNavigationController.loadUrl(
           url,
@@ -70,6 +74,64 @@ void main() {
                   name: utf8.encode('header'), value: utf8.encode('value'))
             ],
           )));
+    });
+
+    testWidgets('currentUrl', (WidgetTester tester) async {
+      await tester.pumpWidget(webView);
+
+      const fooUrl = 'www.foo.com';
+      when(mockNavigationController.getVisibleEntry()).thenAnswer(
+          (_) => (Future.value(fidl_web.NavigationState(url: fooUrl))));
+
+      final resUrl = await webViewController.currentUrl();
+
+      verify(mockNavigationController.getVisibleEntry());
+      expect(resUrl, 'www.foo.com');
+    });
+
+    testWidgets('canGoBack', (WidgetTester tester) async {
+      await tester.pumpWidget(webView);
+
+      when(mockNavigationController.getVisibleEntry()).thenAnswer(
+          (_) => (Future.value(fidl_web.NavigationState(canGoBack: true))));
+
+      final canGoBack = await webViewController.canGoBack();
+
+      verify(mockNavigationController.getVisibleEntry());
+      expect(canGoBack, true);
+    });
+
+    testWidgets('canGoForward', (WidgetTester tester) async {
+      await tester.pumpWidget(webView);
+
+      when(mockNavigationController.getVisibleEntry()).thenAnswer(
+          (_) => (Future.value(fidl_web.NavigationState(canGoForward: true))));
+
+      final canGoForward = await webViewController.canGoForward();
+
+      verify(mockNavigationController.getVisibleEntry());
+      expect(canGoForward, true);
+    });
+
+    testWidgets('goBack', (WidgetTester tester) async {
+      await tester.pumpWidget(webView);
+
+      await webViewController.goBack();
+      verify(mockNavigationController.goBack());
+    });
+
+    testWidgets('goForward', (WidgetTester tester) async {
+      await tester.pumpWidget(webView);
+
+      await webViewController.goForward();
+      verify(mockNavigationController.goForward());
+    });
+
+    testWidgets('reload', (WidgetTester tester) async {
+      await tester.pumpWidget(webView);
+
+      await webViewController.reload();
+      verify(mockNavigationController.reload(fidl_web.ReloadType.partialCache));
     });
   });
 }

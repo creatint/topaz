@@ -35,10 +35,8 @@ class FuchsiaWebView implements WebViewPlatform {
   }) {
     assert(webViewPlatformCallbacksHandler != null);
 
-    // TODO(nkorsote): figure what actual ID should be used instead of -1. Also,
-    // consider extracting to a constant.
     final controller = FuchsiaWebViewPlatformController(
-        -1, webViewPlatformCallbacksHandler, fuchsiaWebServices);
+        webViewPlatformCallbacksHandler, fuchsiaWebServices);
 
     onWebViewPlatformCreated(controller);
     return ChildView(

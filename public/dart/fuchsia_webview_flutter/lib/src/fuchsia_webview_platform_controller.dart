@@ -21,13 +21,11 @@ class FuchsiaWebViewPlatformController implements WebViewPlatformController {
 
   /// Initializes [FuchsiaWebViewPlatformController]
   FuchsiaWebViewPlatformController(
-      int id, this._platformCallbacksHandler, this._fuchsiaWebServices)
+      this._platformCallbacksHandler, this._fuchsiaWebServices)
       : assert(_platformCallbacksHandler != null) {
     // TODO(nkorsote): remove this prints with an actual impl. The prints are
     // here to satisfy our strict dart linter for now.
-    print('id: $id');
     print('_platformCallbacksHandler: $_platformCallbacksHandler');
-    print('fuchsiaWebServices: $fuchsiaWebServices');
   }
 
   /// Returns [FuchsiaWebServices]
@@ -42,15 +40,17 @@ class FuchsiaWebViewPlatformController implements WebViewPlatformController {
   }
 
   @override
-  Future<bool> canGoBack() {
-    throw UnimplementedError(
-        'FuchsiaWebView canGoBack is not implemented on the current platform');
+  Future<bool> canGoBack() async {
+    final navigationState =
+        await fuchsiaWebServices.navigationController.getVisibleEntry();
+    return navigationState.canGoBack;
   }
 
   @override
-  Future<bool> canGoForward() {
-    throw UnimplementedError(
-        'FuchsiaWebView canGoForward is not implemented on the current platform');
+  Future<bool> canGoForward() async {
+    final navigationState =
+        await fuchsiaWebServices.navigationController.getVisibleEntry();
+    return navigationState.canGoForward;
   }
 
   @override
@@ -74,14 +74,12 @@ class FuchsiaWebViewPlatformController implements WebViewPlatformController {
 
   @override
   Future<void> goBack() {
-    throw UnimplementedError(
-        'FuchsiaWebView goBack is not implemented on the current platform');
+    return fuchsiaWebServices.navigationController.goBack();
   }
 
   @override
   Future<void> goForward() {
-    throw UnimplementedError(
-        'FuchsiaWebView goForward is not implemented on the current platform');
+    return fuchsiaWebServices.navigationController.goForward();
   }
 
   @override
@@ -109,8 +107,8 @@ class FuchsiaWebViewPlatformController implements WebViewPlatformController {
 
   @override
   Future<void> reload() {
-    throw UnimplementedError(
-        'FuchsiaWebView reload is not implemented on the current platform');
+    return fuchsiaWebServices.navigationController
+        .reload(fidl_web.ReloadType.partialCache);
   }
 
   @override

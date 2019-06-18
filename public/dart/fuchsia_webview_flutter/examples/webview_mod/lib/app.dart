@@ -58,53 +58,102 @@ class AppState extends State<App> {
           children: <Widget>[
             Row(
               children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _textEditingController,
-                  ),
-                ),
+                _buildBackBtn(),
+                _buildFwdBtn(),
+                _buildReloadBtn(),
+                _buildUrlTextField(),
                 _buildEnterBtn(),
-                Padding(padding: EdgeInsets.all(4.0)),
                 _buildClearBtn(),
+                _buildCurrentBtn(),
               ],
             ),
-            Expanded(
-              child: _buildWebview(),
-            ),
+            _buildWebview(),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildUrlTextField() {
+    return Expanded(
+      child: TextField(
+        controller: _textEditingController,
+        decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: const BorderRadius.all(
+                Radius.circular(25.0),
+              ),
+            ),
+            filled: true,
+            hintStyle: TextStyle(color: Colors.grey[800]),
+            hintText: 'Enter URL',
+            fillColor: Colors.white70),
+      ),
+    );
+  }
+
   Widget _buildEnterBtn() {
-    return RaisedButton(
-      child: const Text('Enter'),
-      color: Theme.of(context).accentColor,
-      elevation: 4.0,
-      splashColor: Colors.blueGrey,
-      onPressed: () {
-        _loadUrl(_textEditingController.text);
-      },
+    return IconButton(
+      icon: Icon(Icons.play_arrow),
+      tooltip: 'Enter',
+      onPressed: () => _loadUrl(_textEditingController.text),
     );
   }
 
   Widget _buildClearBtn() {
-    return RaisedButton(
-      child: const Text('Clear'),
-      color: Theme.of(context).accentColor,
-      elevation: 4.0,
-      splashColor: Colors.blueGrey,
+    return IconButton(
+      icon: Icon(Icons.clear),
+      tooltip: 'Clear',
       onPressed: _textEditingController.clear,
     );
   }
 
+  Widget _buildCurrentBtn() {
+    return RaisedButton(
+      child: const Text('Current'),
+      color: Theme.of(context).accentColor,
+      elevation: 4.0,
+      splashColor: Colors.blueGrey,
+      onPressed: () {
+        _webViewController.currentUrl().then((url) {
+          _textEditingController.text = url;
+        });
+      },
+    );
+  }
+
+  Widget _buildReloadBtn() {
+    return IconButton(
+      icon: Icon(Icons.refresh),
+      tooltip: 'Reload',
+      onPressed: () => _webViewController.reload(),
+    );
+  }
+
+  Widget _buildBackBtn() {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      tooltip: 'Back',
+      onPressed: () => _webViewController?.goBack()
+    );
+  }
+
+  Widget _buildFwdBtn() {
+    return IconButton(
+      icon: Icon(Icons.arrow_forward),
+      tooltip: 'Forward',
+      onPressed: () => _webViewController?.goForward()
+    );
+  }
+
   Widget _buildWebview() {
-    return Container(
-      child: WebView(
-        onWebViewCreated: (WebViewController controller) {
-          _webViewController = controller;
-        },
+    return Expanded(
+      child: Container(
+        child: WebView(
+          onWebViewCreated: (WebViewController controller) {
+            _webViewController = controller;
+          },
+        ),
       ),
     );
   }
