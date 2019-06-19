@@ -3,6 +3,7 @@
 # found in the LICENSE file.
 
 import("//build/packages/prebuilt_package.gni")
+import("//build/packages/prebuilt_test_package.gni")
 
 prebuilt_package("chromium") {
   archive = "//topaz/third_party/chromium/arch/$target_cpu/chromium.far"
@@ -10,4 +11,40 @@ prebuilt_package("chromium") {
 
 prebuilt_package("web_runner") {
   archive = "//topaz/third_party/chromium/arch/$target_cpu/web_runner.far"
+}
+
+# Prebuilt FAR tests
+# TODO(chok): Use prebuilt_test_manifest() template when fxr/293408 is submitted
+
+test_env = [
+  {
+    dimensions = {
+      device_type = "Intel NUC Kit NUC7i5DNHE"
+    }
+    tags = [ "chromium-prebuilts" ]
+  },
+]
+
+test_names = [
+  "base_unittests",
+  "cast_runner_integration_tests",
+  "web_runner_integration_tests",
+  "ipc_tests",
+  "media_unittests",
+  "mojo_unittests",
+  "skia_unittests",
+  "blink_common_unittests",
+]
+
+foreach(test_name, test_names) {
+  prebuilt_test_package(test_name) {
+    archive = "//prebuilt/third_party/chromium_tests/arch/x64/${test_name}.far"
+    package = test_name
+    tests = [
+      {
+        component_name = test_name
+        environments = test_env
+      },
+    ]
+  }
 }
