@@ -119,7 +119,7 @@ class ChildBinding extends $fidl.AsyncBinding<Child> {
 }
 
 // getChild: () -> ($fidl.InterfaceHandle<Child> c)
-const int _kParent_GetChild_Ordinal = 915586153;
+const int _kParent_GetChild_Ordinal = 0x3692bc6900000000;
 const $fidl.MethodType _kParent_GetChild_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -129,7 +129,7 @@ const $fidl.MethodType _kParent_GetChild_Type = $fidl.MethodType(
   name: r"Parent.GetChild",
 );
 // getChildRequest: () -> ($fidl.InterfaceRequest<Child> r)
-const int _kParent_GetChildRequest_Ordinal = 1068158078;
+const int _kParent_GetChildRequest_Ordinal = 0x3faacc7e00000000;
 const $fidl.MethodType _kParent_GetChildRequest_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -139,7 +139,7 @@ const $fidl.MethodType _kParent_GetChildRequest_Type = $fidl.MethodType(
   name: r"Parent.GetChildRequest",
 );
 // takeChild: ($fidl.InterfaceHandle<Child> c)
-const int _kParent_TakeChild_Ordinal = 1275478777;
+const int _kParent_TakeChild_Ordinal = 0x4c0642f900000000;
 const $fidl.MethodType _kParent_TakeChild_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$fidl.InterfaceHandle<Child>>(
@@ -149,7 +149,7 @@ const $fidl.MethodType _kParent_TakeChild_Type = $fidl.MethodType(
   name: r"Parent.TakeChild",
 );
 // takeChildRequest: ($fidl.InterfaceRequest<Child> r)
-const int _kParent_TakeChildRequest_Ordinal = 1589872250;
+const int _kParent_TakeChildRequest_Ordinal = 0x5ec3867a00000000;
 const $fidl.MethodType _kParent_TakeChildRequest_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$fidl.InterfaceRequest<Child>>(

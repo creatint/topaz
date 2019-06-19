@@ -73,7 +73,7 @@ class Encoder {
 
   void encodeMessageHeader(int ordinal, int txid) {
     alloc(kMessageHeaderSize);
-    encodeUint32(ordinal, kMessageOrdinalOffset);
+    encodeUint64(ordinal, kMessageOrdinalOffset);
     encodeUint32(txid, kMessageTxidOffset);
   }
 

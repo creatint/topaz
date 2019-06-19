@@ -194,14 +194,14 @@ const $fidl.TableType<Table> kTable_Type = $fidl.TableType<Table>(
 typedef _VoidCallback = void Function();
 
 // method: ()
-const int _kInterface_Method_Ordinal = 1061382220;
+const int _kInterface_Method_Ordinal = 0x3f43684c00000000;
 const $fidl.MethodType _kInterface_Method_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"Interface.Method",
 );
 // onEvent:  -> ()
-const int _kInterface_OnEvent_Ordinal = 325918733;
+const int _kInterface_OnEvent_Ordinal = 0x136d200d00000000;
 const $fidl.MethodType _kInterface_OnEvent_Type = $fidl.MethodType(
   request: null,
   response: null,

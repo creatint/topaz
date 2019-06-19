@@ -38,6 +38,9 @@ abstract class {{ .Name }} {
 {{ range .Methods }}
 // {{ .Name }}: {{ if .HasRequest }}({{ template "Params" .Request }}){{ end }}{{ if .HasResponse }} -> ({{ template "Params" .Response.WireParameters }}){{ end }}
 const int {{ .OrdinalName }} = {{ .Ordinal }};
+{{- if ne .Ordinal .GenOrdinal }}
+const int {{ .GenOrdinalName }} = {{ .GenOrdinal }};
+{{ end }}
 const $fidl.MethodType {{ .TypeSymbol }} = {{ .TypeExpr }};
 {{- end }}
 
@@ -62,6 +65,9 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
 {{- range .Methods }}
 {{- if not .HasRequest }}
   {{- if .HasResponse }}
+      {{- if ne .Ordinal .GenOrdinal }}
+      case {{ .GenOrdinalName }}:
+      {{ end }}
       case {{ .OrdinalName }}:
         final String _name = {{ .TypeSymbol }}.name;
         try {
@@ -113,6 +119,9 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
 {{- range .Methods }}
   {{- if .HasRequest }}
     {{- if .HasResponse }}
+      {{- if ne .Ordinal .GenOrdinal }}
+      case {{ .GenOrdinalName }}:
+      {{ end }}
       case {{ .OrdinalName }}:
         final String _name = {{ .TypeSymbol }}.name;
         try {
@@ -256,6 +265,9 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
     switch ($message.ordinal) {
 {{- range .Methods }}
   {{- if .HasRequest }}
+      {{- if ne .Ordinal .GenOrdinal }}
+      case {{ .GenOrdinalName }}:
+      {{ end }}
       case {{ .OrdinalName }}:
         final String _name = {{ .TypeSymbol }}.name;
         try {
@@ -386,6 +398,9 @@ $async.Future<void>
 // {{ .Name }}: {{ if .HasRequest }}({{ template "AsyncParams" .Request }}){{ end -}}
                 {{- if .HasResponse }} -> ({{ template "AsyncParams" .Response.MethodParameters }}){{ end }}
 const int {{ .OrdinalName }} = {{ .Ordinal }};
+{{- if ne .Ordinal .GenOrdinal }}
+const int {{ .GenOrdinalName }} = {{ .GenOrdinal }};
+{{ end }}
 const $fidl.MethodType {{ .TypeSymbol }} = {{ .TypeExpr }};
 {{- end }}
 
@@ -484,6 +499,9 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
 {{- range .Methods }}
 {{- if not .HasRequest }}
   {{- if .HasResponse }}
+      {{- if ne .Ordinal .GenOrdinal }}
+      case {{ .GenOrdinalName }}:
+      {{ end }}
       case {{ .OrdinalName }}:
         final String _name = {{ .TypeSymbol }}.name;
         try {
@@ -528,6 +546,9 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
 {{- range .Methods }}
   {{- if .HasRequest }}
     {{- if .HasResponse }}
+      {{- if ne .Ordinal .GenOrdinal }}
+      case {{ .GenOrdinalName }}:
+      {{ end }}
       case {{ .OrdinalName }}:
         final String _name = {{ .TypeSymbol }}.name;
         try {
@@ -657,6 +678,9 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
     switch ($message.ordinal) {
     {{- range .Methods }}
       {{- if .HasRequest }}
+          {{- if ne .Ordinal .GenOrdinal }}
+          case {{ .GenOrdinalName }}:
+          {{ end }}
           case {{ .OrdinalName }}:
             final String _name = {{ .TypeSymbol }}.name;
             try {

@@ -177,8 +177,10 @@ type MethodResponse struct {
 
 // Method represents a method declaration within an interface declaration.
 type Method struct {
-	Ordinal            types.Ordinal
+	Ordinal            string
 	OrdinalName        string
+	GenOrdinal         string
+	GenOrdinalName     string
 	Name               string
 	HasRequest         bool
 	Request            []Parameter
@@ -596,7 +598,7 @@ func (c *compiler) compileLiteral(val types.Literal) string {
 		if err != nil {
 			panic(fmt.Sprintf("JSON IR contains invalid numeric literal: %s", val.Value))
 		}
-		return fmt.Sprintf("0x%s", strconv.FormatUint(num, 16))
+		return fmt.Sprintf("%#x", num)
 	case types.TrueLiteral:
 		return "true"
 	case types.FalseLiteral:
@@ -964,8 +966,10 @@ func (c *compiler) compileMethod(val types.Method, protocol Interface) Method {
 	}
 	_, transitional := val.LookupAttribute("Transitional")
 	return Method{
-		Ordinal:            val.Ordinal,
+		Ordinal:            fmt.Sprintf("%#x", uint64(val.Ordinal)<<32),
 		OrdinalName:        fmt.Sprintf("_k%s_%s_Ordinal", protocol.Name, val.Name),
+		GenOrdinal:         fmt.Sprintf("%#x", uint64(val.GenOrdinal)<<32),
+		GenOrdinalName:     fmt.Sprintf("_k%s_%s_GenOrdinal", protocol.Name, val.Name),
 		Name:               name,
 		HasRequest:         val.HasRequest,
 		Request:            request,

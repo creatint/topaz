@@ -343,7 +343,7 @@ typedef _VoidCallback = void Function();
 
 // noRequestNoResponse: ()
 const int _kWithAndWithoutRequestResponse_NoRequestNoResponse_Ordinal =
-    503576693;
+    0x1e03f87500000000;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_NoRequestNoResponse_Type = $fidl.MethodType(
   request: null,
@@ -352,7 +352,7 @@ const $fidl.MethodType
 );
 // noRequestEmptyResponse: () -> ()
 const int _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Ordinal =
-    1308023765;
+    0x4df6dbd500000000;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Type =
     $fidl.MethodType(
@@ -362,7 +362,7 @@ const $fidl.MethodType
 );
 // noRequestWithResponse: () -> (String ret)
 const int _kWithAndWithoutRequestResponse_NoRequestWithResponse_Ordinal =
-    107534328;
+    0x668d7f800000000;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_NoRequestWithResponse_Type =
     $fidl.MethodType(
@@ -376,7 +376,7 @@ const $fidl.MethodType
 );
 // withRequestNoResponse: (String arg)
 const int _kWithAndWithoutRequestResponse_WithRequestNoResponse_Ordinal =
-    432149361;
+    0x19c2137100000000;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_WithRequestNoResponse_Type =
     $fidl.MethodType(
@@ -390,7 +390,7 @@ const $fidl.MethodType
 );
 // withRequestEmptyResponse: (String arg) -> ()
 const int _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Ordinal =
-    1995585907;
+    0x76f2397300000000;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Type =
     $fidl.MethodType(
@@ -404,7 +404,7 @@ const $fidl.MethodType
 );
 // withRequestWithResponse: (String arg) -> (String ret)
 const int _kWithAndWithoutRequestResponse_WithRequestWithResponse_Ordinal =
-    426977568;
+    0x1973292000000000;
 const $fidl.MethodType
     _kWithAndWithoutRequestResponse_WithRequestWithResponse_Type =
     $fidl.MethodType(
@@ -421,7 +421,8 @@ const $fidl.MethodType
   name: r"WithAndWithoutRequestResponse.WithRequestWithResponse",
 );
 // onEmptyResponse:  -> ()
-const int _kWithAndWithoutRequestResponse_OnEmptyResponse_Ordinal = 1769985842;
+const int _kWithAndWithoutRequestResponse_OnEmptyResponse_Ordinal =
+    0x697fd73200000000;
 const $fidl.MethodType _kWithAndWithoutRequestResponse_OnEmptyResponse_Type =
     $fidl.MethodType(
   request: null,
@@ -429,7 +430,8 @@ const $fidl.MethodType _kWithAndWithoutRequestResponse_OnEmptyResponse_Type =
   name: r"WithAndWithoutRequestResponse.OnEmptyResponse",
 );
 // onWithResponse:  -> (String ret)
-const int _kWithAndWithoutRequestResponse_OnWithResponse_Ordinal = 2051478023;
+const int _kWithAndWithoutRequestResponse_OnWithResponse_Ordinal =
+    0x7a47120700000000;
 const $fidl.MethodType _kWithAndWithoutRequestResponse_OnWithResponse_Type =
     $fidl.MethodType(
   request: null,
@@ -997,7 +999,7 @@ class WithAndWithoutRequestResponseBinding
 }
 
 // errorAsPrimitive: () -> ()
-const int _kWithErrorSyntax_ErrorAsPrimitive_Ordinal = 2069369145;
+const int _kWithErrorSyntax_ErrorAsPrimitive_Ordinal = 0x7b58113900000000;
 const $fidl.MethodType _kWithErrorSyntax_ErrorAsPrimitive_Type =
     $fidl.MethodType(
   request: null,
@@ -1008,7 +1010,7 @@ const $fidl.MethodType _kWithErrorSyntax_ErrorAsPrimitive_Type =
   name: r"WithErrorSyntax.ErrorAsPrimitive",
 );
 // errorAsEnum: () -> ()
-const int _kWithErrorSyntax_ErrorAsEnum_Ordinal = 1284890143;
+const int _kWithErrorSyntax_ErrorAsEnum_Ordinal = 0x4c95de1f00000000;
 const $fidl.MethodType _kWithErrorSyntax_ErrorAsEnum_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -1261,7 +1263,7 @@ class WithErrorSyntaxBinding extends $fidl.AsyncBinding<WithErrorSyntax> {
 }
 
 // methodA: (int a, int b)
-const int _kOvernetInternalProtocol_MethodA_Ordinal = 1993818253;
+const int _kOvernetInternalProtocol_MethodA_Ordinal = 0x76d7408d00000000;
 const $fidl.MethodType _kOvernetInternalProtocol_MethodA_Type =
     $fidl.MethodType(
   request: <$fidl.MemberType>[
@@ -1272,7 +1274,7 @@ const $fidl.MethodType _kOvernetInternalProtocol_MethodA_Type =
   name: r"OvernetInternalProtocol.MethodA",
 );
 // eventA:  -> (int a, int b)
-const int _kOvernetInternalProtocol_EventA_Ordinal = 1746007436;
+const int _kOvernetInternalProtocol_EventA_Ordinal = 0x6811f58c00000000;
 const $fidl.MethodType _kOvernetInternalProtocol_EventA_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -1282,7 +1284,7 @@ const $fidl.MethodType _kOvernetInternalProtocol_EventA_Type = $fidl.MethodType(
   name: r"OvernetInternalProtocol.EventA",
 );
 // methodB: (int a, int b) -> (int result)
-const int _kOvernetInternalProtocol_MethodB_Ordinal = 952134976;
+const int _kOvernetInternalProtocol_MethodB_Ordinal = 0x38c06d4000000000;
 const $fidl.MethodType _kOvernetInternalProtocol_MethodB_Type =
     $fidl.MethodType(
   request: <$fidl.MemberType>[
@@ -1295,7 +1297,7 @@ const $fidl.MethodType _kOvernetInternalProtocol_MethodB_Type =
   name: r"OvernetInternalProtocol.MethodB",
 );
 // mutateSocket: ($zx.Socket a) -> ($zx.Socket b)
-const int _kOvernetInternalProtocol_MutateSocket_Ordinal = 1691201382;
+const int _kOvernetInternalProtocol_MutateSocket_Ordinal = 0x64cdaf6600000000;
 const $fidl.MethodType _kOvernetInternalProtocol_MutateSocket_Type =
     $fidl.MethodType(
   request: <$fidl.MemberType>[
@@ -1649,7 +1651,7 @@ class OvernetInternalProtocolBinding
 }
 
 // methodA: (int a, int b)
-const int _kSocketControlProtocol_MethodA_Ordinal = 1007842318;
+const int _kSocketControlProtocol_MethodA_Ordinal = 0x3c12740e00000000;
 const $fidl.MethodType _kSocketControlProtocol_MethodA_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
@@ -1659,7 +1661,7 @@ const $fidl.MethodType _kSocketControlProtocol_MethodA_Type = $fidl.MethodType(
   name: r"SocketControlProtocol.MethodA",
 );
 // eventA:  -> (int a, int b)
-const int _kSocketControlProtocol_EventA_Ordinal = 955483393;
+const int _kSocketControlProtocol_EventA_Ordinal = 0x38f3850100000000;
 const $fidl.MethodType _kSocketControlProtocol_EventA_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -1669,7 +1671,7 @@ const $fidl.MethodType _kSocketControlProtocol_EventA_Type = $fidl.MethodType(
   name: r"SocketControlProtocol.EventA",
 );
 // methodB: (int a, int b) -> (int result)
-const int _kSocketControlProtocol_MethodB_Ordinal = 677342235;
+const int _kSocketControlProtocol_MethodB_Ordinal = 0x285f6c1b00000000;
 const $fidl.MethodType _kSocketControlProtocol_MethodB_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
@@ -1681,7 +1683,7 @@ const $fidl.MethodType _kSocketControlProtocol_MethodB_Type = $fidl.MethodType(
   name: r"SocketControlProtocol.MethodB",
 );
 // mutateSocket: ($zx.Socket a) -> ($zx.Socket b)
-const int _kSocketControlProtocol_MutateSocket_Ordinal = 255772213;
+const int _kSocketControlProtocol_MutateSocket_Ordinal = 0xf3ec63500000000;
 const $fidl.MethodType _kSocketControlProtocol_MutateSocket_Type =
     $fidl.MethodType(
   request: <$fidl.MemberType>[
@@ -2035,7 +2037,7 @@ class SocketControlProtocolBinding
 }
 
 // methodA: (int a, int b)
-const int _kChannelProtocol_MethodA_Ordinal = 1432785874;
+const int _kChannelProtocol_MethodA_Ordinal = 0x556693d200000000;
 const $fidl.MethodType _kChannelProtocol_MethodA_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
@@ -2045,7 +2047,7 @@ const $fidl.MethodType _kChannelProtocol_MethodA_Type = $fidl.MethodType(
   name: r"ChannelProtocol.MethodA",
 );
 // eventA:  -> (int a, int b)
-const int _kChannelProtocol_EventA_Ordinal = 477676034;
+const int _kChannelProtocol_EventA_Ordinal = 0x1c78c20200000000;
 const $fidl.MethodType _kChannelProtocol_EventA_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -2055,7 +2057,7 @@ const $fidl.MethodType _kChannelProtocol_EventA_Type = $fidl.MethodType(
   name: r"ChannelProtocol.EventA",
 );
 // methodB: (int a, int b) -> (int result)
-const int _kChannelProtocol_MethodB_Ordinal = 180770075;
+const int _kChannelProtocol_MethodB_Ordinal = 0xac6551b00000000;
 const $fidl.MethodType _kChannelProtocol_MethodB_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
@@ -2067,7 +2069,7 @@ const $fidl.MethodType _kChannelProtocol_MethodB_Type = $fidl.MethodType(
   name: r"ChannelProtocol.MethodB",
 );
 // mutateSocket: ($zx.Socket a) -> ($zx.Socket b)
-const int _kChannelProtocol_MutateSocket_Ordinal = 1258480262;
+const int _kChannelProtocol_MutateSocket_Ordinal = 0x4b02e28600000000;
 const $fidl.MethodType _kChannelProtocol_MutateSocket_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Socket>(
@@ -2415,7 +2417,7 @@ class ChannelProtocolBinding extends $fidl.AsyncBinding<ChannelProtocol> {
 }
 
 // methodA: (int a, int b)
-const int _kKitchenSink_MethodA_Ordinal = 450577456;
+const int _kKitchenSink_MethodA_Ordinal = 0x1adb443000000000;
 const $fidl.MethodType _kKitchenSink_MethodA_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
@@ -2425,7 +2427,7 @@ const $fidl.MethodType _kKitchenSink_MethodA_Type = $fidl.MethodType(
   name: r"KitchenSink.MethodA",
 );
 // eventA:  -> (int a, int b)
-const int _kKitchenSink_EventA_Ordinal = 1795426833;
+const int _kKitchenSink_EventA_Ordinal = 0x6b040a1100000000;
 const $fidl.MethodType _kKitchenSink_EventA_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -2435,7 +2437,7 @@ const $fidl.MethodType _kKitchenSink_EventA_Type = $fidl.MethodType(
   name: r"KitchenSink.EventA",
 );
 // methodB: (int a, int b) -> (int result)
-const int _kKitchenSink_MethodB_Ordinal = 1999489700;
+const int _kKitchenSink_MethodB_Ordinal = 0x772dcaa400000000;
 const $fidl.MethodType _kKitchenSink_MethodB_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
@@ -2447,7 +2449,7 @@ const $fidl.MethodType _kKitchenSink_MethodB_Type = $fidl.MethodType(
   name: r"KitchenSink.MethodB",
 );
 // mutateSocket: ($zx.Socket a) -> ($zx.Socket b)
-const int _kKitchenSink_MutateSocket_Ordinal = 115851270;
+const int _kKitchenSink_MutateSocket_Ordinal = 0x6e7c00600000000;
 const $fidl.MethodType _kKitchenSink_MutateSocket_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Socket>(
