@@ -109,6 +109,8 @@ Future<String> _readInspect() async {
     // TODO(vickiecheng): remove this one once stories reuse session envs.
     '/hub/r/modular_test_harness_*/*/r/session-*/*/r/*/*/c/flutter_*_runner.cmx/*/c/$_testAppName/*/out/debug/root.inspect',
     '/hub/r/modular_test_harness_*/*/c/flutter_*_runner.cmx/*/c/$_testAppName/*/out/debug/root.inspect',
+    '/hub/r/mth_*/*/r/session-*/*/r/*/*/c/flutter_*_runner.cmx/*/c/$_testAppName/*/out/debug/root.inspect',
+    '/hub/r/mth_*/*/c/flutter_*_runner.cmx/*/c/$_testAppName/*/out/debug/root.inspect',
   ];
   for (final globString in globs) {
     await for (var f in Glob(globString).list()) {
