@@ -40,7 +40,7 @@ dart_fuchsia_test("flutter_screencap_test") {
     "//sdk/fidl/fuchsia.ui.scenic",
     "//sdk/fidl/fuchsia.ui.views",
     "//third_party/dart-pkg/pub/pedantic",
-    "//topaz/public/dart/fuchsia_modular_test",
+    "//topaz/public/dart/fuchsia_modular_testing",
     "//topaz/public/dart/fuchsia_scenic",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/dart/zircon",

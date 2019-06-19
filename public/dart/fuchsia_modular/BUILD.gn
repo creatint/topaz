@@ -120,7 +120,7 @@ dart_fuchsia_test("fuchsia_modular_package_integration_tests") {
     "//sdk/fidl/fuchsia.modular.testing",
     "//third_party/dart-pkg/pub/mockito",  # Remove after DX-470 is fixed
     "//third_party/dart-pkg/pub/test",
-    "//topaz/public/dart/fuchsia_modular_test",
+    "//topaz/public/dart/fuchsia_modular_testing",
   ]
   environments = basic_envs
 }

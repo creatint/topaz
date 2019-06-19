@@ -17,7 +17,7 @@ import 'package:fidl_fuchsia_ui_app/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_scenic/fidl_async.dart';
 import 'package:fidl_fuchsia_ui_views/fidl_async.dart';
-import 'package:fuchsia_modular_test/test.dart';
+import 'package:fuchsia_modular_testing/test.dart';
 import 'package:fuchsia_scenic/views.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:pedantic/pedantic.dart';

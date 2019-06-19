@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import 'package:fidl_fuchsia_modular_testing/fidl_async.dart' as fidl_testing;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as fidl_modular;
 import 'package:fuchsia_logger/logger.dart';
-import 'package:fuchsia_modular_test/src/test_harness_fixtures.dart';
+import 'package:fuchsia_modular_testing/src/test_harness_fixtures.dart';
 
 void main() {
   setupLogger();

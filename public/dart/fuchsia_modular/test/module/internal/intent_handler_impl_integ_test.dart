@@ -10,7 +10,7 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart' as fidl_mod;
 import 'package:fuchsia_services/services.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart' as fidl_sys;
 import 'package:fuchsia_modular/src/module/internal/_intent_handler_impl.dart';
-import 'package:fuchsia_modular_test/test.dart';
+import 'package:fuchsia_modular_testing/test.dart';
 import 'package:fidl_fuchsia_modular_testing/fidl_async.dart';
 import 'package:test/test.dart';
 

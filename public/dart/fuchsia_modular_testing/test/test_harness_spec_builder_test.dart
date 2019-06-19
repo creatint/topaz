@@ -7,8 +7,8 @@ import 'dart:convert';
 // ignore_for_file: implementation_imports
 import 'package:fidl_fuchsia_modular_testing/fidl_async.dart';
 import 'package:fuchsia_logger/logger.dart';
-import 'package:fuchsia_modular_test/src/test_harness_fixtures.dart';
-import 'package:fuchsia_modular_test/src/test_harness_spec_builder.dart';
+import 'package:fuchsia_modular_testing/src/test_harness_fixtures.dart';
+import 'package:fuchsia_modular_testing/src/test_harness_spec_builder.dart';
 import 'package:test/test.dart';
 import 'package:zircon/zircon.dart';
 

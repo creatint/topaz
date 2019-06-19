@@ -5,6 +5,7 @@ sdk://dart/fuchsia_inspect
 sdk://dart/fuchsia_logger
 sdk://dart/fuchsia_media
 sdk://dart/fuchsia_modular
+sdk://dart/fuchsia_modular_testing
 sdk://dart/fuchsia_scenic
 sdk://dart/fuchsia_scenic_flutter
 sdk://dart/fuchsia_services
@@ -23,6 +24,8 @@ sdk://fidl/fuchsia.media.audio
 sdk://fidl/fuchsia.mem
 sdk://fidl/fuchsia.modular
 sdk://fidl/fuchsia.modular.auth
+sdk://fidl/fuchsia.modular.session
+sdk://fidl/fuchsia.modular.testing
 sdk://fidl/fuchsia.speech
 sdk://fidl/fuchsia.sys
 sdk://fidl/fuchsia.sysmem
