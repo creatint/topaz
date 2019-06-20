@@ -19,9 +19,7 @@ int main(int argc, const char** argv) {
   auto& benchmarks_runner = *maybe_benchmarks_runner;
 
   if (benchmarking::IsVulkanSupported()) {
-    // DISABLED: See SCN-1223
-    // AddGraphicsBenchmarks(&benchmarks_runner);
-    FXL_LOG(INFO) << "Graphics performance tests disabled";
+    AddGraphicsBenchmarks(&benchmarks_runner);
   } else {
     FXL_LOG(INFO) << "Vulkan not supported; graphics tests skipped.";
   }
