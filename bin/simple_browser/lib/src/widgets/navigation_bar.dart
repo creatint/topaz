@@ -70,6 +70,7 @@ class _NavigationBarState extends State<NavigationBar> {
             hintColor: textColor,
             cursorColor: textColor,
             canvasColor: bgColor,
+            accentColor: textColor,
             textTheme: TextTheme(
               body1: TextStyle(color: textColor),
               subhead: TextStyle(color: textColor),
@@ -81,9 +82,35 @@ class _NavigationBarState extends State<NavigationBar> {
       child: Material(
         child: SizedBox(
           height: 26.0,
-          child: _buildWidgets(),
+          child: Stack(
+            children: <Widget>[
+              Positioned.fill(child: _buildWidgets()),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: _buildLoadingIndicator(),
+              ),
+            ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildLoadingIndicator() {
+    return StreamBuilder<bool>(
+      stream: widget.bloc.loadedState,
+      initialData: true,
+      builder: (context, snapshot) {
+        return snapshot.data
+            ? Offstage()
+            : SizedBox(
+                width: double.infinity,
+                height: 4.0,
+                child: LinearProgressIndicator(
+                  backgroundColor: Colors.transparent,
+                ),
+              );
+      },
     );
   }
 

@@ -27,6 +27,8 @@ class BrowserBloc extends web.NavigationEventListener {
   Stream<bool> get forwardState => _forwardController.stream;
   final _backController = StreamController<bool>.broadcast();
   Stream<bool> get backState => _backController.stream;
+  final _loadedController = StreamController<bool>.broadcast();
+  Stream<bool> get loadedState => _loadedController.stream;
 
   // Sinks
   final _browseActionController = StreamController<BrowseAction>();
@@ -56,6 +58,9 @@ class BrowserBloc extends web.NavigationEventListener {
     if (event.canGoBack != null) {
       _backController.add(event.canGoBack);
     }
+    if (event.isMainDocumentLoaded != null) {
+      _loadedController.add(event.isMainDocumentLoaded);
+    }
   }
 
   Future<void> _handleAction(BrowseAction action) async {
@@ -81,6 +86,7 @@ class BrowserBloc extends web.NavigationEventListener {
     _browseActionController.close();
     _forwardController.close();
     _backController.close();
+    _loadedController.close();
   }
 
   String _sanitizeUrl(String url) {
