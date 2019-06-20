@@ -6,6 +6,8 @@ import 'dart:async';
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_amber/fidl_async.dart' as amber;
+import 'package:fidl_fuchsia_pkg/fidl_async.dart' as pkg;
+import 'package:fidl_fuchsia_pkg_rewrite/fidl_async.dart' as pkg_rewrite;
 import 'package:fidl_fuchsia_device_manager/fidl_async.dart' as devmgr;
 import 'package:flutter/foundation.dart';
 import 'package:fuchsia_logger/logger.dart';
@@ -23,7 +25,16 @@ const Duration _uptimeRefreshInterval = Duration(seconds: 1);
 abstract class SystemInterface {
   int get currentTime;
 
-  amber.Control get amberControl;
+  Future<bool> checkForSystemUpdate();
+
+  Stream<pkg.RepositoryConfig> listRepositories();
+
+  Stream<pkg_rewrite.Rule> listRules();
+
+  Stream<pkg_rewrite.Rule> listStaticRules();
+
+  Future<int> updateRules(
+      Iterable<pkg_rewrite.Rule> Function(List<pkg_rewrite.Rule>) action);
 
   void dispose();
 }
@@ -32,19 +43,93 @@ class DefaultSystemInterfaceImpl implements SystemInterface {
   /// Controller for amber (our update service).
   final amber.ControlProxy _amberControl = amber.ControlProxy();
 
+  /// Controller for package repo manager and rewrite engine (our update service).
+  final pkg.RepositoryManagerProxy _repositoryManager =
+      pkg.RepositoryManagerProxy();
+  final pkg_rewrite.EngineProxy _rewriteManager = pkg_rewrite.EngineProxy();
+
   DefaultSystemInterfaceImpl() {
     StartupContext.fromStartupInfo().incoming.connectToService(_amberControl);
+    StartupContext.fromStartupInfo()
+        .incoming
+        .connectToService(_repositoryManager);
+    StartupContext.fromStartupInfo().incoming.connectToService(_rewriteManager);
   }
 
   @override
   int get currentTime => System.clockGet(_zxClockMonotonic) ~/ 1000;
 
   @override
-  amber.Control get amberControl => _amberControl;
+  Future<bool> checkForSystemUpdate() {
+    return _amberControl.checkForSystemUpdate();
+  }
+
+  @override
+  Stream<pkg.RepositoryConfig> listRepositories() async* {
+    final iter = pkg.RepositoryIteratorProxy();
+    await _repositoryManager.list(iter.ctrl.request());
+
+    List<pkg.RepositoryConfig> repos;
+    do {
+      repos = await iter.next();
+      for (var repo in repos) {
+        yield repo;
+      }
+    } while (repos.isNotEmpty);
+  }
+
+  @override
+  Stream<pkg_rewrite.Rule> listRules() {
+    return _listRules(_rewriteManager.list);
+  }
+
+  @override
+  Stream<pkg_rewrite.Rule> listStaticRules() {
+    return _listRules(_rewriteManager.listStatic);
+  }
+
+  Future<int> editRuleTransaction(
+      Future<void> Function(pkg_rewrite.EditTransaction) action) async {
+    // In most cases this loop will only run once, but to be safe against
+    // other writers we loop a few times.
+    for (var i = 0; i < 10; i++) {
+      final transaction = pkg_rewrite.EditTransactionProxy();
+      await _rewriteManager.startEditTransaction(transaction.ctrl.request());
+      await action(transaction);
+      final status = await transaction.commit();
+      switch (status) {
+        case ZX.OK:
+          return ZX.OK;
+        case ZX.ERR_UNAVAILABLE:
+          continue;
+        default:
+          return status;
+      }
+    }
+    return ZX.ERR_UNAVAILABLE;
+  }
+
+  @override
+  Future<int> updateRules(
+      Iterable<pkg_rewrite.Rule> Function(List<pkg_rewrite.Rule>)
+          action) async {
+    return editRuleTransaction((tx) async {
+      final rules = <pkg_rewrite.Rule>[];
+      await _listRules(tx.listDynamic).forEach(rules.add);
+
+      await tx.resetAll();
+
+      for (var rule in action(rules).toList().reversed) {
+        await tx.add(rule);
+      }
+    });
+  }
 
   @override
   void dispose() {
     _amberControl.ctrl.close();
+    _repositoryManager.ctrl.close();
+    _rewriteManager.ctrl.close();
   }
 }
 
@@ -75,7 +160,9 @@ class DeviceSettingsModel extends Model {
 
   ValueNotifier<bool> channelPopupShowing = ValueNotifier<bool>(false);
 
-  List<amber.SourceConfig> _channels;
+  final List<pkg.RepositoryConfig> _repos = [];
+  final List<pkg_rewrite.Rule> _rules = [];
+  final List<pkg_rewrite.Rule> _staticRules = [];
 
   bool _isChannelUpdating = false;
 
@@ -88,10 +175,23 @@ class DeviceSettingsModel extends Model {
 
   DateTime get lastUpdate => _lastUpdate;
 
-  List<amber.SourceConfig> get channels => _channels ?? [];
-  Iterable<String> get selectedChannels => channels
-      .where((source) => source.statusConfig.enabled)
-      .map((config) => config.id);
+  List<pkg.RepositoryConfig> get repos => _repos;
+
+  List<pkg_rewrite.Rule> get rules => _rules;
+
+  String get currentChannel {
+    final rule =
+        rules.firstWhere(_ruleIsFuchsiaReplacement, orElse: () => null);
+
+    return rule?.literal?.hostReplacement;
+  }
+
+  String get defaultChannel {
+    final rule =
+        _staticRules.firstWhere(_ruleIsFuchsiaReplacement, orElse: () => null);
+
+    return rule?.literal?.hostReplacement;
+  }
 
   /// Determines whether the confirmation dialog for factory reset should
   /// be displayed.
@@ -112,35 +212,73 @@ class DeviceSettingsModel extends Model {
 
   /// Checks for update from the update service
   Future<void> checkForUpdates() async {
-    await _sysInterface.amberControl.checkForSystemUpdate();
+    await _sysInterface.checkForSystemUpdate();
     _lastUpdate = DateTime.now();
   }
 
-  Future<void> selectChannel(amber.SourceConfig selectedConfig) async {
+  Future<void> selectChannel(pkg.RepositoryConfig selectedConfig) async {
+    log.info('selecting channel ${selectedConfig.repoUrl}');
     channelPopupShowing.value = false;
     _setChannelState(updating: true);
 
-    // Disable all other channels, since amber currently doesn't handle
-    // more than one source well.
-    for (amber.SourceConfig config in channels) {
-      if (config.statusConfig.enabled) {
-        await _sysInterface.amberControl.setSrcEnabled(config.id, false);
+    final repoUrl = Uri.parse(selectedConfig.repoUrl);
+    final pkg_rewrite.Rule selectedRule = pkg_rewrite.Rule.withLiteral(
+        pkg_rewrite.LiteralRule(
+            hostMatch: 'fuchsia.com',
+            hostReplacement: repoUrl.host,
+            pathPrefixMatch: '/',
+            pathPrefixReplacement: '/'));
+
+    final status = await _sysInterface.updateRules((rules) sync* {
+      // Find the first fuchsia.com rule. If it doesn't exist, add it to the
+      // front of the rule set. Otherwise replace it, and filter out any
+      // duplicates.
+      final index = rules.indexWhere(_ruleIsFuchsiaReplacement);
+      if (index == -1) {
+        yield selectedRule;
+        yield* rules;
+      } else {
+        yield* rules.getRange(0, index);
+        yield selectedRule;
+        yield* rules
+            .getRange(index + 1, rules.length)
+            .where((rule) => !_ruleIsFuchsiaReplacement(rule));
       }
+    });
+
+    if (status != ZX.OK) {
+      log.severe('error while modifying rewrite rules: $status');
     }
 
-    if (selectedConfig != null) {
-      await _sysInterface.amberControl.setSrcEnabled(selectedConfig.id, true);
-    }
-    await _updateSources();
-
-    _setChannelState(updating: false);
+    await _update();
   }
 
-  Future<void> _updateSources() async {
+  Future<void> clearChannel() async {
+    log.info('clearing channel');
+    channelPopupShowing.value = false;
     _setChannelState(updating: true);
 
-    _channels = await _sysInterface.amberControl.listSrcs();
-    notifyListeners();
+    final status = await _sysInterface.updateRules(
+        (rules) => rules.where((rule) => !_ruleIsFuchsiaReplacement(rule)));
+
+    if (status != ZX.OK) {
+      log.severe('error while modifying rewrite rules: $status');
+    }
+
+    await _update();
+  }
+
+  Future<void> _update() async {
+    _setChannelState(updating: true);
+
+    _repos.clear();
+    await _sysInterface.listRepositories().forEach(_repos.add);
+
+    _rules.clear();
+    await _sysInterface.listRules().forEach(_rules.add);
+
+    _staticRules.clear();
+    await _sysInterface.listStaticRules().forEach(_staticRules.add);
 
     _setChannelState(updating: false);
   }
@@ -172,7 +310,7 @@ class DeviceSettingsModel extends Model {
     _uptimeRefreshTimer =
         Timer.periodic(_uptimeRefreshInterval, (_) => updateUptime());
 
-    await _updateSources();
+    await _update();
 
     channelPopupShowing.addListener(notifyListeners);
   }
@@ -223,4 +361,25 @@ class DeviceSettingsModel extends Model {
     _showResetConfirmation = false;
     notifyListeners();
   }
+}
+
+Stream<pkg_rewrite.Rule> _listRules(
+    Future<void> Function(InterfaceRequest<pkg_rewrite.RuleIterator>)
+        action) async* {
+  final iter = pkg_rewrite.RuleIteratorProxy();
+  await action(iter.ctrl.request());
+
+  List<pkg_rewrite.Rule> rules;
+  do {
+    rules = await iter.next();
+    for (var rule in rules) {
+      yield rule;
+    }
+  } while (rules.isNotEmpty);
+}
+
+bool _ruleIsFuchsiaReplacement(pkg_rewrite.Rule rule) {
+  return rule.literal != null &&
+      rule.literal.hostMatch == 'fuchsia.com' &&
+      rule.literal.pathPrefixMatch == '/';
 }

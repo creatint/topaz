@@ -70,11 +70,11 @@ SettingsSection _update(DeviceSettingsModel model, double scale) {
     scale: scale,
   );
 
-  final currentSourceText = SettingsText(
-      scale: scale, text: 'Current source: ${model.selectedChannels}');
+  final currentChannelText = SettingsText(
+      scale: scale, text: 'Current channel: ${model.currentChannel ?? 'None'}');
 
-  final changeSourceButton = SettingsButton(
-    text: model.channelUpdating ? 'Updating source' : 'Change source',
+  final changeChannelButton = SettingsButton(
+    text: model.channelUpdating ? 'Updating channel' : 'Change channel',
     onTap: () {
       if (model.channelUpdating) {
         return;
@@ -91,8 +91,8 @@ SettingsSection _update(DeviceSettingsModel model, double scale) {
         items: [
           lastUpdatedText,
           updateButton,
-          currentSourceText,
-          changeSourceButton,
+          currentChannelText,
+          changeChannelButton,
           factoryResetButton
         ],
       ),
@@ -115,16 +115,18 @@ Widget _buildSelectPopup(DeviceSettingsModel model, double scale) {
                   title: 'Select channel',
                   scale: scale,
                   child: Column(
-                      children: model.channels
-                          .map((channel) => SettingsButton(
-                              onTap: () => model.selectChannel(channel),
+                      children: model.repos
+                          .map((repo) => SettingsButton(
+                              onTap: () => model.selectChannel(repo),
                               scale: scale,
-                              text: '${channel?.id ?? 'None'}'))
+                              text: '${repo?.repoUrl ?? 'None'}'))
                           .toList()
                             ..add(SettingsButton(
-                                onTap: () => model.selectChannel(null),
+                                onTap: () => model.clearChannel(),
                                 scale: scale,
-                                text: 'None')))),
+                                text: model.defaultChannel == null
+                                    ? 'None'
+                                    : 'Default (${model.defaultChannel})')))),
             ),
           )));
 }
