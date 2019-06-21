@@ -21,8 +21,9 @@ dart_library("fuchsia_modular_testing") {
   ]
 
   deps = [
-    "//sdk/fidl/fuchsia.modular.testing",
     "//sdk/fidl/fuchsia.modular",
+    "//sdk/fidl/fuchsia.modular.session",
+    "//sdk/fidl/fuchsia.modular.testing",
     "//sdk/fidl/fuchsia.sys",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia_logger",
@@ -32,7 +33,6 @@ dart_library("fuchsia_modular_testing") {
     "//zircon/public/fidl/fuchsia-mem",
   ]
 }
-
 
 fidl("test_fidl") {
   name = "test.modular.dart"
@@ -47,7 +47,8 @@ fidl("test_fidl") {
 dart_fuchsia_test("fuchsia_modular_testing_package_integration_tests") {
   meta = [
     {
-      path = rebase_path("meta/fuchsia_modular_testing_package_integration_tests.cmx")
+      path = rebase_path(
+              "meta/fuchsia_modular_testing_package_integration_tests.cmx")
       dest = "fuchsia_modular_testing_package_integration_tests.cmx"
     },
   ]
@@ -65,4 +66,3 @@ dart_fuchsia_test("fuchsia_modular_testing_package_integration_tests") {
   ]
   environments = basic_envs
 }
-

@@ -5,6 +5,7 @@
 import 'dart:convert';
 
 // ignore_for_file: implementation_imports
+import 'package:fidl_fuchsia_modular_session/fidl_async.dart';
 import 'package:fidl_fuchsia_modular_testing/fidl_async.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular_testing/src/test_harness_fixtures.dart';
@@ -20,6 +21,43 @@ void main() {
 
     setUp(() {
       builder = TestHarnessSpecBuilder();
+    });
+
+    group('adding basemgrConfig', () {
+      test('not adding uses default basemgrConfig', () {
+        final spec = builder.build();
+        expect(spec.basemgrConfig, BasemgrConfig());
+      });
+
+      test('setting null', () {
+        expect(() => builder.setBasemgrConfig(null), throwsArgumentError);
+      });
+
+      test('able to set basemgrSpec', () {
+        final basemgrConfig = BasemgrConfig(sessionShellMap: [
+          SessionShellMapEntry(name: 'test', config: SessionShellConfig())
+        ]);
+        builder.setBasemgrConfig(basemgrConfig);
+        expect(builder.build().basemgrConfig, basemgrConfig);
+      });
+    });
+
+    group('adding sessionmgrConfig', () {
+      test('not adding uses default sessionmgrConfig', () {
+        final spec = builder.build();
+        expect(spec.sessionmgrConfig, SessionmgrConfig());
+      });
+
+      test('setting null', () {
+        expect(() => builder.setSessionmgrConfig(null), throwsArgumentError);
+      });
+
+      test('able to set sessionmgrConfig', () {
+        final sessionmgrConfig = SessionmgrConfig(
+            cloudProvider: CloudProvider.none, useMemfsForLedger: true);
+        builder.setSessionmgrConfig(sessionmgrConfig);
+        expect(builder.build().sessionmgrConfig, sessionmgrConfig);
+      });
     });
 
     group('adding components', () {

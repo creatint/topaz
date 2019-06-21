@@ -5,6 +5,7 @@
 import 'dart:convert' show utf8, json;
 
 import 'package:fidl_fuchsia_mem/fidl_async.dart' as fuchsia_mem;
+import 'package:fidl_fuchsia_modular_session/fidl_async.dart';
 import 'package:fidl_fuchsia_modular_testing/fidl_async.dart';
 import 'package:zircon/zircon.dart';
 
@@ -18,9 +19,23 @@ import 'package:zircon/zircon.dart';
 /// await harness.run(builder.build());
 /// ```
 class TestHarnessSpecBuilder {
+  BasemgrConfig _basemgrConfig = BasemgrConfig();
+  SessionmgrConfig _sessionmgrConfig = SessionmgrConfig();
   final _componentsToIntercept = <InterceptSpec>[];
   final _envServicesToInherit = <String>['fuchsia.logger.LogSink'];
   final _envComponentServices = <ComponentService>[];
+
+  /// Add a non default basemgr configuration.
+  void setBasemgrConfig(BasemgrConfig basemgrConfig) {
+    ArgumentError.checkNotNull(basemgrConfig, 'basemgrConfig');
+    _basemgrConfig = basemgrConfig;
+  }
+
+  /// Add a non default sessionmgr configuration.
+  void setSessionmgrConfig(SessionmgrConfig sessionmgrConfig) {
+    ArgumentError.checkNotNull(sessionmgrConfig, 'sessionmgrConfig');
+    _sessionmgrConfig = sessionmgrConfig;
+  }
 
   /// Registers the component url to be intercepted.
   ///
@@ -103,6 +118,8 @@ class TestHarnessSpecBuilder {
   /// does not offer a method which satisfies your specific needs.
   TestHarnessSpec build() {
     return TestHarnessSpec(
+        basemgrConfig: _basemgrConfig,
+        sessionmgrConfig: _sessionmgrConfig,
         componentsToIntercept: _componentsToIntercept,
         envServicesToInherit: _envServicesToInherit,
         envServices: EnvironmentServicesSpec(
