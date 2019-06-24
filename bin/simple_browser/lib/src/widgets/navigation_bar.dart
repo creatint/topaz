@@ -2,8 +2,6 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import '../blocs/browser_bloc.dart';
 import '../models/browse_action.dart';
@@ -28,20 +26,12 @@ class NavigationBar extends StatefulWidget {
 class _NavigationBarState extends State<NavigationBar> {
   FocusNode _focusNode;
   TextEditingController _controller;
-  StreamSubscription _urlListener;
 
   @override
   void initState() {
     _focusNode = FocusNode();
     _controller = TextEditingController();
-    _urlListener = widget.bloc.url.listen((url) {
-      _controller.text = url;
-      // TODO: Should remove once system wide focus management works
-      //   This is a hack, focus should be removed because the user clicked anywhere in the page,
-      //   not because a new page has loaded. But we don't know the user clicked, because the
-      //   webpage is a separate process.
-      _focusNode.unfocus();
-    });
+    widget.bloc.url.addListener(_onUrlChanged);
     super.initState();
   }
 
@@ -49,8 +39,27 @@ class _NavigationBarState extends State<NavigationBar> {
   void dispose() {
     _focusNode.dispose();
     _controller.dispose();
-    _urlListener.cancel();
+    widget.bloc.url.removeListener(_onUrlChanged);
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(NavigationBar oldWidget) {
+    if (oldWidget.bloc != widget.bloc) {
+      oldWidget.bloc.url.removeListener(_onUrlChanged);
+      widget.bloc.url.addListener(_onUrlChanged);
+      _controller.text = widget.bloc.url.value;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _onUrlChanged() {
+    _controller.text = widget.bloc.url.value;
+    // TODO: Should remove once system wide focus management works
+    //   This is a hack, focus should be removed because the user clicked anywhere in the page,
+    //   not because a new page has loaded. But we don't know the user clicked, because the
+    //   webpage is a separate process.
+    _focusNode.unfocus();
   }
 
   @override
@@ -97,11 +106,10 @@ class _NavigationBarState extends State<NavigationBar> {
   }
 
   Widget _buildLoadingIndicator() {
-    return StreamBuilder<bool>(
-      stream: widget.bloc.loadedState,
-      initialData: true,
+    return AnimatedBuilder(
+      animation: widget.bloc.isLoadedState,
       builder: (context, snapshot) {
-        return snapshot.data
+        return widget.bloc.isLoadedState.value
             ? Offstage()
             : SizedBox(
                 width: double.infinity,
@@ -126,13 +134,13 @@ class _NavigationBarState extends State<NavigationBar> {
               _buildHistoryButton(
                 title: 'BCK',
                 onTap: () => widget.bloc.request.add(GoBackAction()),
-                enabledStateStream: widget.bloc.backState,
+                enabledState: widget.bloc.backState,
               ),
               SizedBox(width: 8.0),
               _buildHistoryButton(
                 title: 'FWD',
                 onTap: () => widget.bloc.request.add(GoForwardAction()),
-                enabledStateStream: widget.bloc.forwardState,
+                enabledState: widget.bloc.forwardState,
               ),
             ],
           ),
@@ -145,13 +153,12 @@ class _NavigationBarState extends State<NavigationBar> {
   Widget _buildHistoryButton({
     @required String title,
     @required VoidCallback onTap,
-    @required Stream<bool> enabledStateStream,
+    @required ValueNotifier<bool> enabledState,
   }) {
-    return StreamBuilder<bool>(
-      stream: enabledStateStream,
-      initialData: false,
+    return AnimatedBuilder(
+      animation: enabledState,
       builder: (context, snapshot) {
-        final isEnabled = snapshot.data;
+        final isEnabled = enabledState.value;
         return GestureDetector(
           onTap: isEnabled ? onTap : null,
           child: Padding(

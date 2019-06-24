@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:core';
+import 'package:flutter/foundation.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fidl_fuchsia_web/fidl_async.dart' as web;
 import 'package:meta/meta.dart';
@@ -13,22 +13,19 @@ import '../models/browse_action.dart';
 // Business logic for the browser.
 // Sinks:
 //   BrowseAction: a browsing action - url request, prev/next page, etc.
-// Streams:
-//   Url: streams the current url.
-//   ForwardState: streams bool indicating whether forward action is available.
-//   BackState: streams bool indicating whether back action is available.
+// Value Notifiers:
+//   Url: the current url.
+//   ForwardState: bool indicating whether forward action is available.
+//   BackState: bool indicating whether back action is available.
+//   isLoadedState: bool indicating whether main document has fully loaded.
 class BrowserBloc extends web.NavigationEventListener {
   final ChromiumWebView webView;
 
-  // Streams
-  final _urlController = StreamController<String>.broadcast();
-  Stream<String> get url => _urlController.stream;
-  final _forwardController = StreamController<bool>.broadcast();
-  Stream<bool> get forwardState => _forwardController.stream;
-  final _backController = StreamController<bool>.broadcast();
-  Stream<bool> get backState => _backController.stream;
-  final _loadedController = StreamController<bool>.broadcast();
-  Stream<bool> get loadedState => _loadedController.stream;
+  // Value Notifiers
+  final ValueNotifier<String> url = ValueNotifier<String>('');
+  final ValueNotifier<bool> forwardState = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> backState = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> isLoadedState = ValueNotifier<bool>(true);
 
   // Sinks
   final _browseActionController = StreamController<BrowseAction>();
@@ -50,16 +47,16 @@ class BrowserBloc extends web.NavigationEventListener {
   Future<Null> onNavigationStateChanged(web.NavigationState event) async {
     if (event.url != null) {
       log.info('url loaded: ${event.url}');
-      _urlController.add(event.url);
+      url.value = event.url;
     }
     if (event.canGoForward != null) {
-      _forwardController.add(event.canGoForward);
+      forwardState.value = event.canGoForward;
     }
     if (event.canGoBack != null) {
-      _backController.add(event.canGoBack);
+      backState.value = event.canGoBack;
     }
     if (event.isMainDocumentLoaded != null) {
-      _loadedController.add(event.isMainDocumentLoaded);
+      isLoadedState.value = event.isMainDocumentLoaded;
     }
   }
 
@@ -82,11 +79,7 @@ class BrowserBloc extends web.NavigationEventListener {
   }
 
   void dispose() {
-    _urlController.close();
     _browseActionController.close();
-    _forwardController.close();
-    _backController.close();
-    _loadedController.close();
   }
 
   String _sanitizeUrl(String url) {
