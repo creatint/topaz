@@ -11,14 +11,17 @@ class VmoHolder {
   /// Size of the VMO in bytes
   final int size;
   Vmo _vmo;
+  Uint8List _shadow;
+  final bool _useShadow;
 
   /// Creates and holds a VMO of desired size.
-  VmoHolder(this.size) {
+  VmoHolder(this.size, {useShadow = true}) : _useShadow = useShadow {
     HandleResult result = System.vmoCreate(size);
     if (result.status != ZX.OK) {
       throw ZxStatusException(result.status, getStringForStatus(result.status));
     }
     _vmo = Vmo(result.handle);
+    _shadow = _vmo.map();
   }
 
   /// The raw VMO
@@ -42,11 +45,16 @@ class VmoHolder {
 
   /// Reads data from VMO at byte offset (not index).
   ByteData read(int offset, int size) {
-    ReadResult result = _vmo.read(size, offset);
-    if (result.status != ZX.OK) {
-      throw ZxStatusException(result.status, getStringForStatus(result.status));
+    if (_useShadow) {
+      return ByteData.view(_shadow.buffer, offset, size);
+    } else {
+      ReadResult result = _vmo.read(size, offset);
+      if (result.status != ZX.OK) {
+        throw ZxStatusException(
+            result.status, getStringForStatus(result.status));
+      }
+      return result.bytes;
     }
-    return result.bytes;
   }
 
   /// Writes int64 to VMO.

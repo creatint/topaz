@@ -18,6 +18,10 @@ int main(int argc, const char** argv) {
 
   auto& benchmarks_runner = *maybe_benchmarks_runner;
 
+  benchmarks_runner.AddTspecBenchmark(
+      "dart_inspect.basic_benchmarks",
+      "/pkgfs/packages/dart_inspect_benchmarks/0/data/basic_benchmarks.tspec");
+
   if (benchmarking::IsVulkanSupported()) {
     AddGraphicsBenchmarks(&benchmarks_runner);
   } else {
