@@ -4,6 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
+import 'package:fidl_fuchsia_web/fidl_async.dart' as web show ContextProxy;
+import 'package:webview/webview.dart';
 import 'src/blocs/browser_bloc.dart';
 import 'src/widgets/navigation_bar.dart';
 
@@ -19,9 +21,10 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   final _browserTabs = <BrowserBloc>[];
   int _currentTab = 0;
+  final web.ContextProxy _context;
 
-  AppState() {
-    _browserTabs.add(BrowserBloc());
+  AppState() : _context = ChromiumWebView.createContext() {
+    _browserTabs.add(BrowserBloc(context: _context));
   }
 
   @override
@@ -29,6 +32,7 @@ class AppState extends State<App> {
     for (final tab in _browserTabs) {
       tab.dispose();
     }
+    _context.ctrl.close();
     super.dispose();
   }
 
@@ -84,7 +88,7 @@ class AppState extends State<App> {
         onSelect: () {
           setState(() {
             _browserTabs.add(
-              BrowserBloc(),
+              BrowserBloc(context: _context),
             );
             _currentTab = _browserTabs.length - 1;
           });

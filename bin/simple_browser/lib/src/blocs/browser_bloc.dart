@@ -36,7 +36,8 @@ class BrowserBloc extends web.NavigationEventListener {
 
   BrowserBloc({
     String homePage,
-  }) : _webView = ChromiumWebView() {
+    web.ContextProxy context,
+  }) : _webView = ChromiumWebView.withContext(context: context) {
     _webView.setNavigationEventListener(this);
 
     if (homePage != null) {
