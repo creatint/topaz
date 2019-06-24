@@ -21,14 +21,10 @@ dart_library("fuchsia_modular_testing") {
   ]
 
   deps = [
-    "//sdk/fidl/fuchsia.modular",
     "//sdk/fidl/fuchsia.modular.testing",
+    "//sdk/fidl/fuchsia.modular",
     "//sdk/fidl/fuchsia.sys",
-    "//third_party/dart-pkg/pub/meta",
-    "//third_party/dart-pkg/pub/test",
-    "//third_party/dart-pkg/pub/test_api",
     "//topaz/public/dart/fidl",
-    "//topaz/public/dart/fuchsia",
     "//topaz/public/dart/fuchsia_logger",
     "//topaz/public/dart/fuchsia_modular",
     "//topaz/public/dart/fuchsia_services",
