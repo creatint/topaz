@@ -5,8 +5,9 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:fuchsia_logger/logger.dart';
+import 'package:fuchsia_scenic_flutter/child_view.dart'
+    show ChildViewConnection;
 import 'package:fidl_fuchsia_web/fidl_async.dart' as web;
-import 'package:meta/meta.dart';
 import 'package:webview/webview.dart';
 import '../models/browse_action.dart';
 
@@ -19,7 +20,9 @@ import '../models/browse_action.dart';
 //   BackState: bool indicating whether back action is available.
 //   isLoadedState: bool indicating whether main document has fully loaded.
 class BrowserBloc extends web.NavigationEventListener {
-  final ChromiumWebView webView;
+  final ChromiumWebView _webView;
+
+  ChildViewConnection get childViewConnection => _webView.childViewConnection;
 
   // Value Notifiers
   final ValueNotifier<String> url = ValueNotifier<String>('');
@@ -32,10 +35,9 @@ class BrowserBloc extends web.NavigationEventListener {
   Sink<BrowseAction> get request => _browseActionController.sink;
 
   BrowserBloc({
-    @required this.webView,
     String homePage,
-  }) : assert(webView != null) {
-    webView.setNavigationEventListener(this);
+  }) : _webView = ChromiumWebView() {
+    _webView.setNavigationEventListener(this);
 
     if (homePage != null) {
       _handleAction(NavigateToAction(url: homePage));
@@ -64,21 +66,22 @@ class BrowserBloc extends web.NavigationEventListener {
     switch (action.op) {
       case BrowseActionType.navigateTo:
         final NavigateToAction navigate = action;
-        await webView.controller.loadUrl(
+        await _webView.controller.loadUrl(
           _sanitizeUrl(navigate.url),
           web.LoadUrlParams(type: web.LoadUrlReason.typed),
         );
         break;
       case BrowseActionType.goBack:
-        await webView.controller.goBack();
+        await _webView.controller.goBack();
         break;
       case BrowseActionType.goForward:
-        await webView.controller.goForward();
+        await _webView.controller.goForward();
         break;
     }
   }
 
   void dispose() {
+    _webView.dispose();
     _browseActionController.close();
   }
 
