@@ -2,12 +2,11 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:math';
 import 'package:collection/collection.dart' show ListEquality;
 import 'package:fuchsia_inspect/inspect.dart' as inspect;
 
 class TorusPuzzle {
-  TorusPuzzle(this.cols, this.rows, [this.inspectNode]) : _tilec = cols * rows {
+  TorusPuzzle(this.cols, this.rows, [this.inspectNode]) : _tileCount = cols * rows {
     resetPuzzle();
   }
 
@@ -16,7 +15,7 @@ class TorusPuzzle {
   TorusPuzzle.from(String str)
       : cols = -1,
         rows = -1,
-        _tilec = -1 {
+        _tileCount = -1 {
     var strTiles = str.split(' ');
     tiles = List<int>.generate(strTiles.length, (i) => int.parse(strTiles[i]));
     _inspectPuzzle();
@@ -25,11 +24,10 @@ class TorusPuzzle {
   inspect.Node inspectNode;
   final int cols;
   final int rows;
-  final int _tilec;
+  final int _tileCount;
 
   List<int> tiles;
 
-  static const int _rotationsTilShuffled = 10;
   static const int _rotateForwardStep = -1;
   static const int _rotateBackwardStep = 1;
 
@@ -49,23 +47,13 @@ class TorusPuzzle {
 
   // put puzzle in solved state (for all i tiles[i] == i)
   void resetPuzzle() {
-    tiles = List<int>.generate(_tilec, (int i) => i);
+    tiles = List<int>.generate(_tileCount, (int i) => i);
     _inspectPuzzle();
   }
 
+  // place tiles in random locations (all permutations are legal)
   void shufflePuzzle() {
-    Random random = Random();
-    for (int rotations = 0; rotations < _rotationsTilShuffled; rotations++) {
-      bool shuffleHorizontal = random.nextBool();
-      bool shuffleForward = random.nextBool();
-      if (shuffleHorizontal) {
-        int shuffleRow = random.nextInt(rows);
-        rotateRow(shuffleRow, rotateRight: shuffleForward);
-      } else {
-        int shuffleCol = random.nextInt(cols);
-        rotateCol(shuffleCol, rotateDown: shuffleForward);
-      }
-    }
+    tiles.shuffle();
   }
 
   // publishes torus puzzle tiles to component inspection 'tile' node
