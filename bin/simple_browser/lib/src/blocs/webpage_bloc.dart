@@ -9,17 +9,17 @@ import 'package:fuchsia_scenic_flutter/child_view.dart'
     show ChildViewConnection;
 import 'package:fidl_fuchsia_web/fidl_async.dart' as web;
 import 'package:webview/webview.dart';
-import '../models/browse_action.dart';
+import '../models/webpage_action.dart';
 
-// Business logic for the browser.
+// Business logic for the webpage.
 // Sinks:
-//   BrowseAction: a browsing action - url request, prev/next page, etc.
+//   WebPageAction: a browsing action - url request, prev/next page, etc.
 // Value Notifiers:
 //   Url: the current url.
 //   ForwardState: bool indicating whether forward action is available.
 //   BackState: bool indicating whether back action is available.
 //   isLoadedState: bool indicating whether main document has fully loaded.
-class BrowserBloc extends web.NavigationEventListener {
+class WebPageBloc extends web.NavigationEventListener {
   final ChromiumWebView _webView;
 
   ChildViewConnection get childViewConnection => _webView.childViewConnection;
@@ -31,10 +31,10 @@ class BrowserBloc extends web.NavigationEventListener {
   final ValueNotifier<bool> isLoadedState = ValueNotifier<bool>(true);
 
   // Sinks
-  final _browseActionController = StreamController<BrowseAction>();
-  Sink<BrowseAction> get request => _browseActionController.sink;
+  final _webPageActionController = StreamController<WebPageAction>();
+  Sink<WebPageAction> get request => _webPageActionController.sink;
 
-  BrowserBloc({
+  WebPageBloc({
     String homePage,
     web.ContextProxy context,
   }) : _webView = ChromiumWebView.withContext(context: context) {
@@ -43,7 +43,12 @@ class BrowserBloc extends web.NavigationEventListener {
     if (homePage != null) {
       _handleAction(NavigateToAction(url: homePage));
     }
-    _browseActionController.stream.listen(_handleAction);
+    _webPageActionController.stream.listen(_handleAction);
+  }
+
+  void dispose() {
+    _webView.dispose();
+    _webPageActionController.close();
   }
 
   @override
@@ -63,27 +68,22 @@ class BrowserBloc extends web.NavigationEventListener {
     }
   }
 
-  Future<void> _handleAction(BrowseAction action) async {
+  Future<void> _handleAction(WebPageAction action) async {
     switch (action.op) {
-      case BrowseActionType.navigateTo:
+      case WebPageActionType.navigateTo:
         final NavigateToAction navigate = action;
         await _webView.controller.loadUrl(
           _sanitizeUrl(navigate.url),
           web.LoadUrlParams(type: web.LoadUrlReason.typed),
         );
         break;
-      case BrowseActionType.goBack:
+      case WebPageActionType.goBack:
         await _webView.controller.goBack();
         break;
-      case BrowseActionType.goForward:
+      case WebPageActionType.goForward:
         await _webView.controller.goForward();
         break;
     }
-  }
-
-  void dispose() {
-    _webView.dispose();
-    _browseActionController.close();
   }
 
   String _sanitizeUrl(String url) {

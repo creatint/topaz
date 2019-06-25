@@ -4,14 +4,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
-import 'package:fidl_fuchsia_web/fidl_async.dart' as web show ContextProxy;
-import 'package:webview/webview.dart';
-import 'src/blocs/browser_bloc.dart';
+import 'package:simple_browser/src/blocs/webpage_bloc.dart';
+import 'src/blocs/tabs_bloc.dart';
+import 'src/models/tabs_action.dart';
 import 'src/widgets/navigation_bar.dart';
-
-const double _kTabBarHeight = 24.0;
-const double _kPageTabWidth = 144.0;
-const double _kAddTabWidth = 36.0;
+import 'src/widgets/tabs_widget.dart';
 
 class App extends StatefulWidget {
   @override
@@ -19,20 +16,15 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> {
-  final _browserTabs = <BrowserBloc>[];
-  int _currentTab = 0;
-  final web.ContextProxy _context;
+  final TabsBloc _tabsBloc = TabsBloc();
 
-  AppState() : _context = ChromiumWebView.createContext() {
-    _browserTabs.add(BrowserBloc(context: _context));
+  AppState() {
+    _tabsBloc.request.add(NewTabAction());
   }
 
   @override
   void dispose() {
-    for (final tab in _browserTabs) {
-      tab.dispose();
-    }
-    _context.ctrl.close();
+    _tabsBloc.dispose();
     super.dispose();
   }
 
@@ -45,13 +37,13 @@ class AppState extends State<App> {
         body: Container(
           child: Column(
             children: <Widget>[
-              _buildTabs(),
-              NavigationBar(bloc: _browserTabs[_currentTab]),
+              TabsWidget(bloc: _tabsBloc),
               Expanded(
-                child: ChildView(
-                  connection: _browserTabs[_currentTab].childViewConnection,
+                child: AnimatedBuilder(
+                  animation: _tabsBloc.currentTab,
+                  builder: (_, __) => _buildContent(_tabsBloc.currentTab.value),
                 ),
-              ),
+              )
             ],
           ),
         ),
@@ -59,65 +51,14 @@ class AppState extends State<App> {
     );
   }
 
-  Widget _buildTabs() {
-    return Container(
-      height: _kTabBarHeight,
-      color: Colors.black,
-      child: Row(
-        children: <Widget>[..._buildPageTabs(), _buildPlusTab()],
-      ),
-    );
-  }
-
-  Iterable<Widget> _buildPageTabs() => _browserTabs.asMap().entries.map(
-        (entry) => _buildTab(
-            // TODO(MS-2371): get page title from browser_bloc
-            title: 'TAB ${entry.key}',
-            selected: entry.key == _currentTab,
-            onSelect: () {
-              setState(() {
-                _currentTab = entry.key;
-              });
-            }),
-      );
-
-  Widget _buildPlusTab() => _buildTab(
-        title: '+',
-        selected: false,
-        width: _kAddTabWidth,
-        onSelect: () {
-          setState(() {
-            _browserTabs.add(
-              BrowserBloc(context: _context),
-            );
-            _currentTab = _browserTabs.length - 1;
-          });
-        },
-      );
-
-  Widget _buildTab({
-    String title,
-    bool selected,
-    VoidCallback onSelect,
-    double width = _kPageTabWidth,
-  }) {
-    return GestureDetector(
-      onTap: onSelect,
-      child: Container(
-        width: width,
-        color: selected ? Colors.white : Colors.black,
-        child: Center(
-          child: Text(
-            title,
-            style: TextStyle(
-              fontFamily: 'RobotoMono',
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-              color: selected ? Colors.black : Color(0xFF8A8A8A),
+  Widget _buildContent(WebPageBloc tab) => Column(
+        children: <Widget>[
+          NavigationBar(bloc: tab),
+          Expanded(
+            child: ChildView(
+              connection: tab.childViewConnection,
             ),
           ),
-        ),
-      ),
-    );
-  }
+        ],
+      );
 }

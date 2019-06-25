@@ -3,8 +3,8 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import '../blocs/browser_bloc.dart';
-import '../models/browse_action.dart';
+import '../blocs/webpage_bloc.dart';
+import '../models/webpage_action.dart';
 
 const _kBackgroundColor = Colors.black;
 const _kBackgroundFocusedColor = Color(0xFFFF8BCB);
@@ -15,7 +15,7 @@ const _kTextFocusedColor = Colors.black;
 enum _LayoutId { historyButtons, url }
 
 class NavigationBar extends StatefulWidget {
-  final BrowserBloc bloc;
+  final WebPageBloc bloc;
 
   const NavigationBar({this.bloc});
 
