@@ -28,14 +28,16 @@ class TabsWidget extends StatelessWidget {
     );
   }
 
-  Iterable<Widget> _buildPageTabs() => bloc.tabs.value.asMap().entries.map(
-        (entry) => _buildTab(
-          // TODO(MS-2371): get page title from webpage_bloc
-          title: 'TAB ${entry.key}',
-          selected: entry.value == bloc.currentTab.value,
-          onSelect: () {
-            bloc.request.add(FocusTabAction(tab: entry.value));
-          },
+  Iterable<Widget> _buildPageTabs() => bloc.tabs.value.map(
+        (tab) => AnimatedBuilder(
+          animation: tab.pageTitle,
+          builder: (_, __) => _buildTab(
+            title: tab.pageTitle.value ?? 'NEW TAB',
+            selected: tab == bloc.currentTab.value,
+            onSelect: () {
+              bloc.request.add(FocusTabAction(tab: tab));
+            },
+          ),
         ),
       );
 
@@ -58,9 +60,12 @@ class TabsWidget extends StatelessWidget {
       child: Container(
         width: width,
         color: selected ? Colors.white : Colors.black,
+        padding: EdgeInsets.symmetric(horizontal: 4.0),
         child: Center(
           child: Text(
             title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
               fontFamily: 'RobotoMono',
               fontSize: 14.0,

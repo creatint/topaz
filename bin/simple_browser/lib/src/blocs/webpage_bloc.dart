@@ -29,6 +29,7 @@ class WebPageBloc extends web.NavigationEventListener {
   final ValueNotifier<bool> forwardState = ValueNotifier<bool>(false);
   final ValueNotifier<bool> backState = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isLoadedState = ValueNotifier<bool>(true);
+  final ValueNotifier<String> pageTitle = ValueNotifier<String>(null);
 
   // Sinks
   final _webPageActionController = StreamController<WebPageAction>();
@@ -65,6 +66,9 @@ class WebPageBloc extends web.NavigationEventListener {
     }
     if (event.isMainDocumentLoaded != null) {
       isLoadedState.value = event.isMainDocumentLoaded;
+    }
+    if (event.title != null) {
+      pageTitle.value = event.title;
     }
   }
 
