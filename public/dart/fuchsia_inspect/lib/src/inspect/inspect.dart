@@ -38,16 +38,16 @@ abstract class Inspect {
   static int vmoSize = defaultVmoSizeBytes;
   static InspectImpl _singleton;
 
-  /// Returns a singleton [Inspect] instance for this program.
-  factory Inspect() {
-    if (_singleton == null) {
+  /// Returns a singleton [Inspect] instance at root.inspect
+  factory Inspect(){
+    if(_singleton == null){
       var context = StartupContext.fromStartupInfo();
       var writer = VmoWriter.withSize(vmoSize);
-      _singleton = InspectImpl(context, writer);
+      _singleton = InspectImpl(context.outgoing.debugDir(),
+         'root.inspect', writer);
     }
     return _singleton;
   }
-
   /// Optionally configure global settings for inspection.
   ///
   /// This may not be called after the first call to Inspect().
