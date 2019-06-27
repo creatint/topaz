@@ -275,14 +275,6 @@ group("ermine") {
   ]
 }
 
-group("simple_browser") {
-  testonly = true
-  public_deps = [
-    "//topaz/bin/simple_browser:simple_browser",
-    "//topaz/public/lib/webview:webview",
-  ]
-}
-
 group("cast_runner") {
   testonly = true
   public_deps = [
