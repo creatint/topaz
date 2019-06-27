@@ -51,6 +51,7 @@ dart_fuchsia_test("flutter_screencap_test") {
       dimensions = {
         device_type = "Intel NUC Kit NUC7i5DNHE"
       }
+      tags = [ "flaky" ]  # FLK-352
     },
   ]
 }
