@@ -6,7 +6,10 @@
         "dev": [
             "misc/ptmx"
         ],
-        "features": [ "deprecated-shell" ],
+        "features": [
+            "deprecated-shell",
+            "deprecated-ambient-replace-as-executable"
+        ],
         "services": [
             "fuchsia.fonts.Provider",
             "fuchsia.process.Launcher",
