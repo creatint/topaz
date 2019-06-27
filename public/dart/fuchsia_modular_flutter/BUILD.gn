@@ -19,6 +19,7 @@ dart_library("fuchsia_modular_flutter") {
     "src/session_shell/internal/_session_shell_impl.dart",
     "src/session_shell/internal/_session_shell_presentation_provider_impl.dart",
     "src/session_shell/internal/_story_provider_watcher_impl.dart",
+    "src/session_shell/internal/_story_watcher_impl.dart",
     "src/story.dart",
     "src/story_shell.dart",
     "src/story_shell/internal/_modular_story_shell_impl.dart",

@@ -161,9 +161,16 @@ class TestSessionShell extends SessionShellImpl {
     modular.StoryProvider storyProvider,
     modular.SessionShellContext context,
   ) {}
+
+  @override
+  modular.StoryWatcherBinding watchStory(
+      modular.StoryController storyController,
+      modular.StoryWatcher storyWatcher) {
+    return modular.StoryWatcherBinding();
+  }
 }
 
-class TestStory implements Story {
+class TestStory implements StoryTransitional {
   @override
   ChildViewConnection childViewConnection;
 
@@ -190,6 +197,12 @@ class TestStory implements Story {
 
   @override
   void stop() {}
+
+  @override
+  void onModuleAdded(modular.ModuleData moduleData) {}
+
+  @override
+  void onModuleFocused(List<String> modulePath) {}
 }
 
 // Mock classes.
