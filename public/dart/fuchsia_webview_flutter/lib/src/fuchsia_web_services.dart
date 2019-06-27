@@ -15,6 +15,7 @@ import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:zircon/zircon.dart';
 import 'package:fuchsia_scenic/views.dart';
+import 'package:fuchsia_vfs/vfs.dart';
 
 /// Helper class to help connect and interface with 'fuchsia.web.*' services.
 class FuchsiaWebServices {
@@ -50,9 +51,29 @@ class FuchsiaWebServices {
       return;
     }
     final channel = Channel.fromFile('/svc');
+    final directory = fidl_io.DirectoryProxy()
+      ..ctrl.bind(InterfaceHandle<fidl_io.Directory>(channel));
+    final composedDir =
+        ComposedPseudoDir(directory: directory, inheritedNodes: [
+      'fuchsia.fonts.Provider',
+      'fuchsia.logger.LogSink',
+      'fuchsia.media.Audio',
+      'fuchsia.mediacodec.CodecFactory',
+      'fuchsia.net.SocketProvider',
+      'fuchsia.netstack.Netstack',
+      'fuchsia.process.Launcher',
+      'fuchsia.sysmem.Allocator',
+      'fuchsia.ui.input.ImeService',
+      'fuchsia.ui.input.ImeVisibilityService',
+      'fuchsia.ui.scenic.Scenic',
+      'fuchsia.vulkan.loader.Loader',
+    ]);
+    final pair = ChannelPair();
+    composedDir.serve(InterfaceRequest<fidl_io.Node>(pair.first));
+
     final fidl_web.CreateContextParams contextParams =
         fidl_web.CreateContextParams(
-            serviceDirectory: InterfaceHandle<fidl_io.Directory>(channel));
+            serviceDirectory: InterfaceHandle<fidl_io.Directory>(pair.second));
 
     _contextProviderProxy.create(contextParams, _contextProxy.ctrl.request());
     _contextProxy.createFrame(_frameProxy.ctrl.request());
