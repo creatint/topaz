@@ -14,11 +14,12 @@ dart_library("fuchsia_vfs") {
   source_dir = "lib"
 
   sources = [
+    "src/composed_pseudo_dir.dart",
     "src/internal/_error_node.dart",
     "src/internal/_flags.dart",
-    "src/composed_pseudo_dir.dart",
     "src/pseudo_dir.dart",
     "src/pseudo_file.dart",
+    "src/pseudo_vmo_file.dart",
     "src/service.dart",
     "src/vmo_file.dart",
     "src/vnode.dart",
@@ -46,6 +47,7 @@ dart_fuchsia_test("fuchsia_vfs_package_unittests") {
     "composed_pseudo_dir_test.dart",
     "pseudo_dir_test.dart",
     "pseudo_file_test.dart",
+    "pseudo_vmo_file_test.dart",
     "service_test.dart",
     "vmo_file_test.dart",
   ]
