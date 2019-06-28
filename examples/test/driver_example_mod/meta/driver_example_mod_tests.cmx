@@ -13,6 +13,8 @@
                 "fuchsia.vulkan.loader.Loader": "fuchsia-pkg://fuchsia.com/vulkan_loader#meta/vulkan_loader.cmx"
             },
             "system-services": [
+                "fuchsia.posix.socket.Provider",
+                "fuchsia.net.NameLookup",
                 "fuchsia.net.SocketProvider"
             ]
         }
@@ -26,6 +28,8 @@
             "deprecated-ambient-replace-as-executable"
         ],
         "services": [
+            "fuchsia.posix.socket.Provider",
+            "fuchsia.net.NameLookup",
             "fuchsia.net.SocketProvider",
             "fuchsia.sys.Launcher",
             "fuchsia.sys.Environment"

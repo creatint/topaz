@@ -2,6 +2,8 @@
     "facets": {
         "fuchsia.test": {
             "system-services": [
+                "fuchsia.posix.socket.Provider",
+                "fuchsia.net.NameLookup",
                 "fuchsia.net.SocketProvider"
             ]
         }
@@ -15,6 +17,8 @@
             "deprecated-ambient-replace-as-executable"
         ],
         "services": [
+            "fuchsia.posix.socket.Provider",
+            "fuchsia.net.NameLookup",
             "fuchsia.net.SocketProvider",
             "fuchsia.sys.Launcher",
             "fuchsia.sys.Environment"

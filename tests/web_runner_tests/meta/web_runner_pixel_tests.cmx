@@ -13,6 +13,8 @@
                 "fuchsia.web.ContextProvider": "fuchsia-pkg://fuchsia.com/chromium#meta/chromium.cmx"
             },
             "system-services": [
+                "fuchsia.posix.socket.Provider",
+                "fuchsia.net.NameLookup",
                 "fuchsia.net.SocketProvider",
                 "fuchsia.netstack.Netstack"
             ]
@@ -27,6 +29,8 @@
         ],
         "services": [
             "fuchsia.fonts.Provider",
+            "fuchsia.posix.socket.Provider",
+            "fuchsia.net.NameLookup",
             "fuchsia.net.SocketProvider",
             "fuchsia.netstack.Netstack",
             "fuchsia.process.Launcher",
