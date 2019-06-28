@@ -34,15 +34,15 @@ abstract class Story {
 
   /// Delete this story instance.
   void delete();
-}
 
-/// Defines a transitional class to [Story] to allow extending it with
-/// abstract methods. This will be remove once the user's of [Story] are
-/// updated.
-abstract class StoryTransitional extends Story {
   /// Callback when a module is added.
   void onModuleAdded(ModuleData moduleData);
 
   /// Callback when a module is focused.
   void onModuleFocused(List<String> modulePath);
 }
+
+/// Defines a transitional class to [Story] to allow extending it with
+/// abstract methods. This will be remove once the user's of [Story] are
+/// updated.
+abstract class StoryTransitional extends Story {}
