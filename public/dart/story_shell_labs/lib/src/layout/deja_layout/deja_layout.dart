@@ -21,7 +21,7 @@ typedef UserLayoutRequestCallback = void Function(TilerModel<ModuleInfo>);
 
 /// The layout strategy manages a model of the layout that is shared with the
 /// Presenter through the TileLayoutModel.
-class DejaLayout extends Layout<TileLayoutModel> {
+class DejaLayout extends Layout {
   var _tilerModel = TilerModel<ModuleInfo>();
   List<TilerModel<ModuleInfo>> _tilerModelSuggestions = [];
   final _connections = <String, ChildViewConnection>{};
