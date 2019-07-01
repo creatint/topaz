@@ -28,7 +28,7 @@ void main() {
   group('In the Heap', () {
     test('the initial free state is correct in the VMO', () {
       var vmo = FakeVmo(_heapSizeBytes);
-      Heap(vmo);
+      Slab32(vmo);
       var f = hexChar(BlockType.free.value);
       compare(vmo, 0x00, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x10, '0  0 000000 00000000  00000000 00000000');
@@ -42,7 +42,7 @@ void main() {
 
     test('allocate changes VMO contents correctly', () {
       var vmo = FakeVmo(_heapSizeBytes);
-      var heap = Heap(vmo);
+      var heap = Slab32(vmo);
       var blocks = _allocateEverything(heap);
       expect(blocks, hasLength(2));
       var r = hexChar(BlockType.reserved.value);
@@ -54,7 +54,7 @@ void main() {
 
     test('free and re-allocate work correctly', () {
       var vmo = FakeVmo(_heapSizeBytes);
-      var heap = Heap(vmo);
+      var heap = Slab32(vmo);
       var blocks = _allocateEverything(heap);
       expect(blocks, hasLength(_allocatedIndexes.length));
       // Free one, get it back

@@ -18,11 +18,24 @@ const int _pageSizeBytes = 4096;
 /// (Indexes 0, 1, and 2 are reserved and not allocated.)
 const int defaultBlockOrder = 1;
 
+/// Represents a heap allocator that allocates blocks out of a VMO.  Allocation
+/// happens one fixed-size block at a time, so repeated calls may be needed to
+/// allocate a large amount of memory.
+abstract class Heap {
+  /// Allocates a block using the bytes size hint. The allocated block size may
+  /// be smaller than the size hint, but is the largest size block that the
+  /// allocator can provide.
+  Block allocateBlock([int bytesHint = 32]);
+
+  /// Frees the previously allocated block.
+  void freeBlock(Block block);
+}
+
 /// The base class for which log writers will inherit from.
 ///
 /// (The current implementation is a barely-MVP heap: a 32-byte-block slab
 /// allocator.)
-class Heap {
+class Slab32 implements Heap {
   /// Size in bytes of the touched / visited subset of the VMO incorporated in
   /// the data structure.
   int _currentSizeBytes;
@@ -33,14 +46,15 @@ class Heap {
   int _freelistHead = invalidIndex;
 
   /// Construct VMO with max available size; initialize startingSize of it.
-  Heap(this._vmo) {
+  Slab32(this._vmo) {
     _currentSizeBytes = min(_pageSizeBytes, _vmo.size);
     _addFreelistBlocks(
         fromBytes: heapStartIndex * bytesPerIndex, toBytes: _currentSizeBytes);
   }
 
   /// Gets a block from the freelist, or null if none available.
-  Block allocateBlock() {
+  @override
+  Block allocateBlock([int unused = 32]) {
     if (_freelistHead == invalidIndex) {
       // Grow one page at a time to save RAM.
       _growHeap(_currentSizeBytes + _pageSizeBytes);
@@ -55,6 +69,7 @@ class Heap {
   }
 
   /// Returns a [block] to the freelist.
+  @override
   void freeBlock(Block block) {
     if (block.type == BlockType.header || block.type == BlockType.free) {
       throw ArgumentError("I shouldn't be trying to free this type "

@@ -46,7 +46,7 @@ class VmoWriter {
     _headerBlock = Block.create(_vmo, headerIndex)..becomeHeader();
     Block.create(_vmo, rootNodeIndex).becomeRoot();
     Block.create(_vmo, rootNameIndex).becomeName(rootName);
-    _heap = Heap(_vmo);
+    _heap = Slab32(_vmo);
     _vmo.commit();
   }
 
