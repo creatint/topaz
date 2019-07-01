@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'package:fuchsia_inspect/inspect.dart' as inspect;
-import 'package:fuchsia_modular/module.dart';
+import 'package:fuchsia_modular/module.dart' as intent;
 import 'package:flutter/material.dart';
 import 'roachGame.dart';
 
-class RootIntentHandler extends IntentHandler {
+class RootIntentHandler extends intent.IntentHandler {
   @override
-  void handleIntent(Intent intent) {
+  void handleIntent(intent.Intent intentNode) {
     var inspectNode = inspect.Inspect().root;
     runApp(RoachGame(inspectNode: inspectNode));
   }

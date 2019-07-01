@@ -24,6 +24,7 @@ dart_library("roach_ruin") {
 
 flutter_app("roach_ruin_game") {
   main_dart = "lib/main.dart"
+  manifest = "pubspec.yaml"
   meta = [
     {
       path = rebase_path("meta/roach_ruin_game.cmx")
