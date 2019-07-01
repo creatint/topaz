@@ -41,6 +41,7 @@ sdk("fuchsia_dart") {
     "//topaz/public/dart/fuchsia_scenic_flutter:fuchsia_scenic_flutter_sdk($dart_toolchain)",
     "//topaz/public/dart/fuchsia_services:fuchsia_services_sdk($dart_toolchain)",
     "//topaz/public/dart/fuchsia_vfs:fuchsia_vfs_sdk($dart_toolchain)",
+    "//topaz/public/dart/fuchsia_webview_flutter:fuchsia_webview_flutter_sdk($dart_toolchain)",
     "//topaz/runtime/dart:gen_snapshot_sdk($dart_toolchain)",
     "//topaz/runtime/dart:kernel_compiler_sdk($host_toolchain)",
   ]
