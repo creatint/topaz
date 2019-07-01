@@ -170,7 +170,7 @@ class TestSessionShell extends SessionShellImpl {
   }
 }
 
-class TestStory implements StoryTransitional {
+class TestStory implements Story {
   @override
   ChildViewConnection childViewConnection;
 

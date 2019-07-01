@@ -41,8 +41,3 @@ abstract class Story {
   /// Callback when a module is focused.
   void onModuleFocused(List<String> modulePath);
 }
-
-/// Defines a transitional class to [Story] to allow extending it with
-/// abstract methods. This will be remove once the user's of [Story] are
-/// updated.
-abstract class StoryTransitional extends Story {}

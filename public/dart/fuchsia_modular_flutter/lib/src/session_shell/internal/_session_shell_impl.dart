@@ -244,17 +244,8 @@ class SessionShellImpl implements SessionShell {
           ..state = state
           ..visibilityState = visibilityState;
 
-        final watcher = watchStory(
-            storyController,
-            StoryWatcherImpl((moduleData) {
-              if (story is StoryTransitional) {
-                story.onModuleAdded(moduleData);
-              }
-            }, (modulePath) {
-              if (story is StoryTransitional) {
-                story.onModuleFocused(modulePath);
-              }
-            }));
+        final watcher = watchStory(storyController,
+            StoryWatcherImpl(story.onModuleAdded, story.onModuleFocused));
         _storyWatchers[info.id] = watcher;
 
         _stories[info.id] = story;
