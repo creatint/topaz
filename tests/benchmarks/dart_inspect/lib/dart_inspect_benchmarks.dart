@@ -53,6 +53,21 @@ void stringPropertyLifecycle(Node root,
   }
 }
 
+// Measure the time it takes to allocate a string which is about as large as
+// a longish URL.  This is similar to exerciseStringPropertyLong, except the
+// length of a string we store is somewhat more realistic.
+void exerciseLongURL(Node root) {
+  String pseudoURL = 'X' * 100;
+  Timeline.startSync('URL sized string');
+  var property = root.stringProperty('property-${UniqueNumber.next()}');
+  try {
+    property.setValue(pseudoURL);
+  } finally {
+    property.delete();
+  }
+  Timeline.finishSync();
+}
+
 // Checks if there are gotchas with long strings exported as properties.
 void exerciseStringPropertyLong(Node root) {
   stringPropertyLifecycle(root,
@@ -220,6 +235,7 @@ void doSingleIteration() {
   exerciseBytePropertyShort(root);
   exerciseBytePropertyLong(root);
   exerciseAllocation(root);
+  exerciseLongURL(root);
 }
 
 void main(List<String> args) {

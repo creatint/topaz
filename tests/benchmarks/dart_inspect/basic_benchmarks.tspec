@@ -94,6 +94,12 @@
       "output_test_name": "basic/alloc",
       "event_name": "Allocation",
       "event_category": "dart:dart"
+    },
+    {
+      "type": "duration",
+      "output_test_name": "basic/url",
+      "event_name": "URL sized string",
+      "event_category": "dart:dart"
     }
   ]
 }
