@@ -129,6 +129,7 @@ template("flutter_runner") {
     deps = [
              "//garnet/public/lib/vulkan",
              "//sdk/fidl/fuchsia.accessibility",
+             "//sdk/fidl/fuchsia.accessibility.semantics",
              "//sdk/fidl/fuchsia.fonts",
              "//sdk/fidl/fuchsia.modular",
              "//sdk/fidl/fuchsia.ui.app",
@@ -449,6 +450,7 @@ executable("flutter_runner_unittests") {
   deps = [
     "//garnet/public/lib/gtest",
     "//sdk/fidl/fuchsia.accessibility",
+    "//sdk/fidl/fuchsia.accessibility.semantics",
     "//sdk/fidl/fuchsia.fonts",
     "//sdk/fidl/fuchsia.sys",
     "//sdk/lib/sys/cpp",
