@@ -6,8 +6,23 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular/entity.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+const kSampleScript = """
+(function() {
+  let counter = 0;
+  let exampleInterval = setInterval(function() {
+    if (counter > 60) {
+      clearInterval(exampleInterval);
+      return;
+    }
+    ExampleHostChannel.postMessage(`it's been \${counter} seconds since the page loaded`);
+    counter += 1;
+  }, 1000);
+})();
+""";
 
 class App extends StatefulWidget {
   final Stream<Entity> entityStream;
@@ -20,12 +35,11 @@ class App extends StatefulWidget {
   State<App> createState() => AppState(entityStream);
 }
 
-StreamSubscription<String> _entityStreamSubscriber;
-
 class AppState extends State<App> {
   final TextEditingController _textEditingController;
   WebViewController _webViewController;
   Stream<Entity> _entityStream;
+  StreamSubscription<String> _entityStreamSubscriber;
 
   AppState(this._entityStream)
       : _textEditingController = TextEditingController();
@@ -96,7 +110,7 @@ class AppState extends State<App> {
     return IconButton(
       icon: Icon(Icons.play_arrow),
       tooltip: 'Enter',
-      onPressed: () => _loadUrl(_textEditingController.text),
+      onPressed: () async => await _loadUrl(_textEditingController.text),
     );
   }
 
@@ -132,18 +146,16 @@ class AppState extends State<App> {
 
   Widget _buildBackBtn() {
     return IconButton(
-      icon: Icon(Icons.arrow_back),
-      tooltip: 'Back',
-      onPressed: () => _webViewController?.goBack()
-    );
+        icon: Icon(Icons.arrow_back),
+        tooltip: 'Back',
+        onPressed: () => _webViewController?.goBack());
   }
 
   Widget _buildFwdBtn() {
     return IconButton(
-      icon: Icon(Icons.arrow_forward),
-      tooltip: 'Forward',
-      onPressed: () => _webViewController?.goForward()
-    );
+        icon: Icon(Icons.arrow_forward),
+        tooltip: 'Forward',
+        onPressed: () => _webViewController?.goForward());
   }
 
   Widget _buildWebview() {
@@ -153,12 +165,28 @@ class AppState extends State<App> {
           onWebViewCreated: (WebViewController controller) {
             _webViewController = controller;
           },
+          initialUrl: 'https://google.com',
+          debuggingEnabled: true,
+          javascriptMode: JavascriptMode.unrestricted,
+          onPageFinished: (url) async {
+            // Injects a sample script that notifies every second through the
+            // ExampleHostChannel for the first minute the page is loaded.
+            await _webViewController?.evaluateJavascript(kSampleScript);
+          },
+          javascriptChannels: {
+            JavascriptChannel(
+              name: 'ExampleHostChannel',
+              onMessageReceived: (message) {
+                log.info('Got message from the page: ${message.message}');
+              },
+            ),
+          },
         ),
       ),
     );
   }
 
-  void _loadUrl(String url) {
+  Future<void> _loadUrl(String url) async {
     if (url == null || url.isEmpty) {
       return;
     }
@@ -166,6 +194,6 @@ class AppState extends State<App> {
     if (!uri.hasScheme) {
       uri = uri.replace(scheme: 'https');
     }
-    _webViewController?.loadUrl(uri.toString());
+    await _webViewController?.loadUrl(uri.toString());
   }
 }

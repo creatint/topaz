@@ -26,7 +26,10 @@ class RootIntentHandler extends modular.IntentHandler {
   @override
   void handleIntent(modular.Intent intent) async {
     // parse the Intent Entity if one was provided
-    _entityStreamController.add(intent.getEntity(name: 'url', type: 'string'));
+    if (intent.action != null) {
+      _entityStreamController
+          .add(intent.getEntity(name: 'url', type: 'string'));
+    }
   }
 }
 

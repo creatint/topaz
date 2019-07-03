@@ -3,6 +3,8 @@
 # found in the LICENSE file.
 
 import("//build/dart/dart_library.gni")
+import("//build/testing/environments.gni")
+import("//topaz/runtime/dart/dart_fuchsia_test.gni")
 import("//topaz/runtime/dart/flutter_test.gni")
 
 dart_library("fuchsia_webview_flutter") {
@@ -14,6 +16,7 @@ dart_library("fuchsia_webview_flutter") {
     "src/fuchsia_web_services.dart",
     "src/fuchsia_webview.dart",
     "src/fuchsia_webview_platform_controller.dart",
+    "src/utils.dart",
     "webview.dart",
   ]
 
@@ -40,7 +43,32 @@ flutter_test("fuchsia_webview_flutter_unittests") {
     ":fuchsia_webview_flutter",
     "//third_party/dart-pkg/pub/mockito",
     "//third_party/dart-pkg/pub/test",
+    "//third_party/dart-pkg/git/flutter/packages/flutter_test",
     "//topaz/public/dart/fuchsia_webview_flutter",
     "//topaz/public/lib/testing/flutter",
   ]
+}
+
+# fx run-test fuchsia_services_package_integration_tests
+dart_fuchsia_test("fuchsia_webview_flutter_target_tests") {
+  meta = [
+    {
+      path = rebase_path("meta/fuchsia_webview_flutter_target_tests.cmx")
+      dest = "fuchsia_webview_flutter_target_tests.cmx"
+    },
+  ]
+
+  source_dir = "fuchsia_test"
+
+  sources = [
+    "fuchsia_webview_target_tests.dart",
+  ]
+
+  deps = [
+    ":fuchsia_webview_flutter",
+    "//third_party/dart-pkg/git/flutter/packages/flutter_test",
+    "//third_party/dart-pkg/pub/test",
+  ]
+
+  environments = basic_envs
 }

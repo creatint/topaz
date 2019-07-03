@@ -36,7 +36,7 @@ class FuchsiaWebView implements WebViewPlatform {
     assert(webViewPlatformCallbacksHandler != null);
 
     final controller = FuchsiaWebViewPlatformController(
-        webViewPlatformCallbacksHandler, fuchsiaWebServices);
+        webViewPlatformCallbacksHandler, creationParams, fuchsiaWebServices);
 
     onWebViewPlatformCreated(controller);
     return ChildView(

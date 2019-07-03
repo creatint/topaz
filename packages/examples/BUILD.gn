@@ -33,6 +33,7 @@ group("all") {
     "//topaz/packages/examples:spinning_cube",
     "//topaz/packages/examples:tests",
     "//topaz/packages/examples:ui",
+    "//topaz/packages/examples:webview"
   ]
 }
 
@@ -147,5 +148,12 @@ group("flutter_gallery") {
   testonly = true
   public_deps = [
     "//third_party/dart-pkg/git/flutter/examples/flutter_gallery",
+  ]
+}
+
+group("webview") {
+  testonly = true
+  public_deps = [
+    "//topaz/public/dart/fuchsia_webview_flutter/examples/webview_mod"
   ]
 }

@@ -134,4 +134,25 @@ void main() {
       verify(mockNavigationController.reload(fidl_web.ReloadType.partialCache));
     });
   });
+
+  group('JS injection', () {
+    WebViewController webViewController;
+    WebView webView;
+
+    setUp(() {
+      webView = WebView(
+        onWebViewCreated: (WebViewController webViewCtl) {
+          webViewController = webViewCtl;
+        },
+        javascriptMode: JavascriptMode.unrestricted,
+      );
+    });
+
+    testWidgets('evaluateJavascript', (WidgetTester tester) async {
+      await tester.pumpWidget(webView);
+      const script = 'console.log("hello");';
+      await webViewController.evaluateJavascript(script);
+      verify(mockWebServices.evaluateJavascript(['*'], script));
+    });
+  });
 }

@@ -17,6 +17,8 @@ import 'package:zircon/zircon.dart';
 import 'package:fuchsia_scenic/views.dart';
 import 'package:fuchsia_vfs/vfs.dart';
 
+import 'utils.dart' as utils;
+
 /// Helper class to help connect and interface with 'fuchsia.web.*' services.
 class FuchsiaWebServices {
   final fidl_web.ContextProviderProxy _contextProviderProxy =
@@ -34,9 +36,7 @@ class FuchsiaWebServices {
 
   /// Constructs [FuchsiaWebServices] and connects to various 'fuchsia.web.*`
   /// services.
-  FuchsiaWebServices({
-    fidl_web.ConsoleLogLevel javascriptLogLevel = fidl_web.ConsoleLogLevel.none,
-  }) {
+  FuchsiaWebServices() {
     StartupContext.fromStartupInfo()
         .incoming
         .connectToService(_contextProviderProxy);
@@ -76,17 +76,20 @@ class FuchsiaWebServices {
             serviceDirectory: InterfaceHandle<fidl_io.Directory>(pair.second));
 
     _contextProviderProxy.create(contextParams, _contextProxy.ctrl.request());
-    _contextProxy.createFrame(_frameProxy.ctrl.request());
+    _contextProxy.createFrame(frame.ctrl.request());
 
     // Create token pair and pass one end to the webview and the other to child
     // view connection which will be used to construct the child view widget
     // that the webview will live in.
     final tokenPair = ViewTokenPair();
-    _frameProxy.createView(tokenPair.viewToken);
+    frame.createView(tokenPair.viewToken);
     _childViewConnection = ChildViewConnection(tokenPair.viewHolderToken);
-    _frameProxy
-      ..getNavigationController(_navigationControllerProxy.ctrl.request())
-      ..setJavaScriptLogLevel(javascriptLogLevel);
+    frame.getNavigationController(_navigationControllerProxy.ctrl.request());
+  }
+
+  /// Sets the javascript log level for the frame.
+  Future<void> setJavaScriptLogLevel(fidl_web.ConsoleLogLevel level) {
+    return frame.setJavaScriptLogLevel(level);
   }
 
   /// Returns a connection to a child view.
@@ -99,6 +102,9 @@ class FuchsiaWebServices {
   fidl_web.NavigationControllerProxy get navigationController =>
       _navigationControllerProxy;
 
+  /// Returns [fidl_web.FrameProxy]
+  fidl_web.FrameProxy get frame => _frameProxy;
+
   /// Preforms the all the necessary cleanup.
   void dispose() {
     _navigationControllerProxy.ctrl.close();
@@ -107,31 +113,33 @@ class FuchsiaWebServices {
     _contextProviderProxy.ctrl.close();
   }
 
-  /// Executes a UTF-8 encoded [script] for every subsequent page load where the
-  /// frame's URL has an origin reflected in [origins]. The script is executed
-  /// early, prior to the execution of the document's scripts.
+  /// Executes a UTF-8 encoded [script] in the frame if the frame's URL has
+  /// an origin which matches entries in [origins].
   ///
-  /// Scripts are identified by a identifier [id]. Any script previously
-  /// injected using the same [id] will be replaced.
+  /// At least one [origins] entry must be specified.
+  /// If a wildcard "*" is specified in [origins], then the script will be
+  /// evaluated unconditionally.
   ///
-  /// The order in which multiple bindings are executed is the same as the order
-  /// in which the bindings were added. If a script is added which clobbers an
-  /// existing script of the same [id], the previous script's precedence in the
-  /// injection order will be preserved.
+  /// Note that scripts share the same execution context as the document,
+  /// meaning that document may modify variables, classes, or objects set by
+  /// the script in arbitrary or unpredictable ways.
   ///
-  /// At least one [origins] entry must be specified. If a wildcard "*" is
-  /// specified in [origins], then the script will be evaluated for all
-  /// documents.
-  ///
-  /// If an error occurred, the FrameError will be set to one of these values:
-  /// - BUFFER_NOT_UTF8: [script] is not UTF-8 encoded.
-  /// - INVALID_ORIGIN: [origins] is an empty vector.
-  Future<void> injectJavascript(int id, List<String> origins, String script) {
+  /// If an error occured, the FrameError will be set to one of these values:
+  /// BUFFER_NOT_UTF8: [script] is not UTF-8 encoded.
+  /// INVALID_ORIGIN: The Frame's current URL does not match any of the
+  ///                 values in [origins] or [origins] is an empty vector.
+  // TODO(crbug.com/900391): Investigate if we can run the scripts in
+  // isolated JS worlds.
+  Future<String> evaluateJavascript(List<String> origins, String script) async {
     final vmo = SizedVmo.fromUint8List(utf8.encode(script));
     final buffer = fidl_mem.Buffer(vmo: vmo, size: vmo.size);
     // TODO(nkosote): add catchError and decorate the error based on the error
-    // code
-    return _frameProxy.addBeforeLoadJavaScript(id, origins, buffer);
+    // code.
+    // TODO(miguelfrde): replace with executeJavaScript once chromium rolls.
+    await frame.executeJavaScriptNoResult(origins, buffer);
+    final resultVmo = SizedVmo.fromUint8List(utf8.encode('1'));
+    final resultBuffer = fidl_mem.Buffer(vmo: resultVmo, size: resultVmo.size);
+    return utils.bufferToString(resultBuffer);
   }
 
   /// Posts a message to the [fidl_web.Frame]'s onMessage handler.
@@ -164,14 +172,14 @@ class FuchsiaWebServices {
     );
     // TODO(nkosote): add catchError and decorate the error based on the error
     // code
-    return _frameProxy.postMessage(targetOrigin, msg);
+    return frame.postMessage(targetOrigin, msg);
   }
 
   /// Sets the listener for handling page navigation events.
   ///
   /// The [observer] to use. Unregisters any existing listener if null.
   void setNavigationEventListener(fidl_web.NavigationEventListener observer) {
-    _frameProxy.setNavigationEventListener(
+    frame.setNavigationEventListener(
         _navigationEventObserverBinding.wrap(observer));
   }
 }
