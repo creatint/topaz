@@ -63,4 +63,6 @@ void main(List<String> args) {
       ..newItem(90).add(10);
   t2.newItem(2).add(2);
 
+  Inspect.named('test');
+  Inspect.named('test');
 }

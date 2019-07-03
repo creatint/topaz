@@ -38,16 +38,45 @@ abstract class Inspect {
   static int vmoSize = defaultVmoSizeBytes;
   static InspectImpl _singleton;
 
+  /// Maps an inspect instance name to the number of instantiations
+  /// of that inspector. Used to deduplicate requests for
+  /// similarly named inspectors.
+  static Map<String, int> nameToInstanceCount;
+
   /// Returns a singleton [Inspect] instance at root.inspect
-  factory Inspect(){
-    if(_singleton == null){
+  factory Inspect() {
+    if (_singleton == null) {
       var context = StartupContext.fromStartupInfo();
       var writer = VmoWriter.withSize(vmoSize);
-      _singleton = InspectImpl(context.outgoing.debugDir(),
-         'root.inspect', writer);
+      _singleton =
+          InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     }
     return _singleton;
   }
+
+  /// Returns a new Inspect object at <name>.inspect
+  /// If it is called multiple times with the same name then
+  /// a unique number will be appended after it
+  ///
+  /// Example:
+  /// Inspect.named('test');
+  /// Inspect.named('test');
+  /// Results in "test.inspect" and "test_2.inspect"
+  factory Inspect.named(String name) {
+    nameToInstanceCount ??= <String, int>{};
+    var context = StartupContext.fromStartupInfo();
+    var writer = VmoWriter.withSize(vmoSize);
+    if (!nameToInstanceCount.containsKey('$name')) {
+      nameToInstanceCount['$name'] = 1;
+      return InspectImpl(context.outgoing.debugDir(), '$name.inspect', writer);
+    } else {
+      int val = nameToInstanceCount['$name'] + 1;
+      nameToInstanceCount['$name'] = val;
+      return InspectImpl(
+          context.outgoing.debugDir(), '${name}_$val.inspect', writer);
+    }
+  }
+
   /// Optionally configure global settings for inspection.
   ///
   /// This may not be called after the first call to Inspect().

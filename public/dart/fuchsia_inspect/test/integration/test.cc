@@ -28,6 +28,9 @@ constexpr char kTestComponent[] =
     "fuchsia-pkg://fuchsia.com/dart_inspect_vmo_test_writer#meta/"
     "dart_inspect_vmo_test_writer.cmx";
 constexpr char kTestProcessName[] = "dart_inspect_vmo_test_writer.cmx";
+constexpr char kTestInspectFileName1[] = "test";
+constexpr char kTestInspectFileName2[] = "test_2";
+
 
 class InspectTest : public sys::testing::TestWithEnvironment {
  protected:
@@ -145,5 +148,14 @@ TEST_F(InspectTest, ReadHierarchy) {
 
                       )))));
 }
-
+TEST_F(InspectTest, NamedInspectVisible) {
+  files::Glob glob1(Substitute(
+      "/hub/r/test/*/c/*/*/c/$0/*/out/debug/$1.inspect", kTestProcessName,
+      kTestInspectFileName1));
+  files::Glob glob2(Substitute(
+      "/hub/r/test/*/c/*/*/c/$0/*/out/debug/$1.inspect", kTestProcessName,
+      kTestInspectFileName2));
+  EXPECT_TRUE(glob1.size() > 0);
+  EXPECT_TRUE(glob2.size() > 0);
+}
 }  // namespace

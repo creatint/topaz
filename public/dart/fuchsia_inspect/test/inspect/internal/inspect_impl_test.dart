@@ -16,8 +16,8 @@ void main() {
     var context = StartupContext.fromStartupInfo();
     var vmo = FakeVmo(512);
     var writer = VmoWriter(vmo);
-
-    var inspect = InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
+    var inspect =
+        InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     expect(inspect.root, isNotNull);
   });
 }
