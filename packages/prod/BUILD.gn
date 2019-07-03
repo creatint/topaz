@@ -192,7 +192,6 @@ group("latin-ime") {
 group("term") {
   testonly = true
   public_deps = [
-    "//garnet/bin/fonts:font_provider_tests",
     "//garnet/packages/prod:fonts",
     "//topaz/app/term",
   ]
