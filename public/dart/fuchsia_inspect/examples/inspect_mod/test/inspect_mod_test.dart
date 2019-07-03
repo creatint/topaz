@@ -57,7 +57,7 @@ Future<void> _startTestHarness() async {
   }
 
   final testHarnessSpec = TestHarnessSpec(
-      envServicesToInherit: ['fuchsia.net.SocketProvider'],
+      envServicesToInherit: ['fuchsia.net.SocketProvider', 'fuchsia.net.NameLookup', 'fuchsia.posix.socket.Provider'],
       envServices: EnvironmentServicesSpec(
           servicesFromComponents: _toComponentServices({
         'fuchsia.auth.account.AccountManager':
