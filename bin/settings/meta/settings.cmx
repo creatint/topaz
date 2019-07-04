@@ -17,7 +17,6 @@
             "fuchsia.ui.policy.Presenter",
             "fuchsia.ui.scenic.Scenic",
             "fuchsia.wlan.service.Wlan"
-        ],
-        "system": [ "data" ]
+        ]
     }
 }
