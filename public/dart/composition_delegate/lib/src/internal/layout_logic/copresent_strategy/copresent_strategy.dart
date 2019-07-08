@@ -30,14 +30,17 @@ class CopresentStrategy extends LayoutStrategy {
   /// surfaces in the story.
   SurfaceTree surfaceTree;
 
-  /// Split a List of <T> into List of Lists of <T> of [chunkSize].
-
-  List<List<T>> _chunk<T>({List<T> list, int chunkSize}) =>
+  /// Split a List of <T> into List of Lists of <T> of [chunkSize], working from
+  /// the back of the list. (Newly focused surfaces are pushed to the end of the
+  /// list)
+  List<List<T>> _chunkRightToLeft<T>({List<T> list, int chunkSize}) =>
       list.length <= chunkSize
           ? [list]
           : ([
-              list.sublist(0, chunkSize),
-              ..._chunk(list: list.sublist(chunkSize), chunkSize: chunkSize)
+              list.sublist(list.length - chunkSize, list.length),
+              ..._chunkRightToLeft(
+                  list: list.sublist(0, list.length - chunkSize),
+                  chunkSize: chunkSize)
             ]);
 
   /// Returns the layout for copresent strategy given the current context. The
@@ -70,9 +73,11 @@ class CopresentStrategy extends LayoutStrategy {
         // In a naive left-to-right co-present layout, horizontally
         int maxSurfacesPerLayer =
             layoutContext.size.width ~/ layoutContext.minSurfaceWidth;
-        // Chop the layoutGroup into sets that will fit in a layer
-        List<List<String>> layerLists =
-            _chunk(list: layoutGroup, chunkSize: maxSurfacesPerLayer);
+        // Chop the layoutGroup into sets that will fit in a layer, starting
+        // from the most focused (at the end of the list) of Surfaces to be laid
+        // out.
+        List<List<String>> layerLists = _chunkRightToLeft(
+            list: layoutGroup, chunkSize: maxSurfacesPerLayer);
         // And turn those into layers of SurfaceLayouts
         for (List<String> layerList in layerLists) {
           // TODO (djmurphy): add emphasis
@@ -84,14 +89,14 @@ class CopresentStrategy extends LayoutStrategy {
                   .asMap()
                   .map(
                     (index, value) => MapEntry(
-                          index,
-                          SurfaceLayout(
-                              x: index * width,
-                              y: 0.0,
-                              w: width,
-                              h: layoutContext.size.height,
-                              surfaceId: value),
-                        ),
+                      index,
+                      SurfaceLayout(
+                          x: index * width,
+                          y: 0.0,
+                          w: width,
+                          h: layoutContext.size.height,
+                          surfaceId: value),
+                    ),
                   )
                   .values
                   .toList(),
@@ -112,6 +117,7 @@ class CopresentStrategy extends LayoutStrategy {
     List<List<String>> layoutGroups = [];
     // Create layout groups starting with the most focused Surface
     // Focusing on co-presentation for now.
+
     while (surfacesToLayout.isNotEmpty) {
       String firstSurface = surfacesToLayout.removeFirst();
       // The sub-tree of Surfaces that have co-presentation relationship with
