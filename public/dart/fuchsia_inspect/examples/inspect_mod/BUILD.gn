@@ -2,8 +2,8 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
-import("//topaz/runtime/flutter_runner/flutter_app.gni")
 import("//topaz/runtime/dart/dart_fuchsia_test.gni")
+import("//topaz/runtime/flutter_runner/flutter_app.gni")
 
 flutter_app("inspect_mod") {
   main_dart = "lib/main.dart"
@@ -29,22 +29,27 @@ flutter_app("inspect_mod") {
   ]
 }
 
-dart_library("test_vmo_reader"){
+dart_library("test_vmo_reader") {
   package_name = "test_vmo_reader"
 
   sdk_category = "partner"
 
   sources = [
-    "vmo_reader.dart",
     "main.dart",
     "src/inspect_example_app.dart",
     "src/intent_handlers/root_intent_handler.dart",
+    "util.dart",
+    "vmo_reader.dart",
   ]
 
   deps = [
     "//third_party/dart-pkg/git/flutter/packages/flutter",
+    "//third_party/dart-pkg/pub/test",
     "//topaz/public/dart/fuchsia_inspect",
     "//topaz/public/dart/fuchsia_modular",
+    "//topaz/public/dart/fuchsia_services",
+    "//topaz/public/dart/fuchsia_vfs",
+    "//topaz/public/dart/zircon",
   ]
 }
 
@@ -84,4 +89,3 @@ dart_fuchsia_test("inspect_mod_test") {
     ]
   }
 }
-

@@ -33,7 +33,7 @@ group("all") {
     "//topaz/packages/examples:spinning_cube",
     "//topaz/packages/examples:tests",
     "//topaz/packages/examples:ui",
-    "//topaz/packages/examples:webview"
+    "//topaz/packages/examples:webview",
   ]
 }
 
@@ -70,6 +70,8 @@ group("tests") {
     "//topaz/public/dart/fuchsia_inspect/examples/torus15:torus15_dart_test",
     "//topaz/public/dart/fuchsia_inspect/test/inspect_flutter_integration_tester",
     "//topaz/public/dart/fuchsia_inspect/test/inspect_flutter_integration_tester:inspect_dart_integration_test_driver",
+    "//topaz/public/dart/fuchsia_inspect_flutter",
+    "//topaz/public/dart/fuchsia_inspect_flutter:fuchsia_flutter_test",
     "//topaz/public/dart/fuchsia_modular/examples/slider_mod",
     "//topaz/public/dart/fuchsia_modular/examples/slider_mod:slider_mod_tests",
   ]
@@ -154,6 +156,6 @@ group("flutter_gallery") {
 group("webview") {
   testonly = true
   public_deps = [
-    "//topaz/public/dart/fuchsia_webview_flutter/examples/webview_mod"
+    "//topaz/public/dart/fuchsia_webview_flutter/examples/webview_mod",
   ]
 }
