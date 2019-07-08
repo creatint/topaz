@@ -169,7 +169,9 @@ class _InspectHomePageState extends State<_InspectHomePage> {
   }
 
   void _makeTree() {
-    _subtree = _inspectNode.child('I think that I shall never see')
+    // Make a long tree name on purpose, to see how far we can push the naming.
+    _subtree = _inspectNode.child(
+        'I think that I shall never see01234567890123456789012345678901234567890')
       ..intProperty('int$_id').setValue(_id++);
     InspectExampleApp.stateBloc.updateValue('Tree was made');
   }

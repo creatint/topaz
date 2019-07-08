@@ -30,10 +30,8 @@ class Block {
   VmoHolder get vmo => _vmo;
 
   /// Initializes an empty [BlockType.reserved] block that isn't in the VMO yet.
-  Block.create(this._vmo, this.index) {
-    _header
-      ..write(typeBits, BlockType.reserved.value)
-      ..write(orderBits, defaultBlockOrder);
+  Block.create(this._vmo, this.index, {int order = defaultBlockOrder}) {
+    _header..write(typeBits, BlockType.reserved.value)..write(orderBits, order);
   }
 
   /// Create a block with arbitrary type.
@@ -400,7 +398,7 @@ class Block {
   /// Verifies this [Block] has the expected type; throws [StateError] if not.
   void _checkType(BlockType blockType) {
     if (type != blockType) {
-      throw StateError('Incorrect block type: '
+      throw StateError('Incorrect block type index: $index, size: $size: '
           'expected $blockType, but found $type.');
     }
   }

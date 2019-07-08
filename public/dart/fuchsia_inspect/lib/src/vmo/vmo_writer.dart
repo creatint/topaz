@@ -9,6 +9,7 @@ import 'package:fuchsia_vfs/vfs.dart';
 
 import 'block.dart';
 import 'heap.dart';
+import 'little_big_slab.dart';
 import 'util.dart';
 import 'vmo_fields.dart';
 import 'vmo_holder.dart';
@@ -41,17 +42,24 @@ class VmoWriter {
   Block _headerBlock;
 
   /// Constructor.
-  VmoWriter(this._vmo) {
+  VmoWriter(this._vmo, Function heapFactory) {
     _vmo.beginWork();
     _headerBlock = Block.create(_vmo, headerIndex)..becomeHeader();
-    Block.create(_vmo, rootNodeIndex).becomeRoot();
-    Block.create(_vmo, rootNameIndex).becomeName(rootName);
-    _heap = Slab32(_vmo);
+    Block.create(_vmo, rootNodeIndex, order: defaultBlockOrder).becomeRoot();
+    Block.create(_vmo, rootNameIndex, order: defaultBlockOrder)
+        .becomeName(rootName);
+    _heap = heapFactory(_vmo);
     _vmo.commit();
   }
 
   /// Creates a [VmoWriter] with a VMO of size [size].
-  factory VmoWriter.withSize(int size) => VmoWriter(VmoHolder(size));
+  factory VmoWriter.withSize(int size) => VmoWriter.withVmo(VmoHolder(size));
+
+  /// Function used for creating the heap by default.
+  static const Function _heapCreate = LittleBigSlab.create;
+
+  /// Creates a [VmoWriter] with a given VMO.
+  factory VmoWriter.withVmo(VmoHolder vmo) => VmoWriter(vmo, _heapCreate);
 
   /// Gets the top Node of the Inspect tree (always at index 1).
   int get rootNode => rootNodeIndex;
@@ -198,11 +206,11 @@ class VmoWriter {
 
   // Creates a new *_VALUE node inside the tree.
   Block _createValue(int parent, String name) {
-    var block = _heap.allocateBlock();
+    var block = _heap.allocateBlock(32);
     if (block == null) {
       return null;
     }
-    var nameBlock = _heap.allocateBlock();
+    var nameBlock = _heap.allocateBlock(name.length, required: true);
     if (nameBlock == null) {
       _heap.freeBlock(block);
       return null;
@@ -266,7 +274,7 @@ class VmoWriter {
     int nextIndex = invalidIndex;
     int sizeRemaining = size;
     while (sizeRemaining > 0) {
-      var extent = _heap.allocateBlock();
+      var extent = _heap.allocateBlock(sizeRemaining);
       if (extent == null) {
         _freeExtents(nextIndex);
         return 0;

@@ -4,7 +4,6 @@
 
 // ignore_for_file: implementation_imports
 
-import 'dart:io';
 import 'dart:math' show min;
 import 'dart:typed_data';
 
@@ -123,9 +122,10 @@ void compare(FakeVmo vmo, int offset, String spec) {
     int dataAtNybble = (nybble & 1 == 0) ? dataAtByte >> 4 : dataAtByte & 0xf;
     if (dataAtNybble != value) {
       expect(dataAtNybble, value,
-          reason: 'byte[$byte] = ${dataAtByte.toRadixString(16)}. '
-              'Nybble $nybble was ${dataAtNybble.toRadixString(16)} '
-              'but expected ${value.toRadixString(16)}.');
+          reason:
+              'byte[0x${byte.toRadixString(16)}] = ${dataAtByte.toRadixString(16)}. '
+              'Nybble $nybble [0x${nybble.toRadixString(16)}] was ${dataAtNybble.toRadixString(16)} '
+              'but expected ${value.toRadixString(16)}.\n${dumpBlocks(vmo)}');
     }
     nybble++;
   }
@@ -133,19 +133,28 @@ void compare(FakeVmo vmo, int offset, String spec) {
 
 /// Writes block contents in hexadecimal, nicely formatted, to stdout.
 ///
-/// This is very useful in debugging, so I'll leave it in although it's not
-/// used in testing.
-void dumpBlocks(FakeVmo vmo, {int startIndex = 0, int howMany32 = -1}) {
+/// A dump should be printed when a test fails, so that the log can be
+/// inspected on errors.
+String dumpBlocks(FakeVmo vmo, {int startIndex = 0, int howMany32 = -1}) {
   int lastIndex = (howMany32 == -1)
       ? (vmo.bytes.lengthInBytes >> 4) - 1
       : startIndex + howMany32 - 1;
-  stdout.writeln('Dumping blocks from $startIndex through $lastIndex');
+  var buffer = StringBuffer()
+    ..writeln(
+        'Dumping blocks from $startIndex through $lastIndex for debugging.')
+    ..writeln('  ,----------- byte offset')
+    ..writeln('  |   ,------- index')
+    ..writeln('  |   |   ,--- order (0:16 bytes; 1:32 bytes; etc.)')
+    ..writeln(
+        '  |   |   | ,- type (0: free; 1:reserved; 2:header; 3:object value; 8:extent, 9:name; 10:tombstone)')
+    ..writeln('  v   v   v v');
   for (int index = startIndex; index <= lastIndex;) {
     String lowNybble(int offset) => hexChar(vmo.bytes.getUint8(offset) & 15);
     String highNybble(int offset) => hexChar(vmo.bytes.getUint8(offset) >> 4);
-    stdout.write('${(index * 16).toRadixString(16).padLeft(3, '0')}: ');
+    buffer.write(
+        '${(index * 16).toRadixString(16).padLeft(3, '0')}[${index.toString().padLeft(3, ' ')}]: ');
     for (int byte = 0; byte < 8; byte++) {
-      stdout
+      buffer
         ..write('${lowNybble(index * 16 + byte)} ')
         ..write('${highNybble(index * 16 + byte)} ');
     }
@@ -154,14 +163,15 @@ void dumpBlocks(FakeVmo vmo, {int startIndex = 0, int howMany32 = -1}) {
     String byteToHex(int offset) =>
         vmo.bytes.getUint8(offset).toRadixString(16).padLeft(2, '0');
     for (int word = 1; word < numWords; word++) {
-      stdout.write('  ');
+      buffer.write('  ');
       for (int byte = 0; byte < 8; byte++) {
-        stdout.write('${byteToHex(index * 16 + word * 8 + byte)} ');
+        buffer.write('${byteToHex(index * 16 + word * 8 + byte)} ');
       }
     }
     index += 1 << order;
-    stdout.writeln('');
+    buffer.writeln('');
   }
+  return buffer.toString();
 }
 
 /// Reads the property at [propertyIndex] out of [vmo], and returns the value.

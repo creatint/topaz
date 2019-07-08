@@ -21,7 +21,7 @@ void main() {
   setUp(() {
     var context = StartupContext.fromStartupInfo();
     vmo = FakeVmo(512);
-    var writer = VmoWriter(vmo);
+    var writer = VmoWriter.withVmo(vmo);
     Inspect inspect =
         InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     root = inspect.root;
@@ -174,7 +174,7 @@ void main() {
     Node tinyRoot;
     setUp(() {
       var tinyVmo = FakeVmo(64);
-      var writer = VmoWriter(tinyVmo);
+      var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
       Inspect inspect =
           InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);

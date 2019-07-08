@@ -22,10 +22,12 @@ const int defaultBlockOrder = 1;
 /// happens one fixed-size block at a time, so repeated calls may be needed to
 /// allocate a large amount of memory.
 abstract class Heap {
-  /// Allocates a block using the bytes size hint. The allocated block size may
-  /// be smaller than the size hint, but is the largest size block that the
-  /// allocator can provide.
-  Block allocateBlock([int bytesHint = 32]);
+  /// Allocates a block using the bytes size hint. If [required] is not set,
+  /// the allocated block size may be smaller than the size hint, but is the
+  /// largest size block that the allocator can provide.  If [required] is set,
+  /// allocation will fail if unable to provide a block at least the size of
+  /// the hint.
+  Block allocateBlock(int bytesHint, {bool required = false});
 
   /// Frees the previously allocated block.
   void freeBlock(Block block);
@@ -52,9 +54,12 @@ class Slab32 implements Heap {
         fromBytes: heapStartIndex * bytesPerIndex, toBytes: _currentSizeBytes);
   }
 
+  /// Creates a new Heap over the supplied VMO holder.
+  static Heap create(VmoHolder vmo) => Slab32(vmo);
+
   /// Gets a block from the freelist, or null if none available.
   @override
-  Block allocateBlock([int unused = 32]) {
+  Block allocateBlock(int unused, {bool required = false}) {
     if (_freelistHead == invalidIndex) {
       // Grow one page at a time to save RAM.
       _growHeap(_currentSizeBytes + _pageSizeBytes);
@@ -87,7 +92,7 @@ class Slab32 implements Heap {
     for (int i = fromBytes ~/ bytesPerIndex;
         i < toBytes ~/ bytesPerIndex;
         i += 2) {
-      Block.create(_vmo, i).becomeFree(_freelistHead);
+      Block.create(_vmo, i, order: defaultBlockOrder).becomeFree(_freelistHead);
       _freelistHead = i;
     }
   }

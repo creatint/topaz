@@ -15,7 +15,8 @@ void main() {
   test('Inspect root node is non-null by default', () {
     var context = StartupContext.fromStartupInfo();
     var vmo = FakeVmo(512);
-    var writer = VmoWriter(vmo);
+    var writer = VmoWriter.withVmo(vmo);
+
     var inspect =
         InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     expect(inspect.root, isNotNull);

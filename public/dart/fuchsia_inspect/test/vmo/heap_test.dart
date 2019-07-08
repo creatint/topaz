@@ -72,9 +72,9 @@ void main() {
 
 List<Block> _allocateEverything(Heap heap) {
   var blocks = <Block>[];
-  for (Block block = heap.allocateBlock();
+  for (Block block = heap.allocateBlock(32);
       block != null;
-      block = heap.allocateBlock()) {
+      block = heap.allocateBlock(32)) {
     blocks.add(block);
   }
   // Make sure we're actually getting unique blocks

@@ -21,7 +21,7 @@ void main() {
   setUp(() {
     var context = StartupContext.fromStartupInfo();
     vmo = FakeVmo(512);
-    var writer = VmoWriter(vmo);
+    var writer = VmoWriter.withVmo(vmo);
     Inspect inspect =
         InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     node = inspect.root;
@@ -201,7 +201,7 @@ void main() {
 
     test('If no space, creation gives a deleted StringProperty', () {
       var tinyVmo = FakeVmo(64);
-      var writer = VmoWriter(tinyVmo);
+      var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
       Inspect inspect =
           InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
@@ -215,7 +215,7 @@ void main() {
 
     test('If no space, creation gives a deleted ByteDataProperty', () {
       var tinyVmo = FakeVmo(64);
-      var writer = VmoWriter(tinyVmo);
+      var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
       Inspect inspect =
           InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
@@ -433,7 +433,7 @@ void main() {
 
     test('If no space, creation gives a deleted IntProperty', () {
       var tinyVmo = FakeVmo(64);
-      var writer = VmoWriter(tinyVmo);
+      var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
       Inspect inspect =
           InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
@@ -447,7 +447,7 @@ void main() {
 
     test('If no space, creation gives a deleted DoubleProperty', () {
       var tinyVmo = FakeVmo(64);
-      var writer = VmoWriter(tinyVmo);
+      var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
       Inspect inspect =
           InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
@@ -463,8 +463,8 @@ void main() {
   test('Able to call InspectImpl at a specified path', () {
     var tinyVmo = FakeVmo(64);
     var tinyVmo2 = FakeVmo(64);
-    var writer = VmoWriter(tinyVmo);
-    var writer2 = VmoWriter(tinyVmo2);
+    var writer = VmoWriter.withVmo(tinyVmo);
+    var writer2 = VmoWriter.withVmo(tinyVmo2);
     var context = StartupContext.fromStartupInfo();
     Inspect inspect =
         InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
@@ -472,7 +472,5 @@ void main() {
         InspectImpl(context.outgoing.debugDir(), 'test.inspect', writer2);
     expect(() => inspect, isNotNull);
     expect(() => inspect2, isNotNull);
-    expect(() => context.outgoing.debugDir().lookup('root.inspect'), isNotNull);
-    expect(() => context.outgoing.debugDir().lookup('test.inspect'), isNotNull);
   });
 }

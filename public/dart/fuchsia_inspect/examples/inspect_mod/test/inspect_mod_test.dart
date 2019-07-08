@@ -57,7 +57,11 @@ Future<void> _startTestHarness() async {
   }
 
   final testHarnessSpec = TestHarnessSpec(
-      envServicesToInherit: ['fuchsia.net.SocketProvider', 'fuchsia.net.NameLookup', 'fuchsia.posix.socket.Provider'],
+      envServicesToInherit: [
+        'fuchsia.net.SocketProvider',
+        'fuchsia.net.NameLookup',
+        'fuchsia.posix.socket.Provider'
+      ],
       envServices: EnvironmentServicesSpec(
           servicesFromComponents: _toComponentServices({
         'fuchsia.auth.account.AccountManager':
@@ -172,17 +176,6 @@ void main() {
     // Wait for initial StateBloc value to appear
     await driver.waitFor(find.byValueKey('Program has started'));
     var inspect = await _readInspect();
-/* Expected "inspect" contents (order not guaranteed):
-<> Node: "root"
-<> >> IntProperty "interesting": 118
-<> >> DoubleProperty "double down": 3.23
-<> >> ByteDataProperty  "bytes": 01 02 03 04
-<> >> StringProperty "greeting": "Hello World"
-<> >> Node: "home-page"
-<> >> >> IntProperty "counter": 0
-<> >> >> StringProperty "background-color": "Color(0xffffffff)"
-<> >> >> StringProperty "title": "Hello Inspect!"
-*/
     expect('<> >> IntProperty "interesting": 118', isIn(inspect));
     expect('<> >> DoubleProperty "double down": 3.23', isIn(inspect));
     expect('<> >> ByteDataProperty  "bytes": 01 02 03 04', isIn(inspect));
@@ -203,10 +196,12 @@ void main() {
     expect('IntProperty "counter": 1', isNot(isIn(inspect)));
     expect('IntProperty "counter": 0', isIn(inspect));
 
+    // The node name below is truncated due to limitations of the maximum node
+    // name length.
     var preTreeInspect = inspect;
     inspect = await tapAndWait('Make tree', 'Tree was made');
     expect(
-        '<> >> >> Node: "I think that I shall nev"\n'
+        '<> >> >> Node: "I think that I shall never see01234567890123456789012345"\n'
         '<> >> >> >> IntProperty "int0": 0',
         isIn(inspect));
 
@@ -222,7 +217,7 @@ void main() {
 
     inspect = await tapAndWait('Make tree', 'Tree was made');
     expect(
-        '<> >> >> Node: "I think that I shall nev"\n'
+        '<> >> >> Node: "I think that I shall never see01234567890123456789012345"\n'
         '<> >> >> >> IntProperty "int3": 3',
         isIn(inspect));
 

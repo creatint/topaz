@@ -22,7 +22,7 @@ class UniqueNumber {
 // Returns a periodic extension of `pattern` up until the
 // given `length`.  Example: `periodic('foo', 7) => "foofoof"`
 String periodic(String pattern, int length) {
-  return (pattern * (length ~/ pattern.length + 1)).substring(0,length);
+  return (pattern * (length ~/ pattern.length + 1)).substring(0, length);
 }
 
 // Runs one-shot create-set-reset-delete for a string property.  reps allows one
@@ -78,7 +78,8 @@ void exerciseStringPropertyLong(Node root) {
 }
 
 void exerciseStringPropertyShort(Node root) {
-  stringPropertyLifecycle(root, length: 1,
+  stringPropertyLifecycle(root,
+      length: 1,
       getMsg: 'Get string',
       setMsg: 'Set string',
       resetMsg: 'Reset string');
@@ -87,9 +88,9 @@ void exerciseStringPropertyShort(Node root) {
 // Similar to stringPropertyLifecycle above, but for bytes.
 void bytePropertyLifecycle(Node root,
     {int length = 100,
-      String getMsg = 'Get byte',
-      String setMsg = 'Set byte',
-      String resetMsg = 'Reset byte'}) {
+    String getMsg = 'Get byte',
+    String setMsg = 'Set byte',
+    String resetMsg = 'Reset byte'}) {
   // We could perhaps factor common code out of here and stringPropertyLifecycle.
   ByteData data1 = ByteData(length);
   ByteData data2 = ByteData(length)..setInt8(length - 1, 0x42);
@@ -110,10 +111,10 @@ void bytePropertyLifecycle(Node root,
   }
 }
 
-
 // Times the creation,setting and deletion of a short byte property.
 void exerciseBytePropertyShort(Node root) {
-  bytePropertyLifecycle(root, length: 32,
+  bytePropertyLifecycle(root,
+      length: 32,
       getMsg: 'Get byte',
       setMsg: 'Set byte',
       resetMsg: 'Reset byte');
@@ -121,7 +122,8 @@ void exerciseBytePropertyShort(Node root) {
 
 // Times the creation,setting and deletion of a long byte property.
 void exerciseBytePropertyLong(Node root) {
-  bytePropertyLifecycle(root, length: 1025,
+  bytePropertyLifecycle(root,
+      length: 1025,
       getMsg: 'Get byte long',
       setMsg: 'Set byte long',
       resetMsg: 'Reset byte long');
@@ -219,7 +221,6 @@ void exerciseAllocation(Node root) {
   } finally {
     child.delete();
   }
-
 }
 
 void doSingleIteration() {
