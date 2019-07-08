@@ -62,12 +62,12 @@ template("flutter_runner") {
     libs = []
 
     sources = [
+      "accessibility_bridge.cc",
+      "accessibility_bridge.h",
       "component.cc",
       "component.h",
       "compositor_context.cc",
       "compositor_context.h",
-      "context_writer_bridge.cc",
-      "context_writer_bridge.h",
       "engine.cc",
       "engine.h",
       "fuchsia_accessibility.cc",
@@ -438,6 +438,11 @@ executable("flutter_runner_unittests") {
   output_name = "flutter_runner_tests"
 
   sources = [
+    "accessibility_bridge.cc",
+    "accessibility_bridge.h",
+    "accessibility_bridge_fakes.cc",
+    "accessibility_bridge_fakes.h",
+    "accessibility_bridge_unittest.cc",
     "fuchsia_accessibility.cc",
     "fuchsia_accessibility.h",
     "fuchsia_accessibility_unittest.cc",
@@ -448,6 +453,7 @@ executable("flutter_runner_unittests") {
   ]
 
   deps = [
+    "$flutter_root/lib/ui",
     "//garnet/public/lib/gtest",
     "//sdk/fidl/fuchsia.accessibility",
     "//sdk/fidl/fuchsia.accessibility.semantics",
@@ -455,6 +461,8 @@ executable("flutter_runner_unittests") {
     "//sdk/fidl/fuchsia.sys",
     "//sdk/lib/sys/cpp",
     "//sdk/lib/sys/cpp/testing:unit",
+    "//third_party/dart/runtime:libdart_jit",
+    "//third_party/dart/runtime/platform:libdart_platform_jit",
     "//third_party/googletest:gtest_main",
     "//third_party/icu",
     "//third_party/skia",

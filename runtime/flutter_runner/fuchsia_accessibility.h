@@ -12,6 +12,7 @@
 #include <lib/sys/cpp/service_directory.h>
 
 #include <memory>
+#include "flutter/fml/macros.h"
 
 namespace flutter_runner {
 
@@ -23,16 +24,19 @@ namespace flutter_runner {
 // unit tests.
 class FuchsiaAccessibility {
  public:
-  static std::unique_ptr<FuchsiaAccessibility> Create(
+  static std::shared_ptr<FuchsiaAccessibility> Create(
       std::shared_ptr<sys::ServiceDirectory> services,
       fuchsia::ui::views::ViewRef view_ref);
 
+  FuchsiaAccessibility() = default;
   virtual ~FuchsiaAccessibility() = default;
 
   virtual void UpdateSemanticNodes(
       std::vector<fuchsia::accessibility::semantics::Node> nodes) = 0;
   virtual void DeleteSemanticNodes(std::vector<uint32_t> node_ids) = 0;
   virtual void Commit() = 0;
+
+  FML_DISALLOW_COPY_AND_ASSIGN(FuchsiaAccessibility);
 };
 
 }  // namespace flutter_runner

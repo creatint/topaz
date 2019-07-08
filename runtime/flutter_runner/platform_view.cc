@@ -90,8 +90,6 @@ PlatformView::PlatformView(
     fit::closure session_listener_error_callback,
     OnMetricsUpdate session_metrics_did_change_callback,
     OnSizeChangeHint session_size_change_hint_callback,
-    fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
-        accessibility_context_writer,
     zx_handle_t vsync_event_handle)
     : flutter::PlatformView(delegate, std::move(task_runners)),
       debug_label_(std::move(debug_label)),
@@ -103,7 +101,6 @@ PlatformView::PlatformView(
       metrics_changed_callback_(std::move(session_metrics_did_change_callback)),
       size_change_hint_callback_(std::move(session_size_change_hint_callback)),
       ime_client_(this),
-      context_writer_bridge_(std::move(accessibility_context_writer)),
       surface_(std::make_unique<Surface>(debug_label_)),
       vsync_event_handle_(vsync_event_handle) {
   // Register all error handlers.
@@ -129,8 +126,9 @@ PlatformView::PlatformView(
 
   fuchsia::ui::views::ViewRef accessibility_view_ref;
   view_ref_.Clone(&accessibility_view_ref);
-  accessibility_holder_ = FuchsiaAccessibility::Create(
-      std::move(runner_services), std::move(accessibility_view_ref));
+  accessibility_bridge_ =
+      std::make_unique<AccessibilityBridge>(FuchsiaAccessibility::Create(
+          std::move(runner_services), std::move(accessibility_view_ref)));
 }
 
 PlatformView::~PlatformView() = default;
@@ -167,13 +165,6 @@ void PlatformView::OnPropertiesChanged(
 
   FlushViewportMetrics();
 }
-
-// TODO(SCN-975): Re-enable.
-// void PlatformView::ConnectSemanticsProvider(
-//     fuchsia::ui::views::ViewToken token) {
-//   semantics_bridge_.SetupEnvironment(
-//       token, parent_environment_service_provider_.get());
-// }
 
 void PlatformView::UpdateViewportMetrics(
     const fuchsia::ui::gfx::Metrics& metrics) {
@@ -593,14 +584,16 @@ void PlatformView::HandlePlatformMessage(
 }
 
 // |flutter::PlatformView|
+void PlatformView::SetSemanticsEnabled(bool enabled) {
+  accessibility_bridge_->SetSemanticsEnabled(enabled);
+  flutter::PlatformView::SetSemanticsEnabled(enabled);
+}
+
+// |flutter::PlatformView|
 void PlatformView::UpdateSemantics(
     flutter::SemanticsNodeUpdates update,
     flutter::CustomAccessibilityActionUpdates actions) {
-  // TODO(MI4-1262): Figure out if the context_writer_bridge should be removed
-  // as it is unused.
-  // context_writer_bridge_.UpdateSemantics(update);
-  // TODO(MIT-1539): Uncomment/Reimplement following code, to add A11y support.
-  // semantics_bridge_.UpdateSemantics(update);
+  accessibility_bridge_->AddSemanticsNodeUpdate(update);
 }
 
 // Channel handler for kAccessibilityChannel

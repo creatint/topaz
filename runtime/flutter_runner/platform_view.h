@@ -17,7 +17,7 @@
 #include <map>
 #include <set>
 
-#include "context_writer_bridge.h"
+#include "accessibility_bridge.h"
 #include "flutter/fml/macros.h"
 #include "flutter/lib/ui/window/viewport_metrics.h"
 #include "flutter/shell/common/platform_view.h"
@@ -54,15 +54,11 @@ class PlatformView final : public flutter::PlatformView,
                fit::closure on_session_listener_error_callback,
                OnMetricsUpdate session_metrics_did_change_callback,
                OnSizeChangeHint session_size_change_hint_callback,
-               fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
-                   accessibility_context_writer,
                zx_handle_t vsync_event_handle);
   PlatformView(PlatformView::Delegate& delegate, std::string debug_label,
                flutter::TaskRunners task_runners,
                fidl::InterfaceHandle<fuchsia::sys::ServiceProvider>
                    parent_environment_service_provider,
-               fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
-                   accessibility_context_writer,
                zx_handle_t vsync_event_handle);
 
   ~PlatformView();
@@ -75,7 +71,7 @@ class PlatformView final : public flutter::PlatformView,
   // alive there
   const fuchsia::ui::views::ViewRefControl view_ref_control_;
   const fuchsia::ui::views::ViewRef view_ref_;
-  std::unique_ptr<FuchsiaAccessibility> accessibility_holder_;
+  std::unique_ptr<AccessibilityBridge> accessibility_bridge_;
 
   fidl::Binding<fuchsia::ui::scenic::SessionListener> session_listener_binding_;
   fit::closure session_listener_error_callback_;
@@ -89,7 +85,6 @@ class PlatformView final : public flutter::PlatformView,
 
   fuchsia::sys::ServiceProviderPtr parent_environment_service_provider_;
   fuchsia::modular::ClipboardPtr clipboard_;
-  ContextWriterBridge context_writer_bridge_;
   std::unique_ptr<Surface> surface_;
   flutter::LogicalMetrics metrics_;
   fuchsia::ui::gfx::Metrics scenic_metrics_;
@@ -155,6 +150,9 @@ class PlatformView final : public flutter::PlatformView,
   // |flutter::PlatformView|
   void HandlePlatformMessage(
       fml::RefPtr<flutter::PlatformMessage> message) override;
+
+  // |flutter::PlatformView|
+  void SetSemanticsEnabled(bool enabled) override;
 
   // |flutter::PlatformView|
   void UpdateSemantics(

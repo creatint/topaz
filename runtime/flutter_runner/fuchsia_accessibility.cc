@@ -37,9 +37,11 @@ class FuchsiaAccessibilityImpl
   ~FuchsiaAccessibilityImpl() override = default;
 
   void UpdateSemanticNodes(
-      std::vector<fuchsia::accessibility::semantics::Node> nodes) override {}
+      std::vector<fuchsia::accessibility::semantics::Node> nodes) override {
+    tree_ptr_->UpdateSemanticNodes(std::move(nodes));
+  }
   void DeleteSemanticNodes(std::vector<uint32_t> node_ids) override {}
-  void Commit() override {}
+  void Commit() override { tree_ptr_->Commit(); }
 
  private:
   // |fuchsia::accessibility::semantics::SemanticActionListener|
@@ -60,10 +62,10 @@ class FuchsiaAccessibilityImpl
 }  // namespace
 
 // static
-std::unique_ptr<FuchsiaAccessibility> FuchsiaAccessibility::Create(
+std::shared_ptr<FuchsiaAccessibility> FuchsiaAccessibility::Create(
     std::shared_ptr<sys::ServiceDirectory> services,
     fuchsia::ui::views::ViewRef view_ref) {
-  return std::make_unique<FuchsiaAccessibilityImpl>(std::move(services),
+  return std::make_shared<FuchsiaAccessibilityImpl>(std::move(services),
                                                     std::move(view_ref));
 }
 

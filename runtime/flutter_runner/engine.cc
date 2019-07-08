@@ -81,12 +81,6 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   environment->GetServices(parent_environment_service_provider.NewRequest());
   environment.Unbind();
 
-  // Grab the accessibilty context writer that can understand the semantics tree
-  // on the platform view.
-  fidl::InterfaceHandle<fuchsia::modular::ContextWriter>
-      accessibility_context_writer;
-  svc->Connect(accessibility_context_writer.NewRequest());
-
   // We need to manually schedule a frame when the session metrics change.
   OnMetricsUpdate on_session_metrics_change_callback = std::bind(
       &Engine::OnSessionMetricsDidChange, this, std::placeholders::_1);
@@ -124,8 +118,6 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
                std::move(on_session_metrics_change_callback),
            on_session_size_change_hint_callback =
                std::move(on_session_size_change_hint_callback),
-           accessibility_context_writer =
-               std::move(accessibility_context_writer),
            vsync_handle = vsync_event_.get()](flutter::Shell& shell) mutable {
             return std::make_unique<flutter_runner::PlatformView>(
                 shell,                        // delegate
@@ -139,9 +131,7 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
                 std::move(on_session_listener_error_callback),
                 std::move(on_session_metrics_change_callback),
                 std::move(on_session_size_change_hint_callback),
-                std::move(accessibility_context_writer),  // accessibility
-                                                          // context writer
-                vsync_handle                              // vsync handle
+                vsync_handle  // vsync handle
             );
           });
 
@@ -260,6 +250,9 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   //  This platform does not get a separate surface platform view creation
   //  notification. Fire one eagerly.
   shell_->GetPlatformView()->NotifyCreated();
+
+  // TODO(SCN-975): Use the SettingsManager to control this.
+  shell_->GetPlatformView()->SetSemanticsEnabled(true);
 
   // Launch the engine in the appropriate configuration.
   auto run_configuration = flutter::RunConfiguration::InferFromSettings(
