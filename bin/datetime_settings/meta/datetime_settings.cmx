@@ -15,7 +15,7 @@
             "fuchsia.ui.scenic.Scenic",
             "fuchsia.wlan.service.Wlan"
         ],
-        "system": [ "data" ]
+        "system": [ "deprecated-data" ]
     },
     "facets": {
         "fuchsia.module": {
