@@ -4,7 +4,6 @@
 
 import 'dart:async';
 
-import 'package:fuchsia/fuchsia.dart' as fuchsia;
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as fidl;
 import 'package:fuchsia_services/services.dart';
@@ -31,8 +30,12 @@ class LifecycleImpl extends fidl.Lifecycle implements Lifecycle {
   // A set of all registered terminate listeners
   final _terminateListeners = <Future<void> Function()>{};
 
+  /// A function which will be invoked after all of the terminateListeners
+  /// are executed.
+  final void Function(int) exitHandler;
+
   /// Initializes this [LifecycleImpl] instance
-  LifecycleImpl({StartupContext context}) {
+  LifecycleImpl({StartupContext context, this.exitHandler}) {
     _exposeService(context ?? StartupContext.fromStartupInfo());
   }
 
@@ -56,7 +59,9 @@ class LifecycleImpl extends fidl.Lifecycle implements Lifecycle {
     await Future.wait(_terminateListeners.map((h) => h()));
     // if we don't terminate ourselves in a timely manner, we will be
     // forcibly terminated by the system.
-    fuchsia.exit(0);
+    if (exitHandler != null) {
+      exitHandler(0);
+    }
   }
 
   // Exposes this instance to the [StartupContext#outgoingServices].

@@ -103,7 +103,11 @@ class _MockedAgent {
   }) {
     context = StartupContextImpl.from(startupInfo);
     agent = AgentImpl(startupContext: context);
-    lifecycle = LifecycleImpl(context: context)
+
+    // Note: we want to have a exitHandler which does not call exit here
+    // because this mocked agent is running inside the test process and
+    // calling fuchsia.exit will cause the test process to close.
+    lifecycle = LifecycleImpl(context: context, exitHandler: (_) {})
       ..addTerminateListener(() async {
         interceptedComponent.ctrl.close();
       });
