@@ -21,13 +21,17 @@ dart_library("fuchsia_webview_flutter") {
   ]
 
   deps = [
-    "//sdk/fidl/fuchsia.sys",
-    "//sdk/fidl/fuchsia.ui.views",
+    "//sdk/fidl/fuchsia.net.http",
     "//sdk/fidl/fuchsia.web",
+    "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/webview_flutter",
+    "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia_logger",
     "//topaz/public/dart/fuchsia_scenic",
     "//topaz/public/dart/fuchsia_scenic_flutter",
+    "//topaz/public/dart/fuchsia_services",
+    "//topaz/public/dart/fuchsia_vfs",
+    "//topaz/public/dart/zircon",
     "//zircon/public/fidl/fuchsia-io",
     "//zircon/public/fidl/fuchsia-mem",
   ]
