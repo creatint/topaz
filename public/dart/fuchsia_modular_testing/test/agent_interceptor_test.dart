@@ -8,6 +8,7 @@ import 'dart:async';
 import 'package:fuchsia_modular_testing/src/test_harness_spec_builder.dart';
 import 'package:fuchsia_modular_testing/test.dart';
 import 'package:test/test.dart';
+import 'package:fidl/fidl.dart' as fidl;
 import 'package:fidl_fuchsia_modular_testing/fidl_async.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular_testing/src/agent_interceptor.dart';
@@ -53,14 +54,11 @@ void main() {
 
   group('agent intercepting', () {
     TestHarnessProxy harness;
-    TestHarnessSpec spec;
     String agentUrl;
 
     setUp(() async {
       agentUrl = generateComponentUrl();
       harness = await launchTestHarness();
-      spec =
-          (TestHarnessSpecBuilder()..addComponentToIntercept(agentUrl)).build();
     });
 
     tearDown(() {
@@ -68,6 +66,9 @@ void main() {
     });
 
     test('onNewAgent called for mocked agent', () async {
+      final spec =
+          (TestHarnessSpecBuilder()..addComponentToIntercept(agentUrl)).build();
+
       final didCallCompleter = Completer<bool>();
       AgentInterceptor(harness.onNewComponent).mockAgent(agentUrl, (agent) {
         expect(agent, isNotNull);
@@ -94,6 +95,29 @@ void main() {
       AgentInterceptor(harness.onNewComponent).mockAgent(agentUrl, (agent) {
         agent.exposeService(server);
       });
+
+      await harness.run(spec);
+
+      final fooProxy = ServerProxy();
+      final componentContext = await getComponentContext(harness);
+      connectToAgentService(agentUrl, fooProxy,
+          componentContextProxy: componentContext);
+
+      expect(await fooProxy.echo('some value'), 'some value');
+
+      fooProxy.ctrl.close();
+      componentContext.ctrl.close();
+    });
+
+    test('onNewAgent can expose a service generically', () async {
+      final spec =
+          (TestHarnessSpecBuilder()..addComponentToIntercept(agentUrl)).build();
+
+      for (final server in <fidl.Service>[_ServerImpl()]) {
+        AgentInterceptor(harness.onNewComponent).mockAgent(agentUrl, (agent) {
+          agent.exposeService(server);
+        });
+      }
 
       await harness.run(spec);
 

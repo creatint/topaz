@@ -142,7 +142,14 @@ abstract class AsyncBinding<T> extends _Stateful {
   ///
   /// The `impl` and `interfaceRequest` parameters must not be `null`. The
   /// `channel` property of the given `interfaceRequest` must not be `null`.
-  void bind(T impl, InterfaceRequest<T> interfaceRequest) {
+  ///
+  /// Implementation note: in a generic context, the inferred type when creating
+  /// the `interfaceRequest` may be a super-class of `T`, possibly `Service`.
+  /// Since concrete classes of `AsyncBinding` are code generated, the type
+  /// parameter `T` will always be precise, even when used in a generic context.
+  /// As a result, we cannot type-bound `interfaceRequest` statically, and
+  /// should instead rely on dynamic behavior.
+  void bind(T impl, InterfaceRequest<dynamic> interfaceRequest) {
     if (!isUnbound) {
       throw FidlStateException("AsyncBinding<${$interfaceName}> isn't unbound");
     }
