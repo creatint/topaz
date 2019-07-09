@@ -7,11 +7,11 @@
 #include <lib/fdio/directory.h>
 #include <lib/fdio/fd.h>
 #include <lib/fdio/fdio.h>
-#include <lib/inspect/reader.h>
-#include <lib/inspect/testing/inspect.h>
+#include <lib/inspect_deprecated/reader.h>
+#include <lib/inspect_deprecated/testing/inspect.h>
 
 #include "gmock/gmock.h"
-#include "lib/inspect/deprecated/expose.h"
+#include "lib/inspect_deprecated/deprecated/expose.h"
 #include "lib/sys/cpp/testing/test_with_environment.h"
 #include "src/lib/files/glob.h"
 #include "src/lib/fxl/strings/substitute.h"
@@ -20,9 +20,8 @@ namespace {
 
 using ::fxl::Substitute;
 using sys::testing::EnclosingEnvironment;
-using ::testing::ElementsAre;
 using ::testing::UnorderedElementsAre;
-using namespace inspect::testing;
+using namespace inspect_deprecated::testing;
 
 constexpr char kTestComponent[] =
     "fuchsia-pkg://fuchsia.com/dart_inspect_vmo_test_writer#meta/"
@@ -108,9 +107,9 @@ class InspectTest : public sys::testing::TestWithEnvironment {
 TEST_F(InspectTest, ReadHierarchy) {
   zx::vmo vmo;
   ASSERT_EQ(ZX_OK, GetInspectVmo(&vmo));
-  auto result = inspect::ReadFromVmo(std::move(vmo));
+  auto result = inspect_deprecated::ReadFromVmo(std::move(vmo));
   ASSERT_TRUE(result.is_ok());
-  inspect::ObjectHierarchy hierarchy = result.take_value();
+  inspect_deprecated::ObjectHierarchy hierarchy = result.take_value();
   EXPECT_THAT(
       hierarchy,
       AllOf(
