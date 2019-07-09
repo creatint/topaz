@@ -263,9 +263,9 @@ class _DirConnection extends Directory {
   bool isNodeRef = false;
 
   // reference to current Directory object;
-  PseudoDir _dir;
-  int _mode;
-  int _flags;
+  final PseudoDir _dir;
+  final int _mode;
+  final int _flags;
 
   /// Position in directory where [#readDirents] should start searching. If less
   /// than 0, means first entry should be dot('.').

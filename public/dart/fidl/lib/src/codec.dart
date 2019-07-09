@@ -130,7 +130,7 @@ class Decoder {
       : _message = message,
         data = message.data;
 
-  Message _message;
+  final Message _message;
   ByteData data;
 
   int _nextOffset = 0;
