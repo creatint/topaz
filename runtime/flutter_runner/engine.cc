@@ -252,7 +252,9 @@ Engine::Engine(Delegate& delegate, std::string thread_label,
   shell_->GetPlatformView()->NotifyCreated();
 
   // TODO(SCN-975): Use the SettingsManager to control this.
-  shell_->GetPlatformView()->SetSemanticsEnabled(true);
+  // Uncomment this line to enable the semantics manager for local development/testing.
+  // This cannot be enabled by default for now because of FL-279
+  shell_->GetPlatformView()->SetSemanticsEnabled(false);
 
   // Launch the engine in the appropriate configuration.
   auto run_configuration = flutter::RunConfiguration::InferFromSettings(
