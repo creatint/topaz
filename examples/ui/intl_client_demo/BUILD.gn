@@ -5,22 +5,23 @@
 import("//build/package.gni")
 
 executable("bin") {
-  output_name = "view_config_demo"
+  output_name = "intl_client_demo"
 
   sources = [
+    "intl_client_demo_view.cc",
+    "intl_client_demo_view.h",
     "main.cc",
-    "view_config_demo_view.cc",
-    "view_config_demo_view.h",
   ]
 
   deps = [
     "//garnet/public/lib/fsl",
-    "//src/lib/fxl",
     "//garnet/public/lib/ui/base_view/cpp",
     "//sdk/fidl/fuchsia.intl",
     "//sdk/fidl/fuchsia.ui.scenic",
     "//sdk/fidl/fuchsia.ui.views",
     "//sdk/lib/fidl/cpp",
+    "//src/lib/fidl_fuchsia_intl_ext/cpp",
+    "//src/lib/fxl",
     "//third_party/skia",
     "//topaz/examples/ui/lib:skia_fonts",
     "//topaz/examples/ui/lib:skia_view",
@@ -29,21 +30,21 @@ executable("bin") {
   ]
 }
 
-package("view_config_demo") {
+package("intl_client_demo") {
   deps = [
     ":bin",
   ]
 
   binaries = [
     {
-      name = "view_config_demo"
+      name = "intl_client_demo"
     },
   ]
 
   meta = [
     {
-      path = rebase_path("meta/view_config_demo.cmx")
-      dest = "view_config_demo.cmx"
+      path = rebase_path("meta/intl_client_demo.cmx")
+      dest = "intl_client_demo.cmx"
     },
   ]
 }

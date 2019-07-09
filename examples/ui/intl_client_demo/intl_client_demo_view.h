@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef TOPAZ_EXAMPLES_UI_VIEW_CONFIG_DEMO_VIEW_CONFIG_DEMO_VIEW_H_
-#define TOPAZ_EXAMPLES_UI_VIEW_CONFIG_DEMO_VIEW_CONFIG_DEMO_VIEW_H_
+#ifndef TOPAZ_EXAMPLES_UI_INTL_CLIENT_DEMO_INTL_CLIENT_DEMO_VIEW_H_
+#define TOPAZ_EXAMPLES_UI_INTL_CLIENT_DEMO_INTL_CLIENT_DEMO_VIEW_H_
 
 #include "examples/ui/lib/skia_font_loader.h"
 #include "examples/ui/lib/skia_view.h"
@@ -18,11 +18,15 @@ namespace examples {
 // A simple implementation of |BaseView| and |SkiaView|.
 //
 // Uses Skia to display its current locale ID as text in the middle of the view.
-class ViewConfigDemoView : public scenic::SkiaView {
+class IntlClientDemoView : public scenic::SkiaView {
  public:
-  ViewConfigDemoView(scenic::ViewContext view_context);
+  IntlClientDemoView(scenic::ViewContext view_context);
 
  private:
+  void FetchIntlProfile();
+
+  void SetIntlProfile(fuchsia::intl::Profile new_profile);
+
   void OnPropertiesChanged(
       fuchsia::ui::gfx::ViewProperties old_properties) override;
 
@@ -35,8 +39,12 @@ class ViewConfigDemoView : public scenic::SkiaView {
 
   scenic::SkiaFontLoader font_loader_;
   sk_sp<SkTypeface> typeface_;
+
+  fuchsia::intl::PropertyProviderPtr intl_property_provider_client_;
+  // The current profile
+  fuchsia::intl::Profile intl_profile_;
 };
 
 }  // namespace examples
 
-#endif  // TOPAZ_EXAMPLES_UI_VIEW_CONFIG_DEMO_VIEW_CONFIG_DEMO_VIEW_H_
+#endif  // TOPAZ_EXAMPLES_UI_INTL_CLIENT_DEMO_INTL_CLIENT_DEMO_VIEW_H_

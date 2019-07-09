@@ -90,10 +90,10 @@ group("ui") {
   testonly = true
   public_deps = [
     "//topaz/examples/ui/button_flutter",
+    "//topaz/examples/ui/intl_client_demo",
     "//topaz/examples/ui/jank:package",
     "//topaz/examples/ui/localized_mod",
     "//topaz/examples/ui/paint:package",
-    "//topaz/examples/ui/view_config_demo",
     "//topaz/packages/examples:noodles",
   ]
 }

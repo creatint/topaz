@@ -5,10 +5,10 @@
 #include <lib/async-loop/cpp/loop.h>
 #include <trace-provider/provider.h>
 
+#include "intl_client_demo_view.h"
+#include "lib/ui/base_view/cpp/view_provider_component.h"
 #include "src/lib/fxl/command_line.h"
 #include "src/lib/fxl/log_settings_command_line.h"
-#include "lib/ui/base_view/cpp/view_provider_component.h"
-#include "topaz/examples/ui/view_config_demo/view_config_demo_view.h"
 
 int main(int argc, const char** argv) {
   async::Loop loop(&kAsyncLoopConfigAttachToThread);
@@ -23,9 +23,9 @@ int main(int argc, const char** argv) {
   scenic::ViewProviderComponent component(
       [](scenic::ViewContext view_context) {
         FXL_LOG(INFO) << "Calling ViewFactory";
-        auto view = std::make_unique<examples::ViewConfigDemoView>(
+        auto view = std::make_unique<examples::IntlClientDemoView>(
             std::move(view_context));
-        FXL_LOG(INFO) << "Constructed ViewConfigDemoView";
+        FXL_LOG(INFO) << "Constructed IntlClientDemoView";
         return view;
       },
       &loop);
