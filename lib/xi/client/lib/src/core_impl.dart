@@ -12,7 +12,7 @@ import 'view_interface.dart';
 
 /// An implementation of [XiCoreProxy] wrapping any [XiClient].
 class CoreProxy implements XiCoreProxy {
-  XiClient _inner;
+  final XiClient _inner;
 
   CoreProxy(this._inner);
 

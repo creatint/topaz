@@ -1073,7 +1073,7 @@ class _Dirent {
 }
 
 class _TestVnode extends Vnode {
-  String _val;
+  final String _val;
   _TestVnode([this._val = '']);
 
   @override

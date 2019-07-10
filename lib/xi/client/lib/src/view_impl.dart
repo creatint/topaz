@@ -9,8 +9,8 @@ import 'view_interface.dart';
 
 /// An implementation of [XiViewProxy] that directly wraps a [XiClient].
 class ViewProxy implements XiViewProxy {
-  XiClient _inner;
-  String _viewId;
+  final XiClient _inner;
+  final String _viewId;
 
   ViewProxy(this._inner, this._viewId);
 

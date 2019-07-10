@@ -18,7 +18,7 @@ class _FakeProxyController<T> extends AsyncProxyController<T> {
 
 /// Fake implementation of a PageSnapshot.
 class FakeLedgerPageSnapshot extends ledger.PageSnapshotProxy {
-  FakeLedgerPage _fakeLedgerPage;
+  final FakeLedgerPage _fakeLedgerPage;
 
   FakeLedgerPageSnapshot(this._fakeLedgerPage);
 

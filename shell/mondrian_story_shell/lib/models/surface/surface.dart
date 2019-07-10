@@ -209,5 +209,5 @@ class SurfaceContainer extends Surface {
   /// returns the layouts for this container;
   List<ContainerLayout> get layouts => _layouts;
 
-  List<ContainerLayout> _layouts;
+  final List<ContainerLayout> _layouts;
 }

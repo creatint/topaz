@@ -76,7 +76,7 @@ class _RenderTextLine extends RenderBox {
         _styles = styles,
         _height = height;
 
-  TextPainter _textPainter;
+  final TextPainter _textPainter;
 
   List<int> _cursor;
   // Rectangles for drawing the cursors, relative to the origin of the widget
@@ -88,7 +88,7 @@ class _RenderTextLine extends RenderBox {
   List<Rect> _selectionRects;
   bool _needRecomputeSelection = true;
 
-  double _height;
+  final double _height;
 
   bool _needsLayout = true;
 

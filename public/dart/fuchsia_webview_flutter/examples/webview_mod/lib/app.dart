@@ -38,7 +38,7 @@ class App extends StatefulWidget {
 class AppState extends State<App> {
   final TextEditingController _textEditingController;
   WebViewController _webViewController;
-  Stream<Entity> _entityStream;
+  final Stream<Entity> _entityStream;
   StreamSubscription<String> _entityStreamSubscriber;
 
   AppState(this._entityStream)

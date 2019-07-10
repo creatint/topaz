@@ -555,7 +555,7 @@ class Test {
 /// check() must be called once after VmoWriter initialization, and once after
 /// every operation that changes the VMO lock.
 class Checker {
-  FakeVmo _vmo;
+  final FakeVmo _vmo;
   int nextLock = 0;
   int expectedFree;
   Checker(this._vmo) {
