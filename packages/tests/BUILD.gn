@@ -61,6 +61,7 @@ group("all") {
   testonly = true
   public_deps = [
     "//garnet/packages/tests:run_test_component",
+    "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_test($host_toolchain)",
     "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_ir_test($host_toolchain)",
     "//topaz/packages/examples:tests",
     "//topaz/packages/tests:bindings_tests",
