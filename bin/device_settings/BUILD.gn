@@ -25,9 +25,9 @@ flutter_app("device_settings") {
   ]
 
   deps = [
-    "//sdk/fidl/fuchsia.amber",
     "//sdk/fidl/fuchsia.pkg",
     "//sdk/fidl/fuchsia.pkg.rewrite",
+    "//sdk/fidl/fuchsia.update",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/lib/settings:lib.settings",
     "//topaz/public/dart/fuchsia_logger",
@@ -44,7 +44,7 @@ flutter_test("device_settings_tests") {
 
   deps = [
     ":device_settings_dart_library",
-    "//sdk/fidl/fuchsia.amber",
+    "//sdk/fidl/fuchsia.update",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/mockito",
     "//third_party/dart-pkg/pub/test",

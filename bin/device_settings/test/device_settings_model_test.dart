@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:device_settings/model.dart';
-import 'package:fidl_fuchsia_amber/fidl_async.dart' as amber;
+import 'package:fidl_fuchsia_update/fidl_async.dart' as update;
 import 'package:fidl_fuchsia_pkg/fidl_async.dart' as pkg;
 import 'package:fidl_fuchsia_pkg_rewrite/fidl_async.dart' as pkg_rewrite;
 import 'package:mockito/mockito.dart';
@@ -19,7 +19,7 @@ class TestSystemInterface extends Mock implements SystemInterface {
   void dispose() {}
 }
 
-class MockAmberControl extends Mock implements amber.Control {}
+class MockUpdateManager extends Mock implements update.Manager {}
 
 class MockRepositoryManager extends Mock implements pkg.RepositoryManager {}
 
@@ -56,6 +56,34 @@ void main() {
     verifyNever(sysInterface.listRepositories());
     verifyNever(sysInterface.listRules());
     verifyNever(sysInterface.listStaticRules());
+  });
+
+  // Ensure checkForSystemUpdate has the intended side effects.
+  test('test_check_for_updates', () async {
+    final TestSystemInterface sysInterface = TestSystemInterface();
+
+    when(sysInterface.listRepositories())
+        .thenAnswer((_) => Stream.fromIterable([]));
+    when(sysInterface.listRules()).thenAnswer((_) => Stream.fromIterable([]));
+    when(sysInterface.listStaticRules())
+        .thenAnswer((_) => Stream.fromIterable([]));
+
+    when(sysInterface.checkForSystemUpdate())
+        .thenAnswer((_) => Future.value(true));
+
+    final DeviceSettingsModel model = DeviceSettingsModel(sysInterface);
+    await model.start();
+
+    // Starting the model should not check for an update.
+    verifyNever(sysInterface.checkForSystemUpdate());
+
+    final startLastUpdate = model.lastUpdate;
+    await model.checkForUpdates();
+
+    // Requesting an update check should result in the API call and an update
+    // to the lastUpdate time.
+    verify(sysInterface.checkForSystemUpdate());
+    expect(startLastUpdate, isNot(model.lastUpdate));
   });
 
   // Makes sure the updating state properly reflects current amber proxy

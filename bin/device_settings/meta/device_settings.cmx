@@ -10,7 +10,6 @@
             "build-info"
         ],
         "services": [
-            "fuchsia.amber.Control",
             "fuchsia.device.manager.Administrator",
             "fuchsia.devicesettings.DeviceSettingsManager",
             "fuchsia.fonts.Provider",
@@ -22,7 +21,8 @@
             "fuchsia.sys.Environment",
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.policy.Presenter",
-            "fuchsia.ui.scenic.Scenic"
+            "fuchsia.ui.scenic.Scenic",
+            "fuchsia.update.Manager"
         ]
     }
 }

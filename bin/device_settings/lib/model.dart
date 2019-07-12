@@ -5,7 +5,7 @@
 import 'dart:async';
 
 import 'package:fidl/fidl.dart';
-import 'package:fidl_fuchsia_amber/fidl_async.dart' as amber;
+import 'package:fidl_fuchsia_update/fidl_async.dart' as update;
 import 'package:fidl_fuchsia_pkg/fidl_async.dart' as pkg;
 import 'package:fidl_fuchsia_pkg_rewrite/fidl_async.dart' as pkg_rewrite;
 import 'package:fidl_fuchsia_device_manager/fidl_async.dart' as devmgr;
@@ -40,8 +40,8 @@ abstract class SystemInterface {
 }
 
 class DefaultSystemInterfaceImpl implements SystemInterface {
-  /// Controller for amber (our update service).
-  final amber.ControlProxy _amberControl = amber.ControlProxy();
+  /// Controller for the update manager service.
+  final update.ManagerProxy _updateManager = update.ManagerProxy();
 
   /// Controller for package repo manager and rewrite engine (our update service).
   final pkg.RepositoryManagerProxy _repositoryManager =
@@ -49,7 +49,7 @@ class DefaultSystemInterfaceImpl implements SystemInterface {
   final pkg_rewrite.EngineProxy _rewriteManager = pkg_rewrite.EngineProxy();
 
   DefaultSystemInterfaceImpl() {
-    StartupContext.fromStartupInfo().incoming.connectToService(_amberControl);
+    StartupContext.fromStartupInfo().incoming.connectToService(_updateManager);
     StartupContext.fromStartupInfo()
         .incoming
         .connectToService(_repositoryManager);
@@ -60,8 +60,12 @@ class DefaultSystemInterfaceImpl implements SystemInterface {
   int get currentTime => System.clockGet(_zxClockMonotonic) ~/ 1000;
 
   @override
-  Future<bool> checkForSystemUpdate() {
-    return _amberControl.checkForSystemUpdate();
+  Future<bool> checkForSystemUpdate() async {
+    final options = update.Options(
+      initiator: update.Initiator.user,
+    );
+    final status = await _updateManager.checkNow(options, null);
+    return status != update.CheckStartedResult.throttled;
   }
 
   @override
@@ -127,7 +131,7 @@ class DefaultSystemInterfaceImpl implements SystemInterface {
 
   @override
   void dispose() {
-    _amberControl.ctrl.close();
+    _updateManager.ctrl.close();
     _repositoryManager.ctrl.close();
     _rewriteManager.ctrl.close();
   }
