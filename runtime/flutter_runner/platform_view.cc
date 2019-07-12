@@ -2,9 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include "fuchsia/accessibility/cpp/fidl.h"
 #define RAPIDJSON_HAS_STDSTRING 1
-
-#include "platform_view.h"
 
 #include <trace/event.h>
 
@@ -13,7 +12,9 @@
 #include "flutter/fml/logging.h"
 #include "flutter/lib/ui/compositing/scene_host.h"
 #include "flutter/lib/ui/window/pointer_data.h"
+#include "flutter/lib/ui/window/window.h"
 #include "fuchsia/ui/views/cpp/fidl.h"
+#include "platform_view.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
@@ -101,6 +102,7 @@ PlatformView::PlatformView(
       metrics_changed_callback_(std::move(session_metrics_did_change_callback)),
       size_change_hint_callback_(std::move(session_size_change_hint_callback)),
       ime_client_(this),
+      a11y_settings_watcher_binding_(this),
       surface_(std::make_unique<Surface>(debug_label_)),
       vsync_event_handle_(vsync_event_handle) {
   // Register all error handlers.
@@ -110,6 +112,8 @@ PlatformView::PlatformView(
   SetInterfaceErrorHandler(clipboard_, "Clipboard");
   SetInterfaceErrorHandler(parent_environment_service_provider_,
                            "Parent Environment Service Provider");
+  SetInterfaceErrorHandler(a11y_settings_manager_,
+                           "Accessibility Settings Manager");
   // Access the clipboard.
   parent_environment_service_provider_ =
       parent_environment_service_provider_handle.Bind();
@@ -128,7 +132,14 @@ PlatformView::PlatformView(
   view_ref_.Clone(&accessibility_view_ref);
   accessibility_bridge_ =
       std::make_unique<AccessibilityBridge>(FuchsiaAccessibility::Create(
-          std::move(runner_services), std::move(accessibility_view_ref)));
+          runner_services, std::move(accessibility_view_ref)));
+  // Register with the A11y Settings Manager
+  runner_services->Connect(fuchsia::accessibility::SettingsManager::Name_,
+                           a11y_settings_manager_.NewRequest().TakeChannel());
+  fidl::InterfaceHandle<fuchsia::accessibility::SettingsWatcher>
+      a11y_watcher_handle;
+  a11y_settings_watcher_binding_.Bind(a11y_watcher_handle.NewRequest());
+  a11y_settings_manager_->Watch(std::move(a11y_watcher_handle));
 }
 
 PlatformView::~PlatformView() = default;
@@ -143,6 +154,23 @@ void PlatformView::RegisterPlatformMessageHandlers() {
   platform_message_handlers_[kAccessibilityChannel] =
       std::bind(&PlatformView::HandleAccessibilityChannelPlatformMessage, this,
                 std::placeholders::_1);
+}
+
+void PlatformView::OnSettingsChange(fuchsia::accessibility::Settings settings) {
+  int32_t flags = 0;
+  if (settings.has_color_inversion_enabled() &&
+      settings.color_inversion_enabled()) {
+    flags |=
+        static_cast<int32_t>(flutter::AccessibilityFeatureFlag::kInvertColors);
+  }
+  bool screen_reader_enabled =
+      settings.has_screen_reader_enabled() && settings.screen_reader_enabled();
+  if (screen_reader_enabled) {
+    flags |= static_cast<int32_t>(
+        flutter::AccessibilityFeatureFlag::kAccessibleNavigation);
+  }
+  SetSemanticsEnabled(screen_reader_enabled);
+  SetAccessibilityFeatures(flags);
 }
 
 void PlatformView::OnPropertiesChanged(

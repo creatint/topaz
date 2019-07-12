@@ -11,37 +11,10 @@
 #include <lib/gtest/real_loop_fixture.h>
 #include <lib/sys/cpp/testing/service_directory_provider.h>
 
-namespace flutter_runner_a11y_test {
-using fuchsia::accessibility::semantics::SemanticsManager;
+#include "flutter_runner_fakes.h"
+
+namespace flutter_runner_test::flutter_runner_a11y_test {
 using FuchsiaAccessibilityTests = gtest::RealLoopFixture;
-
-class MockSemanticsManager : public SemanticsManager {
- public:
-  MockSemanticsManager() = default;
-  ~MockSemanticsManager() = default;
-
-  // |fuchsia::accessibility::semantics::SemanticsManager|:
-  void RegisterView(
-      fuchsia::ui::views::ViewRef view_ref,
-      fidl::InterfaceHandle<
-          fuchsia::accessibility::semantics::SemanticActionListener>
-          handle,
-      fidl::InterfaceRequest<fuchsia::accessibility::semantics::SemanticTree>
-          semantic_tree) override {
-    has_view_ref_ = true;
-  }
-
-  fidl::InterfaceRequestHandler<SemanticsManager> GetHandler(
-      async_dispatcher_t* dispatcher) {
-    return bindings_.GetHandler(this, dispatcher);
-  }
-
-  bool RegisterViewCalled() { return has_view_ref_; }
-
- private:
-  bool has_view_ref_ = false;
-  fidl::BindingSet<SemanticsManager> bindings_;
-};
 
 TEST_F(FuchsiaAccessibilityTests, RegisterViewRef) {
   MockSemanticsManager semantics_manager;
@@ -60,4 +33,4 @@ TEST_F(FuchsiaAccessibilityTests, RegisterViewRef) {
   EXPECT_TRUE(semantics_manager.RegisterViewCalled());
 }
 
-}  // namespace flutter_runner_a11y_test
+}  // namespace flutter_runner_test::flutter_runner_a11y_test

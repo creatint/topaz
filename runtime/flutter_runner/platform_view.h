@@ -40,7 +40,8 @@ using OnSizeChangeHint =
 // thread.
 class PlatformView final : public flutter::PlatformView,
                            private fuchsia::ui::scenic::SessionListener,
-                           public fuchsia::ui::input::InputMethodEditorClient {
+                           public fuchsia::ui::input::InputMethodEditorClient,
+                           public fuchsia::accessibility::SettingsWatcher {
  public:
   PlatformView(PlatformView::Delegate& delegate, std::string debug_label,
                fuchsia::ui::views::ViewRefControl view_ref_control,
@@ -65,6 +66,9 @@ class PlatformView final : public flutter::PlatformView,
 
   void UpdateViewportMetrics(const fuchsia::ui::gfx::Metrics& metrics);
 
+  // |fuchsia::accessibility::SettingsWatcher|
+  void OnSettingsChange(fuchsia::accessibility::Settings settings) override;
+
  private:
   const std::string debug_label_;
   // TODO(MI4-2490): remove once ViewRefControl is passed to Scenic and kept
@@ -85,6 +89,8 @@ class PlatformView final : public flutter::PlatformView,
 
   fuchsia::sys::ServiceProviderPtr parent_environment_service_provider_;
   fuchsia::modular::ClipboardPtr clipboard_;
+  fuchsia::accessibility::SettingsManagerPtr a11y_settings_manager_;
+  fidl::Binding<fuchsia::accessibility::SettingsWatcher> a11y_settings_watcher_binding_;
   std::unique_ptr<Surface> surface_;
   flutter::LogicalMetrics metrics_;
   fuchsia::ui::gfx::Metrics scenic_metrics_;
