@@ -34,6 +34,8 @@ void main() {
     // so here we use sessionctl to do guest login. Once final
     // OOBE UI is established for Ermine, this could be revisited
     // so as to provide for more robust testing of no-auth login.
+    //
+    // ignore: deprecated_member_use
     bool loggedIn = await sl4fDriver.ssh('sessionctl login_guest');
 
     if (!loggedIn) {
@@ -62,6 +64,8 @@ void main() {
 
     // As it is, here we'll just open simple browser so that we can
     // verify launching chromium from the ask bar
+    //
+    // ignore: deprecated_member_use
     await sl4fDriver.ssh('input text simple_browser');
 
     // Have to drive ask bar from suggestion (can't just input
@@ -71,6 +75,8 @@ void main() {
 
     // with the top suggestion being 'open simple_browser', we can
     // now just inject 'enter' to trigger the action.
+    //
+    // ignore: deprecated_member_use
     await sl4fDriver.ssh('input keyevent 40');
 
     // allow time for simple_browser to startup
@@ -94,6 +100,8 @@ Future<bool> _checkActiveComponent({Sl4f driver, String name}) async {
   Future<String> getComponents() async {
     // Note: using 'cs' here as iquery doesn't appear to actually provide a
     // list of these active components via the hub.
+    //
+    // ignore: deprecated_member_use
     final process = await driver.sshProcess('cs');
     final exitCode = await process.exitCode;
     final stdout = await process.stdout.transform(utf8.decoder).join();
