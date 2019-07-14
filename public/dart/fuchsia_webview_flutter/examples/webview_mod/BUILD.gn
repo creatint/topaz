@@ -6,6 +6,8 @@ import("//build/fidl/fidl.gni")
 import("//topaz/runtime/flutter_runner/flutter_app.gni")
 
 flutter_app("webview_mod") {
+  system_deprecated_data = "//build"
+
   main_dart = "lib/main.dart"
 
   fuchsia_package_name = "webview_mod"

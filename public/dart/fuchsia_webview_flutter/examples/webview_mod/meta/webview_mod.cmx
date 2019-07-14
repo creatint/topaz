@@ -44,7 +44,7 @@
             "fuchsia.web.ContextProvider"
         ],
         "system": [
-            "data/modules"
+            "deprecated-data/modules"
         ]
     }
 }
