@@ -6,6 +6,7 @@ import 'dart:convert' show utf8;
 
 import 'package:fidl_fuchsia_net_http/fidl_async.dart' as fidl_net;
 import 'package:fidl_fuchsia_web/fidl_async.dart' as fidl_web;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fuchsia_webview_flutter/src/fuchsia_web_services.dart';
 import 'package:fuchsia_webview_flutter/src/fuchsia_webview_platform_controller.dart';
@@ -28,17 +29,18 @@ class MockNavigationControllerProxy extends Mock
     implements fidl_web.NavigationControllerProxy {}
 
 void main() {
-  FuchsiaWebServices mockWebServices = MockFuchsiaWebServices();
-  fidl_web.NavigationControllerProxy mockNavigationController =
-      MockNavigationControllerProxy();
+  FuchsiaWebServices mockWebServices;
+  fidl_web.NavigationControllerProxy mockNavigationController;
 
-  setUpAll(() {
+  setUp(() {
+    mockWebServices = MockFuchsiaWebServices();
+    mockNavigationController = MockNavigationControllerProxy();
     when(mockWebServices.navigationController)
         .thenReturn(mockNavigationController);
     WebView.platform = FuchsiaWebView(fuchsiaWebServices: mockWebServices);
   });
 
-  tearDownAll(() {
+  tearDown(() {
     WebView.platform = null;
   });
 
@@ -132,6 +134,24 @@ void main() {
 
       await webViewController.reload();
       verify(mockNavigationController.reload(fidl_web.ReloadType.partialCache));
+    });
+
+    testWidgets('disposed when removed from widget tree',
+        (WidgetTester tester) async {
+      final includeWebview = ValueNotifier<bool>(true);
+      await tester.pumpWidget(ValueListenableBuilder(
+          valueListenable: includeWebview,
+          builder: (_, includeWebviewValue, __) {
+            return includeWebviewValue ? webView : Container();
+          }));
+      await tester.pumpAndSettle();
+
+      verifyNever(mockWebServices.dispose());
+
+      includeWebview.value = false;
+      await tester.pumpAndSettle();
+
+      verify(mockWebServices.dispose());
     });
   });
 

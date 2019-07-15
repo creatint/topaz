@@ -7,7 +7,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
+import 'package:fuchsia_scenic_flutter/child_view.dart'
+    show ChildView, ChildViewConnection;
 import 'package:webview_flutter/platform_interface.dart';
 
 import 'fuchsia_web_services.dart';
@@ -39,11 +40,35 @@ class FuchsiaWebView implements WebViewPlatform {
         webViewPlatformCallbacksHandler, creationParams, fuchsiaWebServices);
 
     onWebViewPlatformCreated(controller);
-    return ChildView(
-        connection: controller.fuchsiaWebServices.childViewConnection);
+    return _EmbeddedWebview(
+      connection: controller.fuchsiaWebServices.childViewConnection,
+      onDisposed: controller.fuchsiaWebServices.dispose,
+    );
   }
 
   @override
   Future<bool> clearCookies() =>
       FuchsiaWebViewPlatformController.clearCookies();
+}
+
+class _EmbeddedWebview extends StatefulWidget {
+  final ChildViewConnection connection;
+  final VoidCallback onDisposed;
+
+  const _EmbeddedWebview({this.connection, this.onDisposed});
+
+  @override
+  _EmbeddedWebviewState createState() => _EmbeddedWebviewState();
+}
+
+class _EmbeddedWebviewState extends State<_EmbeddedWebview> {
+  @override
+  Widget build(BuildContext context) =>
+      ChildView(connection: widget.connection);
+
+  @override
+  void dispose() {
+    widget.onDisposed?.call();
+    super.dispose();
+  }
 }
