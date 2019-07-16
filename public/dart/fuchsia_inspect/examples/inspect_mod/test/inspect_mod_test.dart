@@ -201,7 +201,7 @@ void main() {
     var preTreeInspect = inspect;
     inspect = await tapAndWait('Make tree', 'Tree was made');
     expect(
-        '<> >> >> Node: "I think that I shall never see01234567890123456789012345"\n'
+        '<> >> >> Node: "I think that I shall nev"\n'
         '<> >> >> >> IntProperty "int0": 0',
         isIn(inspect));
 
@@ -217,7 +217,7 @@ void main() {
 
     inspect = await tapAndWait('Make tree', 'Tree was made');
     expect(
-        '<> >> >> Node: "I think that I shall never see01234567890123456789012345"\n'
+        '<> >> >> Node: "I think that I shall nev"\n'
         '<> >> >> >> IntProperty "int3": 3',
         isIn(inspect));
 
