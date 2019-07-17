@@ -7,8 +7,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fuchsia_scenic_flutter/child_view.dart'
-    show ChildView, ChildViewConnection;
+import 'package:fuchsia_scenic_flutter/child_view.dart' show ChildView;
 import 'package:webview_flutter/platform_interface.dart';
 
 import 'fuchsia_web_services.dart';
@@ -35,14 +34,11 @@ class FuchsiaWebView implements WebViewPlatform {
     Set<Factory<OneSequenceGestureRecognizer>> gestureRecognizers,
   }) {
     assert(webViewPlatformCallbacksHandler != null);
-
-    final controller = FuchsiaWebViewPlatformController(
-        webViewPlatformCallbacksHandler, creationParams, fuchsiaWebServices);
-
-    onWebViewPlatformCreated(controller);
     return _EmbeddedWebview(
-      connection: controller.fuchsiaWebServices.childViewConnection,
-      onDisposed: controller.fuchsiaWebServices.dispose,
+      webViewPlatformCallbacksHandler: webViewPlatformCallbacksHandler,
+      creationParams: creationParams,
+      onWebViewPlatformCreated: onWebViewPlatformCreated,
+      fuchsiaWebServices: fuchsiaWebServices,
     );
   }
 
@@ -52,23 +48,41 @@ class FuchsiaWebView implements WebViewPlatform {
 }
 
 class _EmbeddedWebview extends StatefulWidget {
-  final ChildViewConnection connection;
-  final VoidCallback onDisposed;
+  final WebViewPlatformCallbacksHandler webViewPlatformCallbacksHandler;
+  final CreationParams creationParams;
+  final WebViewPlatformCreatedCallback onWebViewPlatformCreated;
+  final FuchsiaWebServices fuchsiaWebServices;
 
-  const _EmbeddedWebview({this.connection, this.onDisposed});
-
+  const _EmbeddedWebview({
+    this.webViewPlatformCallbacksHandler,
+    this.creationParams,
+    this.onWebViewPlatformCreated,
+    this.fuchsiaWebServices,
+  });
   @override
   _EmbeddedWebviewState createState() => _EmbeddedWebviewState();
 }
 
 class _EmbeddedWebviewState extends State<_EmbeddedWebview> {
+  FuchsiaWebViewPlatformController _controller;
+
   @override
   Widget build(BuildContext context) =>
-      ChildView(connection: widget.connection);
+      ChildView(connection: _controller.fuchsiaWebServices.childViewConnection);
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = FuchsiaWebViewPlatformController(
+        widget.webViewPlatformCallbacksHandler,
+        widget.creationParams,
+        widget.fuchsiaWebServices);
+    widget.onWebViewPlatformCreated?.call(_controller);
+  }
 
   @override
   void dispose() {
-    widget.onDisposed?.call();
     super.dispose();
+    _controller.dispose();
   }
 }

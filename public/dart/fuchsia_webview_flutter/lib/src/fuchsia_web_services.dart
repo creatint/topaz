@@ -111,6 +111,7 @@ class FuchsiaWebServices {
     _frameProxy.ctrl.close();
     _contextProxy.ctrl.close();
     _contextProviderProxy.ctrl.close();
+    _navigationEventObserverBinding.close();
   }
 
   /// Executes a UTF-8 encoded [script] in the frame if the frame's URL has
