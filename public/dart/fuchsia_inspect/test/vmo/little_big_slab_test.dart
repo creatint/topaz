@@ -94,6 +94,34 @@ void main() {
       compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
     });
 
+    // Allocates the entire heap in small blocks.  This exercises block splits,
+    // as well as heap grow.
+    test('Allocate and grow heap', () {
+      const List<int> _allocatedIndexes = [4, 6, 8, 10, 12, 14];
+
+      const int heapSizeBytes = 256;
+      var vmo = FakeVmo(heapSizeBytes);
+      var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 2, pageSizeBytes: _heapSizeBytes ~/ 2);
+
+      var blocks = _allocateEverything(heap,
+          sizeHint: 16, allocatedIndexes: _allocatedIndexes);
+      expect(blocks, hasLength(_allocatedIndexes.length));
+      var r = hexChar(BlockType.reserved.value);
+      compare(vmo, 0x40, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
+      compare(vmo, 0x60, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
+      compare(vmo, 0x80, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x90, '0  0 000000 00000000  00000000 00000000');
+      compare(vmo, 0xa0, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0xb0, '0  0 000000 00000000  00000000 00000000');
+      compare(vmo, 0xc0, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0xd0, '0  0 000000 00000000  00000000 00000000');
+      compare(vmo, 0xe0, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0xf0, '0  0 000000 00000000  00000000 00000000');
+    });
+
+
     test('free and re-allocate work correctly', () {
       List<int> _allocatedIndexes = [4];
 

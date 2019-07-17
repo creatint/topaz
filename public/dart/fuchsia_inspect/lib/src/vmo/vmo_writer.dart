@@ -9,6 +9,7 @@ import 'package:fuchsia_vfs/vfs.dart';
 
 import 'block.dart';
 import 'heap.dart';
+import 'little_big_slab.dart';
 import 'util.dart';
 import 'vmo_fields.dart';
 import 'vmo_holder.dart';
@@ -55,7 +56,7 @@ class VmoWriter {
   factory VmoWriter.withSize(int size) => VmoWriter.withVmo(VmoHolder(size));
 
   /// Function used for creating the heap by default.
-  static const Function _heapCreate = Slab32.create;
+  static const Function _heapCreate = LittleBigSlab.create;
 
   /// Creates a [VmoWriter] with a given VMO.
   factory VmoWriter.withVmo(VmoHolder vmo) => VmoWriter(vmo, _heapCreate);

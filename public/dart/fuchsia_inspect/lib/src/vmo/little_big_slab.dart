@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import 'dart:math' show min;
+import 'dart:math' show min, max;
 
 import 'package:meta/meta.dart';
 
@@ -11,9 +11,6 @@ import 'heap.dart' show Heap;
 import 'vmo_fields.dart';
 import 'vmo_holder.dart';
 import 'vmo_writer.dart';
-
-// TODO(fmil): Remove the duplication here.
-const int _pageSizeBytes = 4096;
 
 /// Implements a two-level slab allocator over a VMO object.
 ///
@@ -29,6 +26,9 @@ class LittleBigSlab implements Heap {
   final int _smallSizeBytes;
   // The size of the big slabs, in bytes.
   final int _bigSizeBytes;
+  // The page size in bytes.  Heap is always grown in the page-sized increments,
+  // until it reaches the size of the VMO.
+  final int _pageSizeBytes;
   // The order of the big slabs.
   final int _bigOrder;
   // The order of the small slabs.
@@ -48,8 +48,10 @@ class LittleBigSlab implements Heap {
   /// If either of these two constraints are not met, [ArgumentError] is thrown.
   ///
   /// See the inspect documentation for an explanation of the block orders.
-  LittleBigSlab(this._vmo, {int smallOrder = 1, int bigOrder = 2})
-      : _bigOrder = bigOrder,
+  LittleBigSlab(this._vmo,
+      {int smallOrder = 1, int bigOrder = 2, int pageSizeBytes = 4096})
+      : _pageSizeBytes = pageSizeBytes,
+        _bigOrder = bigOrder,
         _smallOrder = smallOrder,
         _smallSizeBytes = 1 << (4 + smallOrder),
         _bigSizeBytes = 1 << (4 + bigOrder) {
@@ -115,6 +117,7 @@ class LittleBigSlab implements Heap {
       return null;
     }
     var block = Block.read(_vmo, _freelistSmall);
+    assert(block.size == _smallSizeBytes);
     _freelistSmall = block.nextFree;
     block.becomeReserved();
     return block;
@@ -136,6 +139,8 @@ class LittleBigSlab implements Heap {
     }
     final int bigIndex = _freelistBig;
     final bigBlock = Block.read(_vmo, _freelistBig);
+    assert(bigBlock.size == _bigSizeBytes,
+        'expected big block: but was ${bigBlock.size}');
     _freelistBig = bigBlock.nextFree;
     bigBlock.becomeReserved();
 
@@ -156,12 +161,15 @@ class LittleBigSlab implements Heap {
       throw ArgumentError("I shouldn't be trying to free this type "
           '(index ${block.index}, type ${block.type})');
     }
+    if (block.size != _smallSizeBytes && block.size != _bigSizeBytes) {
+      throw ArgumentError('Block size should be either $_smallSizeBytes '
+          'or $_bigSizeBytes but was: ${block.size}');
+    }
     if (block.index < heapStartIndex ||
         block.index * bytesPerIndex >= _currentSizeBytes) {
       throw ArgumentError('Tried to free bad index ${block.index}');
     }
-    final bool big = _isBig(block.size, false);
-    if (big) {
+    if (block.size == _bigSizeBytes) {
       // When freeing a big block, just mark it as free and done.
       block.becomeFree(_freelistBig);
       _freelistBig = block.index;
@@ -170,15 +178,20 @@ class LittleBigSlab implements Heap {
     // TODO(fmil): Do we want to merge adjacent smaller blocks together?  This
     // will require an O(n) list traversal, so perhaps we don't want to?
     block.becomeFree(_freelistSmall);
+    assert(
+        block.size == _smallSizeBytes,
+        'Expected block size $_smallSizeBytes '
+        ' but got ${block.size}, index: ${block.index}');
     _freelistSmall = block.index;
   }
 
   // Returns true if a big slab needs to be allocated, based on the size hint
   // provided by the user.
   bool _isBig(int size, bool required) {
+    final int payloadBytes = _bigSizeBytes - headerSizeBytes;
     // If the size is more than the size of a big block, or if a big block is
     // required, recommend a big block.
-    if (required || size >= _bigSizeBytes - headerSizeBytes) {
+    if (required || size >= payloadBytes) {
       return true;
     }
     // If the size is somewhere in between, recommend a block based on the
@@ -187,7 +200,7 @@ class LittleBigSlab implements Heap {
     // large blocks we throw away 8 bytes per block plus slack space at end.
     final int smallSlack =
         (size ~/ _smallSizeBytes + 1) * headerSizeBytes; // Ignore slack.
-    assert(size < _bigSizeBytes - headerSizeBytes);
+    assert(size < payloadBytes, 'size: $size; payloadBytes: $payloadBytes');
     final int bigSlack = _bigSizeBytes - 8 - size;
     final bool bigWastesLess = bigSlack < smallSlack;
     return bigWastesLess;
@@ -214,19 +227,27 @@ class LittleBigSlab implements Heap {
 
     // Final index past which there are no more small blocks to allocate.
     final int endSmallBytesIndex = _bigSizeBytes ~/ bytesPerIndex;
-    final int lastSmallIndex =
-        min(toBytes ~/ bytesPerIndex, endSmallBytesIndex);
 
+    // Last small index + 1.
+    final int endSmallIndex = min(toBytes ~/ bytesPerIndex, endSmallBytesIndex);
+
+    // A small block takes up this many indexes.
+    final int indexesPerSmallBlock = _smallSizeBytes ~/ bytesPerIndex;
+
+    // Initial blocks between last reserved block and the first big block are
+    // all small.
     _markSmallFree(
         startIndex: fromBytes ~/ bytesPerIndex,
-        endIndex: lastSmallIndex,
-        stepIndex: _smallSizeBytes ~/ bytesPerIndex);
+        endIndex: endSmallIndex,
+        stepIndex: indexesPerSmallBlock);
 
+    // A big block takes up this many indexes.
+    final int indexesPerBigBlock = _bigSizeBytes ~/ bytesPerIndex;
     // The rest are all big blocks.
     _markBigFree(
-      startIndex: endSmallBytesIndex,
+      startIndex: max(endSmallBytesIndex, fromBytes ~/ bytesPerIndex),
       endIndex: toBytes ~/ bytesPerIndex,
-      stepIndex: endSmallBytesIndex,
+      stepIndex: indexesPerBigBlock,
     );
   }
 
@@ -237,7 +258,10 @@ class LittleBigSlab implements Heap {
       @required int endIndex,
       @required int stepIndex}) {
     for (int i = startIndex; i < endIndex; i += stepIndex) {
-      Block.create(_vmo, i, order: _smallOrder).becomeFree(_freelistSmall);
+      var b = Block.create(_vmo, i, order: _smallOrder);
+      assert(
+          b.size == _smallSizeBytes, 'mismatching small block size ${b.size}');
+      b.becomeFree(_freelistSmall);
       _freelistSmall = i;
     }
   }
@@ -248,7 +272,9 @@ class LittleBigSlab implements Heap {
       @required int endIndex,
       @required int stepIndex}) {
     for (int i = startIndex; i < endIndex; i += stepIndex) {
-      Block.create(_vmo, i, order: _bigOrder).becomeFree(_freelistBig);
+      var b = Block.create(_vmo, i, order: _bigOrder);
+      assert(b.size == _bigSizeBytes, 'mismatching big block size ${b.size}');
+      b.becomeFree(_freelistBig);
       _freelistBig = i;
     }
   }
