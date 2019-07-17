@@ -5,8 +5,6 @@
 import("//topaz/runtime/flutter_runner/flutter_app.gni")
 
 flutter_app("datetime_settings") {
-  system_deprecated_data = "//build"
-
   main_dart = "lib/main.dart"
 
   manifest = "pubspec.yaml"
