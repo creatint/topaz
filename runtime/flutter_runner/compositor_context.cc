@@ -14,15 +14,16 @@ class ScopedFrame final : public flutter::CompositorContext::ScopedFrame {
               const SkMatrix& root_surface_transformation,
               bool instrumentation_enabled,
               SessionConnection& session_connection)
-      : flutter::CompositorContext::ScopedFrame(context, nullptr, nullptr, nullptr,
-                                             root_surface_transformation,
-                                             instrumentation_enabled),
+      : flutter::CompositorContext::ScopedFrame(
+            context, nullptr, nullptr, nullptr, root_surface_transformation,
+            instrumentation_enabled),
         session_connection_(session_connection) {}
 
  private:
   SessionConnection& session_connection_;
 
-  flutter::RasterStatus Raster(flutter::LayerTree& layer_tree, bool ignore_raster_cache) override {
+  flutter::RasterStatus Raster(flutter::LayerTree& layer_tree,
+                               bool ignore_raster_cache) override {
     if (!session_connection_.has_metrics()) {
       return flutter::RasterStatus::kSuccess;
     }
@@ -72,6 +73,10 @@ void CompositorContext::OnSessionSizeChangeHint(float width_change_factor,
                                                 float height_change_factor) {
   session_connection_.OnSessionSizeChangeHint(width_change_factor,
                                               height_change_factor);
+}
+
+void CompositorContext::OnWireframeEnabled(bool enabled) {
+  session_connection_.set_enable_wireframe(enabled);
 }
 
 CompositorContext::~CompositorContext() = default;

@@ -14,6 +14,7 @@
 #include <memory>
 #include <vector>
 
+#include "flutter/lib/ui/window/platform_message.h"
 #include "flutter/lib/ui/window/window.h"
 #include "flutter_runner_fakes.h"
 #include "fuchsia/ui/views/cpp/fidl.h"
@@ -95,6 +96,7 @@ TEST_F(PlatformViewTests, SurvivesWhenSettingsManagerNotAvailable) {
       nullptr,  // on_session_listener_error_callback
       nullptr,  // session_metrics_did_change_callback
       nullptr,  // session_size_change_hint_callback
+      nullptr,  // on_enable_wireframe_callback,
       0u        // vsync_event_handle
   );
 
@@ -144,6 +146,7 @@ TEST_F(PlatformViewTests, RegistersWatcherAndEnablesSemantics) {
       nullptr,  // on_session_listener_error_callback
       nullptr,  // session_metrics_did_change_callback
       nullptr,  // session_size_change_hint_callback
+      nullptr,  // wireframe_enabled_callback
       0u        // vsync_event_handle
   );
 
@@ -198,6 +201,7 @@ TEST_F(PlatformViewTests, ChangesSettings) {
       nullptr,  // on_session_listener_error_callback
       nullptr,  // session_metrics_did_change_callback
       nullptr,  // session_size_change_hint_callback
+      nullptr,  // wireframe_enabled_callback
       0u        // vsync_event_handle
   );
 
@@ -269,6 +273,7 @@ TEST_F(PlatformViewTests, RegistersWatcherAndSetsFeaturesWhenNoScreenReader) {
       nullptr,  // on_session_listener_error_callback
       nullptr,  // session_metrics_did_change_callback
       nullptr,  // session_size_change_hint_callback
+      nullptr,  // wireframe_enabled_callback
       0u        // vsync_event_handle
   );
 
@@ -279,6 +284,73 @@ TEST_F(PlatformViewTests, RegistersWatcherAndSetsFeaturesWhenNoScreenReader) {
   EXPECT_EQ(
       delegate.SemanticsFeatures(),
       static_cast<int32_t>(flutter::AccessibilityFeatureFlag::kInvertColors));
+}
+
+// Test to make sure that PlatformView correctly registers messages sent on
+// the "flutter/platform_views" channel, correctly parses the JSON it receives
+// and calls the EnableWireframeCallback with the appropriate args.
+TEST_F(PlatformViewTests, EnableWireframeTest) {
+  sys::testing::ServiceDirectoryProvider services_provider(dispatcher());
+  MockPlatformViewDelegate delegate;
+  zx::eventpair a, b;
+  zx::eventpair::create(/* flags */ 0u, &a, &b);
+  auto view_ref = fuchsia::ui::views::ViewRef({
+      .reference = std::move(a),
+  });
+  auto view_ref_control = fuchsia::ui::views::ViewRefControl({
+      .reference = std::move(b),
+  });
+  flutter::TaskRunners task_runners =
+      flutter::TaskRunners("test_runners", nullptr, nullptr, nullptr, nullptr);
+
+  // Test wireframe callback function. If the message sent to the platform view
+  // was properly handled and parsed, this function should be called, setting
+  // |wireframe_enabled| to true.
+  bool wireframe_enabled = false;
+  auto EnableWireframeCallback = [&wireframe_enabled](bool should_enable) {
+    wireframe_enabled = should_enable;
+  };
+
+  auto platform_view = flutter_runner::PlatformView(
+      delegate,                               // delegate
+      "test_platform_view",                   // label
+      std::move(view_ref_control),            // view_ref_control
+      std::move(view_ref),                    // view_refs
+      std::move(task_runners),                // task_runners
+      services_provider.service_directory(),  // runner_services
+      nullptr,                  // parent_environment_service_provider_handle
+      nullptr,                  // session_listener_request
+      nullptr,                  // on_session_listener_error_callback
+      nullptr,                  // session_metrics_did_change_callback
+      nullptr,                  // session_size_change_hint_callback
+      EnableWireframeCallback,  // on_enable_wireframe_callback,
+      0u                        // vsync_event_handle
+  );
+
+  // Cast platform_view to its base view so we can have access to the public
+  // "HandlePlatformMessage" function.
+  auto base_view = dynamic_cast<flutter::PlatformView*>(&platform_view);
+  EXPECT_TRUE(base_view);
+
+  // JSON for the message to be passed into the PlatformView.
+  const uint8_t txt[] =
+      "{"
+      "    \"method\":\"View.enableWireframe\","
+      "    \"args\": {"
+      "       \"enable\":true"
+      "    }"
+      "}";
+
+  fml::RefPtr<flutter::PlatformMessage> message =
+      fml::MakeRefCounted<flutter::PlatformMessage>(
+          "flutter/platform_views",
+          std::vector<uint8_t>(txt, txt + sizeof(txt)),
+          fml::RefPtr<flutter::PlatformMessageResponse>());
+  base_view->HandlePlatformMessage(message);
+
+  RunLoopUntilIdle();
+
+  EXPECT_TRUE(wireframe_enabled);
 }
 
 }  // namespace flutter_runner_test::flutter_runner_a11y_test
