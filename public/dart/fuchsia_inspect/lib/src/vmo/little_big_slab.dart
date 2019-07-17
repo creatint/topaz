@@ -175,8 +175,6 @@ class LittleBigSlab implements Heap {
       _freelistBig = block.index;
       return;
     }
-    // TODO(fmil): Do we want to merge adjacent smaller blocks together?  This
-    // will require an O(n) list traversal, so perhaps we don't want to?
     block.becomeFree(_freelistSmall);
     assert(
         block.size == _smallSizeBytes,
