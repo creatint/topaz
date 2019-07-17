@@ -133,15 +133,20 @@ void main() {
   });
 
   Future<int> inspectVmoSize() async {
-    String globString =
-        '/hub/r/modular_test_harness_*/*/r/session-*/*/r/*/*/c/flutter*/*/c/$_testAppName/*/out/debug/*';
     // TODO(CF-603): Make this less brittle.
-    String fileName = (await Glob(globString).list().toList())[0].path;
-    var f = dartio.File(fileName);
-    // WARNING: 1) This read is not atomic.
-    // WARNING: 2) This won't work with VMOs written in C++ and maybe elsewhere.
-    var vmoBytes = await f.readAsBytes();
-    return vmoBytes.length;
+    var globs = [
+      '/hub/r/modular_test_harness_*/*/r/session-*/*/r/*/*/c/flutter*/*/c/$_testAppName/*/out/debug/*',
+      '/hub/r/mth_*/*/r/session-*/*/r/*/*/c/flutter*/*/c/$_testAppName/*/out/debug/*'
+    ];
+    for (final globString in globs) {
+      var fileEntity = await Glob(globString).list().toList();
+      if (fileEntity.isNotEmpty) {
+        var f = dartio.File(fileEntity[0].path);
+        var vmoBytes = await f.readAsBytes();
+        return vmoBytes.length;
+      }
+    }
+    throw Exception('could not find inspect node');
   }
 
   Future<void> tapAndWait(String buttonName, String nextState) async {
