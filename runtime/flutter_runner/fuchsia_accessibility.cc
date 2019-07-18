@@ -40,7 +40,9 @@ class FuchsiaAccessibilityImpl
       std::vector<fuchsia::accessibility::semantics::Node> nodes) override {
     tree_ptr_->UpdateSemanticNodes(std::move(nodes));
   }
-  void DeleteSemanticNodes(std::vector<uint32_t> node_ids) override {}
+  void DeleteSemanticNodes(std::vector<uint32_t> node_ids) override {
+    tree_ptr_->DeleteSemanticNodes(std::move(node_ids));
+  }
   void Commit() override { tree_ptr_->Commit(); }
 
  private:
