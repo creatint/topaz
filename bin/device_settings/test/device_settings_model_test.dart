@@ -5,9 +5,10 @@
 import 'dart:async';
 
 import 'package:device_settings/model.dart';
-import 'package:fidl_fuchsia_update/fidl_async.dart' as update;
 import 'package:fidl_fuchsia_pkg/fidl_async.dart' as pkg;
 import 'package:fidl_fuchsia_pkg_rewrite/fidl_async.dart' as pkg_rewrite;
+import 'package:fidl_fuchsia_recovery/fidl_async.dart' as recovery;
+import 'package:fidl_fuchsia_update/fidl_async.dart' as update;
 import 'package:mockito/mockito.dart';
 import 'package:test/test.dart';
 
@@ -26,6 +27,8 @@ class MockRepositoryManager extends Mock implements pkg.RepositoryManager {}
 class MockRewriteManager extends Mock implements pkg_rewrite.Engine {}
 
 class MockRepositoryIterator extends Mock implements pkg.RepositoryIterator {}
+
+class MockFactoryReset extends Mock implements recovery.FactoryReset {}
 
 void main() {
   // Ensure start only reacts to the first invocation.
@@ -141,5 +144,64 @@ void main() {
     staticRuleCompleter.complete([]);
     await selectFuture;
     expect(model.channelUpdating, false);
+  });
+
+  // Ensure the factory reset service gets called.
+  test('test_check_for_factory_reset', () async {
+    final TestSystemInterface sysInterface = TestSystemInterface();
+
+    when(sysInterface.listRepositories())
+        .thenAnswer((_) => Stream.fromIterable([]));
+
+    when(sysInterface.listRules()).thenAnswer((_) => Stream.fromIterable([]));
+
+    when(sysInterface.listStaticRules())
+        .thenAnswer((_) => Stream.fromIterable([]));
+
+    final DeviceSettingsModel model = DeviceSettingsModel(sysInterface);
+    await model.start();
+
+    // Starting the model should not trigger factory reset.
+    verifyNever(sysInterface.factoryReset());
+    expect(model.showResetConfirmation, false);
+
+    // When factory reset is called for the first time, it should show a confirmation.
+    await model.factoryReset();
+    expect(model.showResetConfirmation, true);
+    verifyNever(sysInterface.factoryReset());
+
+    // Requesting factory reset again should result in the API call.
+    await model.factoryReset();
+    verify(sysInterface.factoryReset());
+  });
+
+  // Ensure the factory reset service doesn't get called if it got cancelled.
+  test('test_check_for_factory_reset', () async {
+    final TestSystemInterface sysInterface = TestSystemInterface();
+
+    when(sysInterface.listRepositories())
+        .thenAnswer((_) => Stream.fromIterable([]));
+
+    when(sysInterface.listRules()).thenAnswer((_) => Stream.fromIterable([]));
+
+    when(sysInterface.listStaticRules())
+        .thenAnswer((_) => Stream.fromIterable([]));
+
+    final DeviceSettingsModel model = DeviceSettingsModel(sysInterface);
+    await model.start();
+
+    // Starting the model should not trigger factory reset.
+    verifyNever(sysInterface.factoryReset());
+    expect(model.showResetConfirmation, false);
+
+    // When factory reset is called for the first time, it should show a confirmation.
+    await model.factoryReset();
+    expect(model.showResetConfirmation, true);
+    verifyNever(sysInterface.factoryReset());
+
+    // Cancelling factory reset should not result in a call.
+    model.cancelFactoryReset();
+    expect(model.showResetConfirmation, false);
+    verifyNever(sysInterface.factoryReset());
   });
 }

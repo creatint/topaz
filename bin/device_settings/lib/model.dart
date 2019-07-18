@@ -8,7 +8,7 @@ import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_update/fidl_async.dart' as update;
 import 'package:fidl_fuchsia_pkg/fidl_async.dart' as pkg;
 import 'package:fidl_fuchsia_pkg_rewrite/fidl_async.dart' as pkg_rewrite;
-import 'package:fidl_fuchsia_device_manager/fidl_async.dart' as devmgr;
+import 'package:fidl_fuchsia_recovery/fidl_async.dart' as recovery;
 import 'package:flutter/foundation.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_services/services.dart';
@@ -36,6 +36,8 @@ abstract class SystemInterface {
   Future<int> updateRules(
       Iterable<pkg_rewrite.Rule> Function(List<pkg_rewrite.Rule>) action);
 
+  Future<void> factoryReset();
+
   void dispose();
 }
 
@@ -47,6 +49,9 @@ class DefaultSystemInterfaceImpl implements SystemInterface {
   final pkg.RepositoryManagerProxy _repositoryManager =
       pkg.RepositoryManagerProxy();
   final pkg_rewrite.EngineProxy _rewriteManager = pkg_rewrite.EngineProxy();
+
+  /// Controller for the factory reset service.
+  final recovery.FactoryResetProxy _factoryReset = recovery.FactoryResetProxy();
 
   DefaultSystemInterfaceImpl() {
     StartupContext.fromStartupInfo().incoming.connectToService(_updateManager);
@@ -130,10 +135,20 @@ class DefaultSystemInterfaceImpl implements SystemInterface {
   }
 
   @override
+  Future<void> factoryReset() async {
+    if (_factoryReset.ctrl.isUnbound) {
+      StartupContext.fromStartupInfo().incoming.connectToService(_factoryReset);
+    }
+
+    await _factoryReset.reset();
+  }
+
+  @override
   void dispose() {
     _updateManager.ctrl.close();
     _repositoryManager.ctrl.close();
     _rewriteManager.ctrl.close();
+    _factoryReset.ctrl.close();
   }
 }
 
@@ -325,36 +340,10 @@ class DeviceSettingsModel extends Model {
     notifyListeners();
   }
 
-  void factoryReset() async {
+  Future<void> factoryReset() async {
     if (showResetConfirmation) {
-      final flagSet = await DeviceInfo.setFactoryResetFlag(shouldReset: true);
-      log.severe('Factory Reset flag set successfully: $flagSet');
-
-      final ChannelPair channels = ChannelPair();
-      if (channels.status != 0) {
-        log.severe('Unable to create channels: $channels.status');
-        return;
-      }
-
-      int status = System.connectToService(
-          '/svc/${devmgr.Administrator.$serviceName}',
-          channels.second.passHandle());
-      if (status != 0) {
-        channels.first.close();
-        log.severe(
-            'Unable to connect to device administrator service: $status');
-        return;
-      }
-
-      final devmgr.AdministratorProxy admin = devmgr.AdministratorProxy();
-      admin.ctrl.bind(InterfaceHandle<devmgr.Administrator>(channels.first));
-
-      status = await admin.suspend(devmgr.suspendFlagReboot);
-      if (status != 0) {
-        log.severe('Reboot call failed with status: $status');
-      }
-
-      admin.ctrl.close();
+      log.warning('Triggering factory reset');
+      await _sysInterface.factoryReset();
     } else {
       _showResetConfirmation = true;
       notifyListeners();

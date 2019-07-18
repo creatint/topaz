@@ -18,6 +18,7 @@
             "fuchsia.modular.ContextWriter",
             "fuchsia.pkg.RepositoryManager",
             "fuchsia.pkg.rewrite.Engine",
+            "fuchsia.recovery.FactoryReset",
             "fuchsia.sys.Environment",
             "fuchsia.ui.input.ImeService",
             "fuchsia.ui.policy.Presenter",
