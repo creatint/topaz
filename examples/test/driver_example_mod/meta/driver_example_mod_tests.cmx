@@ -28,11 +28,18 @@
             "deprecated-ambient-replace-as-executable"
         ],
         "services": [
-            "fuchsia.posix.socket.Provider",
+            "fuchsia.auth.account.AccountManager",
+            "fuchsia.devicesettings.DeviceSettingsManager",
+            "fuchsia.fonts.Provider",
             "fuchsia.net.NameLookup",
             "fuchsia.net.SocketProvider",
+            "fuchsia.posix.socket.Provider",
+            "fuchsia.sys.Environment",
             "fuchsia.sys.Launcher",
-            "fuchsia.sys.Environment"
+            "fuchsia.sysmem.Allocator",
+            "fuchsia.ui.policy.Presenter",
+            "fuchsia.ui.scenic.Scenic",
+            "fuchsia.vulkan.loader.Loader"
         ]
     }
 }

@@ -46,6 +46,7 @@ dart_fuchsia_test("driver_example_mod_tests") {
     "//sdk/fidl/fuchsia.sys",
     "//third_party/dart-pkg/git/flutter/packages/flutter_driver",
     "//third_party/dart-pkg/pub/test",
+    "//topaz/public/dart/fuchsia_modular_testing",
     "//topaz/public/dart/fuchsia_services",
   ]
 
