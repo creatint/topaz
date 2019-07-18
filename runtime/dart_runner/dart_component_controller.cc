@@ -21,6 +21,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <zircon/status.h>
+
 #include <regex>
 #include <utility>
 
@@ -33,7 +34,6 @@
 #include "topaz/runtime/dart/utils/handle_exception.h"
 #include "topaz/runtime/dart/utils/inlines.h"
 #include "topaz/runtime/dart/utils/tempfs.h"
-
 #include "topaz/runtime/dart_runner/builtin_libraries.h"
 #include "topaz/runtime/dart_runner/logging.h"
 
@@ -323,12 +323,12 @@ bool DartComponentController::CreateIsolate(
   auto state = new std::shared_ptr<tonic::DartState>(new tonic::DartState(
       namespace_fd, [this](Dart_Handle result) { MessageEpilogue(result); }));
 
-  isolate_ = Dart_CreateIsolate(
+  isolate_ = Dart_CreateIsolateGroup(
       url_.c_str(), label_.c_str(), isolate_snapshot_data,
       isolate_snapshot_instructions, shared_snapshot_data,
-      shared_snapshot_instructions, nullptr /* flags */, state, &error);
+      shared_snapshot_instructions, nullptr /* flags */, state, state, &error);
   if (!isolate_) {
-    FX_LOGF(ERROR, LOG_TAG, "Dart_CreateIsolate failed: %s", error);
+    FX_LOGF(ERROR, LOG_TAG, "Dart_CreateIsolateGroup failed: %s", error);
     return false;
   }
 

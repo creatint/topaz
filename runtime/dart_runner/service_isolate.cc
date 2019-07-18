@@ -11,7 +11,6 @@
 #include "third_party/tonic/dart_state.h"
 #include "third_party/tonic/typed_data/typed_list.h"
 #include "topaz/runtime/dart/utils/inlines.h"
-
 #include "topaz/runtime/dart_runner/builtin_libraries.h"
 #include "topaz/runtime/dart_runner/dart_component_controller.h"
 #include "topaz/runtime/dart_runner/logging.h"
@@ -121,15 +120,14 @@ Dart_Isolate CreateServiceIsolate(const char* uri, Dart_IsolateFlags* flags,
 #endif
 
   auto state = new std::shared_ptr<tonic::DartState>(new tonic::DartState());
-  Dart_Isolate isolate =
-      Dart_CreateIsolate(uri, DART_VM_SERVICE_ISOLATE_NAME,
-                         mapped_isolate_snapshot_data.address(),
-                         mapped_isolate_snapshot_instructions.address(),
-                         mapped_shared_snapshot_data.address(),
-                         mapped_shared_snapshot_instructions.address(),
-                         nullptr /* flags */, state, error);
+  Dart_Isolate isolate = Dart_CreateIsolateGroup(
+      uri, DART_VM_SERVICE_ISOLATE_NAME, mapped_isolate_snapshot_data.address(),
+      mapped_isolate_snapshot_instructions.address(),
+      mapped_shared_snapshot_data.address(),
+      mapped_shared_snapshot_instructions.address(), nullptr /* flags */, state,
+      state, error);
   if (!isolate) {
-    FX_LOGF(ERROR, LOG_TAG, "Dart_CreateIsolate failed: %s", *error);
+    FX_LOGF(ERROR, LOG_TAG, "Dart_CreateIsolateGroup failed: %s", *error);
     return nullptr;
   }
 
