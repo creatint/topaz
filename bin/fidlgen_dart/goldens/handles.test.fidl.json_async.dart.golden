@@ -47,6 +47,7 @@ class Handles extends $fidl.Struct {
     @required this.debuglogHandle,
     @required this.eventHandle,
     @required this.eventpairHandle,
+    @required this.exceptionHandle,
     @required this.fifoHandle,
     @required this.guestHandle,
     @required this.interruptHandle,
@@ -69,6 +70,7 @@ class Handles extends $fidl.Struct {
     $zx.Handle debuglogHandle,
     $zx.Handle eventHandle,
     $zx.EventPair eventpairHandle,
+    $zx.Handle exceptionHandle,
     $zx.Handle fifoHandle,
     $zx.Handle guestHandle,
     $zx.Handle interruptHandle,
@@ -89,6 +91,7 @@ class Handles extends $fidl.Struct {
           debuglogHandle: debuglogHandle ?? $orig.debuglogHandle,
           eventHandle: eventHandle ?? $orig.eventHandle,
           eventpairHandle: eventpairHandle ?? $orig.eventpairHandle,
+          exceptionHandle: exceptionHandle ?? $orig.exceptionHandle,
           fifoHandle: fifoHandle ?? $orig.fifoHandle,
           guestHandle: guestHandle ?? $orig.guestHandle,
           interruptHandle: interruptHandle ?? $orig.interruptHandle,
@@ -111,25 +114,27 @@ class Handles extends $fidl.Struct {
         debuglogHandle = argv[3],
         eventHandle = argv[4],
         eventpairHandle = argv[5],
-        fifoHandle = argv[6],
-        guestHandle = argv[7],
-        interruptHandle = argv[8],
-        jobHandle = argv[9],
-        processHandle = argv[10],
-        profileHandle = argv[11],
-        portHandle = argv[12],
-        resourceHandle = argv[13],
-        socketHandle = argv[14],
-        threadHandle = argv[15],
-        timerHandle = argv[16],
-        vmarHandle = argv[17],
-        vmoHandle = argv[18];
+        exceptionHandle = argv[6],
+        fifoHandle = argv[7],
+        guestHandle = argv[8],
+        interruptHandle = argv[9],
+        jobHandle = argv[10],
+        processHandle = argv[11],
+        profileHandle = argv[12],
+        portHandle = argv[13],
+        resourceHandle = argv[14],
+        socketHandle = argv[15],
+        threadHandle = argv[16],
+        timerHandle = argv[17],
+        vmarHandle = argv[18],
+        vmoHandle = argv[19];
   final $zx.Handle plainHandle;
   final $zx.Handle btiHandle;
   final $zx.Channel channelHandle;
   final $zx.Handle debuglogHandle;
   final $zx.Handle eventHandle;
   final $zx.EventPair eventpairHandle;
+  final $zx.Handle exceptionHandle;
   final $zx.Handle fifoHandle;
   final $zx.Handle guestHandle;
   final $zx.Handle interruptHandle;
@@ -153,6 +158,7 @@ class Handles extends $fidl.Struct {
       debuglogHandle,
       eventHandle,
       eventpairHandle,
+      exceptionHandle,
       fifoHandle,
       guestHandle,
       interruptHandle,
@@ -184,6 +190,8 @@ class Handles extends $fidl.Struct {
         eventHandle.toString() +
         r', eventpairHandle: ' +
         eventpairHandle.toString() +
+        r', exceptionHandle: ' +
+        exceptionHandle.toString() +
         r', fifoHandle: ' +
         fifoHandle.toString() +
         r', guestHandle: ' +
@@ -219,7 +227,7 @@ class Handles extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Handles> kHandles_Type = $fidl.StructType<Handles>(
-  encodedSize: 76,
+  encodedSize: 80,
   members: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 0),
@@ -249,15 +257,17 @@ const $fidl.StructType<Handles> kHandles_Type = $fidl.StructType<Handles>(
         type: $fidl.HandleType(nullable: false), offset: 48),
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 52),
-    $fidl.MemberType<$zx.Socket>(
-        type: $fidl.SocketType(nullable: false), offset: 56),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offset: 60),
+        type: $fidl.HandleType(nullable: false), offset: 56),
+    $fidl.MemberType<$zx.Socket>(
+        type: $fidl.SocketType(nullable: false), offset: 60),
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 64),
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 68),
-    $fidl.MemberType<$zx.Vmo>(type: $fidl.VmoType(nullable: false), offset: 72),
+    $fidl.MemberType<$zx.Handle>(
+        type: $fidl.HandleType(nullable: false), offset: 72),
+    $fidl.MemberType<$zx.Vmo>(type: $fidl.VmoType(nullable: false), offset: 76),
   ],
   ctor: Handles._ctor,
 );
