@@ -2,6 +2,7 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/config.gni")
 import("//build/fidl/fidl.gni")
 import("//build/package.gni")
 
@@ -78,13 +79,10 @@ package("term") {
   ]
 }
 
-package("config") {
-  deprecated_system_image = true
-  package_name = "term_config"
-  resources = [
-    {
-      dest = "sysmgr/term.config"
-      path = rebase_path("config/term.config")
-    },
+config_data("config") {
+  for_pkg = "sysmgr"
+
+  sources = [
+    "config/term.config",
   ]
 }
