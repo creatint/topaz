@@ -42,9 +42,6 @@
             "fuchsia.ui.scenic.Scenic",
             "fuchsia.vulkan.loader.Loader",
             "fuchsia.web.ContextProvider"
-        ],
-        "system": [
-            "deprecated-data/modules"
         ]
     }
 }
