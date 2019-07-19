@@ -15,7 +15,6 @@ final _log = Logger('ermine_e2e_test');
 ///  - show the ask_bar
 ///  - execute commands via the ask_bar
 void main() {
-
   Sl4f sl4fDriver;
 
   setUp(() async {
@@ -29,16 +28,13 @@ void main() {
   });
 
   test('ermine session shell guest login', () async {
-
     // TODO: note that 'user picker' screen is changing/going away
     // so here we use sessionctl to do guest login. Once final
     // OOBE UI is established for Ermine, this could be revisited
     // so as to provide for more robust testing of no-auth login.
-    //
-    // ignore: deprecated_member_use
-    bool loggedIn = await sl4fDriver.ssh('sessionctl login_guest');
+    final result = await sl4fDriver.ssh.run('sessionctl login_guest');
 
-    if (!loggedIn) {
+    if (result.exitCode != 0) {
       fail('unable to login guest - check user already logged in?');
     }
 
@@ -47,7 +43,7 @@ void main() {
 
     // verify that ask bar is active
     bool askBarActive = await _checkActiveComponent(
-      driver:sl4fDriver, name:'ermine_ask_module');
+        driver: sl4fDriver, name: 'ermine_ask_module');
 
     if (!askBarActive) {
       fail('ask bar is not active');
@@ -64,9 +60,7 @@ void main() {
 
     // As it is, here we'll just open simple browser so that we can
     // verify launching chromium from the ask bar
-    //
-    // ignore: deprecated_member_use
-    await sl4fDriver.ssh('input text simple_browser');
+    await sl4fDriver.ssh.run('input text simple_browser');
 
     // Have to drive ask bar from suggestion (can't just input
     // 'simple_browser' text and enter). So give the suggestions
@@ -75,16 +69,14 @@ void main() {
 
     // with the top suggestion being 'open simple_browser', we can
     // now just inject 'enter' to trigger the action.
-    //
-    // ignore: deprecated_member_use
-    await sl4fDriver.ssh('input keyevent 40');
+    await sl4fDriver.ssh.run('input keyevent 40');
 
     // allow time for simple_browser to startup
     await Future.delayed(Duration(seconds: 10));
 
     // verify that simple_browser is active
-    bool browserActive = await _checkActiveComponent(
-      driver:sl4fDriver, name:'simple_browser');
+    bool browserActive =
+        await _checkActiveComponent(driver: sl4fDriver, name: 'simple_browser');
 
     if (!browserActive) {
       fail('simple_browser is not active');
@@ -96,13 +88,10 @@ void main() {
 
 /// checks to see if the component associated with [name] is running.
 Future<bool> _checkActiveComponent({Sl4f driver, String name}) async {
-
   Future<String> getComponents() async {
     // Note: using 'cs' here as iquery doesn't appear to actually provide a
     // list of these active components via the hub.
-    //
-    // ignore: deprecated_member_use
-    final process = await driver.sshProcess('cs');
+    final process = await driver.ssh.start('cs');
     final exitCode = await process.exitCode;
     final stdout = await process.stdout.transform(utf8.decoder).join();
     if (exitCode != 0) {
@@ -125,10 +114,10 @@ Future<bool> _checkActiveComponent({Sl4f driver, String name}) async {
     return false;
   }
 
-  final matchingActiveComponentList = activeComponents.split('\n').where((line) {
+  final matchingActiveComponentList =
+      activeComponents.split('\n').where((line) {
     return line.contains(name);
   }).toList();
 
   return matchingActiveComponentList.isNotEmpty;
 }
-
