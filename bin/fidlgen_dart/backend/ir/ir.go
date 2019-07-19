@@ -5,13 +5,14 @@
 package ir
 
 import (
-	"fidl/compiler/backend/common"
-	"fidl/compiler/backend/types"
 	"fmt"
 	"log"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"fidl/compiler/backend/common"
+	"fidl/compiler/backend/types"
 )
 
 // Documented is embedded in structs for declarations that may hold documentation.
@@ -177,10 +178,7 @@ type MethodResponse struct {
 
 // Method represents a method declaration within an interface declaration.
 type Method struct {
-	Ordinal            string
-	OrdinalName        string
-	GenOrdinal         string
-	GenOrdinalName     string
+	types.Ordinals
 	Name               string
 	HasRequest         bool
 	Request            []Parameter
@@ -966,10 +964,11 @@ func (c *compiler) compileMethod(val types.Method, protocol Interface) Method {
 	}
 	_, transitional := val.LookupAttribute("Transitional")
 	return Method{
-		Ordinal:            fmt.Sprintf("%#x", uint64(val.Ordinal)<<32),
-		OrdinalName:        fmt.Sprintf("_k%s_%s_Ordinal", protocol.Name, val.Name),
-		GenOrdinal:         fmt.Sprintf("%#x", uint64(val.GenOrdinal)<<32),
-		GenOrdinalName:     fmt.Sprintf("_k%s_%s_GenOrdinal", protocol.Name, val.Name),
+		Ordinals: types.NewOrdinals(
+			val,
+			fmt.Sprintf("_k%s_%s_Ordinal", protocol.Name, val.Name),
+			fmt.Sprintf("_k%s_%s_GenOrdinal", protocol.Name, val.Name),
+		),
 		Name:               name,
 		HasRequest:         val.HasRequest,
 		Request:            request,
