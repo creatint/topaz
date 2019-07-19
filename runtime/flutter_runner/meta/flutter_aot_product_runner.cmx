@@ -11,6 +11,7 @@
             "fuchsia.accessibility.SettingsManager",
             "fuchsia.accessibility.semantics.SemanticsManager",
             "fuchsia.crash.Analyzer",
+            "fuchsia.device.NameProvider",
             "fuchsia.fonts.Provider",
             "fuchsia.posix.socket.Provider",
             "fuchsia.net.NameLookup",
