@@ -29,7 +29,7 @@ Future<void> _getEntriesRecursive(
   for (final ledger.InlinedEntry entry in entries) {
     items[entry.key] = utf8.decode(entry.inlinedValue.value);
   }
-  if (nextToken != null) {
+  if (nextToken == null) {
     callback(items);
     return;
   }
