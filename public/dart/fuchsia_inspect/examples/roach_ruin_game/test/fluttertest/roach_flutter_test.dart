@@ -17,6 +17,5 @@ void main() {
     await tester.pumpWidget(RoachGame(inspectNode: mockNode));
     RoachLogic roachLogic = RoachLogic();
     roachLogic.increaseCounter(1);
-    //verify(mockNode.)
   });
 }

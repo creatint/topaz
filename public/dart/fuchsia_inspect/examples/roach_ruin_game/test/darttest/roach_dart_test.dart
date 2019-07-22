@@ -6,20 +6,6 @@ import 'package:mockito/mockito.dart';
 class MockNode extends Mock implements inspect.Node {}
 
 void main() {
-  /*
-  testWidgets('First Widget Test', (WidgetTester tester) async{
-    var mockNode = MockNode();
-    //mockNode.Inspect().root;
-    //var inspectNode = mockNode.Inspect().root;
-    await tester.pumpWidget(RoachGame(inspectNode : mockNode));
-    //verify(mockNode.)
-    final titleFinder = find.text('Roach Game');
-    final appbarFinder = find.text('Welcome to Roach Ruin');
-
-    expect(titleFinder, findsOneWidget);
-    expect(appbarFinder, findsOneWidget);
-  });
-*/
   test('Counter increments', () async {
     int counter = 0;
     RoachLogic roachLogic = RoachLogic();
