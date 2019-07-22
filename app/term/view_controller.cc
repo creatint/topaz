@@ -6,12 +6,13 @@
 
 #include <fuchsia/fonts/cpp/fidl.h>
 #include <lib/async/default.h>
+#include <lib/zx/clock.h>
 #include <unistd.h>
 #include <zircon/status.h>
 
+#include "lib/ui/input/cpp/formatting.h"
 #include "src/lib/fxl/logging.h"
 #include "src/lib/fxl/strings/string_printf.h"
-#include "lib/ui/input/cpp/formatting.h"
 #include "third_party/skia/include/core/SkFont.h"
 #include "third_party/skia/include/core/SkFontMetrics.h"
 #include "third_party/skia/include/core/SkPaint.h"
