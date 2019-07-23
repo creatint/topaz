@@ -17,6 +17,7 @@ group("dart_unittests") {
     "//topaz/bin/dart_fidl_json/test:dart_fidl_json_test($host_toolchain)",
     "//topaz/bin/device_settings:device_settings_tests($host_toolchain)",
     "//topaz/bin/settings:settings_tests($host_toolchain)",
+    "//topaz/examples/ledger/todo_list:todo_list_test($host_toolchain)",
     "//topaz/examples/test/flutter_widget_test($host_toolchain)",
     "//topaz/lib/keyboard/flutter:keyboard_test($host_toolchain)",
     "//topaz/lib/setui/common:lib_setui_common_test($host_toolchain)",
@@ -61,8 +62,8 @@ group("all") {
   testonly = true
   public_deps = [
     "//garnet/packages/tests:run_test_component",
-    "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_test($host_toolchain)",
     "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_ir_test($host_toolchain)",
+    "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_test($host_toolchain)",
     "//topaz/packages/examples:tests",
     "//topaz/packages/tests:bindings_tests",
     "//topaz/packages/tests:chromium_prebuilt_tests",
@@ -109,8 +110,8 @@ group("dart_target_unittests") {
     "//topaz/public/dart/fuchsia_modular_testing:fuchsia_modular_testing_package_integration_tests",
     "//topaz/public/dart/fuchsia_services:fuchsia_services_foo_test_server",
     "//topaz/public/dart/fuchsia_services:fuchsia_services_package_integration_tests",
-    "//topaz/public/dart/fuchsia_webview_flutter:fuchsia_webview_flutter_target_tests",
     "//topaz/public/dart/fuchsia_vfs:fuchsia_vfs_package_unittests",
+    "//topaz/public/dart/fuchsia_webview_flutter:fuchsia_webview_flutter_target_tests",
     "//topaz/runtime/dart/utils:run_vmservice_object_tests",
   ]
 }
