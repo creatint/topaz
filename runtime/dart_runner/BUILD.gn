@@ -41,6 +41,7 @@ template("runner") {
     ]
 
     deps = [
+             "//garnet/public/lib/syslog/cpp",
              "//topaz/runtime/dart/utils",
              "//topaz/runtime/dart/utils:files",
              "//topaz/runtime/dart/utils:inlines",
