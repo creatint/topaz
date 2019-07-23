@@ -12,43 +12,59 @@ import 'package:test/test.dart';
 import 'package:zircon/zircon.dart';
 
 void main() {
-  Future<void> _assertRead(FileProxy proxy, int bufSize, String expectedString,
-      {expectedStatus = ZX.OK}) async {
-    var readResponse = await proxy.read(bufSize);
-    expect(readResponse.s, expectedStatus);
-    expect(String.fromCharCodes(readResponse.data), expectedString);
+  Future<void> _assertRead(FileProxy proxy) async {
+    const bytesToTryCount = 16;
+    const bytesExpectedCount = 0;
+    var readResponse = await proxy.read(bytesToTryCount);
+    expect(readResponse.s, ZX.OK);
+    expect(readResponse.data.length, bytesExpectedCount);
+  }
+
+  Future<void> _assertDescribeFile(FileProxy proxy) async {
+    var response = await proxy.describe();
+    expect(response.file, isNotNull);
   }
 
   Future<void> _assertDescribeVmo(
-      FileProxy proxy, String expectedString) async {
+      FileProxy proxy, int expectedLength, String expectedString) async {
     var response = await proxy.describe();
     expect(response.vmofile, isNotNull);
     expect(response.vmofile.vmo.isValid, isTrue);
-    final Uint8List value = response.vmofile.vmo.map();
-    expect(String.fromCharCodes(value.sublist(0, expectedString.length)),
-        expectedString);
-  }
-
-  void _assertOpenVmo(response, String expectedString) {
-    expect(response.s, ZX.OK);
-    expect(response.info, isNotNull);
-    expect(response.info.vmofile, isNotNull);
-    final Uint8List value = response.info.vmofile.vmo.map();
-    expect(String.fromCharCodes(value.sublist(0, expectedString.length)),
+    final Uint8List vmoData = response.vmofile.vmo.map();
+    expect(String.fromCharCodes(vmoData.getRange(0, expectedLength)),
         expectedString);
   }
 
   group('pseudo vmo file:', () {
-    test('onOpen with describe flag', () async {
+    test('onOpen event on success', () async {
       var stringList = ['test string'];
       var file = _TestPseudoVmoFile.fromStringList(stringList);
       var proxy = file.connect(openRightReadable | openFlagDescribe);
 
       await proxy.onOpen.first.then((response) {
-        _assertOpenVmo(response, stringList[0]);
+        expect(response.s, ZX.OK);
+        expect(response.info, isNotNull);
       }).catchError((err) async {
         fail(err.toString());
       });
+    });
+
+    test('read file', () async {
+      var stringList = ['test string'];
+      var file = _TestPseudoVmoFile.fromStringList(stringList);
+      var proxy = file.connect(openRightReadable);
+      await _assertRead(proxy);
+    });
+
+    test('describe file', () async {
+      var stringList = ['test string', 'hello world', 'lorem ipsum'];
+      var file = _TestPseudoVmoFile.fromStringList(stringList);
+
+      for (var expectedString in stringList) {
+        var proxy = file.connect(openRightReadable);
+        await _assertDescribeVmo(proxy, expectedString.length, expectedString);
+        await proxy.close();
+      }
     });
 
     test('pass null vmo function', () {
@@ -56,29 +72,11 @@ void main() {
       expect(produceFile, throwsArgumentError);
     });
 
-    test('pass null-producing vmo function', () {
+    test('pass null-producing vmo function', () async {
       Vmo produceVmo() => null;
       var file = _TestPseudoVmoFile.fromVmoFunc(produceVmo);
-      FileProxy connect() => file.connect(openRightReadable);
-      expect(connect, throwsException);
-    });
-
-    test('read file', () async {
-      var stringList = ['test string', 'hello world', 'lorem ipsum'];
-      var file = _TestPseudoVmoFile.fromStringList(stringList);
-
-      for (var expectedString in stringList) {
-        var proxy = file.connect(openRightReadable);
-        await _assertRead(proxy, expectedString.length, expectedString);
-        await proxy.close();
-      }
-    });
-
-    test('describe duplicate', () async {
-      var stringList = ['test string'];
-      var file = _TestPseudoVmoFile.fromStringList(stringList);
       var proxy = file.connect(openRightReadable);
-      await _assertDescribeVmo(proxy, stringList[0]);
+      await _assertDescribeFile(proxy);
     });
   });
 }
@@ -114,8 +112,7 @@ class _TestPseudoVmoFile {
     var proxy = FileProxy();
     var channel = proxy.ctrl.request().passChannel();
     var interfaceRequest = InterfaceRequest<Node>(channel);
-    expect(_pseudoVmoFile.connect(openRights, modeTypeFile, interfaceRequest),
-        ZX.OK);
+    _pseudoVmoFile.connect(openRights, modeTypeFile, interfaceRequest);
     return proxy;
   }
 }

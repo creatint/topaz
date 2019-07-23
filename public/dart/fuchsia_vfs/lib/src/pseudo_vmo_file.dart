@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:typed_data';
+
 import 'package:zircon/zircon.dart';
 import 'package:fidl_fuchsia_io/fidl_async.dart';
 
@@ -22,17 +24,10 @@ class PseudoVmoFile extends PseudoFile {
 
   /// Constructor for read-only [Vmo]
   ///
-  /// Throws Exception if _vmoFn or any of its resulting vmos are null.
-  PseudoVmoFile.readOnly(this._vmoFn)
-      : super.readOnly(() {
-          Vmo vmo = _vmoFn();
-          if (vmo == null) {
-            throw Exception('Vmo cannot be null');
-          }
-
-          int size = vmo.getSize().size;
-          return vmo.read(size).bytesAsUint8List();
-        }) {
+  /// Throws Exception if _vmoFn is null.
+  ///
+  /// Resulting PseudoVmoFile returns nothing when read as a regular file.
+  PseudoVmoFile.readOnly(this._vmoFn) : super.readOnly(() => Uint8List(0)) {
     ArgumentError.checkNotNull(_vmoFn, 'Vmo Function');
   }
 
@@ -47,10 +42,10 @@ class PseudoVmoFile extends PseudoFile {
     final Vmo duplicatedVmo =
         originalVmo?.duplicate(ZX.RIGHTS_BASIC | ZX.RIGHT_READ | ZX.RIGHT_MAP);
     if (duplicatedVmo == null) {
-      return null;
+      return NodeInfo.withFile(FileObject(event: null));
     }
 
     return NodeInfo.withVmofile(Vmofile(
-        vmo: duplicatedVmo, offset: 0, length: originalVmo.getSize().size));
+        vmo: duplicatedVmo, offset: 0, length: duplicatedVmo.getSize().size));
   }
 }
