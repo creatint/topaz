@@ -44,9 +44,7 @@ go_test("fidlgen_dart_backend_test") {
   deps = [
     ":fidlgen_dart_lib",
   ]
-  non_go_deps = [
-    ":copies",
-  ]
+  non_go_deps = [ ":copies" ]
 }
 
 group("copies") {
@@ -65,8 +63,9 @@ group("copies") {
 }
 
 copy("copy_dartsnapshot") {
+  deps = dart_sdk_deps
   sources = [
-    "//prebuilt/third_party/dart/$host_platform/bin/snapshots/dartfmt.dart.snapshot",
+    "$dart_sdk/bin/snapshots/dartfmt.dart.snapshot",
   ]
   outputs = [
     "$root_out_dir/test_data/fidlgen_dart/snapshots/dartfmt.dart.snapshot",
@@ -74,6 +73,7 @@ copy("copy_dartsnapshot") {
 }
 
 copy("copy_dart") {
+  deps = dart_sdk_deps
   sources = [
     "$dart_sdk/bin/dart",
   ]
@@ -83,6 +83,7 @@ copy("copy_dart") {
 }
 
 copy("copy_dartfmt") {
+  deps = dart_sdk_deps
   sources = [
     "$dart_sdk/bin/dartfmt",
   ]
