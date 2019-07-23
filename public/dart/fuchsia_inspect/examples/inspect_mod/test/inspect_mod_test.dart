@@ -14,9 +14,10 @@ import 'package:fuchsia_remote_debug_protocol/logging.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:glob/glob.dart';
 import 'package:test/test.dart';
+import 'package:test_vmo_reader/vmo_reader.dart' show VmoReader;
+// ignore: implementation_imports
 import 'util.dart';
 
-import 'vmo_reader.dart' show VmoReader;
 
 const Pattern _testAppName = 'inspect_mod.cmx';
 const _testAppUrl = 'fuchsia-pkg://fuchsia.com/inspect_mod#meta/$_testAppName';

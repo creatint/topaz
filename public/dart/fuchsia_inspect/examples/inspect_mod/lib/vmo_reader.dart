@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-// ignore_for_file: implementation_imports, avoid_relative_lib_imports
+// ignore_for_file: invalid_use_of_visible_for_testing_member, implementation_imports
 
 import 'dart:convert' show utf8;
 import 'dart:math' show min, max;
