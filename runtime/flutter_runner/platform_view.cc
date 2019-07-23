@@ -130,9 +130,8 @@ PlatformView::PlatformView(
 
   fuchsia::ui::views::ViewRef accessibility_view_ref;
   view_ref_.Clone(&accessibility_view_ref);
-  accessibility_bridge_ =
-      std::make_unique<AccessibilityBridge>(FuchsiaAccessibility::Create(
-          runner_services, std::move(accessibility_view_ref)));
+  accessibility_bridge_ = std::make_unique<AccessibilityBridge>(
+      runner_services, std::move(accessibility_view_ref));
   // Register with the A11y Settings Manager
   runner_services->Connect(fuchsia::accessibility::SettingsManager::Name_,
                            a11y_settings_manager_.NewRequest().TakeChannel());

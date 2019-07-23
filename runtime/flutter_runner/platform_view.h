@@ -21,7 +21,6 @@
 #include "flutter/fml/macros.h"
 #include "flutter/lib/ui/window/viewport_metrics.h"
 #include "flutter/shell/common/platform_view.h"
-#include "fuchsia_accessibility.h"
 #include "lib/fidl/cpp/binding.h"
 #include "lib/ui/scenic/cpp/id.h"
 #include "surface.h"

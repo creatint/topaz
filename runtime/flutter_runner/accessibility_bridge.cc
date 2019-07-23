@@ -4,18 +4,32 @@
 
 #include "topaz/runtime/flutter_runner/accessibility_bridge.h"
 
+#include <zircon/status.h>
 #include <zircon/types.h>
 
 #include <deque>
 
 #include "flutter/fml/logging.h"
 #include "flutter/lib/ui/semantics/semantics_node.h"
-#include "topaz/runtime/flutter_runner/fuchsia_accessibility.h"
 
 namespace flutter_runner {
 AccessibilityBridge::AccessibilityBridge(
-    std::shared_ptr<FuchsiaAccessibility> fuchsia_a11y)
-    : fuchsia_a11y_(std::move(fuchsia_a11y)) {}
+    const std::shared_ptr<sys::ServiceDirectory> services,
+    fuchsia::ui::views::ViewRef view_ref)
+    : binding_(this) {
+  services->Connect(fuchsia::accessibility::semantics::SemanticsManager::Name_,
+                    fuchsia_semantics_manager_.NewRequest().TakeChannel());
+  fuchsia_semantics_manager_.set_error_handler([](zx_status_t status) {
+    FML_LOG(ERROR) << "Flutter cannot connect to SemanticsManager with status: "
+                   << zx_status_get_string(status) << ".";
+  });
+  fidl::InterfaceHandle<
+      fuchsia::accessibility::semantics::SemanticActionListener>
+      listener_handle;
+  binding_.Bind(listener_handle.NewRequest());
+  fuchsia_semantics_manager_->RegisterView(
+      std::move(view_ref), std::move(listener_handle), tree_ptr_.NewRequest());
+}
 
 bool AccessibilityBridge::GetSemanticsEnabled() const {
   return semantics_enabled_;
@@ -121,8 +135,8 @@ void AccessibilityBridge::PruneUnreachableNodes() {
     if (reachable_nodes.find(id) == reachable_nodes.end()) {
       // TODO(MI4-2531): This shouldn't be strictly necessary at this level.
       if (sizeof(nodes_to_remove) + (nodes_to_remove.size() * kNodeIdSize) >=
-          ZX_CHANNEL_MAX_MSG_BYTES / 2) {
-        fuchsia_a11y_->DeleteSemanticNodes(std::move(nodes_to_remove));
+          kMaxMessageSize) {
+        tree_ptr_->DeleteSemanticNodes(std::move(nodes_to_remove));
         nodes_to_remove.clear();
       }
       nodes_to_remove.push_back(FlutterIdToFuchsiaId(id));
@@ -132,7 +146,7 @@ void AccessibilityBridge::PruneUnreachableNodes() {
     }
   }
   if (!nodes_to_remove.empty()) {
-    fuchsia_a11y_->DeleteSemanticNodes(std::move(nodes_to_remove));
+    tree_ptr_->DeleteSemanticNodes(std::move(nodes_to_remove));
   }
 }
 
@@ -184,7 +198,7 @@ void AccessibilityBridge::AddSemanticsNodeUpdate(
     // TODO(MI4-2531, FIDL-718): Remove this
     // This is defensive. If, despite our best efforts, we ended up with a node
     // that is larger than the max fidl size, we send no updates.
-    if (this_node_size >= ZX_CHANNEL_MAX_MSG_BYTES) {
+    if (this_node_size >= kMaxMessageSize) {
       PrintNodeSizeError(flutter_node.id);
       return;
     }
@@ -193,22 +207,34 @@ void AccessibilityBridge::AddSemanticsNodeUpdate(
 
     // If we would exceed the max FIDL message size by appending this node,
     // we should delete/update/commit now.
-    if (current_size >= ZX_CHANNEL_MAX_MSG_BYTES) {
-      fuchsia_a11y_->UpdateSemanticNodes(std::move(nodes));
+    if (current_size >= kMaxMessageSize) {
+      tree_ptr_->UpdateSemanticNodes(std::move(nodes));
       nodes.clear();
       current_size = this_node_size;
     }
     nodes.push_back(std::move(fuchsia_node));
   }
 
-  if (current_size > ZX_CHANNEL_MAX_MSG_BYTES) {
+  if (current_size > kMaxMessageSize) {
     PrintNodeSizeError(nodes.back().node_id());
   }
 
   PruneUnreachableNodes();
 
-  fuchsia_a11y_->UpdateSemanticNodes(std::move(nodes));
-  fuchsia_a11y_->Commit();
+  tree_ptr_->UpdateSemanticNodes(std::move(nodes));
+  tree_ptr_->Commit();
 }
+
+// |fuchsia::accessibility::semantics::SemanticActionListener|
+void AccessibilityBridge::OnAccessibilityActionRequested(
+    uint32_t node_id, fuchsia::accessibility::semantics::Action action,
+    fuchsia::accessibility::semantics::SemanticActionListener::
+        OnAccessibilityActionRequestedCallback callback) {}
+
+// |fuchsia::accessibility::semantics::SemanticActionListener|
+void AccessibilityBridge::HitTest(
+    fuchsia::math::PointF local_point,
+    fuchsia::accessibility::semantics::SemanticActionListener::HitTestCallback
+        callback) {}
 
 }  // namespace flutter_runner

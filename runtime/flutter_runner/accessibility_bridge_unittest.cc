@@ -5,20 +5,52 @@
 #include "topaz/runtime/flutter_runner/accessibility_bridge.h"
 
 #include <gtest/gtest.h>
+#include <lib/async-loop/cpp/loop.h>
+#include <lib/fidl/cpp/binding_set.h>
+#include <lib/fidl/cpp/interface_request.h>
+#include <lib/gtest/real_loop_fixture.h>
+#include <lib/sys/cpp/testing/service_directory_provider.h>
 #include <zircon/types.h>
 
 #include <memory>
 
 #include "flutter/lib/ui/semantics/semantics_node.h"
-#include "topaz/runtime/flutter_runner/accessibility_bridge_fakes.h"
+#include "topaz/runtime/flutter_runner/flutter_runner_fakes.h"
 
-namespace flutter_runner {
+namespace flutter_runner_test {
+class AccessibilityBridgeTest : public gtest::RealLoopFixture {
+ public:
+  AccessibilityBridgeTest() : services_provider_(dispatcher()) {
+    services_provider_.AddService(semantics_manager_.GetHandler(dispatcher()),
+                                  SemanticsManager::Name_);
+  }
 
-TEST(AccessibilityBridgeTest, DeletesChildrenTransitively) {
+ protected:
+  void SetUp() override {
+    zx::eventpair a, b;
+    zx::eventpair::create(/* flags */ 0u, &a, &b);
+    auto view_ref = fuchsia::ui::views::ViewRef({
+        .reference = std::move(a),
+    });
+    accessibility_bridge_ =
+        std::make_unique<flutter_runner::AccessibilityBridge>(
+            services_provider_.service_directory(), std::move(view_ref));
+    RunLoopUntilIdle();
+  }
+
+  void TearDown() override { semantics_manager_.ResetTree(); }
+
+  sys::testing::ServiceDirectoryProvider services_provider_;
+  MockSemanticsManager semantics_manager_;
+  std::unique_ptr<flutter_runner::AccessibilityBridge> accessibility_bridge_;
+};
+
+TEST_F(AccessibilityBridgeTest, RegistersViewRef) {
+  EXPECT_TRUE(semantics_manager_.RegisterViewCalled());
+}
+
+TEST_F(AccessibilityBridgeTest, DeletesChildrenTransitively) {
   // Test that when a node is deleted, so are its transitive children.
-  auto fuchsia = std::make_shared<FakeFuchsia>();
-  auto bridge = AccessibilityBridge(fuchsia);
-
   flutter::SemanticsNode node2;
   node2.id = 2;
 
@@ -30,39 +62,40 @@ TEST(AccessibilityBridgeTest, DeletesChildrenTransitively) {
   node0.id = 0;
   node0.childrenInTraversalOrder = {1};
 
-  bridge.AddSemanticsNodeUpdate({
+  accessibility_bridge_->AddSemanticsNodeUpdate({
       {0, node0},
       {1, node1},
       {2, node2},
   });
+  RunLoopUntilIdle();
 
-  EXPECT_EQ(0, fuchsia->DeleteCount());
-  EXPECT_EQ(1, fuchsia->UpdateCount());
-  EXPECT_EQ(1, fuchsia->CommitCount());
-  EXPECT_EQ(3U, fuchsia->LastUpdatedNodes().size());
-  EXPECT_EQ(0U, fuchsia->LastDeletedNodeIds().size());
-  EXPECT_FALSE(fuchsia->DeleteOverflowed());
-  EXPECT_FALSE(fuchsia->UpdateOverflowed());
+  EXPECT_EQ(0, semantics_manager_.DeleteCount());
+  EXPECT_EQ(1, semantics_manager_.UpdateCount());
+  EXPECT_EQ(1, semantics_manager_.CommitCount());
+  EXPECT_EQ(3U, semantics_manager_.LastUpdatedNodes().size());
+  EXPECT_EQ(0U, semantics_manager_.LastDeletedNodeIds().size());
+  EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
+  EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 
   // Remove the children
   node0.childrenInTraversalOrder.clear();
-  bridge.AddSemanticsNodeUpdate({
+  accessibility_bridge_->AddSemanticsNodeUpdate({
       {0, node0},
   });
-  EXPECT_EQ(1, fuchsia->DeleteCount());
-  EXPECT_EQ(2, fuchsia->UpdateCount());
-  EXPECT_EQ(2, fuchsia->CommitCount());
-  EXPECT_EQ(1U, fuchsia->LastUpdatedNodes().size());
-  ASSERT_EQ(std::vector<uint32_t>({1, 2}), fuchsia->LastDeletedNodeIds());
-  EXPECT_FALSE(fuchsia->DeleteOverflowed());
-  EXPECT_FALSE(fuchsia->UpdateOverflowed());
+  RunLoopUntilIdle();
+
+  EXPECT_EQ(1, semantics_manager_.DeleteCount());
+  EXPECT_EQ(2, semantics_manager_.UpdateCount());
+  EXPECT_EQ(2, semantics_manager_.CommitCount());
+  EXPECT_EQ(1U, semantics_manager_.LastUpdatedNodes().size());
+  ASSERT_EQ(std::vector<uint32_t>({1, 2}),
+            semantics_manager_.LastDeletedNodeIds());
+  EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
+  EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 }
 
-TEST(AccessibilityBridgeTest, TruncatesLargeLabel) {
+TEST_F(AccessibilityBridgeTest, TruncatesLargeLabel) {
   // Test that labels which are too long are truncated.
-  auto fuchsia = std::make_shared<FakeFuchsia>();
-  auto bridge = AccessibilityBridge(fuchsia);
-
   flutter::SemanticsNode node0;
   node0.id = 0;
 
@@ -71,46 +104,48 @@ TEST(AccessibilityBridgeTest, TruncatesLargeLabel) {
 
   flutter::SemanticsNode bad_node;
   bad_node.id = 2;
-  bad_node.label = std::string(AccessibilityBridge::kMaxStringLength + 1, '2');
+  bad_node.label = std::string(
+      flutter_runner::AccessibilityBridge::kMaxStringLength + 1, '2');
 
   node0.childrenInTraversalOrder = {1, 2};
 
-  bridge.AddSemanticsNodeUpdate({
+  accessibility_bridge_->AddSemanticsNodeUpdate({
       {0, node0},
       {1, node1},
       {2, bad_node},
   });
+  RunLoopUntilIdle();
 
   // Nothing to delete, but we should have broken
-  EXPECT_EQ(0, fuchsia->DeleteCount());
-  EXPECT_EQ(1, fuchsia->UpdateCount());
-  EXPECT_EQ(1, fuchsia->CommitCount());
-  EXPECT_EQ(3U, fuchsia->LastUpdatedNodes().size());
-  auto trimmed_node = std::find_if(
-      fuchsia->LastUpdatedNodes().begin(), fuchsia->LastUpdatedNodes().end(),
-      [id = static_cast<uint32_t>(bad_node.id)](
-          fuchsia::accessibility::semantics::Node const& node) {
-        return node.node_id() == id;
-      });
-  ASSERT_NE(trimmed_node, fuchsia->LastUpdatedNodes().end());
+  EXPECT_EQ(0, semantics_manager_.DeleteCount());
+  EXPECT_EQ(1, semantics_manager_.UpdateCount());
+  EXPECT_EQ(1, semantics_manager_.CommitCount());
+  EXPECT_EQ(3U, semantics_manager_.LastUpdatedNodes().size());
+  auto trimmed_node =
+      std::find_if(semantics_manager_.LastUpdatedNodes().begin(),
+                   semantics_manager_.LastUpdatedNodes().end(),
+                   [id = static_cast<uint32_t>(bad_node.id)](
+                       fuchsia::accessibility::semantics::Node const& node) {
+                     return node.node_id() == id;
+                   });
+  ASSERT_NE(trimmed_node, semantics_manager_.LastUpdatedNodes().end());
   ASSERT_TRUE(trimmed_node->has_attributes());
-  EXPECT_EQ(trimmed_node->attributes().label(),
-            std::string(AccessibilityBridge::kMaxStringLength, '2'));
-  EXPECT_FALSE(fuchsia->DeleteOverflowed());
-  EXPECT_FALSE(fuchsia->UpdateOverflowed());
+  EXPECT_EQ(
+      trimmed_node->attributes().label(),
+      std::string(flutter_runner::AccessibilityBridge::kMaxStringLength, '2'));
+  EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
+  EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 }
 
-TEST(AccessibilityBridgeTest, SplitsLargeUpdates) {
+TEST_F(AccessibilityBridgeTest, SplitsLargeUpdates) {
   // Test that labels which are too long are truncated.
-  auto fuchsia = std::make_shared<FakeFuchsia>();
-  auto bridge = AccessibilityBridge(fuchsia);
-
   flutter::SemanticsNode node0;
   node0.id = 0;
 
   flutter::SemanticsNode node1;
   node1.id = 1;
-  node1.label = std::string(AccessibilityBridge::kMaxStringLength, '1');
+  node1.label =
+      std::string(flutter_runner::AccessibilityBridge::kMaxStringLength, '1');
 
   flutter::SemanticsNode node2;
   node2.id = 2;
@@ -122,66 +157,65 @@ TEST(AccessibilityBridgeTest, SplitsLargeUpdates) {
 
   flutter::SemanticsNode node4;
   node4.id = 4;
-  node4.label = std::string(AccessibilityBridge::kMaxStringLength, '4');
+  node4.label =
+      std::string(flutter_runner::AccessibilityBridge::kMaxStringLength, '4');
 
   node0.childrenInTraversalOrder = {1, 2};
   node1.childrenInTraversalOrder = {3, 4};
 
-  bridge.AddSemanticsNodeUpdate({
+  accessibility_bridge_->AddSemanticsNodeUpdate({
       {0, node0},
       {1, node1},
       {2, node2},
       {3, node3},
       {4, node4},
   });
+  RunLoopUntilIdle();
 
   // Nothing to delete, but we should have broken into groups (4, 3, 2), (1, 0)
-  EXPECT_EQ(0, fuchsia->DeleteCount());
-  EXPECT_EQ(2, fuchsia->UpdateCount());
-  EXPECT_EQ(1, fuchsia->CommitCount());
-  EXPECT_EQ(2U, fuchsia->LastUpdatedNodes().size());
-  EXPECT_FALSE(fuchsia->DeleteOverflowed());
-  EXPECT_FALSE(fuchsia->UpdateOverflowed());
+  EXPECT_EQ(0, semantics_manager_.DeleteCount());
+  EXPECT_EQ(2, semantics_manager_.UpdateCount());
+  EXPECT_EQ(1, semantics_manager_.CommitCount());
+  EXPECT_EQ(2U, semantics_manager_.LastUpdatedNodes().size());
+  EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
+  EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 }
 
-TEST(AccessibilityBridgeTest, HandlesCycles) {
+TEST_F(AccessibilityBridgeTest, HandlesCycles) {
   // Test that cycles don't cause fatal error.
-  auto fuchsia = std::make_shared<FakeFuchsia>();
-  auto bridge = AccessibilityBridge(fuchsia);
-
   flutter::SemanticsNode node0;
   node0.id = 0;
   node0.childrenInTraversalOrder.push_back(0);
-  bridge.AddSemanticsNodeUpdate({
+  accessibility_bridge_->AddSemanticsNodeUpdate({
       {0, node0},
   });
+  RunLoopUntilIdle();
 
-  EXPECT_EQ(0, fuchsia->DeleteCount());
-  EXPECT_EQ(1, fuchsia->UpdateCount());
-  EXPECT_EQ(1, fuchsia->CommitCount());
-  EXPECT_FALSE(fuchsia->DeleteOverflowed());
-  EXPECT_FALSE(fuchsia->UpdateOverflowed());
+  EXPECT_EQ(0, semantics_manager_.DeleteCount());
+  EXPECT_EQ(1, semantics_manager_.UpdateCount());
+  EXPECT_EQ(1, semantics_manager_.CommitCount());
+  EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
+  EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 
   node0.childrenInTraversalOrder = {0, 1};
   flutter::SemanticsNode node1;
   node1.id = 1;
   node1.childrenInTraversalOrder = {0};
-  bridge.AddSemanticsNodeUpdate({
+  accessibility_bridge_->AddSemanticsNodeUpdate({
       {0, node0},
       {1, node1},
   });
-  EXPECT_EQ(0, fuchsia->DeleteCount());
-  EXPECT_EQ(2, fuchsia->UpdateCount());
-  EXPECT_EQ(2, fuchsia->CommitCount());
-  EXPECT_FALSE(fuchsia->DeleteOverflowed());
-  EXPECT_FALSE(fuchsia->UpdateOverflowed());
+  RunLoopUntilIdle();
+
+  EXPECT_EQ(0, semantics_manager_.DeleteCount());
+  EXPECT_EQ(2, semantics_manager_.UpdateCount());
+  EXPECT_EQ(2, semantics_manager_.CommitCount());
+  EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
+  EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 }
 
-TEST(AccessibilityBridgeTest, BatchesLargeMessages) {
+TEST_F(AccessibilityBridgeTest, BatchesLargeMessages) {
   // Tests that messages get batched appropriately.
-  auto fuchsia = std::make_shared<FakeFuchsia>();
-  auto bridge = AccessibilityBridge(fuchsia);
-
   flutter::SemanticsNode node0;
   node0.id = 0;
 
@@ -205,23 +239,26 @@ TEST(AccessibilityBridgeTest, BatchesLargeMessages) {
   }
 
   update.insert(std::make_pair(0, std::move(node0)));
-  bridge.AddSemanticsNodeUpdate(update);
+  accessibility_bridge_->AddSemanticsNodeUpdate(update);
+  RunLoopUntilIdle();
 
-  EXPECT_EQ(0, fuchsia->DeleteCount());
-  EXPECT_EQ(34, fuchsia->UpdateCount());
-  EXPECT_EQ(1, fuchsia->CommitCount());
-  EXPECT_FALSE(fuchsia->DeleteOverflowed());
-  EXPECT_FALSE(fuchsia->UpdateOverflowed());
+  EXPECT_EQ(0, semantics_manager_.DeleteCount());
+  EXPECT_EQ(67, semantics_manager_.UpdateCount());
+  EXPECT_EQ(1, semantics_manager_.CommitCount());
+  EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
+  EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 
   // Remove the children
   node0.childrenInTraversalOrder.clear();
-  bridge.AddSemanticsNodeUpdate({
+  accessibility_bridge_->AddSemanticsNodeUpdate({
       {0, node0},
   });
-  EXPECT_EQ(2, fuchsia->DeleteCount());
-  EXPECT_EQ(35, fuchsia->UpdateCount());
-  EXPECT_EQ(2, fuchsia->CommitCount());
-  EXPECT_FALSE(fuchsia->DeleteOverflowed());
-  EXPECT_FALSE(fuchsia->UpdateOverflowed());
+  RunLoopUntilIdle();
+
+  EXPECT_EQ(2, semantics_manager_.DeleteCount());
+  EXPECT_EQ(68, semantics_manager_.UpdateCount());
+  EXPECT_EQ(2, semantics_manager_.CommitCount());
+  EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
+  EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 }
-}  // namespace flutter_runner
+}  // namespace flutter_runner_test

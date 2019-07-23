@@ -5,7 +5,11 @@
 #ifndef TOPAZ_RUNTIME_FLUTTER_RUNNER_ACCESSIBILITY_BRIDGE_H_
 #define TOPAZ_RUNTIME_FLUTTER_RUNNER_ACCESSIBILITY_BRIDGE_H_
 
+#include <fuchsia/accessibility/semantics/cpp/fidl.h>
+#include <fuchsia/sys/cpp/fidl.h>
 #include <fuchsia/ui/gfx/cpp/fidl.h>
+#include <lib/fidl/cpp/binding_set.h>
+#include <lib/sys/cpp/service_directory.h>
 #include <zircon/types.h>
 
 #include <memory>
@@ -16,7 +20,6 @@
 
 #include "flutter/fml/macros.h"
 #include "flutter/lib/ui/semantics/semantics_node.h"
-#include "fuchsia_accessibility.h"
 
 namespace flutter_runner {
 // Accessibility bridge.
@@ -30,16 +33,25 @@ namespace flutter_runner {
 // * Translates Flutter's semantics node updates to events Fuchsia requires
 //   (e.g. Flutter only sends updates for changed nodes, but Fuchsia requires
 //   the entire flattened subtree to be sent when a node changes.
-class AccessibilityBridge {
+class AccessibilityBridge
+    : public fuchsia::accessibility::semantics::SemanticActionListener {
  public:
+  // TODO(MI4-2531, FIDL-718): Remove these. We shouldn't be worried about
+  // batching messages at this level.
   // A label string property on a node could cause the message to be larger
   // than a FIDL channel can hold. This value guards string lengths so that
   // they don't exceed the limit.
-  static constexpr uint32_t kMaxStringLength = 32768U;
-  static_assert(
-      kMaxStringLength < (ZX_CHANNEL_MAX_MSG_BYTES -
-                          sizeof(fuchsia::accessibility::semantics::Node)),
-      "AccessibilityBridge::kMaxStringLength is too large for FIDL messages.");
+  // A single string is only allowed to take up 1/3rd of the total available
+  // bytes to leave room for the rest of the message. This value should
+  // only be applied to a single string value in the message, e.g. the
+  // label. This value must be smaller than the kMaxMessageSize value.
+  static constexpr uint32_t kMaxStringLength = ZX_CHANNEL_MAX_MSG_BYTES / 3;
+
+  // FIDL may encode a C++ struct as larger than the sizeof the C++ struct.
+  // This is to make sure we don't send updates that are too large.
+  static constexpr uint32_t kMaxMessageSize = ZX_CHANNEL_MAX_MSG_BYTES / 2;
+
+  static_assert(kMaxStringLength < kMaxMessageSize - 1);
 
   // Flutter uses signed 32 bit integers for node IDs, while Fuchsia uses
   // unsigned 32 bit integers. A change in the size on either one would break
@@ -51,7 +63,8 @@ class AccessibilityBridge {
       "flutter::SemanticsNode::id and "
       "fuchsia::accessibility::semantics::Node::node_id differ in size.");
 
-  explicit AccessibilityBridge(std::shared_ptr<FuchsiaAccessibility> fuchsia);
+  AccessibilityBridge(const std::shared_ptr<sys::ServiceDirectory> services,
+                      fuchsia::ui::views::ViewRef view_ref);
 
   // Returns true if accessible navigation is enabled.
   bool GetSemanticsEnabled() const;
@@ -71,6 +84,15 @@ class AccessibilityBridge {
 
  private:
   static constexpr int32_t kRootNodeId = 0;
+  fidl::Binding<fuchsia::accessibility::semantics::SemanticActionListener>
+      binding_;
+  fuchsia::accessibility::semantics::SemanticsManagerPtr
+      fuchsia_semantics_manager_;
+  fuchsia::accessibility::semantics::SemanticTreePtr tree_ptr_;
+  bool semantics_enabled_;
+  // This is the cache of all nodes we've sent to Fuchsia's SemanticsManager.
+  // Assists with pruning unreachable nodes.
+  std::unordered_map<int32_t, std::vector<int32_t>> nodes_;
 
   // Derives the BoundingBox of a Flutter semantics node from its
   // rect and elevation.
@@ -100,15 +122,17 @@ class AccessibilityBridge {
   // May result in a call to FuchsiaAccessibility::Commit().
   void PruneUnreachableNodes();
 
-  // An abstraction of Fuchsia's SemanticsManager. This is a shared pointer so
-  // that we can more easily mock it out in unit tests.
-  std::shared_ptr<FuchsiaAccessibility> fuchsia_a11y_;
-  bool semantics_enabled_;
+  // |fuchsia::accessibility::semantics::SemanticActionListener|
+  void OnAccessibilityActionRequested(
+      uint32_t node_id, fuchsia::accessibility::semantics::Action action,
+      fuchsia::accessibility::semantics::SemanticActionListener::
+          OnAccessibilityActionRequestedCallback callback) override;
 
-  // This is the cache of all nodes we've sent to Fuchsia's SemanticsManager.
-  // Assists with pruning unreachable nodes.
-  std::unordered_map<int32_t, std::vector<int32_t>> nodes_;
-
+  // |fuchsia::accessibility::semantics::SemanticActionListener|
+  void HitTest(
+      fuchsia::math::PointF local_point,
+      fuchsia::accessibility::semantics::SemanticActionListener::HitTestCallback
+          callback) override;
   FML_DISALLOW_COPY_AND_ASSIGN(AccessibilityBridge);
 };
 }  // namespace flutter_runner
