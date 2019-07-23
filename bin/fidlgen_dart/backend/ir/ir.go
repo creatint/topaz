@@ -565,7 +565,11 @@ func (c *compiler) compileUpperCamelCompoundIdentifier(val types.CompoundIdentif
 }
 
 func (c *compiler) compileLowerCamelCompoundIdentifier(val types.CompoundIdentifier, ext string, context context) string {
-	str := context.changeIfReserved(common.ToLowerCamelCase(string(val.Name))) + ext
+	constName := string(val.Name)
+	if string(val.Member) != "" {
+		constName = string(val.Member)
+	}
+	str := context.changeIfReserved(common.ToLowerCamelCase(string(constName))) + ext
 	val.Name = types.Identifier(str)
 	return c.compileCompoundIdentifier(val, context)
 }
