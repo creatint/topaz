@@ -72,7 +72,6 @@ group("all") {
     "//topaz/packages/prod:userpicker_base_shell",
     "//topaz/packages/prod:web_runner",
     "//topaz/packages/prod:wifi_settings",
-    "//topaz/packages/prod:xi",
   ]
 }
 
@@ -237,18 +236,6 @@ group("flutter_jit") {
   public_deps = [
     "//garnet/packages/prod:scenic",
     "//topaz/runtime/flutter_runner:flutter_jit_runner",
-  ]
-}
-
-group("xi") {
-  testonly = true
-  public_deps = [
-    "//garnet/bin/xi_core",
-    "//topaz/bin/xi",
-    "//topaz/bin/xi/xi_embeddable",
-    "//topaz/bin/xi/xi_mod",
-    "//topaz/bin/xi/xi_session_agent",
-    "//topaz/bin/xi/xi_session_demo",
   ]
 }
 
