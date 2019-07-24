@@ -13,8 +13,8 @@ import 'package:fuchsia_scenic_flutter/child_view_connection.dart'
     show ChildViewConnection;
 import 'package:fuchsia_services/services.dart' show StartupContext;
 
-import '../../session_shell.dart';
-import '../../story.dart';
+import '../../session_shell_2.dart';
+import '../../story_2.dart';
 import '_focus_request_watcher_impl.dart';
 import '_focus_watcher_impl.dart';
 import '_modular_session_shell_impl.dart';
@@ -22,35 +22,39 @@ import '_session_shell_presentation_provider_impl.dart';
 import '_story_provider_watcher_impl.dart';
 import '_story_watcher_impl.dart';
 
-typedef StoryFactory = Story Function({
-  SessionShell sessionShell,
-  modular.StoryInfo info,
+typedef Story2Factory = Story2 Function({
+  SessionShell2 sessionShell,
+  modular.StoryInfo2 info,
   modular.StoryController controller,
 });
-typedef StoryCallback = void Function(Story);
+typedef Story2Callback = void Function(Story2);
 
 /// Defines a class that encapsulates FIDL interfaces used to build a 'Session
 /// Shell' for Fuchsia.
 ///
 /// A Session Shell's primary responsibility is to display
-/// and manage a set of [Story] instances. As such it provides a Session Shell
+/// and manage a set of [Story2] instances. As such it provides a Session Shell
 /// author a set of callbacks to be notified when a story is started, stopped
 /// or changed. It allows stories to be deleted and focused.
-class SessionShellImpl implements SessionShell {
+///
+/// This class is part of a soft-transition of [StoryInfo] from struct to table.
+/// Clients should use [SessionShellImpl] once [StoryInfo] is a table. See MF-481.
+/// TODO(MF-481) Remove once StoryInfo transitioned to table
+class SessionShell2Impl implements SessionShell2 {
   /// The [StartupContext] used to initialize SessionShell.
   final StartupContext startupContext;
 
-  /// Callback when a new [Story] is started. Returns an instance of [Story].
-  final StoryFactory onStoryStarted;
+  /// Callback when a new [Story] is started. Returns an instance of [Story2].
+  final Story2Factory onStoryStarted;
 
   /// Callback when a [Story] is deleted.
-  final StoryCallback onStoryDeleted;
+  final Story2Callback onStoryDeleted;
 
   /// Callback when a [Story] is changed.
-  final StoryCallback onStoryChanged;
+  final Story2Callback onStoryChanged;
 
-  /// Holds the [Story] instance mapped by it's id.
-  final _stories = <String, Story>{};
+  /// Holds the [Story2] instance mapped by it's id.
+  final _stories = <String, Story2>{};
 
   /// Holds the [modular.StoryWatcherBinding] instances mapped by story id.
   final _storyWatchers = <String, modular.StoryWatcherBinding>{};
@@ -71,7 +75,7 @@ class SessionShellImpl implements SessionShell {
   PresentationProxy _presentation;
 
   /// Constructor.
-  SessionShellImpl({
+  SessionShell2Impl({
     @required this.startupContext,
     @required this.onStoryStarted,
     this.onStoryChanged,
@@ -125,12 +129,12 @@ class SessionShellImpl implements SessionShell {
 
   /// The list of stories in the system.
   @override
-  Iterable<Story> get stories => _stories.values;
+  Iterable<Story2> get stories => _stories.values;
 
-  /// The [Story] that is currently focused. It can be null if no story is
+  /// The [Story2] that is currently focused. It can be null if no story is
   /// currently in focus.
   @override
-  Story focusedStory;
+  Story2 focusedStory;
 
   /// Request focus for story with [id].
   @override
@@ -199,7 +203,7 @@ class SessionShellImpl implements SessionShell {
     ArgumentError.checkNotNull(context, 'context');
 
     storyProvider.watch(_storyProviderWatcherBinding
-        .wrap(StoryProviderWatcherImpl(onChange, _onChange2, _onDelete)));
+        .wrap(StoryProviderWatcherImpl(_onChange, onChange2, _onDelete)));
 
     context.getFocusController(_focusController.ctrl.request());
     _focusController.watchRequest(_focusRequestWatcherBinding
@@ -224,9 +228,17 @@ class SessionShellImpl implements SessionShell {
   }
 
   /// Called by [modular.StoryProviderWatcher] to update story state.
-  @visibleForTesting
-  void onChange(
+  /// Unimplemented because this class works only with [StoryInfo2].
+  void _onChange(
     modular.StoryInfo info,
+    modular.StoryState state,
+    modular.StoryVisibilityState visibilityState,
+  ) {}
+
+  /// Called by [modular.StoryProviderWatcher] to update story state.
+  @visibleForTesting
+  void onChange2(
+    modular.StoryInfo2 info,
     modular.StoryState state,
     modular.StoryVisibilityState visibilityState,
   ) {
@@ -260,14 +272,6 @@ class SessionShellImpl implements SessionShell {
       onStoryChanged?.call(_stories[info.id]);
     }
   }
-
-  /// Called by [modular.StoryProviderWatcher] to update story state.
-  /// Unimplemented because this class works only with [StoryInfo].
-  void _onChange2(
-    modular.StoryInfo2 info,
-    modular.StoryState state,
-    modular.StoryVisibilityState visibilityState,
-  ) {}
 
   /// Returns a new instance of [modular.StoryControllerProxy].
   @visibleForTesting
