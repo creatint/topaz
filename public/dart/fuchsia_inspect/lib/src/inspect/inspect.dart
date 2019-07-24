@@ -7,6 +7,7 @@ library topaz.public.dart.fuchsia_inspect.inspect.inspect;
 import 'dart:typed_data';
 
 import 'package:fuchsia_services/services.dart';
+import 'package:fuchsia_vfs/vfs.dart';
 import 'package:meta/meta.dart';
 
 import '../vmo/vmo_writer.dart';
@@ -14,6 +15,8 @@ import 'internal/_inspect_impl.dart';
 
 part 'node.dart';
 part 'property.dart';
+
+typedef OnDemandRootFn = Function(Node);
 
 /// Unless reconfigured, the VMO will be this size.
 /// @nodoc
@@ -54,26 +57,48 @@ abstract class Inspect {
     return _singleton;
   }
 
-  /// Returns a new Inspect object at <name>.inspect
-  /// If it is called multiple times with the same name then
-  /// a unique number will be appended after it
+  /// Returns a new [Inspect] object at <name>.inspect
+  /// If called multiple times with the same name within a process, a unique
+  /// number will be appended, though any existing file will be overwritten.
   ///
   /// Example:
   /// Inspect.named('test');
   /// Inspect.named('test');
   /// Results in "test.inspect" and "test_2.inspect"
   factory Inspect.named(String name) {
-    nameToInstanceCount ??= <String, int>{};
     var context = StartupContext.fromStartupInfo();
     var writer = VmoWriter.withSize(vmoSize);
-    if (!nameToInstanceCount.containsKey('$name')) {
-      nameToInstanceCount['$name'] = 1;
-      return InspectImpl(context.outgoing.debugDir(), '$name.inspect', writer);
+    var fileName = _nextInstanceWithName(name);
+    return InspectImpl(context.outgoing.debugDir(), fileName, writer);
+  }
+
+  /// Mounts an [Inspect] file at <name>.inspect whose contents are
+  /// dynamically created by rootNodeCallback on each read.
+  ///
+  /// If methods on this class are called multiple times with the same
+  /// name, a unique number will be appended to the name.
+  static void onDemand(String name, OnDemandRootFn rootNodeCallback) {
+    var context = StartupContext.fromStartupInfo();
+    var directory = context.outgoing.debugDir();
+    var fileName = _nextInstanceWithName(name);
+    var pseudoVmoNode = PseudoVmoFile.readOnly(() {
+      var writer = VmoWriter.withSize(vmoSize);
+      rootNodeCallback(RootNode(writer));
+      return writer.vmo;
+    });
+
+    directory.addNode(fileName, pseudoVmoNode);
+  }
+
+  static String _nextInstanceWithName(String name) {
+    nameToInstanceCount ??= <String, int>{};
+    if (nameToInstanceCount.containsKey(name)) {
+      int val = nameToInstanceCount[name] + 1;
+      nameToInstanceCount[name] = val;
+      return '${name}_$val.inspect';
     } else {
-      int val = nameToInstanceCount['$name'] + 1;
-      nameToInstanceCount['$name'] = val;
-      return InspectImpl(
-          context.outgoing.debugDir(), '${name}_$val.inspect', writer);
+      nameToInstanceCount[name] = 1;
+      return '$name.inspect';
     }
   }
 

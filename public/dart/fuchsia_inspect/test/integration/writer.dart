@@ -38,7 +38,7 @@ class Table {
   final List<Item> _items = [];
 
   /// Constructs a [Table].
-  Table(this.node){
+  Table(this.node) {
     node
       ..intProperty('value').add(-10)
       ..byteDataProperty('frame').setValue(ByteData(3))
@@ -54,15 +54,36 @@ class Table {
 }
 
 void main(List<String> args) {
+  // ReadHierarchy Test
   var inspect = Inspect();
   var t1 = Table(inspect.root.child('t1'));
   var t2 = Table(inspect.root.child('t2'));
 
   t1
-      ..newItem(10)
-      ..newItem(90).add(10);
+    ..newItem(10)
+    ..newItem(90).add(10);
   t2.newItem(2).add(2);
 
+  // DynamicGeneratesNewHierarchy Test
+  const String digitsOfPi = '31415';
+  const String digitsOfE = '27182';
+  const String digitsOfSqrt2 = '14142';
+  const String digitsOfQuake3 = '5f375';
+  const int numDigits = 5;
+  int nextDigit = 0;
+  void writeNextDigit(Node root) {
+    root.child('transcendental')
+      ..stringProperty('pi').setValue(digitsOfPi[nextDigit])
+      ..stringProperty('e').setValue(digitsOfE[nextDigit]);
+    root.child('nontranscendental')
+      ..stringProperty('sqrt2').setValue(digitsOfSqrt2[nextDigit])
+      ..stringProperty('quake3').setValue(digitsOfQuake3[nextDigit]);
+    nextDigit = (nextDigit + 1) % numDigits;
+  }
+
+  Inspect.onDemand('digits_of_numbers', writeNextDigit);
+
+  // NamedInspectVisible Test
   Inspect.named('test');
   Inspect.named('test');
 }

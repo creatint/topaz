@@ -5,6 +5,7 @@
 import("//build/package.gni")
 import("//build/test/test_package.gni")
 import("//build/testing/environments.gni")
+import("//topaz/runtime/dart_runner/dart_app.gni")
 
 executable("test") {
   testonly = true
@@ -15,32 +16,15 @@ executable("test") {
   ]
 
   deps = [
-    "//src/lib/fxl",
-    "//src/lib/fxl/test:gtest_main",
     "//garnet/public/lib/inspect_deprecated:reader",
     "//garnet/public/lib/inspect_deprecated/testing",
     "//sdk/lib/sys/cpp",
     "//sdk/lib/sys/cpp/testing:integration",
+    "//src/lib/fxl",
+    "//src/lib/fxl/test:gtest_main",
     "//third_party/googletest:gmock",
   ]
 }
-
-test_package("dart_inspect_vmo_test") {
-  deprecated_shell = "//topaz"
-
-  deps = [
-    ":test",
-  ]
-
-  tests = [
-    {
-      name = "dart_inspect_vmo_test"
-      environments = basic_envs
-    },
-  ]
-}
-
-import("//topaz/runtime/dart_runner/dart_app.gni")
 
 dart_app("dart_inspect_vmo_test_writer") {
   components = [
@@ -63,6 +47,24 @@ dart_app("dart_inspect_vmo_test_writer") {
     {
       path = rebase_path("meta/dart_inspect_vmo_test_writer.cmx")
       dest = "dart_inspect_vmo_test_writer.cmx"
+    },
+  ]
+}
+
+# Run these tests using
+#   fx run-test dart_inspect_vmo_test
+test_package("dart_inspect_vmo_test") {
+  deprecated_shell = "//topaz"
+
+  deps = [
+    ":test",
+    ":dart_inspect_vmo_test_writer"
+  ]
+
+  tests = [
+    {
+      name = "dart_inspect_vmo_test"
+      environments = basic_envs
     },
   ]
 }

@@ -6,6 +6,7 @@ import 'dart:math' show min;
 import 'dart:typed_data';
 
 import 'package:fuchsia_vfs/vfs.dart';
+import 'package:zircon/zircon.dart';
 
 import 'block.dart';
 import 'heap.dart';
@@ -63,6 +64,9 @@ class VmoWriter {
 
   /// Gets the top Node of the Inspect tree (always at index 1).
   int get rootNode => rootNodeIndex;
+
+  /// The underlying VMO
+  Vmo get vmo => _vmo.vmo;
 
   /// The read-only node of the VMO.
   VmoFile get vmoNode =>
