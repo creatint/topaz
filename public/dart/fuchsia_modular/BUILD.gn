@@ -110,8 +110,8 @@ dart_fuchsia_test("fuchsia_modular_package_integration_tests") {
     "entity/internal/entity_impl_test.dart",
     "internal/component_context_integ_test.dart",
     "lifecycle/internal/lifecycle_impl_test.dart",
-    "module/internal/module_impl_integ_test.dart",
     "module/internal/intent_handler_impl_integ_test.dart",
+    "module/internal/module_impl_integ_test.dart",
     "service_connection/agent_service_connection_integ_test.dart",
   ]
 
@@ -121,6 +121,7 @@ dart_fuchsia_test("fuchsia_modular_package_integration_tests") {
     "//third_party/dart-pkg/pub/mockito",  # Remove after DX-470 is fixed
     "//third_party/dart-pkg/pub/test",
     "//topaz/public/dart/fuchsia_modular_testing",
+    "//topaz/public/dart/fuchsia_modular_testing:test_fidl",
   ]
   environments = basic_envs
 }
