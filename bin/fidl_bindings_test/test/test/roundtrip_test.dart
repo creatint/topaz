@@ -6,9 +6,9 @@ import 'dart:typed_data';
 
 import 'package:test/test.dart';
 import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
+import 'package:fidl/fidl.dart' as fidl;
 
 import 'gidl.dart';
-
 
 void main() {
   group('roundtrip', () {
@@ -296,7 +296,7 @@ void main() {
           97, 102, 116, 101, 114, 0x00, 0x00, 0x00,
         ]));
 
-    MarshalFailureCase.run(
+    EncodeFailureCase.run(
         'string3-string-too-long',
         TestString3(
           a: [
@@ -306,9 +306,9 @@ void main() {
           b: [null, null],
         ),
         kTestString3_Type,
-        'Limited to 4');
+        fidl.FidlErrorCode.fidlStringTooLong);
 
-    UnmarshalFailureCase.run(
+    DecodeFailureCase.run(
         'string-wrong-ptr-no-alloc',
         kTestStringWithBound_Type,
         Uint8List.fromList(
@@ -318,6 +318,6 @@ void main() {
             // no data, unmarshal should fail before
           ],
         ),
-        'non-nullable type');
+        fidl.FidlErrorCode.fidlNonNullableTypeWithNullValue);
   });
 }

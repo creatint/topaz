@@ -44,17 +44,17 @@ class SuccessCase<T> {
   }
 }
 
-class MarshalFailureCase<T> {
-  MarshalFailureCase(this.input, this.type, this.message);
+class EncodeFailureCase<T> {
+  EncodeFailureCase(this.input, this.type, this.code);
 
   final T input;
   final fidl.FidlType<T> type;
-  final String message;
+  final fidl.FidlErrorCode code;
 
-  static void run<T>(String name, T input, fidl.FidlType<T> type,
-      [String message = '']) {
+  static void run<T>(
+      String name, T input, fidl.FidlType<T> type, fidl.FidlErrorCode code) {
     group(name, () {
-      MarshalFailureCase(input, type, message)._checkEncodeFails();
+      EncodeFailureCase(input, type, code)._checkEncodeFails();
     });
   }
 
@@ -62,22 +62,22 @@ class MarshalFailureCase<T> {
     test('encode fails', () {
       final fidl.Encoder encoder = fidl.Encoder()..alloc(type.encodedSize);
       expect(() => type.encode(encoder, input, 0),
-          throwsA(predicate((e) => e.message.contains(message))));
+          throwsA(predicate((e) => e.code == code)));
     });
   }
 }
 
-class UnmarshalFailureCase<T> {
-  UnmarshalFailureCase(this.type, this.bytes, this.message);
+class DecodeFailureCase<T> {
+  DecodeFailureCase(this.type, this.bytes, this.code);
 
   final fidl.FidlType<T> type;
   final Uint8List bytes;
-  final String message;
+  final fidl.FidlErrorCode code;
 
   static void run<T>(String name, fidl.FidlType<T> type, Uint8List bytes,
-      [String message = '']) {
+      fidl.FidlErrorCode code) {
     group(name, () {
-      UnmarshalFailureCase(type, bytes, message)._checkDecodeFails();
+      DecodeFailureCase(type, bytes, code)._checkDecodeFails();
     });
   }
 
@@ -87,7 +87,7 @@ class UnmarshalFailureCase<T> {
           ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0))
         ..claimMemory(type.encodedSize);
       expect(() => type.decode(decoder, 0),
-          throwsA(predicate((e) => e.message.contains(message))));
+          throwsA(predicate((e) => e.code == code)));
     });
   }
 }
