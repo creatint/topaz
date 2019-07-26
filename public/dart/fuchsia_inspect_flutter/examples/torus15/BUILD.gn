@@ -25,6 +25,7 @@ dart_library("torus15") {
   deps = [
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/public/dart/fuchsia_inspect",
+    "//topaz/public/dart/fuchsia_inspect_flutter",
     "//topaz/public/dart/fuchsia_logger",
     "//topaz/public/dart/fuchsia_modular",
   ]
