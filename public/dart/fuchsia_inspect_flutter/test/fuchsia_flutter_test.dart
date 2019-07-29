@@ -38,23 +38,15 @@ class FakeDiagnosticsNode extends DiagnosticsNode {
     return properties;
   }
 
-  void addProperty(String property) {
-    var widgetArray = property.split(':');
-    if (widgetArray.length < 2) {
-      throw Exception('Incorrect input format');
-    }
+  void addProperty(String propertyName, String propertyValue) {
     var fakeNode =
-        (FakeDiagnosticsNode(widgetArray[0])..value = widgetArray[1]);
+        (FakeDiagnosticsNode(propertyName)..value = propertyValue);
     properties.add(fakeNode);
   }
 
-  void addChild(String child) {
-    var widgetArray = child.split(':');
-    if (widgetArray.length < 2) {
-      throw Exception('Incorrect input format');
-    }
+  void addChild(String childName, String childValue) {
     var fakeNode =
-        (FakeDiagnosticsNode(child)..value = widgetArray[1]);
+        (FakeDiagnosticsNode(childName)..value = childValue);
     children.add(fakeNode);
   }
 
@@ -78,26 +70,56 @@ void main() {
     root = inspect.root;
   });
 
-  // TODO: add another test case to show that information that shouldn't be
-  // displayed isn't displayed
-  test('Widget Tree Output is correct', () async {
+  test('Widget Tree Output is correct', () {
     FakeDiagnosticsNode fakeNode = (FakeDiagnosticsNode('IGNORED')
-      ..addProperty('widget: node1')
-      ..addProperty('prop1: value1')
-      ..addProperty('prop2: value2')
-      ..addProperty('prop3: value3')
-      ..addChild('widget: node2')
-      ..children[0].addProperty('widget: node2'));
+      ..addProperty('widget', 'node1')
+      ..addProperty('prop1', 'value1')
+      ..addProperty('prop2', 'value2')
+      ..addProperty('prop3', 'value3')
+      ..addChild('widget', 'node2')
+      ..children[0].addProperty('widget', 'node2'));
     WidgetTreeTraversal.inspectFromDiagnostic(fakeNode, root);
-    expect(VmoReader(vmo).toString(), (
-            '<> Node: "root"\n'
-            '<> >> Node: " node1"\n'
-            '<> >> >> StringProperty "prop3": " value3"\n'
-            '<> >> >> StringProperty "prop2": " value2"\n'
-            '<> >> >> StringProperty "prop1": " value1"\n'
-            '<> >> >> StringProperty "widget": " node1"\n'
-            '<> >> >> Node: " node2"\n'
-            '<> >> >> >> StringProperty "widget": " node2"\n'
-            ));
+    expect(VmoReader(vmo).toString(), matches(RegExp(
+      r'<> Node: "root"\n'
+      r'<> >> Node: "node1_\d+"\n'
+      r'<> >> >> StringProperty "prop3": "value3"\n'
+      r'<> >> >> StringProperty "prop2": "value2"\n'
+      r'<> >> >> StringProperty "prop1": "value1"\n'
+      r'<> >> >> StringProperty "widget": "node1"\n'
+      r'<> >> >> Node: "node2_\d+"\n'
+      r'<> >> >> >> StringProperty "widget": "node2"\n'
+    )));
   });
+
+  test('Widget Tree Output does not display null properties', () {
+    FakeDiagnosticsNode fakeNode = (FakeDiagnosticsNode('IGNORED')
+      ..addProperty('widget', 'node1')
+      ..addProperty('prop1', 'value1')
+      ..addProperty('prop2', 'value2')
+      ..addProperty('prop3', 'value3')
+      ..addProperty(null, null));
+    WidgetTreeTraversal.inspectFromDiagnostic(fakeNode, root);
+    expect(VmoReader(vmo).toString(), matches(RegExp(
+      r'<> Node: "root"\n'
+      r'<> >> Node: "node1_\d+"\n'
+      r'<> >> >> StringProperty "prop3": "value3"\n'
+      r'<> >> >> StringProperty "prop2": "value2"\n'
+      r'<> >> >> StringProperty "prop1": "value1"\n'
+      r'<> >> >> StringProperty "widget": "node1"\n'
+      ''
+    )));
+  });
+
+  test('Widget Tree Output does not display a node with no widget property', () {
+    FakeDiagnosticsNode fakeNode = (FakeDiagnosticsNode('IGNORED')
+      ..addProperty('prop1', 'value1')
+      ..addProperty('prop2', 'value2')
+      ..addProperty('prop3', 'value3'));
+    WidgetTreeTraversal.inspectFromDiagnostic(fakeNode, root);
+    expect(VmoReader(vmo).toString(),(
+      '<> Node: "root"\n'
+      ''
+    ));
+  });
+
 }
