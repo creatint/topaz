@@ -255,6 +255,9 @@ Application::Application(
   settings_.enable_observatory = false;
 #else
   settings_.enable_observatory = true;
+
+  // TODO(cbracken): pass this in as a param to allow 0.0.0.0, ::1, etc.
+  settings_.observatory_host = "127.0.0.1";
 #endif
 
   // Set this to true to enable category "skia" trace events.
