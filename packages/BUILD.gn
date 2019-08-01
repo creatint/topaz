@@ -19,7 +19,6 @@ group("buildbot") {
   public_deps = [
     "//peridot/packages:peridot",
     "//topaz/packages:all",
-    "//topaz/packages/config:ermine_required",
   ]
 }
 
