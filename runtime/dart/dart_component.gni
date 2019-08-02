@@ -111,7 +111,6 @@ template("_flutter_dart_jit_package") {
                            [
                              "deprecated_global_persistent_storage",
                              "deprecated_shell",
-                             "system_deprecated_data",
                              "testonly",
                              "tests",
                            ])
