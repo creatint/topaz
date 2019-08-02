@@ -15,7 +15,7 @@ namespace flutter_runner {
 SessionConnection::SessionConnection(
     std::string debug_label, fuchsia::ui::views::ViewToken view_token,
     fidl::InterfaceHandle<fuchsia::ui::scenic::Session> session,
-    fit::closure session_error_callback, zx_handle_t vsync_event_handle)
+    fml::closure session_error_callback, zx_handle_t vsync_event_handle)
     : debug_label_(std::move(debug_label)),
       session_wrapper_(session.Bind(), nullptr),
       root_view_(&session_wrapper_, std::move(view_token.value), debug_label),
@@ -25,9 +25,7 @@ SessionConnection::SessionConnection(
       scene_update_context_(&session_wrapper_, surface_producer_.get()),
       vsync_event_handle_(vsync_event_handle) {
   session_wrapper_.set_error_handler(
-      [callback = std::move(session_error_callback)](zx_status_t status) {
-        callback();
-      });
+      [callback = session_error_callback](zx_status_t status) { callback(); });
 
   session_wrapper_.SetDebugName(debug_label_);
 
@@ -47,7 +45,8 @@ SessionConnection::SessionConnection(
 
 SessionConnection::~SessionConnection() = default;
 
-void SessionConnection::Present(flutter::CompositorContext::ScopedFrame& frame) {
+void SessionConnection::Present(
+    flutter::CompositorContext::ScopedFrame& frame) {
   // Flush all session ops. Paint tasks have not yet executed but those are
   // fenced. The compositor can start processing ops while we finalize paint
   // tasks.
