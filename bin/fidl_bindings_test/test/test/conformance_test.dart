@@ -41,7 +41,7 @@ void main() {
       SuccessCase.run(
           'Uint8Uint16Uint32Uint64',
           Uint8Uint16Uint32Uint64(
-              f3: 0x4050607, f4: 0x8090a0b0c0d0e0f, f1: 0x1, f2: 0x203),
+              f1: 0x1, f2: 0x203, f3: 0x4050607, f4: 0x8090a0b0c0d0e0f),
           kUint8Uint16Uint32Uint64_Type,
           Uint8List.fromList([
             0x01, 0x00, 0x03, 0x02, 0x07, 0x06, 0x05, 0x04, //
@@ -51,7 +51,7 @@ void main() {
       SuccessCase.run(
           'Uint64Uint32Uint16Uint8',
           Uint64Uint32Uint16Uint8(
-              f2: 0x4050607, f3: 0x203, f4: 0x1, f1: 0x8090a0b0c0d0e0f),
+              f1: 0x8090a0b0c0d0e0f, f2: 0x4050607, f3: 0x203, f4: 0x1),
           kUint64Uint32Uint16Uint8_Type,
           Uint8List.fromList([
             0x0f, 0x0e, 0x0d, 0x0c, 0x0b, 0x0a, 0x09, 0x08, //
@@ -129,7 +129,7 @@ void main() {
       SuccessCase.run(
           'SimpleTableThenUint64',
           SimpleTableThenUint64(
-              table: SimpleTable(y: 0x43, x: 0x2a), number: 0xdeadbeefdeadbeef),
+              table: SimpleTable(x: 0x2a, y: 0x43), number: 0xdeadbeefdeadbeef),
           kSimpleTableThenUint64_Type,
           Uint8List.fromList([
             0x05, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
@@ -152,9 +152,9 @@ void main() {
       SuccessCase.run(
           'InlineXUnionInStruct',
           TestInlineXUnionInStruct(
-              after: 'after',
               before: 'before',
-              xu: SampleXUnion.withU(0xdeadbeef)),
+              xu: SampleXUnion.withU(0xdeadbeef),
+              after: 'after'),
           kTestInlineXUnionInStruct_Type,
           Uint8List.fromList([
             0x06, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
@@ -310,13 +310,13 @@ void main() {
       SuccessCase.run(
           'Optionals',
           StructWithOptionals(
-              xu2: XUnionWithEmptyStruct.withS(EmptyStruct()),
-              u: UnionWithEmptyStruct.withS(EmptyStruct()),
-              u2: UnionWithEmptyStruct.withS(EmptyStruct()),
               s: EmptyStruct(),
               s2: EmptyStruct(),
               t: TableWithEmptyStruct(s: EmptyStruct()),
-              xu: XUnionWithEmptyStruct.withS(EmptyStruct())),
+              xu: XUnionWithEmptyStruct.withS(EmptyStruct()),
+              xu2: XUnionWithEmptyStruct.withS(EmptyStruct()),
+              u: UnionWithEmptyStruct.withS(EmptyStruct()),
+              u2: UnionWithEmptyStruct.withS(EmptyStruct())),
           kStructWithOptionals_Type,
           Uint8List.fromList([
             0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
