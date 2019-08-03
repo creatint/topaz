@@ -4,7 +4,8 @@
     },
     "sandbox": {
         "features": [
-            "vulkan"
+            "vulkan",
+            "deprecated-ambient-replace-as-executable"
         ],
         "services": [
             "fuchsia.accessibility.SettingsManager",
