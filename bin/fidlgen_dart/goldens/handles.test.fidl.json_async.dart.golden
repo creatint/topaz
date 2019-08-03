@@ -47,14 +47,20 @@ class Handles extends $fidl.Struct {
     @required this.fifoHandle,
     @required this.guestHandle,
     @required this.interruptHandle,
+    @required this.iommuHandle,
     @required this.jobHandle,
+    @required this.pagerHandle,
+    @required this.pcideviceHandle,
+    @required this.pmtHandle,
+    @required this.portHandle,
     @required this.processHandle,
     @required this.profileHandle,
-    @required this.portHandle,
     @required this.resourceHandle,
     @required this.socketHandle,
+    @required this.suspendtokenHandle,
     @required this.threadHandle,
     @required this.timerHandle,
+    @required this.vcpuHandle,
     @required this.vmarHandle,
     @required this.vmoHandle,
   });
@@ -70,14 +76,20 @@ class Handles extends $fidl.Struct {
     $zx.Handle fifoHandle,
     $zx.Handle guestHandle,
     $zx.Handle interruptHandle,
+    $zx.Handle iommuHandle,
     $zx.Handle jobHandle,
+    $zx.Handle pagerHandle,
+    $zx.Handle pcideviceHandle,
+    $zx.Handle pmtHandle,
+    $zx.Handle portHandle,
     $zx.Handle processHandle,
     $zx.Handle profileHandle,
-    $zx.Handle portHandle,
     $zx.Handle resourceHandle,
     $zx.Socket socketHandle,
+    $zx.Handle suspendtokenHandle,
     $zx.Handle threadHandle,
     $zx.Handle timerHandle,
+    $zx.Handle vcpuHandle,
     $zx.Handle vmarHandle,
     $zx.Vmo vmoHandle,
   }) : this(
@@ -91,14 +103,20 @@ class Handles extends $fidl.Struct {
           fifoHandle: fifoHandle ?? $orig.fifoHandle,
           guestHandle: guestHandle ?? $orig.guestHandle,
           interruptHandle: interruptHandle ?? $orig.interruptHandle,
+          iommuHandle: iommuHandle ?? $orig.iommuHandle,
           jobHandle: jobHandle ?? $orig.jobHandle,
+          pagerHandle: pagerHandle ?? $orig.pagerHandle,
+          pcideviceHandle: pcideviceHandle ?? $orig.pcideviceHandle,
+          pmtHandle: pmtHandle ?? $orig.pmtHandle,
+          portHandle: portHandle ?? $orig.portHandle,
           processHandle: processHandle ?? $orig.processHandle,
           profileHandle: profileHandle ?? $orig.profileHandle,
-          portHandle: portHandle ?? $orig.portHandle,
           resourceHandle: resourceHandle ?? $orig.resourceHandle,
           socketHandle: socketHandle ?? $orig.socketHandle,
+          suspendtokenHandle: suspendtokenHandle ?? $orig.suspendtokenHandle,
           threadHandle: threadHandle ?? $orig.threadHandle,
           timerHandle: timerHandle ?? $orig.timerHandle,
+          vcpuHandle: vcpuHandle ?? $orig.vcpuHandle,
           vmarHandle: vmarHandle ?? $orig.vmarHandle,
           vmoHandle: vmoHandle ?? $orig.vmoHandle,
         );
@@ -114,16 +132,22 @@ class Handles extends $fidl.Struct {
         fifoHandle = argv[7],
         guestHandle = argv[8],
         interruptHandle = argv[9],
-        jobHandle = argv[10],
-        processHandle = argv[11],
-        profileHandle = argv[12],
-        portHandle = argv[13],
-        resourceHandle = argv[14],
-        socketHandle = argv[15],
-        threadHandle = argv[16],
-        timerHandle = argv[17],
-        vmarHandle = argv[18],
-        vmoHandle = argv[19];
+        iommuHandle = argv[10],
+        jobHandle = argv[11],
+        pagerHandle = argv[12],
+        pcideviceHandle = argv[13],
+        pmtHandle = argv[14],
+        portHandle = argv[15],
+        processHandle = argv[16],
+        profileHandle = argv[17],
+        resourceHandle = argv[18],
+        socketHandle = argv[19],
+        suspendtokenHandle = argv[20],
+        threadHandle = argv[21],
+        timerHandle = argv[22],
+        vcpuHandle = argv[23],
+        vmarHandle = argv[24],
+        vmoHandle = argv[25];
   final $zx.Handle plainHandle;
   final $zx.Handle btiHandle;
   final $zx.Channel channelHandle;
@@ -134,14 +158,20 @@ class Handles extends $fidl.Struct {
   final $zx.Handle fifoHandle;
   final $zx.Handle guestHandle;
   final $zx.Handle interruptHandle;
+  final $zx.Handle iommuHandle;
   final $zx.Handle jobHandle;
+  final $zx.Handle pagerHandle;
+  final $zx.Handle pcideviceHandle;
+  final $zx.Handle pmtHandle;
+  final $zx.Handle portHandle;
   final $zx.Handle processHandle;
   final $zx.Handle profileHandle;
-  final $zx.Handle portHandle;
   final $zx.Handle resourceHandle;
   final $zx.Socket socketHandle;
+  final $zx.Handle suspendtokenHandle;
   final $zx.Handle threadHandle;
   final $zx.Handle timerHandle;
+  final $zx.Handle vcpuHandle;
   final $zx.Handle vmarHandle;
   final $zx.Vmo vmoHandle;
 
@@ -158,14 +188,20 @@ class Handles extends $fidl.Struct {
       fifoHandle,
       guestHandle,
       interruptHandle,
+      iommuHandle,
       jobHandle,
+      pagerHandle,
+      pcideviceHandle,
+      pmtHandle,
+      portHandle,
       processHandle,
       profileHandle,
-      portHandle,
       resourceHandle,
       socketHandle,
+      suspendtokenHandle,
       threadHandle,
       timerHandle,
+      vcpuHandle,
       vmarHandle,
       vmoHandle,
     ];
@@ -194,22 +230,34 @@ class Handles extends $fidl.Struct {
         guestHandle.toString() +
         r', interruptHandle: ' +
         interruptHandle.toString() +
+        r', iommuHandle: ' +
+        iommuHandle.toString() +
         r', jobHandle: ' +
         jobHandle.toString() +
+        r', pagerHandle: ' +
+        pagerHandle.toString() +
+        r', pcideviceHandle: ' +
+        pcideviceHandle.toString() +
+        r', pmtHandle: ' +
+        pmtHandle.toString() +
+        r', portHandle: ' +
+        portHandle.toString() +
         r', processHandle: ' +
         processHandle.toString() +
         r', profileHandle: ' +
         profileHandle.toString() +
-        r', portHandle: ' +
-        portHandle.toString() +
         r', resourceHandle: ' +
         resourceHandle.toString() +
         r', socketHandle: ' +
         socketHandle.toString() +
+        r', suspendtokenHandle: ' +
+        suspendtokenHandle.toString() +
         r', threadHandle: ' +
         threadHandle.toString() +
         r', timerHandle: ' +
         timerHandle.toString() +
+        r', vcpuHandle: ' +
+        vcpuHandle.toString() +
         r', vmarHandle: ' +
         vmarHandle.toString() +
         r', vmoHandle: ' +
@@ -223,7 +271,7 @@ class Handles extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Handles> kHandles_Type = $fidl.StructType<Handles>(
-  encodedSize: 80,
+  encodedSize: 104,
   members: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 0),
@@ -255,15 +303,28 @@ const $fidl.StructType<Handles> kHandles_Type = $fidl.StructType<Handles>(
         type: $fidl.HandleType(nullable: false), offset: 52),
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 56),
-    $fidl.MemberType<$zx.Socket>(
-        type: $fidl.SocketType(nullable: false), offset: 60),
+    $fidl.MemberType<$zx.Handle>(
+        type: $fidl.HandleType(nullable: false), offset: 60),
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 64),
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 68),
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 72),
-    $fidl.MemberType<$zx.Vmo>(type: $fidl.VmoType(nullable: false), offset: 76),
+    $fidl.MemberType<$zx.Socket>(
+        type: $fidl.SocketType(nullable: false), offset: 76),
+    $fidl.MemberType<$zx.Handle>(
+        type: $fidl.HandleType(nullable: false), offset: 80),
+    $fidl.MemberType<$zx.Handle>(
+        type: $fidl.HandleType(nullable: false), offset: 84),
+    $fidl.MemberType<$zx.Handle>(
+        type: $fidl.HandleType(nullable: false), offset: 88),
+    $fidl.MemberType<$zx.Handle>(
+        type: $fidl.HandleType(nullable: false), offset: 92),
+    $fidl.MemberType<$zx.Handle>(
+        type: $fidl.HandleType(nullable: false), offset: 96),
+    $fidl.MemberType<$zx.Vmo>(
+        type: $fidl.VmoType(nullable: false), offset: 100),
   ],
   ctor: Handles._ctor,
 );

@@ -55,5 +55,103 @@ const double minTemp = -273.15;
 
 const double conversionFactor = 1.41421;
 
+const EnumType enumVal = EnumType.value;
+
+const int enumPrimitiveVal = value;
+
+const BitsType bitsVal = BitsType.value;
+
+const int bitsPrimitiveVal = value;
+
+class EnumType extends $fidl.Enum {
+  factory EnumType(int _v) {
+    switch (_v) {
+      case 0x1:
+        return value;
+      default:
+        return null;
+    }
+  }
+  static const EnumType value = EnumType._(0x1);
+
+  const EnumType._(this.$value);
+
+  @override
+  final int $value;
+
+  static const Map<String, EnumType> $valuesMap = {
+    r'value': value,
+  };
+
+  static const List<EnumType> $values = [
+    value,
+  ];
+
+  // TODO: remove, see: FIDL-587
+  static const List<EnumType> values = EnumType.$values;
+
+  static EnumType $valueOf(String name) => $valuesMap[name];
+
+  @override
+  String toString() {
+    switch ($value) {
+      case 0x1:
+        return r'EnumType.value';
+      default:
+        return null;
+    }
+  }
+
+  static EnumType _ctor(int v) => EnumType(v);
+}
+
+const $fidl.EnumType<EnumType> kEnumType_Type =
+    $fidl.EnumType<EnumType>(type: $fidl.Int32Type(), ctor: EnumType._ctor);
+
+class BitsType extends $fidl.Enum {
+  factory BitsType(int _v) {
+    switch (_v) {
+      case 0x1:
+        return value;
+      default:
+        return null;
+    }
+  }
+  static const BitsType value = BitsType._(0x1);
+
+  const BitsType._(this.$value);
+
+  @override
+  final int $value;
+
+  static const Map<String, BitsType> $valuesMap = {
+    r'value': value,
+  };
+
+  static const List<BitsType> $values = [
+    value,
+  ];
+
+  // TODO: remove, see: FIDL-587
+  static const List<BitsType> values = BitsType.$values;
+
+  static BitsType $valueOf(String name) => $valuesMap[name];
+
+  @override
+  String toString() {
+    switch ($value) {
+      case 0x1:
+        return r'BitsType.value';
+      default:
+        return null;
+    }
+  }
+
+  static BitsType _ctor(int v) => BitsType(v);
+}
+
+const $fidl.EnumType<BitsType> kBitsType_Type =
+    $fidl.EnumType<BitsType>(type: $fidl.Int32Type(), ctor: BitsType._ctor);
+
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();

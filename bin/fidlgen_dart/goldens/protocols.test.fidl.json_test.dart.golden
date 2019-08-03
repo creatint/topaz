@@ -97,28 +97,6 @@ class OvernetInternalProtocol$TestBase extends OvernetInternalProtocol {
   }
 }
 
-class SocketControlProtocol$TestBase extends SocketControlProtocol {
-  @override
-  $async.Future<void> methodA(int a, int b) {
-    return $async.Future.error(UnimplementedError());
-  }
-
-  @override
-  $async.Stream<SocketControlProtocol$EventA$Response> get eventA {
-    return $async.Stream.fromFuture($async.Future.error(UnimplementedError()));
-  }
-
-  @override
-  $async.Future<int> methodB(int a, int b) {
-    return $async.Future.error(UnimplementedError());
-  }
-
-  @override
-  $async.Future<$zx.Socket> mutateSocket($zx.Socket a) {
-    return $async.Future.error(UnimplementedError());
-  }
-}
-
 class ChannelProtocol$TestBase extends ChannelProtocol {
   @override
   $async.Future<void> methodA(int a, int b) {

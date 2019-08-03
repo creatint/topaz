@@ -232,5 +232,109 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_OptType =
   nullable: true,
 );
 
+enum StrictSimpleXUnionTag {
+  i, // 0x6e5ea87c
+  f, // 0x32f96c97
+  s, // 0x32b329f7
+}
+
+const Map<int, StrictSimpleXUnionTag> _StrictSimpleXUnionTag_map = {
+  1851697276: StrictSimpleXUnionTag.i,
+  855207063: StrictSimpleXUnionTag.f,
+  850602487: StrictSimpleXUnionTag.s,
+};
+
+class StrictSimpleXUnion extends $fidl.XUnion {
+  const StrictSimpleXUnion.withI(int value)
+      : _ordinal = 1851697276,
+        _data = value;
+
+  const StrictSimpleXUnion.withF(double value)
+      : _ordinal = 855207063,
+        _data = value;
+
+  const StrictSimpleXUnion.withS(String value)
+      : _ordinal = 850602487,
+        _data = value;
+
+  StrictSimpleXUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  StrictSimpleXUnionTag get $tag => _StrictSimpleXUnionTag_map[_ordinal];
+
+  int get i {
+    if (_ordinal != 1851697276) {
+      return null;
+    }
+    return _data;
+  }
+
+  double get f {
+    if (_ordinal != 855207063) {
+      return null;
+    }
+    return _data;
+  }
+
+  String get s {
+    if (_ordinal != 850602487) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1851697276:
+        return 'StrictSimpleXUnion.i($i)';
+      case 855207063:
+        return 'StrictSimpleXUnion.f($f)';
+      case 850602487:
+        return 'StrictSimpleXUnion.s($s)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static StrictSimpleXUnion _ctor(int ordinal, Object data) {
+    return StrictSimpleXUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_Type =
+    $fidl.XUnionType<StrictSimpleXUnion>(
+  encodedSize: 24,
+  members: <int, $fidl.FidlType>{
+    1851697276: $fidl.Int32Type(),
+    855207063: $fidl.Float32Type(),
+    850602487: $fidl.StringType(maybeElementCount: null, nullable: false),
+  },
+  ctor: StrictSimpleXUnion._ctor,
+);
+const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_OptType =
+    $fidl.XUnionType<StrictSimpleXUnion>(
+  encodedSize: 24,
+  members: <int, $fidl.FidlType>{
+    1851697276: $fidl.Int32Type(),
+    855207063: $fidl.Float32Type(),
+    850602487: $fidl.StringType(maybeElementCount: null, nullable: false),
+  },
+  ctor: StrictSimpleXUnion._ctor,
+  nullable: true,
+);
+
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();
