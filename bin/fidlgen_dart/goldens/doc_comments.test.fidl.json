@@ -1,6 +1,12 @@
 {
   "version": "0.0.1",
   "name": "test.name",
+  "maybe_attributes": [
+    {
+      "name": "Doc",
+      "value": " library comment #1\n\n library comment #2\n"
+    }
+  ],
   "library_dependencies": [],
   "bits_declarations": [],
   "const_declarations": [
@@ -48,7 +54,7 @@
       ],
       "methods": [
         {
-          "ordinal": 1061382220,
+          "ordinal": 4558601923455877120,
           "generated_ordinal": 4558601923455877120,
           "name": "Method",
           "location": {
@@ -67,11 +73,12 @@
           "maybe_request_size": 16,
           "maybe_request_alignment": 8,
           "maybe_request_has_padding": false,
+          "experimental_maybe_request_has_flexible_envelope": false,
           "has_response": false,
           "is_composed": false
         },
         {
-          "ordinal": 325918733,
+          "ordinal": 1399810299388755968,
           "generated_ordinal": 1399810299388755968,
           "name": "OnEvent",
           "location": {
@@ -91,6 +98,7 @@
           "maybe_response_size": 16,
           "maybe_response_alignment": 8,
           "maybe_response_has_padding": false,
+          "experimental_maybe_response_has_flexible_envelope": false,
           "is_composed": false
         }
       ]
@@ -187,7 +195,8 @@
       "size": 16,
       "max_out_of_line": 24,
       "alignment": 8,
-      "max_handles": 0
+      "max_handles": 0,
+      "strict": false
     }
   ],
   "union_declarations": [

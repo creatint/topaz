@@ -20,16 +20,16 @@ import './fidl_async.dart';
 // ignore_for_file: library_prefixes
 // ignore_for_file: unused_shown_name
 
-class TestProtocol$TestBase extends TestProtocol {
+class FirstProtocol$TestBase extends FirstProtocol {
   @override
-  $async.Future<StrictBoundedXUnion>
-      strictXUnionHenceResponseMayBeStackAllocated() {
+  $async.Future<void> methodOnFirst() {
     return $async.Future.error(UnimplementedError());
   }
+}
 
+class SecondProtocol$TestBase extends SecondProtocol {
   @override
-  $async.Future<OlderSimpleUnion>
-      flexibleXUnionHenceResponseMustBeHeapAllocated() {
+  $async.Future<void> methodOnSecond() {
     return $async.Future.error(UnimplementedError());
   }
 }

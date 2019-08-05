@@ -22,6 +22,9 @@ protocol_request.test.fidl.json_test.dart.golden
 protocols.test.fidl.json
 protocols.test.fidl.json_async.dart.golden
 protocols.test.fidl.json_test.dart.golden
+service.test.fidl.json
+service.test.fidl.json_async.dart.golden
+service.test.fidl.json_test.dart.golden
 tables.test.fidl.json
 tables.test.fidl.json_async.dart.golden
 tables.test.fidl.json_test.dart.golden
