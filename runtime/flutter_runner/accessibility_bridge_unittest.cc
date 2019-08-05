@@ -95,6 +95,7 @@ TEST_F(AccessibilityBridgeTest, DeletesChildrenTransitively) {
 }
 
 TEST_F(AccessibilityBridgeTest, TruncatesLargeLabel) {
+  GTEST_SKIP() << "Skip until limits land in SDK and can be imported";
   // Test that labels which are too long are truncated.
   flutter::SemanticsNode node0;
   node0.id = 0;
@@ -215,6 +216,7 @@ TEST_F(AccessibilityBridgeTest, HandlesCycles) {
 }
 
 TEST_F(AccessibilityBridgeTest, BatchesLargeMessages) {
+  GTEST_SKIP() << "Skip until limits land in SDK and can be imported";
   // Tests that messages get batched appropriately.
   flutter::SemanticsNode node0;
   node0.id = 0;
