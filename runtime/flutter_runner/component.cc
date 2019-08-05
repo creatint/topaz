@@ -91,7 +91,7 @@ Application::Application(
 
   // LaunchInfo::arguments optional.
   if (auto& arguments = launch_info.arguments) {
-    settings_.dart_entrypoint_args = arguments;
+    settings_.dart_entrypoint_args = arguments.value();
   }
 
   // Determine /pkg/data directory from StartupInfo.
