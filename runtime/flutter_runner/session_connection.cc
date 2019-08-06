@@ -47,10 +47,21 @@ SessionConnection::~SessionConnection() = default;
 
 void SessionConnection::Present(
     flutter::CompositorContext::ScopedFrame& frame) {
-  // Flush all session ops. Paint tasks have not yet executed but those are
-  // fenced. The compositor can start processing ops while we finalize paint
-  // tasks.
-  PresentSession();
+  TRACE_DURATION("gfx", "SessionConnection::Present");
+  TRACE_FLOW_BEGIN("gfx", "SessionConnection::PresentSession",
+                   next_present_session_trace_id_);
+  next_present_session_trace_id_++;
+
+  // Throttle vsync if presentation callback is already pending. This allows
+  // the paint tasks for this frame to execute in parallel with presentation
+  // of last frame but still provides back-pressure to prevent us from queuing
+  // even more work.
+  if (presentation_callback_pending_) {
+    present_session_pending_ = true;
+    ToggleSignal(vsync_event_handle_, false);
+  } else {
+    PresentSession();
+  }
 
   // Execute paint tasks and signal fences.
   auto surfaces_to_submit = scene_update_context_.ExecutePaintTasks(frame);
@@ -58,10 +69,6 @@ void SessionConnection::Present(
   // Tell the surface producer that a present has occurred so it can perform
   // book-keeping on buffer caches.
   surface_producer_->OnSurfacesPresented(std::move(surfaces_to_submit));
-
-  // Prepare for the next frame. These ops won't be processed till the next
-  // present.
-  EnqueueClearOps();
 }
 
 void SessionConnection::OnSessionSizeChangeHint(float width_change_factor,
@@ -83,18 +90,39 @@ void SessionConnection::EnqueueClearOps() {
 
 void SessionConnection::PresentSession() {
   TRACE_DURATION("gfx", "SessionConnection::PresentSession");
+  while (processed_present_session_trace_id_ <
+         next_present_session_trace_id_) {
+    TRACE_FLOW_END("gfx", "SessionConnection::PresentSession",
+                   processed_present_session_trace_id_);
+    processed_present_session_trace_id_++;
+  }
   TRACE_FLOW_BEGIN("gfx", "Session::Present", next_present_trace_id_);
   next_present_trace_id_++;
 
-  ToggleSignal(vsync_event_handle_, false);
+  // Presentation callback is pending as a result of Present() call below.
+  presentation_callback_pending_ = true;
+
+  // Flush all session ops. Paint tasks may not yet have executed but those are
+  // fenced. The compositor can start processing ops while we finalize paint
+  // tasks.
   session_wrapper_.Present(
       0,  // presentation_time. (placeholder).
-      [handle = vsync_event_handle_](
+      [this, handle = vsync_event_handle_](
           fuchsia::images::PresentationInfo presentation_info) {
+        presentation_callback_pending_ = false;
         VsyncRecorder::GetInstance().UpdateVsyncInfo(presentation_info);
+        // Process pending PresentSession() calls.
+        if (present_session_pending_) {
+          present_session_pending_ = false;
+          PresentSession();
+        }
         ToggleSignal(handle, true);
       }  // callback
   );
+
+  // Prepare for the next frame. These ops won't be processed till the next
+  // present.
+  EnqueueClearOps();
 }
 
 void SessionConnection::ToggleSignal(zx_handle_t handle, bool set) {
