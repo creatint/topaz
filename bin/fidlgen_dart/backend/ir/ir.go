@@ -292,6 +292,7 @@ func init() {
 		"List":         []context{declarationContext},
 		"Map":          []context{declarationContext},
 		"new":          allContexts,
+		"Never":        []context{declarationContext},
 		"null":         allContexts,
 		"Null":         []context{declarationContext},
 		"num":          []context{enumMemberContext, methodContext, unionMemberContext, constantContext, tableMemberContext, structMemberContext},
