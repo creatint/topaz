@@ -139,6 +139,7 @@ TEST_F(AccessibilityBridgeTest, TruncatesLargeLabel) {
 }
 
 TEST_F(AccessibilityBridgeTest, SplitsLargeUpdates) {
+  GTEST_SKIP() << "Skip until limits land in SDK and can be imported";
   // Test that labels which are too long are truncated.
   flutter::SemanticsNode node0;
   node0.id = 0;
