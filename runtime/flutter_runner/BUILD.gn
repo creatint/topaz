@@ -504,7 +504,7 @@ test_package("flutter_runner_tests") {
   foreach(font, fonts) {
     resources += [
       {
-        path = rebase_path("//garnet/bin/fonts/third_party/${font}")
+        path = rebase_path("//prebuilt/third_party/fonts/${font}")
         file_name = get_path_info(font, "file")
         dest = "testdata/test_fonts/${file_name}"
       },
