@@ -48,4 +48,14 @@ class WidgetTreeTraversal {
       inspectFromDiagnostic(diagNode, childNode);
     }
   }
+
+  /// Mounts an [Inspect] file at name.inspect to the hub that exposes the root
+  /// diagnostic hierarchy for this component.
+  static void exposeDiagnosticsTree(String name) {
+    Inspect.onDemand(name, (Node inspectMountRoot) {
+      var diagnosticsRoot =
+          WidgetsBinding.instance.renderViewElement.toDiagnosticsNode();
+      inspectFromDiagnostic(diagnosticsRoot, inspectMountRoot);
+    });
+  }
 }
