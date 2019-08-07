@@ -16,6 +16,9 @@
         "binary": "test/web_runner_integration_tests"
     },
     "sandbox": {
+        "features": [
+            "deprecated-ambient-replace-as-executable"
+        ],
         "services": [
             "fuchsia.posix.socket.Provider",
             "fuchsia.net.NameLookup",
