@@ -3,11 +3,8 @@
 # found in the LICENSE file.
 
 import("//build/dart/dart_library.gni")
-import("//build/dart/test.gni")
 import("//build/testing/environments.gni")
-import("//topaz/runtime/dart/dart_fuchsia_test.gni")
 import("//topaz/runtime/dart/flutter_test.gni")
-import("//topaz/runtime/flutter_runner/flutter_app.gni")
 
 dart_library("fuchsia_inspect_flutter") {
   package_name = "fuchsia_inspect_flutter"
@@ -15,20 +12,20 @@ dart_library("fuchsia_inspect_flutter") {
   sdk_category = "partner"
 
   sources = [
-    "WidgetTreeTraversal.dart",
+    "inspect_flutter.dart",
+    "src/inspect_flutter.dart",
   ]
 
   deps = [
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/public/dart/fuchsia_inspect",
-    "//topaz/public/dart/fuchsia_modular",
   ]
 }
 
-flutter_test("fuchsia_flutter_test") {
+flutter_test("inspect_flutter_test") {
   source_dir = "test"
   sources = [
-    "fuchsia_flutter_test.dart",
+    "inspect_flutter_test.dart",
   ]
 
   deps = [
@@ -36,6 +33,5 @@ flutter_test("fuchsia_flutter_test") {
     "//third_party/dart-pkg/git/flutter/packages/flutter_test",
     "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod:test_vmo_reader",
     "//topaz/public/dart/fuchsia_services",
-    "//topaz/public/dart/zircon",
   ]
 }

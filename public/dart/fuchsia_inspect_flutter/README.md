@@ -23,11 +23,11 @@ Unit tests for library are available in
 directory. The tests can be run using
 
 ```
-$ fx run-host-tests fuchsia_flutter_test
+$ fx run-host-tests inspect_flutter_test
 ```
 
 ## Source layout
 
-The main implementation is in `lib/WidgetTreeTraversal.dart`, which also
-includes unit tests in the test folder one directory up.
+The main implementation is in `lib/src/inspect_flutter.dart`, which also
+has unit tests in `test/`.
 

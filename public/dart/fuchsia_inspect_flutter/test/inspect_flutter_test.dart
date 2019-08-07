@@ -5,8 +5,7 @@
 // ignore_for_file: implementation_imports
 
 import 'package:test/test.dart';
-import 'package:fuchsia_inspect_flutter/WidgetTreeTraversal.dart';
-import 'package:flutter/material.dart';
+import 'package:fuchsia_inspect_flutter/src/inspect_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fuchsia_inspect/inspect.dart';
 import 'package:test_vmo_reader/vmo_reader.dart' show VmoReader;
@@ -16,7 +15,7 @@ import 'package:fuchsia_inspect/src/vmo/vmo_writer.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:test_vmo_reader/util.dart';
 
-// This class was made to test the WidgetTreeTraversal class
+// This class was made to test the InspectFlutter class
 // The FakeDiagnosticsNode allows properties and children
 // to be added to the node.
 class FakeDiagnosticsNode extends DiagnosticsNode {
@@ -78,7 +77,7 @@ void main() {
       ..addProperty('prop3', 'value3')
       ..addChild('widget', 'node2')
       ..children[0].addProperty('widget', 'node2'));
-    WidgetTreeTraversal.inspectFromDiagnostic(fakeNode, root);
+    InspectFlutter.inspectFromDiagnostic(fakeNode, root);
     expect(VmoReader(vmo).toString(), matches(RegExp(
       r'<> Node: "root"\n'
       r'<> >> Node: "node1_\d+"\n'
@@ -98,7 +97,7 @@ void main() {
       ..addProperty('prop2', 'value2')
       ..addProperty('prop3', 'value3')
       ..addProperty(null, null));
-    WidgetTreeTraversal.inspectFromDiagnostic(fakeNode, root);
+    InspectFlutter.inspectFromDiagnostic(fakeNode, root);
     expect(VmoReader(vmo).toString(), matches(RegExp(
       r'<> Node: "root"\n'
       r'<> >> Node: "node1_\d+"\n'
@@ -115,7 +114,7 @@ void main() {
       ..addProperty('prop1', 'value1')
       ..addProperty('prop2', 'value2')
       ..addProperty('prop3', 'value3'));
-    WidgetTreeTraversal.inspectFromDiagnostic(fakeNode, root);
+    InspectFlutter.inspectFromDiagnostic(fakeNode, root);
     expect(VmoReader(vmo).toString(),(
       '<> Node: "root"\n'
       ''

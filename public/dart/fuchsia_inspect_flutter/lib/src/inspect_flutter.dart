@@ -7,11 +7,12 @@ import 'package:fuchsia_inspect/inspect.dart';
 
 /// This class provides methods to convert from Flutter DiagnosticsNodes to
 /// Inspect format nodes.
-class WidgetTreeTraversal {
+class InspectFlutter {
   /// Converts an diagnostics tree into a Node tree
   /// Creates a Node with Inspect data based on what
   /// information was in the DiagnosticsNode and attaches
   /// it to the parent
+  @visibleForTesting
   static void inspectFromDiagnostic(DiagnosticsNode diagnostics, Node parent) {
     /// Finds the name of the widget and assigns it to the name of the node.
     String name = '';
