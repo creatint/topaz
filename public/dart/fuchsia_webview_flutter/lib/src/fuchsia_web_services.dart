@@ -60,7 +60,6 @@ class FuchsiaWebServices {
       'fuchsia.media.Audio',
       'fuchsia.mediacodec.CodecFactory',
       'fuchsia.net.NameLookup',
-      'fuchsia.net.SocketProvider',
       'fuchsia.netstack.Netstack',
       'fuchsia.posix.socket.Provider',
       'fuchsia.process.Launcher',

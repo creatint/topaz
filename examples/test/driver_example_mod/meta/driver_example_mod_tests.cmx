@@ -14,8 +14,7 @@
             },
             "system-services": [
                 "fuchsia.posix.socket.Provider",
-                "fuchsia.net.NameLookup",
-                "fuchsia.net.SocketProvider"
+                "fuchsia.net.NameLookup"
             ]
         }
     },
@@ -32,7 +31,6 @@
             "fuchsia.devicesettings.DeviceSettingsManager",
             "fuchsia.fonts.Provider",
             "fuchsia.net.NameLookup",
-            "fuchsia.net.SocketProvider",
             "fuchsia.posix.socket.Provider",
             "fuchsia.sys.Environment",
             "fuchsia.sys.Launcher",

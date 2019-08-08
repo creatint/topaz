@@ -16,7 +16,6 @@
             "fuchsia.fonts.Provider",
             "fuchsia.posix.socket.Provider",
             "fuchsia.net.NameLookup",
-            "fuchsia.net.SocketProvider",
             "fuchsia.sysmem.Allocator",
             "fuchsia.timezone.Timezone",
             "fuchsia.tracing.provider.Registry",

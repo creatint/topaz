@@ -12,7 +12,6 @@
             "fuchsia.logger.LogSink",
             "fuchsia.posix.socket.Provider",
             "fuchsia.net.NameLookup",
-            "fuchsia.net.SocketProvider",
             "fuchsia.process.Launcher",
             "fuchsia.process.Resolver",
             "fuchsia.timezone.Timezone",

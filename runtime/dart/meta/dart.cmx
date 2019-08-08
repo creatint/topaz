@@ -10,7 +10,6 @@
         "services": [
             "fuchsia.posix.socket.Provider",
             "fuchsia.net.NameLookup",
-            "fuchsia.net.SocketProvider",
             "fuchsia.timezone.Timezone",
             "fuchsia.tracing.provider.Registry"
         ]
