@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 import 'package:fuchsia_inspect/inspect.dart' as inspect;
 import 'package:fuchsia_modular/module.dart' as intent;
+import 'package:fuchsia_inspect_flutter/inspect_flutter.dart';
 import 'package:flutter/material.dart';
 import 'roachGame.dart';
 
@@ -11,5 +12,6 @@ class RootIntentHandler extends intent.IntentHandler {
   void handleIntent(intent.Intent intentNode) {
     var inspectNode = inspect.Inspect().root;
     runApp(RoachGame(inspectNode: inspectNode));
+    InspectFlutter.exposeDiagnosticsTree('widgets');
   }
 }

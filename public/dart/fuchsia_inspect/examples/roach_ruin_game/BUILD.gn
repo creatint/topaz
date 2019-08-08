@@ -19,6 +19,7 @@ dart_library("roach_ruin") {
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//topaz/public/dart/fuchsia_inspect",
     "//topaz/public/dart/fuchsia_modular",
+    "//topaz/public/dart/fuchsia_inspect_flutter",
   ]
 }
 
