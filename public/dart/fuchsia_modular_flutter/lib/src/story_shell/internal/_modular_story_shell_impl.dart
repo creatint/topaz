@@ -47,6 +47,8 @@ class ModularStoryShellImpl extends modular.StoryShell {
   @override
   Future<void> addSurface(modular.ViewConnection viewConnection,
       modular.SurfaceInfo surfaceInfo) async {
+    // Deprecated. Transitioning to addSurface3 (which will later be renamed
+    // addSurface, replacing this method with updated parameter list/types)
     final view = newChildViewConnection(viewConnection);
     final surface = Surface(
       id: viewConnection.surfaceId,
@@ -65,6 +67,25 @@ class ModularStoryShellImpl extends modular.StoryShell {
             surfaceId: viewConnection.surfaceId,
             viewHolderToken: viewConnection.viewHolderToken),
         surfaceInfo);
+  }
+
+  @override
+  Future<void> addSurface3(modular.ViewConnection viewConnection,
+      modular.SurfaceInfo2 surfaceInfo2) async {
+    final view = newChildViewConnection(viewConnection);
+    final surfaceInfo = modular.SurfaceInfo(
+      parentId: surfaceInfo2.parentId,
+      surfaceRelation: surfaceInfo2.surfaceRelation,
+      moduleManifest: surfaceInfo2.moduleManifest,
+      moduleSource: surfaceInfo2.moduleSource,
+    );
+    final surface = Surface(
+      id: viewConnection.surfaceId,
+      info: surfaceInfo,
+      childViewConnection: view,
+    );
+    _surfacesById[viewConnection.surfaceId] = surface;
+    storyShell.onSurfaceAdded(surface);
   }
 
   @override
