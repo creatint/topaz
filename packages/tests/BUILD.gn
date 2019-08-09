@@ -214,13 +214,6 @@ group("dart_fidl_benchmarks") {
 group("chromium_prebuilt_tests") {
   testonly = true
   public_deps = [
-    "//topaz/runtime/chromium:base_unittests",
-    "//topaz/runtime/chromium:blink_common_unittests",
-    "//topaz/runtime/chromium:cast_runner_integration_tests",
-    "//topaz/runtime/chromium:ipc_tests",
-    "//topaz/runtime/chromium:media_unittests",
-    "//topaz/runtime/chromium:mojo_unittests",
-    "//topaz/runtime/chromium:skia_unittests",
-    "//topaz/runtime/chromium:web_runner_integration_tests",
+    "//topaz/runtime/chromium:chromium_prebuilts",
   ]
 }
