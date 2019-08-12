@@ -19,4 +19,4 @@ dependencies:
   protoc_plugin: ^15.0.3
   strings: ^0.1.0
   tuple: ^1.0.2
-  uuid: ^1.0.3
+  uuid: ^2.0.0
