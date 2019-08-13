@@ -1490,6 +1490,194 @@ const $fidl.StructType<StructOfTableWithStringAndVector> kStructOfTableWithStrin
 );
 
 
+class StructWithInt extends $fidl.Struct {
+  const StructWithInt({
+    @required this.x,
+  });
+  StructWithInt.clone(StructWithInt $orig, {
+  int x,
+  }) : this(
+      x: x ?? $orig.x,
+    );
+
+
+  
+
+  StructWithInt._(List<Object> argv)
+    : x = argv[0];
+  final int x;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      x,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructWithInt' r'(x: ' + x.toString() + r')';
+  }
+
+  static StructWithInt _ctor(List<Object> argv) => StructWithInt._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructWithInt> kStructWithInt_Type = $fidl.StructType<StructWithInt>(
+  encodedSize: 4,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 0),
+  ],
+  ctor: StructWithInt._ctor,
+);
+
+
+class StructWithArrays extends $fidl.Struct {
+  const StructWithArrays({
+    @required this.arrEmpty,
+    @required this.arrInt,
+    @required this.arrString,
+    @required this.arrStruct,
+    @required this.arrArrInt,
+  });
+  StructWithArrays.clone(StructWithArrays $orig, {
+  Int32List arrEmpty,
+  Int32List arrInt,
+  List<String> arrString,
+  List<StructWithInt> arrStruct,
+  List<Int32List> arrArrInt,
+  }) : this(
+      arrEmpty: arrEmpty ?? $orig.arrEmpty,
+      arrInt: arrInt ?? $orig.arrInt,
+      arrString: arrString ?? $orig.arrString,
+      arrStruct: arrStruct ?? $orig.arrStruct,
+      arrArrInt: arrArrInt ?? $orig.arrArrInt,
+    );
+
+
+  
+
+  StructWithArrays._(List<Object> argv)
+    : arrEmpty = argv[0],
+      arrInt = argv[1],
+      arrString = argv[2],
+      arrStruct = argv[3],
+      arrArrInt = argv[4];
+  final Int32List arrEmpty;
+  final Int32List arrInt;
+  final List<String> arrString;
+  final List<StructWithInt> arrStruct;
+  final List<Int32List> arrArrInt;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      arrEmpty,
+      arrInt,
+      arrString,
+      arrStruct,
+      arrArrInt,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructWithArrays' r'(arrEmpty: ' + arrEmpty.toString() + r', arrInt: ' + arrInt.toString() + r', arrString: ' + arrString.toString() + r', arrStruct: ' + arrStruct.toString() + r', arrArrInt: ' + arrArrInt.toString() + r')';
+  }
+
+  static StructWithArrays _ctor(List<Object> argv) => StructWithArrays._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructWithArrays> kStructWithArrays_Type = $fidl.StructType<StructWithArrays>(
+  encodedSize: 72,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<Int32List>(type: $fidl.ArrayType<Int32List>(element: $fidl.Int32Type(), elementCount: 0), offset: 0),
+    $fidl.MemberType<Int32List>(type: $fidl.ArrayType<Int32List>(element: $fidl.Int32Type(), elementCount: 2), offset: 0),
+    $fidl.MemberType<List<String>>(type: $fidl.ArrayType<List<String>>(element: $fidl.StringType(maybeElementCount: null, nullable: false), elementCount: 2), offset: 8),
+    $fidl.MemberType<List<StructWithInt>>(type: $fidl.ArrayType<List<StructWithInt>>(element: kStructWithInt_Type, elementCount: 2), offset: 40),
+    $fidl.MemberType<List<Int32List>>(type: $fidl.ArrayType<List<Int32List>>(element: $fidl.ArrayType<Int32List>(element: $fidl.Int32Type(), elementCount: 3), elementCount: 2), offset: 48),
+  ],
+  ctor: StructWithArrays._ctor,
+);
+
+
+class StructWithVectors extends $fidl.Struct {
+  const StructWithVectors({
+    @required this.vecEmpty,
+    @required this.vecInt,
+    @required this.vecString,
+    @required this.vecStruct,
+    @required this.vecVecInt,
+  });
+  StructWithVectors.clone(StructWithVectors $orig, {
+  Int32List vecEmpty,
+  Int32List vecInt,
+  List<String> vecString,
+  List<StructWithInt> vecStruct,
+  List<Int32List> vecVecInt,
+  }) : this(
+      vecEmpty: vecEmpty ?? $orig.vecEmpty,
+      vecInt: vecInt ?? $orig.vecInt,
+      vecString: vecString ?? $orig.vecString,
+      vecStruct: vecStruct ?? $orig.vecStruct,
+      vecVecInt: vecVecInt ?? $orig.vecVecInt,
+    );
+
+
+  
+
+  StructWithVectors._(List<Object> argv)
+    : vecEmpty = argv[0],
+      vecInt = argv[1],
+      vecString = argv[2],
+      vecStruct = argv[3],
+      vecVecInt = argv[4];
+  final Int32List vecEmpty;
+  final Int32List vecInt;
+  final List<String> vecString;
+  final List<StructWithInt> vecStruct;
+  final List<Int32List> vecVecInt;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      vecEmpty,
+      vecInt,
+      vecString,
+      vecStruct,
+      vecVecInt,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructWithVectors' r'(vecEmpty: ' + vecEmpty.toString() + r', vecInt: ' + vecInt.toString() + r', vecString: ' + vecString.toString() + r', vecStruct: ' + vecStruct.toString() + r', vecVecInt: ' + vecVecInt.toString() + r')';
+  }
+
+  static StructWithVectors _ctor(List<Object> argv) => StructWithVectors._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructWithVectors> kStructWithVectors_Type = $fidl.StructType<StructWithVectors>(
+  encodedSize: 80,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<Int32List>(type: $fidl.VectorType<Int32List>(element: $fidl.Int32Type(), maybeElementCount: null, nullable: false), offset: 0),
+    $fidl.MemberType<Int32List>(type: $fidl.VectorType<Int32List>(element: $fidl.Int32Type(), maybeElementCount: null, nullable: false), offset: 16),
+    $fidl.MemberType<List<String>>(type: $fidl.VectorType<List<String>>(element: $fidl.StringType(maybeElementCount: null, nullable: false), maybeElementCount: null, nullable: false), offset: 32),
+    $fidl.MemberType<List<StructWithInt>>(type: $fidl.VectorType<List<StructWithInt>>(element: kStructWithInt_Type, maybeElementCount: null, nullable: false), offset: 48),
+    $fidl.MemberType<List<Int32List>>(type: $fidl.VectorType<List<Int32List>>(element: $fidl.VectorType<Int32List>(element: $fidl.Int32Type(), maybeElementCount: null, nullable: false), maybeElementCount: null, nullable: false), offset: 64),
+  ],
+  ctor: StructWithVectors._ctor,
+);
+
+
 class TableWithEmptyStruct extends $fidl.Table {
   const TableWithEmptyStruct({
     this.s,
