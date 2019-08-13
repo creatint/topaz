@@ -15,6 +15,7 @@ dart_tool("doc_checker") {
     "link_scraper.dart",
     "link_verifier.dart",
     "projects.dart",
+    "yaml_checker.dart",
   ]
 
   deps = [
@@ -22,6 +23,7 @@ dart_tool("doc_checker") {
     "//third_party/dart-pkg/pub/http",
     "//third_party/dart-pkg/pub/markdown",
     "//third_party/dart-pkg/pub/path",
+    "//third_party/dart-pkg/pub/yaml",
   ]
 }
 
@@ -30,6 +32,7 @@ dart_test("doc_checker_tests") {
     "graph_test.dart",
     "link_scraper_test.dart",
     "link_verifier_test.dart",
+    "yaml_checker_test.dart",
   ]
 
   deps = [

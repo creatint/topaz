@@ -12,6 +12,7 @@ import 'package:doc_checker/graph.dart';
 import 'package:doc_checker/link_scraper.dart';
 import 'package:doc_checker/link_verifier.dart';
 import 'package:doc_checker/projects.dart';
+import 'package:doc_checker/yaml_checker.dart';
 
 const String _optionHelp = 'help';
 const String _optionRootDir = 'root';
@@ -42,6 +43,8 @@ void reportError(Error error) {
         return 'Page should be reachable';
       case ErrorType.obsoleteProject:
         return 'Project is obsolete';
+      case ErrorType.invalidMenu:
+        return 'Invalid Menu Entry';
       case ErrorType.invalidUri:
         return 'Invalid URI';
       default:
@@ -59,6 +62,7 @@ enum ErrorType {
   brokenLink,
   unreachablePage,
   obsoleteProject,
+  invalidMenu,
   invalidUri,
 }
 
@@ -164,17 +168,15 @@ Future<Null> main(List<String> args) async {
         if (uri.scheme != 'http' && uri.scheme != 'https') {
           continue;
         }
-        final bool onFuchsiaHost  = uri.authority == _fuchsiaHost;
-        final String project = uri.pathSegments.isEmpty? '' :
-            uri.pathSegments[0];
+        final bool onFuchsiaHost = uri.authority == _fuchsiaHost;
+        final String project =
+            uri.pathSegments.isEmpty ? '' : uri.pathSegments[0];
         if (onFuchsiaHost && onGerritMaster(uri) && project == docsProject) {
-          errors.add(Error(
-              ErrorType.convertHttpToPath, label, uri.toString()));
+          errors.add(Error(ErrorType.convertHttpToPath, label, uri.toString()));
         } else if (onFuchsiaHost && !validProjects.contains(project)) {
-          errors.add(
-              Error(ErrorType.obsoleteProject, label, uri.toString()));
+          errors.add(Error(ErrorType.obsoleteProject, label, uri.toString()));
         } else {
-            outOfTreeLinks.add(Link(uri, label));
+          outOfTreeLinks.add(Link(uri, label));
         }
         continue;
       }
@@ -185,9 +187,9 @@ Future<Null> main(List<String> args) async {
         continue;
       }
 
-      final String rootRelPath = location.startsWith('/') ?
-          location.substring(1):
-          path.relative(path.join(baseDir, location), from: rootDir);
+      final String rootRelPath = location.startsWith('/')
+          ? location.substring(1)
+          : path.relative(path.join(baseDir, location), from: rootDir);
       final String absPath = path.join(rootDir, rootRelPath);
       final String linkLabel = '//$rootRelPath';
 
@@ -205,8 +207,7 @@ Future<Null> main(List<String> args) async {
     final File possibleFile = File.fromUri(link.uri);
     final Directory possibleDir = Directory.fromUri(link.uri);
     if (!possibleFile.existsSync() && !possibleDir.existsSync()) {
-      errors.add(
-          Error(ErrorType.brokenLink, link.payload, link.toString()));
+      errors.add(Error(ErrorType.brokenLink, link.payload, link.toString()));
     }
     return null;
   }));
@@ -223,10 +224,28 @@ Future<Null> main(List<String> args) async {
 
   // Verify singletons and orphans.
   final List<Node> unreachable = graph.removeSingletons()
-    ..addAll(
-        graph.orphans..removeWhere((Node node) => node.label == '//docs/navbar.md'));
+    ..addAll(graph.orphans
+      ..removeWhere((Node node) => node.label == '//docs/navbar.md'));
   for (Node node in unreachable) {
     errors.add(Error.forProject(ErrorType.unreachablePage, node.label));
+  }
+
+  // Check yaml files
+  final List<String> yamls = Directory(docsDir)
+      .listSync(recursive: true)
+      .where((FileSystemEntity entity) =>
+          path.extension(entity.path) == '.yaml' &&
+          path.basename(entity.path).startsWith('_'))
+      .map((FileSystemEntity entity) => entity.path)
+      .toList();
+
+  // Start with the /docs/_toc.yaml as the root file.
+  final String rootYaml = path.canonicalize(path.join(docsDir, '_toc.yaml'));
+
+  YamlChecker checker = YamlChecker(rootDir, rootYaml, yamls, docs);
+  await checker.check();
+  for (var msg in checker.errors) {
+    errors.add(Error(ErrorType.invalidMenu, null, msg));
   }
 
   errors
