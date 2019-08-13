@@ -28,6 +28,8 @@ class LinkScraper {
 
 class _Visitor implements NodeVisitor {
   static const String _key = 'href';
+  static const String _imgSrc = 'src';
+  static const String _imgTag = 'img';
 
   final Set<String> links = <String>{};
 
@@ -35,6 +37,9 @@ class _Visitor implements NodeVisitor {
   bool visitElementBefore(Element element) {
     if (element.attributes.containsKey(_key)) {
       links.add(element.attributes[_key]);
+    } else if (element.tag == _imgTag &&
+        element.attributes.containsKey(_imgSrc)) {
+      links.add(element.attributes[_imgSrc]);
     }
     return true;
   }

@@ -7,6 +7,8 @@ import 'dart:io';
 
 import 'package:yaml/yaml.dart';
 
+import 'package:doc_checker/errors.dart';
+
 /// Loads yaml files to verify they are
 /// compatible with fuchsia.dev hosting.
 class YamlChecker {
@@ -16,7 +18,7 @@ class YamlChecker {
   String _rootDir;
 
   // List of errors found.
-  List<String> errors = <String>[];
+  List<Error> errors = <Error>[];
 
   static const List<String> validStatusValues = <String>[
     'alpha',
@@ -65,12 +67,14 @@ class YamlChecker {
     if (_rootYaml != null) {
       File f = File(_rootYaml);
       f.readAsString().then((String data) {
-        parse(loadYamlDocuments(data));
+        parse(loadYamlDocuments(data), _rootYaml);
         for (String s in _yamlSet) {
-          errors.add('unreferenced yaml $s');
+          errors
+              .add(Error(ErrorType.invalidMenu, null, 'unreferenced yaml $s'));
         }
         for (String s in _mdSet) {
-          errors.add('File $s not referenced in any yaml file');
+          errors.add(Error(ErrorType.invalidMenu, null,
+              'File $s not referenced in any yaml file'));
         }
         completer.complete(errors.isEmpty);
       });
@@ -82,14 +86,14 @@ class YamlChecker {
   }
 
   /// Parses the yaml structure.
-  void parse(List<YamlDocument> doc) {
+  void parse(List<YamlDocument> doc, String filename) {
     for (YamlDocument d in doc) {
-      validateTopLevel(d.contents.value);
+      validateTopLevel(d.contents.value, filename);
     }
   }
 
   /// Validates the top level of the menu.
-  void validateTopLevel(YamlMap map) {
+  void validateTopLevel(YamlMap map, String filename) {
     for (String key in map.keys) {
       switch (key) {
         case 'guides':
@@ -98,12 +102,13 @@ class YamlChecker {
         case 'reference':
         case 'toc':
           {
-            validateTocElement(map[key]);
+            validateTocElement(map[key], filename);
           }
           break;
         default:
           {
-            errors.add('Unknown top level key: $key');
+            errors.add(Error(ErrorType.invalidMenu, filename,
+                'Unknown top level key: $key'));
             break;
           }
       }
@@ -111,28 +116,30 @@ class YamlChecker {
   }
 
   /// Validates the toc element in the menu.
-  void validateTocElement(YamlNode val) {
+  void validateTocElement(YamlNode val, String filename) {
     // valid entries are documented at
     if (val is YamlList) {
       for (YamlNode node in val) {
         if (node.runtimeType == YamlMap) {
-          validateContentMap(node);
+          validateContentMap(node, filename);
         } else {
-          errors.add('Unexpected node of type: ${node.runtimeType} $node');
+          errors.add(Error(ErrorType.invalidMenu, filename,
+              'Unexpected node of type: ${node.runtimeType} $node'));
         }
       }
     } else {
-      errors.add('Expected a list, got ${val.runtimeType}: $val');
+      errors.add(Error(ErrorType.invalidMenu, filename,
+          'Expected a list, got ${val.runtimeType}: $val'));
     }
   }
 
   /// Validates the content of toc.
-  void validateContentMap(YamlMap map) {
+  void validateContentMap(YamlMap map, String filename) {
     for (String key in map.keys) {
       switch (key) {
         case 'alternate_paths':
           {
-            validatePathList(map[key]);
+            validatePathList(map[key], filename);
           }
           break;
         case 'break':
@@ -140,43 +147,46 @@ class YamlChecker {
           {
             // only include if break : true.
             if (map[key] != true) {
-              errors.add('$key should only be included when set to true');
+              errors.add(Error(ErrorType.invalidMenu, filename,
+                  '$key should only be included when set to true'));
             }
           }
           break;
         case 'section':
         case 'contents':
           {
-            validateTocElement(map[key]);
+            validateTocElement(map[key], filename);
           }
           break;
         case 'include':
           {
-            processIncludedFile(map[key]);
+            processIncludedFile(map[key], filename);
           }
           break;
         case 'path':
           {
             String menuPath = map[key];
-            if (validatePath(menuPath)) {
+            if (validatePath(menuPath, filename)) {
               // If the path is to a file, check that the file exists.
               // TODO(wilkinsonclay): check the URLs are valid.
               if (!menuPath.startsWith('https://') &&
                   !menuPath.startsWith('//')) {
-                checkFileExists(menuPath);
+                checkFileExists(menuPath, filename);
               }
             }
           }
           break;
         case 'path_attributes':
           {
-            errors.add('path_attributes not supported on fuchsia.dev');
+            errors.add(Error(ErrorType.invalidMenu, filename,
+                'path_attributes not supported on fuchsia.dev'));
           }
           break;
         case 'status':
           {
             if (!validStatusValues.contains(map[key])) {
-              errors.add('invalid status value of ${map[key]}');
+              errors.add(Error(ErrorType.invalidMenu, filename,
+                  'invalid status value of ${map[key]}'));
             }
           }
           break;
@@ -184,28 +194,28 @@ class YamlChecker {
           {
             // make sure there is no section in this group.
             if (map.containsKey('section')) {
-              errors.add(
-                  'invalid use of \'step_group\'. Group cannot also contain \`section\`');
+              errors.add(Error(ErrorType.invalidMenu, filename,
+                  'invalid use of \'step_group\'. Group cannot also contain \`section\`'));
             }
             if (!(map[key] is String)) {
-              errors.add(
-                  'invalid value of \'step_group\'. Expected String got ${map[key].runtimeType} ${map[key]}');
+              errors.add(Error(ErrorType.invalidMenu, filename,
+                  'invalid value of \'step_group\'. Expected String got ${map[key].runtimeType} ${map[key]}'));
             }
           }
           break;
         case 'style':
           {
             if (map.containsKey('break') || map.containsKey('include')) {
-              errors.add(
-                  'invalid use of \'style\'. Group cannot also contain `break` nor `include`');
+              errors.add(Error(ErrorType.invalidMenu, filename,
+                  'invalid use of \'style\'. Group cannot also contain `break` nor `include`'));
             }
             if (map[key] != 'accordion' && map[key] != 'divider') {
-              errors.add(
-                  'invalid value of `style`. Expected `accordion` or `divider`');
+              errors.add(Error(ErrorType.invalidMenu, filename,
+                  'invalid value of `style`. Expected `accordion` or `divider`'));
             }
             if (!map.containsKey('heading') && !map.containsKey('section')) {
-              errors.add(
-                  'invalid use of \'style\'. Group must also have `heading` or `section`.');
+              errors.add(Error(ErrorType.invalidMenu, filename,
+                  'invalid use of \'style\'. Group must also have `heading` or `section`.'));
             }
           }
           break;
@@ -214,36 +224,38 @@ class YamlChecker {
         case 'title':
           {
             if (map[key].runtimeType != String) {
-              errors
-                  .add('Expected String for $key, got ${map[key].runtimeType}');
+              errors.add(Error(ErrorType.invalidMenu, filename,
+                  'Expected String for $key, got ${map[key].runtimeType}'));
             }
           }
           break;
         default:
-          errors.add('Unknown Content Key $key');
+          errors.add(Error(
+              ErrorType.invalidMenu, filename, 'Unknown Content Key $key'));
       }
     }
   }
 
   /// Handles an included yaml file. It is validated completely then returns.
-  void processIncludedFile(String menuPath) {
-    if (validatePath(menuPath)) {
+  void processIncludedFile(String menuPath, String parentFilename) {
+    if (validatePath(menuPath, parentFilename)) {
       String filePath = '$_rootDir$menuPath';
 
       // parse in a try/catch to handle any syntax errors reading the included file.
       try {
-        parse(loadYamlDocuments(File(filePath).readAsStringSync()));
+        parse(loadYamlDocuments(File(filePath).readAsStringSync()), menuPath);
         _yamlSet.remove(filePath);
       } on Exception catch (exception) {
-        errors.add(exception.toString());
+        errors.add(
+            Error(ErrorType.invalidMenu, parentFilename, exception.toString()));
       }
     }
   }
 
   /// Validates a list of paths are valid paths for the menu.
-  bool validatePathList(List<String> paths) {
+  bool validatePathList(List<String> paths, String filename) {
     for (String s in paths) {
-      if (!validatePath(s)) {
+      if (!validatePath(s, filename)) {
         return false;
       }
     }
@@ -256,14 +268,15 @@ class YamlChecker {
   /// http URLs.  Exceptions are made for
   /// CONTRIBUTING.md and CODE_OF_CONDUCT.md which
   /// are in the root of the project.
-  bool validatePath(String menuPath) {
+  bool validatePath(String menuPath, String filename) {
     if (!menuPath.startsWith('/docs') &&
         menuPath != '/CONTRIBUTING.md' &&
         menuPath != '/CODE_OF_CONDUCT.md' &&
         !menuPath.startsWith('http://') &&
         !menuPath.startsWith('https://') &&
         !menuPath.startsWith('//')) {
-      errors.add('Path needs to start with \'/docs\', got $menuPath');
+      errors.add(Error(ErrorType.invalidMenu, filename,
+          'Path needs to start with \'/docs\', got $menuPath'));
       return false;
     }
 
@@ -273,7 +286,7 @@ class YamlChecker {
   /// Check that the file pointed to by the path exists.
   /// if it does, remove the file from the mdSet to keep track of
   /// which files are referenced.
-  void checkFileExists(String menuPath) {
+  void checkFileExists(String menuPath, String filename) {
     String filePath = '$_rootDir$menuPath';
 
     if (File(filePath).existsSync()) {
@@ -284,7 +297,8 @@ class YamlChecker {
       if (File(filePath).existsSync()) {
         _mdSet.remove(filePath);
       } else {
-        errors.add('Invalid menu path $menuPath not found');
+        errors.add(Error(ErrorType.invalidMenu, filename,
+            'Invalid menu path $menuPath not found'));
       }
     }
   }

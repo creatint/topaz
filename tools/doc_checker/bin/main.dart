@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:path/path.dart' as path;
 
+import 'package:doc_checker/errors.dart';
 import 'package:doc_checker/graph.dart';
 import 'package:doc_checker/link_scraper.dart';
 import 'package:doc_checker/link_verifier.dart';
@@ -54,28 +55,6 @@ void reportError(Error error) {
 
   final String location = error.hasLocation ? ' (${error.location})' : '';
   print('${errorToString(error.type).padRight(25)}: ${error.content}$location');
-}
-
-enum ErrorType {
-  unknownLocalFile,
-  convertHttpToPath,
-  brokenLink,
-  unreachablePage,
-  obsoleteProject,
-  invalidMenu,
-  invalidUri,
-}
-
-class Error {
-  final ErrorType type;
-  final String location;
-  final String content;
-
-  Error(this.type, this.location, this.content);
-
-  Error.forProject(this.type, this.content) : location = null;
-
-  bool get hasLocation => location != null;
 }
 
 // Checks whether the URI points to the master branch of a Gerrit (i.e.,
@@ -244,8 +223,10 @@ Future<Null> main(List<String> args) async {
 
   YamlChecker checker = YamlChecker(rootDir, rootYaml, yamls, docs);
   await checker.check();
-  for (var msg in checker.errors) {
-    errors.add(Error(ErrorType.invalidMenu, null, msg));
+  List<Error> yamlErrors = checker.errors;
+
+  if (yamlErrors.isNotEmpty) {
+    errors.addAll(yamlErrors);
   }
 
   errors

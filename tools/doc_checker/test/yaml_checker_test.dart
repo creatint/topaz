@@ -84,8 +84,8 @@ void main() {
       bool ret = await checker.check();
 
       expect(ret, equals(false));
-      expect(checker.errors[0], equals('Unknown Content Key tile'));
-      expect(checker.errors[1], equals('Unknown Content Key filepath'));
+      expect(checker.errors[0].content, equals('Unknown Content Key tile'));
+      expect(checker.errors[1].content, equals('Unknown Content Key filepath'));
       expect(checker.errors.length, equals(2));
     });
 
@@ -115,7 +115,7 @@ void main() {
           file.absolute.path, [file.absolute.path], []);
       bool ret = await checker.check();
       expect(ret, equals(false));
-      expect(checker.errors[0],
+      expect(checker.errors[0].content,
           equals('Path needs to start with \'/docs\', got /src/ref/1.cc'));
       expect(checker.errors.length, equals(1));
     });
@@ -168,7 +168,7 @@ void main() {
           file.absolute.path, [file.absolute.path], []);
       bool ret = await checker.check();
       expect(ret, equals(false));
-      expect(checker.errors[0],
+      expect(checker.errors[0].content,
           equals('Path needs to start with \'/docs\', got /src/sample/1.c'));
     });
 
@@ -187,10 +187,9 @@ void main() {
       expect(ret, equals(false));
       expect(checker.errors.length, equals(1));
       expect(
-          checker.errors[0],
+          checker.errors[0].content,
           startsWith(
               'FileSystemException: Cannot open file, path = \'${Directory.systemTemp.path}/docs/_included_notfound.yaml\''));
-
     });
 
     // Test when there is a directory with the same name and there is a README.md in that

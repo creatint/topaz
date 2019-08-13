@@ -16,11 +16,13 @@ void main() {
       final List<String> lines = [
         'this text has no links',
         'this one [does](link.md).',
-        'but not *this one*'
+        'but not *this one*',
+        'images are scraped ![text](image.png)'
       ];
       Iterable<String> links = LinkScraper().scrapeLines(lines);
-      expect(links, hasLength(1));
+      expect(links, hasLength(2));
       expect(links.first, equals('link.md'));
+      expect(links.last, equals('image.png'));
     });
   });
 }
