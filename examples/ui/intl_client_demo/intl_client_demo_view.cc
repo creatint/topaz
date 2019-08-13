@@ -35,9 +35,9 @@ IntlClientDemoView::IntlClientDemoView(scenic::ViewContext view_context)
               ->ConnectToEnvironmentService<
                   fuchsia::intl::PropertyProvider>()) {
   // Asynchronously load the font we need in order to render text.
-  fuchsia::fonts::Request font_request{
-      .family = "Roboto",
-  };
+  fuchsia::fonts::TypefaceRequest font_request{};
+  font_request.set_query(std::move(fuchsia::fonts::TypefaceQuery{}.set_family(
+      fuchsia::fonts::FamilyName{.name = "Roboto"})));
   font_loader_.LoadFont(std::move(font_request),
                         [this](sk_sp<SkTypeface> typeface) {
                           if (!typeface) {

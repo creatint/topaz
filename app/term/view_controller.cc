@@ -40,8 +40,9 @@ ViewController::ViewController(scenic::ViewContext view_context,
       params_(term_params) {
   SetReleaseHandler([this](zx_status_t status) { disconnect_(this); });
 
-  fuchsia::fonts::Request font_request;
-  font_request.family = "RobotoMono";
+  fuchsia::fonts::TypefaceRequest font_request{};
+  font_request.set_query(std::move(fuchsia::fonts::TypefaceQuery{}.set_family(
+      fuchsia::fonts::FamilyName{.name = "RobotoMono"})));
   font_loader_.LoadFont(
       std::move(font_request), [this](sk_sp<SkTypeface> typeface) {
         FXL_CHECK(typeface);  // TODO(jpoichet): Fail gracefully.
