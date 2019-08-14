@@ -50,9 +50,15 @@ ${parser.usage};
     if (nm == null) {
       throw "Must specify --nm";
     }
+    if (!FileSystemEntity.isFileSync(nm)) {
+      throw "Cannot find $nm";
+    }
     binary = options["binary"];
     if (binary == null) {
       throw "Must specify --binary";
+    }
+    if (!FileSystemEntity.isFileSync(binary)) {
+      throw "Cannot find $binary";
     }
     output = options["output"];
     if (output == null) {
