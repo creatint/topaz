@@ -5,20 +5,18 @@
 #ifndef TOPAZ_EXAMPLES_UI_LIB_SKIA_VIEW_H_
 #define TOPAZ_EXAMPLES_UI_LIB_SKIA_VIEW_H_
 
-#include <lib/ui/base_view/cpp/base_view_transitional.h>
-
 #include "examples/ui/lib/host_canvas_cycler.h"
 #include "src/lib/fxl/logging.h"
 #include "src/lib/fxl/macros.h"
+#include "lib/ui/base_view/cpp/base_view.h"
 
 namespace scenic {
 
 // Abstract base class for views which use Skia software rendering to a
 // single full-size surface.
-class SkiaView : public scenic::BaseViewTransitional {
+class SkiaView : public scenic::BaseView {
  public:
-  SkiaView(scenic::ViewContextTransitional view_context,
-           const std::string& label);
+  SkiaView(scenic::ViewContext view_context, const std::string& label);
   ~SkiaView() override = default;
 
   // Acquires a canvas for rendering.

@@ -6,11 +6,11 @@
 
 #include <fuchsia/fonts/cpp/fidl.h>
 #include <lib/async/default.h>
-#include <lib/ui/input/cpp/formatting.h>
 #include <lib/zx/clock.h>
 #include <unistd.h>
 #include <zircon/status.h>
 
+#include "lib/ui/input/cpp/formatting.h"
 #include "src/lib/fxl/logging.h"
 #include "src/lib/fxl/strings/string_printf.h"
 #include "third_party/skia/include/core/SkFont.h"
@@ -28,14 +28,15 @@ constexpr char kShell[] = "/boot/bin/sh";
 
 }  // namespace
 
-ViewController::ViewController(scenic::ViewContextTransitional view_context,
+ViewController::ViewController(scenic::ViewContext view_context,
                                const TermParams& term_params,
                                DisconnectCallback disconnect_handler)
     : SkiaView(std::move(view_context), "Term"),
       disconnect_(std::move(disconnect_handler)),
       model_(TermModel::Size(24, 80), this),
       font_loader_(
-          component_context()->svc()->Connect<fuchsia::fonts::Provider>()),
+          startup_context()
+              ->ConnectToEnvironmentService<fuchsia::fonts::Provider>()),
       params_(term_params) {
   SetReleaseHandler([this](zx_status_t status) { disconnect_(this); });
 

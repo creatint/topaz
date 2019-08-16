@@ -8,6 +8,7 @@
 
 #include <string>
 
+#include "lib/component/cpp/connect.h"
 #include "src/lib/fxl/logging.h"
 #include "src/lib/fxl/macros.h"
 #include "src/lib/fxl/time/time_delta.h"
@@ -27,7 +28,7 @@ const JankView::Button JankView::kButtons[] = {
     {"Crash!", Action::kCrash},
 };
 
-JankView::JankView(scenic::ViewContextTransitional view_context,
+JankView::JankView(scenic::ViewContext view_context,
                    fuchsia::fonts::ProviderPtr font_provider)
     : SkiaView(std::move(view_context), "Jank"),
       font_loader_(std::move(font_provider)) {

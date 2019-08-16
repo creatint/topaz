@@ -40,7 +40,7 @@ class App : public fuchsia::ui::app::ViewProvider, public fuchsia::term::Term {
   App& operator=(const App&) = delete;
 
   TermParams params_;
-  std::unique_ptr<sys::ComponentContext> context_;
+  std::unique_ptr<component::StartupContext> context_;
   fidl::BindingSet<fuchsia::ui::app::ViewProvider> bindings_;
   fidl::BindingSet<fuchsia::term::Term> term_bindings_;
   fidl::BindingSet<fuchsia::term::Pty, std::unique_ptr<PtyClient>>

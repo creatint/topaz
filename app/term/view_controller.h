@@ -24,7 +24,7 @@ class ViewController : public scenic::SkiaView, public TermModel::Delegate {
  public:
   using DisconnectCallback = fit::function<void(ViewController*)>;
 
-  ViewController(scenic::ViewContextTransitional view_context,
+  ViewController(scenic::ViewContext view_context,
                  const TermParams& term_params,
                  DisconnectCallback disconnect_handler);
   ~ViewController() override = default;

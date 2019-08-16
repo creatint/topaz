@@ -25,15 +25,15 @@ const std::string GetFirstLocale(const fuchsia::intl::Profile& profile) {
 
 }  // namespace
 
-IntlClientDemoView::IntlClientDemoView(
-    scenic::ViewContextTransitional view_context)
+IntlClientDemoView::IntlClientDemoView(scenic::ViewContext view_context)
     : SkiaView(std::move(view_context), "ViewConfig Demo"),
       font_loader_(
-          component_context()->svc()->Connect<fuchsia::fonts::Provider>()),
+          startup_context()
+              ->ConnectToEnvironmentService<fuchsia::fonts::Provider>()),
       intl_property_provider_client_(
-          component_context()
-              ->svc()
-              ->Connect<fuchsia::intl::PropertyProvider>()) {
+          startup_context()
+              ->ConnectToEnvironmentService<
+                  fuchsia::intl::PropertyProvider>()) {
   // Asynchronously load the font we need in order to render text.
   fuchsia::fonts::TypefaceRequest font_request{};
   font_request.set_query(std::move(fuchsia::fonts::TypefaceQuery{}.set_family(

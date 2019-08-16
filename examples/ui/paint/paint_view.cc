@@ -6,6 +6,7 @@
 
 #include <hid/usages.h>
 
+#include "lib/component/cpp/connect.h"
 #include "src/lib/fxl/logging.h"
 #include "src/lib/fxl/macros.h"
 #include "third_party/skia/include/core/SkColor.h"
@@ -13,7 +14,7 @@
 
 namespace examples {
 
-PaintView::PaintView(scenic::ViewContextTransitional view_context)
+PaintView::PaintView(scenic::ViewContext view_context)
     : SkiaView(std::move(view_context), "Paint") {}
 
 void PaintView::OnSceneInvalidated(

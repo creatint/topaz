@@ -20,7 +20,7 @@ namespace examples {
 // Uses Skia to display its current locale ID as text in the middle of the view.
 class IntlClientDemoView : public scenic::SkiaView {
  public:
-  IntlClientDemoView(scenic::ViewContextTransitional view_context);
+  IntlClientDemoView(scenic::ViewContext view_context);
 
  private:
   void FetchIntlProfile();

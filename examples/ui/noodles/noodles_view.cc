@@ -37,7 +37,7 @@ void Lissajous(SkPath* path, double ax, double ay, int wx, int wy, double p) {
 }
 }  // namespace
 
-NoodlesView::NoodlesView(scenic::ViewContextTransitional view_context)
+NoodlesView::NoodlesView(scenic::ViewContext view_context)
     : SkiaView(std::move(view_context), "Noodles") {}
 
 void NoodlesView::OnSceneInvalidated(

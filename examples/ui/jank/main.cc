@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 #include <lib/async-loop/cpp/loop.h>
-#include <lib/trace-provider/provider.h>
-#include <lib/ui/base_view/cpp/view_provider_component_transitional.h>
+#include <trace-provider/provider.h>
 
 #include "src/lib/fxl/command_line.h"
 #include "src/lib/fxl/log_settings_command_line.h"
+#include "lib/ui/base_view/cpp/view_provider_component.h"
 #include "topaz/examples/ui/jank/jank_view.h"
 
 int main(int argc, const char** argv) {
@@ -18,10 +18,11 @@ int main(int argc, const char** argv) {
   if (!fxl::SetLogSettingsFromCommandLine(command_line))
     return 1;
 
-  scenic::ViewProviderComponentTransitional component(
-      [](scenic::ViewContextTransitional view_context) {
-        auto font_provider = view_context.component_context->svc()
-                                 ->Connect<fuchsia::fonts::Provider>();
+  scenic::ViewProviderComponent component(
+      [](scenic::ViewContext view_context) {
+        auto font_provider =
+            view_context.startup_context
+                ->ConnectToEnvironmentService<fuchsia::fonts::Provider>();
         return std::make_unique<examples::JankView>(std::move(view_context),
                                                     std::move(font_provider));
       },
