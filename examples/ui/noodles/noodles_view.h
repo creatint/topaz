@@ -6,6 +6,7 @@
 #define TOPAZ_EXAMPLES_UI_NOODLES_NOODLES_VIEW_H_
 
 #include <fuchsia/images/cpp/fidl.h>
+
 #include "examples/ui/lib/skia_view.h"
 #include "src/lib/fxl/macros.h"
 
@@ -18,7 +19,7 @@ class Rasterizer;
 
 class NoodlesView : public scenic::SkiaView {
  public:
-  NoodlesView(scenic::ViewContext view_context);
+  NoodlesView(scenic::ViewContextTransitional view_context);
   ~NoodlesView() override = default;
 
  private:

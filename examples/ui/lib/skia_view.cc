@@ -6,8 +6,10 @@
 
 namespace scenic {
 
-SkiaView::SkiaView(scenic::ViewContext view_context, const std::string& label)
-    : BaseView(std::move(view_context), label), canvas_cycler_(session()) {
+SkiaView::SkiaView(scenic::ViewContextTransitional view_context,
+                   const std::string& label)
+    : BaseViewTransitional(std::move(view_context), label),
+      canvas_cycler_(session()) {
   root_node().AddChild(canvas_cycler_);
 }
 
