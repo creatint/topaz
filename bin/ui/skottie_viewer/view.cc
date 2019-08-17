@@ -4,7 +4,8 @@
 
 #include "topaz/bin/ui/skottie_viewer/view.h"
 
-#include "lib/fsl/vmo/vector.h"
+#include <lib/fsl/vmo/vector.h>
+
 #include "src/lib/fxl/logging.h"
 #include "third_party/skia/include/core/SkColor.h"
 
@@ -12,7 +13,7 @@ namespace skottie {
 
 constexpr float kSecondsPerNanosecond = .000'000'001f;
 
-View::View(scenic::ViewContext view_context)
+View::View(scenic::ViewContextTransitional view_context)
     : SkiaView(std::move(view_context), "Skottie View"), player_binding_(this) {
   outgoing_services().AddService(loader_bindings_.GetHandler(this));
 }
