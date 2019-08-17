@@ -2,9 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
 import 'package:test/test.dart';
 
 import 'package:fidl/fidl.dart';
+import 'package:fidl_fuchsia_app_discover/fidl_async.dart'
+    show SessionDiscoverContext, StoryDiscoverContext;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as modular;
 import 'package:fuchsia_modular_flutter/story_shell.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
@@ -20,7 +23,9 @@ void main() {
   test('Publish StoryShellFactory', () {
     final mockStartupContext = MockStartupContext();
     final mockOutgoingImpl = MockOutgoing();
+    final mockIncomingImpl = MockIncoming();
     when(mockStartupContext.outgoing).thenReturn(mockOutgoingImpl);
+    when(mockStartupContext.incoming).thenReturn(mockIncomingImpl);
 
     StoryShell.advertise(
       startupContext: mockStartupContext,
@@ -29,6 +34,7 @@ void main() {
 
     verify(mockOutgoingImpl.addPublicService(
         any, modular.StoryShellFactory.$serviceName));
+    verify(mockIncomingImpl.connectToService(any));
   });
 
   test('Story Attached', () async {
@@ -117,9 +123,11 @@ class TestStoryShellFactory extends StoryShellFactoryImpl {
   ModularStoryShellImpl storyShellImpl;
 
   TestStoryShellFactory({
+    SessionDiscoverContext sessionDiscoverContext,
     StoryShellFactory onStoryAttached,
     StoryShellCallback onStoryDetached,
   }) : super(
+          sessionDiscoverContext: sessionDiscoverContext,
           onStoryAttached: onStoryAttached,
           onStoryDetached: onStoryDetached,
         );
@@ -130,6 +138,11 @@ class TestStoryShellFactory extends StoryShellFactoryImpl {
     InterfaceRequest<modular.StoryShell> request,
   ) {
     return storyShellImpl = TestModularStoryShellImpl(storyShell);
+  }
+
+  @override
+  Future<StoryDiscoverContext> getStoryDiscoverContext(String id) async {
+    return null;
   }
 }
 
@@ -168,6 +181,8 @@ class TestStoryShell implements StoryShell {
 
 // Mock classes.
 class MockStartupContext extends Mock implements StartupContext {}
+
+class MockIncoming extends Mock implements Incoming {}
 
 class MockOutgoing extends Mock implements Outgoing {}
 

@@ -32,6 +32,7 @@ dart_library("fuchsia_modular_flutter") {
   ]
 
   deps = [
+    "//sdk/fidl/fuchsia.app.discover",
     "//sdk/fidl/fuchsia.modular",
     "//sdk/fidl/fuchsia.ui.views",
     "//third_party/dart-pkg/git/flutter/packages/flutter",

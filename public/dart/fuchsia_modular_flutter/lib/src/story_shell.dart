@@ -5,6 +5,8 @@
 import 'package:meta/meta.dart';
 
 import 'package:fidl/fidl.dart' show InterfaceRequest;
+import 'package:fidl_fuchsia_app_discover/fidl_async.dart'
+    show SessionDiscoverContextProxy, StoryDiscoverContext;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as modular;
 import 'package:fuchsia_services/services.dart' show StartupContext;
 
@@ -46,7 +48,11 @@ abstract class StoryShell {
     @required StoryShellFactory onStoryAttached,
     StoryShellCallback onStoryDetached,
   }) {
+    final sessionDiscoverContext = SessionDiscoverContextProxy();
+    startupContext.incoming.connectToService(sessionDiscoverContext);
+
     final storyShellFactory = StoryShellFactoryImpl(
+      sessionDiscoverContext: sessionDiscoverContext,
       onStoryAttached: onStoryAttached,
       onStoryDetached: onStoryDetached,
     );
@@ -55,4 +61,10 @@ abstract class StoryShell {
             _storyShellFactoryBinding.bind(storyShellFactory, request),
         modular.StoryShellFactory.$serviceName);
   }
+}
+
+/// Defines a soft-transition extension to [Story].
+abstract class StoryShellTransitional extends StoryShell {
+  /// Holds the [StoryDiscoverContext] to get/set properties.
+  StoryDiscoverContext discoverContext;
 }

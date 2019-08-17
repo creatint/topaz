@@ -6,6 +6,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import 'package:fidl/fidl.dart' show InterfaceRequest;
+import 'package:fidl_fuchsia_app_discover/fidl_async.dart'
+    show
+        SessionDiscoverContext,
+        StoryDiscoverContext,
+        StoryDiscoverContextProxy;
 import 'package:fidl_fuchsia_modular/fidl_async.dart' as modular;
 
 import '../../story_shell.dart';
@@ -25,10 +30,14 @@ class StoryShellFactoryImpl extends modular.StoryShellFactory {
   /// Callback to get notified when a story with given id is stopped.
   final ValueChanged<StoryShell> onStoryDetached;
 
+  /// The [SessionDiscoverContext] used to get [StoryDiscoverContext].
+  final SessionDiscoverContext sessionDiscoverContext;
+
   final _storiesById = <String, ModularStoryShellImpl>{};
 
   /// Constructor.
   StoryShellFactoryImpl({
+    @required this.sessionDiscoverContext,
     @required this.onStoryAttached,
     this.onStoryDetached,
   }) : assert(onStoryAttached != null);
@@ -40,6 +49,11 @@ class StoryShellFactoryImpl extends modular.StoryShellFactory {
   ) async {
     final storyShell = onStoryAttached(id);
     final modularStoryShell = newModularStoryShell(storyShell, request);
+
+    if (storyShell is StoryShellTransitional) {
+      final storyDiscoverContext = await getStoryDiscoverContext(id);
+      storyShell.discoverContext = storyDiscoverContext;
+    }
 
     _storiesById[id] = modularStoryShell;
   }
@@ -58,4 +72,15 @@ class StoryShellFactoryImpl extends modular.StoryShellFactory {
     InterfaceRequest<modular.StoryShell> request,
   ) =>
       ModularStoryShellImpl(storyShell)..bind(request);
+
+  /// Get the [StoryDiscoverContext] for. Used for testing.
+  @visibleForTesting
+  Future<StoryDiscoverContext> getStoryDiscoverContext(String id) async {
+    final storyDiscoverContext = StoryDiscoverContextProxy();
+    await sessionDiscoverContext.getStoryContext(
+      id,
+      storyDiscoverContext.ctrl.request(),
+    );
+    return storyDiscoverContext;
+  }
 }
