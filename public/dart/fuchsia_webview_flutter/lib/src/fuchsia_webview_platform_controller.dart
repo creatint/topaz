@@ -16,8 +16,7 @@ import 'utils.dart' as utils;
 
 /// Fuchsia [WebViewPlatformController] implementation that serves as the entry
 /// point for all [fuchsia_webview_flutter/webview.dart]'s apis
-class FuchsiaWebViewPlatformController extends fidl_web.NavigationEventListener
-    implements WebViewPlatformController {
+class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   /// Helper class to interact with fuchsia web services
   FuchsiaWebServices _fuchsiaWebServices;
   String _currentUrl;
@@ -32,8 +31,10 @@ class FuchsiaWebViewPlatformController extends fidl_web.NavigationEventListener
   /// Initializes [FuchsiaWebViewPlatformController]
   FuchsiaWebViewPlatformController(this._platformCallbacksHandler,
       CreationParams creationParams, this._fuchsiaWebServices)
-      : assert(_platformCallbacksHandler != null) {
-    fuchsiaWebServices.setNavigationEventListener(this);
+      : assert(_platformCallbacksHandler != null),
+        super(_platformCallbacksHandler) {
+    fuchsiaWebServices.setNavigationEventListener(
+        _WebviewNavigationEventListener(_onNavigationStateChanged));
     updateSettings(creationParams.webSettings);
     if (creationParams.initialUrl != null) {
       loadUrl(creationParams.initialUrl, {});
@@ -44,22 +45,6 @@ class FuchsiaWebViewPlatformController extends fidl_web.NavigationEventListener
   /// Returns [FuchsiaWebServices]
   FuchsiaWebServices get fuchsiaWebServices {
     return _fuchsiaWebServices ??= FuchsiaWebServices();
-  }
-
-  @override
-  Future<void> onNavigationStateChanged(fidl_web.NavigationState state) async {
-    // TODO(miguelfrde): instead of storing just the current url, store the
-    // current state for use in canGoBack, canGoForward, etc.
-    if (state.url != null) {
-      _currentUrl = state.url;
-    }
-    if (state.isMainDocumentLoaded != null && state.isMainDocumentLoaded) {
-      final channelsToAdd =
-          _pendingChannels.union(_javascriptChannelSubscriptions.keys.toSet());
-      await _createChannelSubscriptions(channelsToAdd);
-      _pendingChannels.clear();
-      _platformCallbacksHandler.onPageFinished(_currentUrl);
-    }
   }
 
   @override
@@ -177,6 +162,22 @@ class FuchsiaWebViewPlatformController extends fidl_web.NavigationEventListener
     fuchsiaWebServices.dispose();
   }
 
+  /// Called when a navigation state event is received from the webview.
+  Future<void> _onNavigationStateChanged(fidl_web.NavigationState state) async {
+    // TODO(miguelfrde): instead of storing just the current url, store the
+    // current state for use in canGoBack, canGoForward, etc.
+    if (state.url != null) {
+      _currentUrl = state.url;
+    }
+    if (state.isMainDocumentLoaded != null && state.isMainDocumentLoaded) {
+      final channelsToAdd =
+          _pendingChannels.union(_javascriptChannelSubscriptions.keys.toSet());
+      await _createChannelSubscriptions(channelsToAdd);
+      _pendingChannels.clear();
+      _platformCallbacksHandler.onPageFinished(_currentUrl);
+    }
+  }
+
   /// For each channel in [javascriptChannelNames] creates an object with the
   /// channel name on window in the frame. That object will contain a
   /// `postMessage` method. Messages sent through that method will be received
@@ -292,5 +293,17 @@ class FuchsiaWebViewPlatformController extends fidl_web.NavigationEventListener
         break;
       }
     }
+  }
+}
+
+class _WebviewNavigationEventListener extends fidl_web.NavigationEventListener {
+  final Future<void> Function(fidl_web.NavigationState state)
+      navigationStateCallback;
+
+  _WebviewNavigationEventListener(this.navigationStateCallback);
+
+  @override
+  Future<void> onNavigationStateChanged(fidl_web.NavigationState state) async {
+    await this.navigationStateCallback(state);
   }
 }
