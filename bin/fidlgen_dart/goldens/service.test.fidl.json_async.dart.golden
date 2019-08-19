@@ -39,7 +39,7 @@ import 'package:zircon/zircon.dart' as $zx;
 typedef _VoidCallback = void Function();
 
 // methodOnFirst: ()
-const int _kFirstProtocol_MethodOnFirst_GenOrdinal = 0x2838a83100000000;
+const int _kFirstProtocol_MethodOnFirst_Ordinal = 0x2838a83100000000;
 const $fidl.MethodType _kFirstProtocol_MethodOnFirst_Type = $fidl.MethodType(
   request: null,
   response: null,
@@ -119,7 +119,7 @@ class FirstProtocolProxy extends $fidl.AsyncProxy<FirstProtocol>
     }
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kFirstProtocol_MethodOnFirst_GenOrdinal, 0);
+    $encoder.encodeMessageHeader(_kFirstProtocol_MethodOnFirst_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -133,7 +133,7 @@ class FirstProtocolBinding extends $fidl.AsyncBinding<FirstProtocol> {
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kFirstProtocol_MethodOnFirst_GenOrdinal:
+      case _kFirstProtocol_MethodOnFirst_Ordinal:
         final String _name = _kFirstProtocol_MethodOnFirst_Type.name;
         try {
           Timeline.startSync(_name);
@@ -158,7 +158,7 @@ class FirstProtocolBinding extends $fidl.AsyncBinding<FirstProtocol> {
 }
 
 // methodOnSecond: ()
-const int _kSecondProtocol_MethodOnSecond_GenOrdinal = 0xd09c00f00000000;
+const int _kSecondProtocol_MethodOnSecond_Ordinal = 0xd09c00f00000000;
 const $fidl.MethodType _kSecondProtocol_MethodOnSecond_Type = $fidl.MethodType(
   request: null,
   response: null,
@@ -238,7 +238,7 @@ class SecondProtocolProxy extends $fidl.AsyncProxy<SecondProtocol>
     }
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kSecondProtocol_MethodOnSecond_GenOrdinal, 0);
+    $encoder.encodeMessageHeader(_kSecondProtocol_MethodOnSecond_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -252,7 +252,7 @@ class SecondProtocolBinding extends $fidl.AsyncBinding<SecondProtocol> {
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kSecondProtocol_MethodOnSecond_GenOrdinal:
+      case _kSecondProtocol_MethodOnSecond_Ordinal:
         final String _name = _kSecondProtocol_MethodOnSecond_Type.name;
         try {
           Timeline.startSync(_name);

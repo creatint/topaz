@@ -190,14 +190,14 @@ const $fidl.TableType<Table> kTable_Type = $fidl.TableType<Table>(
 typedef _VoidCallback = void Function();
 
 // method: ()
-const int _kInterface_Method_GenOrdinal = 0x3f43684c00000000;
+const int _kInterface_Method_Ordinal = 0x3f43684c00000000;
 const $fidl.MethodType _kInterface_Method_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"Interface.Method",
 );
 // onEvent:  -> ()
-const int _kInterface_OnEvent_GenOrdinal = 0x136d200d00000000;
+const int _kInterface_OnEvent_Ordinal = 0x136d200d00000000;
 const $fidl.MethodType _kInterface_OnEvent_Type = $fidl.MethodType(
   request: null,
   response: null,
@@ -256,7 +256,7 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
   void _handleEvent($fidl.Message $message) {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kInterface_OnEvent_GenOrdinal:
+      case _kInterface_OnEvent_Ordinal:
         final String _name = _kInterface_OnEvent_Type.name;
         try {
           Timeline.startSync(_name);
@@ -315,7 +315,7 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
     }
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kInterface_Method_GenOrdinal, 0);
+    $encoder.encodeMessageHeader(_kInterface_Method_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -345,7 +345,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
       if (impl.onEvent != null) {
         $subscriptions.add(impl.onEvent.listen(($response) {
           final $fidl.Encoder $encoder = $fidl.Encoder();
-          $encoder.encodeMessageHeader(_kInterface_OnEvent_GenOrdinal, 0);
+          $encoder.encodeMessageHeader(_kInterface_OnEvent_Ordinal, 0);
           $encoder.alloc(16 - $fidl.kMessageHeaderSize);
           final List<$fidl.MemberType> $types =
               _kInterface_OnEvent_Type.response;
@@ -361,7 +361,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kInterface_Method_GenOrdinal:
+      case _kInterface_Method_Ordinal:
         final String _name = _kInterface_Method_Type.name;
         try {
           Timeline.startSync(_name);

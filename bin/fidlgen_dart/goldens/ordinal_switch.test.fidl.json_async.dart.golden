@@ -39,15 +39,14 @@ import 'package:zircon/zircon.dart' as $zx;
 typedef _VoidCallback = void Function();
 
 // ordinalFive: ()
-const int _kSwitchingOrdinals_OrdinalFive_GenOrdinal = 0x7784636700000000;
+const int _kSwitchingOrdinals_OrdinalFive_Ordinal = 0x7784636700000000;
 const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OrdinalFive",
 );
 // onlyGeneratedOrdinal: ()
-const int _kSwitchingOrdinals_OnlyGeneratedOrdinal_GenOrdinal =
-    0x27c9581f00000000;
+const int _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal = 0x27c9581f00000000;
 const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
     $fidl.MethodType(
   request: null,
@@ -55,8 +54,7 @@ const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
   name: r"SwitchingOrdinals.OnlyGeneratedOrdinal",
 );
 // eventOrdinalFifteen:  -> ()
-const int _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal =
-    0x577495a100000000;
+const int _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal = 0x577495a100000000;
 const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
     $fidl.MethodType(
   request: null,
@@ -64,7 +62,7 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
   name: r"SwitchingOrdinals.EventOrdinalFifteen",
 );
 // eventOnlyGeneratedOrdinal:  -> ()
-const int _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_GenOrdinal =
+const int _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal =
     0x7fec464e00000000;
 const $fidl.MethodType _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type =
     $fidl.MethodType(
@@ -115,7 +113,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
   void _handleEvent($fidl.Message $message) {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal:
+      case _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal:
         final String _name = _kSwitchingOrdinals_EventOrdinalFifteen_Type.name;
         try {
           Timeline.startSync(_name);
@@ -133,7 +131,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
           Timeline.finishSync();
         }
         break;
-      case _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_GenOrdinal:
+      case _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal:
         final String _name =
             _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type.name;
         try {
@@ -190,7 +188,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
     }
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kSwitchingOrdinals_OrdinalFive_GenOrdinal, 0);
+    $encoder.encodeMessageHeader(_kSwitchingOrdinals_OrdinalFive_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -206,7 +204,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
-        _kSwitchingOrdinals_OnlyGeneratedOrdinal_GenOrdinal, 0);
+        _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -240,7 +238,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
         $subscriptions.add(impl.eventOrdinalFifteen.listen(($response) {
           final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(
-              _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal, 0);
+              _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal, 0);
           $encoder.alloc(16 - $fidl.kMessageHeaderSize);
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_EventOrdinalFifteen_Type.response;
@@ -252,7 +250,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
         $subscriptions.add(impl.eventOnlyGeneratedOrdinal.listen(($response) {
           final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(
-              _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_GenOrdinal, 0);
+              _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal, 0);
           $encoder.alloc(16 - $fidl.kMessageHeaderSize);
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type.response;
@@ -268,7 +266,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kSwitchingOrdinals_OrdinalFive_GenOrdinal:
+      case _kSwitchingOrdinals_OrdinalFive_Ordinal:
         final String _name = _kSwitchingOrdinals_OrdinalFive_Type.name;
         try {
           Timeline.startSync(_name);
@@ -285,7 +283,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
           Timeline.finishSync();
         }
         break;
-      case _kSwitchingOrdinals_OnlyGeneratedOrdinal_GenOrdinal:
+      case _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal:
         final String _name = _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type.name;
         try {
           Timeline.startSync(_name);

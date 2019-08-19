@@ -115,7 +115,7 @@ class ChildBinding extends $fidl.AsyncBinding<Child> {
 }
 
 // getChild: () -> ($fidl.InterfaceHandle<Child> c)
-const int _kParent_GetChild_GenOrdinal = 0x3692bc6900000000;
+const int _kParent_GetChild_Ordinal = 0x3692bc6900000000;
 const $fidl.MethodType _kParent_GetChild_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -125,7 +125,7 @@ const $fidl.MethodType _kParent_GetChild_Type = $fidl.MethodType(
   name: r"Parent.GetChild",
 );
 // getChildRequest: () -> ($fidl.InterfaceRequest<Child> r)
-const int _kParent_GetChildRequest_GenOrdinal = 0x3faacc7e00000000;
+const int _kParent_GetChildRequest_Ordinal = 0x3faacc7e00000000;
 const $fidl.MethodType _kParent_GetChildRequest_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
@@ -135,7 +135,7 @@ const $fidl.MethodType _kParent_GetChildRequest_Type = $fidl.MethodType(
   name: r"Parent.GetChildRequest",
 );
 // takeChild: ($fidl.InterfaceHandle<Child> c)
-const int _kParent_TakeChild_GenOrdinal = 0x4c0642f900000000;
+const int _kParent_TakeChild_Ordinal = 0x4c0642f900000000;
 const $fidl.MethodType _kParent_TakeChild_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$fidl.InterfaceHandle<Child>>(
@@ -145,7 +145,7 @@ const $fidl.MethodType _kParent_TakeChild_Type = $fidl.MethodType(
   name: r"Parent.TakeChild",
 );
 // takeChildRequest: ($fidl.InterfaceRequest<Child> r)
-const int _kParent_TakeChildRequest_GenOrdinal = 0x5ec3867a00000000;
+const int _kParent_TakeChildRequest_Ordinal = 0x5ec3867a00000000;
 const $fidl.MethodType _kParent_TakeChildRequest_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$fidl.InterfaceRequest<Child>>(
@@ -213,7 +213,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
     }
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kParent_GetChild_GenOrdinal:
+      case _kParent_GetChild_Ordinal:
         final String _name = _kParent_GetChild_Type.name;
         try {
           Timeline.startSync(_name);
@@ -234,7 +234,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
           Timeline.finishSync();
         }
         break;
-      case _kParent_GetChildRequest_GenOrdinal:
+      case _kParent_GetChildRequest_Ordinal:
         final String _name = _kParent_GetChildRequest_Type.name;
         try {
           Timeline.startSync(_name);
@@ -273,7 +273,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
     }
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kParent_GetChild_GenOrdinal, 0);
+    $encoder.encodeMessageHeader(_kParent_GetChild_Ordinal, 0);
     final $completer = $async.Completer<$fidl.InterfaceHandle<Child>>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -288,7 +288,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
     }
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kParent_GetChildRequest_GenOrdinal, 0);
+    $encoder.encodeMessageHeader(_kParent_GetChildRequest_Ordinal, 0);
     final $completer = $async.Completer<$fidl.InterfaceRequest<Child>>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -303,7 +303,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
     }
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kParent_TakeChild_GenOrdinal, 0);
+    $encoder.encodeMessageHeader(_kParent_TakeChild_Ordinal, 0);
     $encoder.alloc(24 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types = _kParent_TakeChild_Type.request;
     $types[0].encode($encoder, c, 0);
@@ -321,7 +321,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
     }
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader(_kParent_TakeChildRequest_GenOrdinal, 0);
+    $encoder.encodeMessageHeader(_kParent_TakeChildRequest_Ordinal, 0);
     $encoder.alloc(24 - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
         _kParent_TakeChildRequest_Type.request;
@@ -339,7 +339,7 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kParent_GetChild_GenOrdinal:
+      case _kParent_GetChild_Ordinal:
         final String _name = _kParent_GetChild_Type.name;
         try {
           Timeline.startSync(_name);
@@ -350,7 +350,7 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
           $future.then(($response) {
             final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
-                _kParent_GetChild_GenOrdinal, $message.txid);
+                _kParent_GetChild_Ordinal, $message.txid);
             $encoder.alloc(24 - $fidl.kMessageHeaderSize);
             final List<$fidl.MemberType> $types =
                 _kParent_GetChild_Type.response;
@@ -369,7 +369,7 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
           Timeline.finishSync();
         }
         break;
-      case _kParent_GetChildRequest_GenOrdinal:
+      case _kParent_GetChildRequest_Ordinal:
         final String _name = _kParent_GetChildRequest_Type.name;
         try {
           Timeline.startSync(_name);
@@ -381,7 +381,7 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
           $future.then(($response) {
             final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
-                _kParent_GetChildRequest_GenOrdinal, $message.txid);
+                _kParent_GetChildRequest_Ordinal, $message.txid);
             $encoder.alloc(24 - $fidl.kMessageHeaderSize);
             final List<$fidl.MemberType> $types =
                 _kParent_GetChildRequest_Type.response;
@@ -400,7 +400,7 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
           Timeline.finishSync();
         }
         break;
-      case _kParent_TakeChild_GenOrdinal:
+      case _kParent_TakeChild_Ordinal:
         final String _name = _kParent_TakeChild_Type.name;
         try {
           Timeline.startSync(_name);
@@ -418,7 +418,7 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
           Timeline.finishSync();
         }
         break;
-      case _kParent_TakeChildRequest_GenOrdinal:
+      case _kParent_TakeChildRequest_Ordinal:
         final String _name = _kParent_TakeChildRequest_Type.name;
         try {
           Timeline.startSync(_name);

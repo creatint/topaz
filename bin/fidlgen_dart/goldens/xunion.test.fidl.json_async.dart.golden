@@ -526,8 +526,7 @@ const $fidl.StructType<Empty> kEmpty_Type = $fidl.StructType<Empty>(
 typedef _VoidCallback = void Function();
 
 // strictXUnionHenceResponseMayBeStackAllocated: () -> (StrictBoundedXUnion xu)
-const int
-    _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal =
+const int _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Ordinal =
     0x71a1b4b700000000;
 const $fidl.MethodType
     _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Type =
@@ -541,7 +540,7 @@ const $fidl.MethodType
 );
 // flexibleXUnionHenceResponseMustBeHeapAllocated: () -> (OlderSimpleUnion xu)
 const int
-    _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal =
+    _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Ordinal =
     0x3959ff0900000000;
 const $fidl.MethodType
     _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Type =
@@ -613,7 +612,7 @@ class TestProtocolProxy extends $fidl.AsyncProxy<TestProtocol>
     }
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal:
+      case _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Ordinal:
         final String _name =
             _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Type
                 .name;
@@ -638,7 +637,7 @@ class TestProtocolProxy extends $fidl.AsyncProxy<TestProtocol>
           Timeline.finishSync();
         }
         break;
-      case _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal:
+      case _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Ordinal:
         final String _name =
             _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Type
                 .name;
@@ -682,8 +681,7 @@ class TestProtocolProxy extends $fidl.AsyncProxy<TestProtocol>
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
-        _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal,
-        0);
+        _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Ordinal, 0);
     final $completer = $async.Completer<StrictBoundedXUnion>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -700,7 +698,7 @@ class TestProtocolProxy extends $fidl.AsyncProxy<TestProtocol>
 
     final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
-        _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal,
+        _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Ordinal,
         0);
     final $completer = $async.Completer<OlderSimpleUnion>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
@@ -715,7 +713,7 @@ class TestProtocolBinding extends $fidl.AsyncBinding<TestProtocol> {
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
-      case _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal:
+      case _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Ordinal:
         final String _name =
             _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Type
                 .name;
@@ -730,7 +728,7 @@ class TestProtocolBinding extends $fidl.AsyncBinding<TestProtocol> {
           $future.then(($response) {
             final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
-                _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal,
+                _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Ordinal,
                 $message.txid);
             $encoder.alloc(40 - $fidl.kMessageHeaderSize);
             final List<$fidl.MemberType> $types =
@@ -751,7 +749,7 @@ class TestProtocolBinding extends $fidl.AsyncBinding<TestProtocol> {
           Timeline.finishSync();
         }
         break;
-      case _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal:
+      case _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Ordinal:
         final String _name =
             _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Type
                 .name;
@@ -766,7 +764,7 @@ class TestProtocolBinding extends $fidl.AsyncBinding<TestProtocol> {
           $future.then(($response) {
             final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
-                _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal,
+                _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Ordinal,
                 $message.txid);
             $encoder.alloc(40 - $fidl.kMessageHeaderSize);
             final List<$fidl.MemberType> $types =
