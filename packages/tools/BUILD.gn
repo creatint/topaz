@@ -24,6 +24,7 @@ group("all") {
   ]
 }
 
+# WARNING: Known to infrastructure.
 group("doc_checker") {
   testonly = true
   public_deps = [

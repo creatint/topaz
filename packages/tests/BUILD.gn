@@ -57,6 +57,7 @@ group("dart") {
   ]
 }
 
+# WARNING: Known to infrastructure.
 group("all") {
   testonly = true
   public_deps = [

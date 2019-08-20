@@ -9,6 +9,7 @@ group("all") {
   ]
 }
 
+# WARNING: Known to infrastructure.
 group("topaz") {
   testonly = true
   public_deps = [
