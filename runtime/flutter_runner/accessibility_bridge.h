@@ -36,22 +36,13 @@ namespace flutter_runner {
 class AccessibilityBridge
     : public fuchsia::accessibility::semantics::SemanticActionListener {
  public:
-  // TODO(MI4-2531, FIDL-718): Remove these. We shouldn't be worried about
+  // TODO(MI4-2531, FIDL-718): Remove this. We shouldn't be worried about
   // batching messages at this level.
-  // A label string property on a node could cause the message to be larger
-  // than a FIDL channel can hold. This value guards string lengths so that
-  // they don't exceed the limit.
-  // A single string is only allowed to take up 1/3rd of the total available
-  // bytes to leave room for the rest of the message. This value should
-  // only be applied to a single string value in the message, e.g. the
-  // label. This value must be smaller than the kMaxMessageSize value.
-  static constexpr uint32_t kMaxStringLength = ZX_CHANNEL_MAX_MSG_BYTES / 3;
-
   // FIDL may encode a C++ struct as larger than the sizeof the C++ struct.
   // This is to make sure we don't send updates that are too large.
   static constexpr uint32_t kMaxMessageSize = ZX_CHANNEL_MAX_MSG_BYTES / 2;
 
-  static_assert(kMaxStringLength < kMaxMessageSize - 1);
+  static_assert(fuchsia::accessibility::semantics::MAX_LABEL_SIZE < kMaxMessageSize - 1);
 
   // Flutter uses signed 32 bit integers for node IDs, while Fuchsia uses
   // unsigned 32 bit integers. A change in the size on either one would break

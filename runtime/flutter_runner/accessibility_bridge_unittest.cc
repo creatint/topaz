@@ -95,7 +95,6 @@ TEST_F(AccessibilityBridgeTest, DeletesChildrenTransitively) {
 }
 
 TEST_F(AccessibilityBridgeTest, TruncatesLargeLabel) {
-  GTEST_SKIP() << "Skip until limits land in SDK and can be imported";
   // Test that labels which are too long are truncated.
   flutter::SemanticsNode node0;
   node0.id = 0;
@@ -106,7 +105,7 @@ TEST_F(AccessibilityBridgeTest, TruncatesLargeLabel) {
   flutter::SemanticsNode bad_node;
   bad_node.id = 2;
   bad_node.label = std::string(
-      flutter_runner::AccessibilityBridge::kMaxStringLength + 1, '2');
+      fuchsia::accessibility::semantics::MAX_LABEL_SIZE + 1, '2');
 
   node0.childrenInTraversalOrder = {1, 2};
 
@@ -133,13 +132,12 @@ TEST_F(AccessibilityBridgeTest, TruncatesLargeLabel) {
   ASSERT_TRUE(trimmed_node->has_attributes());
   EXPECT_EQ(
       trimmed_node->attributes().label(),
-      std::string(flutter_runner::AccessibilityBridge::kMaxStringLength, '2'));
+      std::string(fuchsia::accessibility::semantics::MAX_LABEL_SIZE, '2'));
   EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
   EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
 }
 
 TEST_F(AccessibilityBridgeTest, SplitsLargeUpdates) {
-  GTEST_SKIP() << "Skip until limits land in SDK and can be imported";
   // Test that labels which are too long are truncated.
   flutter::SemanticsNode node0;
   node0.id = 0;
@@ -147,7 +145,7 @@ TEST_F(AccessibilityBridgeTest, SplitsLargeUpdates) {
   flutter::SemanticsNode node1;
   node1.id = 1;
   node1.label =
-      std::string(flutter_runner::AccessibilityBridge::kMaxStringLength, '1');
+      std::string(fuchsia::accessibility::semantics::MAX_LABEL_SIZE, '1');
 
   flutter::SemanticsNode node2;
   node2.id = 2;
@@ -160,7 +158,7 @@ TEST_F(AccessibilityBridgeTest, SplitsLargeUpdates) {
   flutter::SemanticsNode node4;
   node4.id = 4;
   node4.label =
-      std::string(flutter_runner::AccessibilityBridge::kMaxStringLength, '4');
+      std::string(fuchsia::accessibility::semantics::MAX_LABEL_SIZE, '4');
 
   node0.childrenInTraversalOrder = {1, 2};
   node1.childrenInTraversalOrder = {3, 4};
@@ -217,15 +215,14 @@ TEST_F(AccessibilityBridgeTest, HandlesCycles) {
 }
 
 TEST_F(AccessibilityBridgeTest, BatchesLargeMessages) {
-  GTEST_SKIP() << "Skip until limits land in SDK and can be imported";
   // Tests that messages get batched appropriately.
   flutter::SemanticsNode node0;
   node0.id = 0;
 
   flutter::SemanticsNodeUpdates update;
 
-  const int32_t child_nodes = 650;
-  const int32_t leaf_nodes = 100;
+  const int32_t child_nodes = fuchsia::accessibility::semantics::MAX_FAN_OUT;
+  const int32_t leaf_nodes = fuchsia::accessibility::semantics::MAX_FAN_OUT;
   for (int32_t i = 1; i < child_nodes + 1; i++) {
     flutter::SemanticsNode node;
     node.id = i;
@@ -246,7 +243,7 @@ TEST_F(AccessibilityBridgeTest, BatchesLargeMessages) {
   RunLoopUntilIdle();
 
   EXPECT_EQ(0, semantics_manager_.DeleteCount());
-  EXPECT_EQ(67, semantics_manager_.UpdateCount());
+  EXPECT_EQ(13, semantics_manager_.UpdateCount());
   EXPECT_EQ(1, semantics_manager_.CommitCount());
   EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
   EXPECT_FALSE(semantics_manager_.UpdateOverflowed());
@@ -258,8 +255,8 @@ TEST_F(AccessibilityBridgeTest, BatchesLargeMessages) {
   });
   RunLoopUntilIdle();
 
-  EXPECT_EQ(2, semantics_manager_.DeleteCount());
-  EXPECT_EQ(68, semantics_manager_.UpdateCount());
+  EXPECT_EQ(1, semantics_manager_.DeleteCount());
+  EXPECT_EQ(14, semantics_manager_.UpdateCount());
   EXPECT_EQ(2, semantics_manager_.CommitCount());
   EXPECT_FALSE(semantics_manager_.DeleteOverflowed());
   EXPECT_FALSE(semantics_manager_.UpdateOverflowed());

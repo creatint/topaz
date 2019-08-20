@@ -67,9 +67,9 @@ AccessibilityBridge::GetNodeAttributes(const flutter::SemanticsNode& node,
                                        size_t* added_size) const {
   fuchsia::accessibility::semantics::Attributes attributes;
   // TODO(MI4-2531): Don't truncate.
-  if (node.label.size() > kMaxStringLength) {
-    attributes.set_label(node.label.substr(0, kMaxStringLength));
-    *added_size += kMaxStringLength;
+  if (node.label.size() > fuchsia::accessibility::semantics::MAX_LABEL_SIZE) {
+    attributes.set_label(node.label.substr(0, fuchsia::accessibility::semantics::MAX_LABEL_SIZE));
+    *added_size += fuchsia::accessibility::semantics::MAX_LABEL_SIZE;
   } else {
     attributes.set_label(node.label);
     *added_size += node.label.size();
