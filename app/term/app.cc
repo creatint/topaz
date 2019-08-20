@@ -38,7 +38,7 @@ void App::CreateView(
     fidl::InterfaceRequest<fuchsia::sys::ServiceProvider> incoming_services,
     fidl::InterfaceHandle<fuchsia::sys::ServiceProvider> outgoing_services) {
   auto scenic = context_->svc()->Connect<fuchsia::ui::scenic::Scenic>();
-  scenic::ViewContextTransitional view_context = {
+  scenic::ViewContext view_context = {
       .enable_ime = true,
       .session_and_listener_request =
           scenic::CreateScenicSessionPtrAndListenerRequest(scenic.get()),

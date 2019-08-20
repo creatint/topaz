@@ -28,7 +28,7 @@ constexpr char kShell[] = "/boot/bin/sh";
 
 }  // namespace
 
-ViewController::ViewController(scenic::ViewContextTransitional view_context,
+ViewController::ViewController(scenic::ViewContext view_context,
                                const TermParams& term_params,
                                DisconnectCallback disconnect_handler)
     : SkiaView(std::move(view_context), "Term"),

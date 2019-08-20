@@ -23,7 +23,7 @@ class View final : public scenic::SkiaView,
                    public fuchsia::skia::skottie::Loader,
                    public fuchsia::skia::skottie::Player {
  public:
-  View(scenic::ViewContextTransitional view_context);
+  View(scenic::ViewContext view_context);
   ~View() override = default;
 
   // |scenic::BaseView|

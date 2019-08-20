@@ -20,7 +20,7 @@ namespace examples {
 
 class PaintView : public scenic::SkiaView {
  public:
-  PaintView(scenic::ViewContextTransitional view_context);
+  PaintView(scenic::ViewContext view_context);
   ~PaintView() override = default;
 
  private:

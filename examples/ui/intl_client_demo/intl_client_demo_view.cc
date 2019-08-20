@@ -25,8 +25,7 @@ const std::string GetFirstLocale(const fuchsia::intl::Profile& profile) {
 
 }  // namespace
 
-IntlClientDemoView::IntlClientDemoView(
-    scenic::ViewContextTransitional view_context)
+IntlClientDemoView::IntlClientDemoView(scenic::ViewContext view_context)
     : SkiaView(std::move(view_context), "ViewConfig Demo"),
       font_loader_(
           component_context()->svc()->Connect<fuchsia::fonts::Provider>()),

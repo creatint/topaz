@@ -3,7 +3,7 @@
 // found in the LICENSE file.
 
 #include <lib/async-loop/cpp/loop.h>
-#include <lib/ui/base_view/cpp/view_provider_component_transitional.h>
+#include <lib/ui/base_view/cpp/view_provider_component.h>
 #include <trace-provider/provider.h>
 
 #include "src/lib/fxl/command_line.h"
@@ -18,8 +18,8 @@ int main(int argc, const char** argv) {
   async::Loop loop(&kAsyncLoopConfigAttachToThread);
   trace::TraceProviderWithFdio trace_provider(loop.dispatcher());
 
-  scenic::ViewProviderComponentTransitional component(
-      [](scenic::ViewContextTransitional view_context) {
+  scenic::ViewProviderComponent component(
+      [](scenic::ViewContext view_context) {
         return std::make_unique<skottie::View>(std::move(view_context));
       },
       &loop);

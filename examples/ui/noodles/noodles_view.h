@@ -19,7 +19,7 @@ class Rasterizer;
 
 class NoodlesView : public scenic::SkiaView {
  public:
-  NoodlesView(scenic::ViewContextTransitional view_context);
+  NoodlesView(scenic::ViewContext view_context);
   ~NoodlesView() override = default;
 
  private:

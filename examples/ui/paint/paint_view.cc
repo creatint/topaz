@@ -13,7 +13,7 @@
 
 namespace examples {
 
-PaintView::PaintView(scenic::ViewContextTransitional view_context)
+PaintView::PaintView(scenic::ViewContext view_context)
     : SkiaView(std::move(view_context), "Paint") {}
 
 void PaintView::OnSceneInvalidated(

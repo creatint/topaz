@@ -23,7 +23,7 @@ namespace examples {
 
 class JankView : public scenic::SkiaView {
  public:
-  JankView(scenic::ViewContextTransitional view_context,
+  JankView(scenic::ViewContext view_context,
            fuchsia::fonts::ProviderPtr font_provider);
   ~JankView() override = default;
 

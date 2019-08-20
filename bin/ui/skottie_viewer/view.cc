@@ -13,7 +13,7 @@ namespace skottie {
 
 constexpr float kSecondsPerNanosecond = .000'000'001f;
 
-View::View(scenic::ViewContextTransitional view_context)
+View::View(scenic::ViewContext view_context)
     : SkiaView(std::move(view_context), "Skottie View"), player_binding_(this) {
   outgoing_services().AddService(loader_bindings_.GetHandler(this));
 }
