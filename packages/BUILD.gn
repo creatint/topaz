@@ -6,43 +6,20 @@ group("all") {
   testonly = true
   public_deps = [
     "//garnet/packages/benchmarks:buildbot",
-    "//topaz/tests/benchmarks:all",
+    "//topaz/bin/fidlgen_dart:install(//build/toolchain:host_x64)",
     "//topaz/packages/examples:all",
     "//topaz/packages/prod:all",
-    "//topaz/packages/sdk:all",
     "//topaz/packages/tests:all",
-    "//topaz/packages/tools:all",
-  ]
-}
-
-group("buildbot") {
-  testonly = true
-  public_deps = [
-    "//peridot/packages:peridot",
-    "//topaz/packages:all",
+    "//topaz/public/sdk",
+    "//topaz/tests/benchmarks:all",
+    "//topaz/tools/doc_checker:tests(//build/toolchain:host_x64)",
+    "//topaz/tools/doc_checker(//build/toolchain:host_x64)",
   ]
 }
 
 group("kitchen_sink") {
   testonly = true
   public_deps = [
-    "//peridot/packages:kitchen_sink",
-    "//topaz/packages:all",
-  ]
-}
-
-group("topaz") {
-  testonly = true
-  public_deps = [
-    "//peridot/packages:peridot",
-    "//topaz/packages/prod:all",
-  ]
-}
-
-group("default") {
-  testonly = true
-  public_deps = [
-    "//peridot/packages:peridot",
-    "//topaz/packages:all",
+    "//topaz",
   ]
 }

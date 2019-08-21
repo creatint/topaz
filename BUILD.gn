@@ -5,7 +5,10 @@
 group("topaz") {
   testonly = true
   public_deps = [
-    "//topaz/packages:kitchen_sink",
+    # TODO: Remove //peridot/packages:kitchen_sink once client have that
+    # dependency explicitly.
+    "//peridot/packages:kitchen_sink",
+    "//topaz/packages:all",
   ]
 }
 
