@@ -75,9 +75,9 @@ class SystemInfoModel extends Model {
           (_smallClusterOpps[systemStatus.smallClusterOpIndex].freqHz) /
               1000000000;
       _bigClusterVoltage =
-          (_bigClusterOpps[systemStatus.bigClusterOpIndex].voltMv) / 1000;
+          (_bigClusterOpps[systemStatus.bigClusterOpIndex].voltUv) / 1000000;
       _littleClusterVoltage =
-          (_smallClusterOpps[systemStatus.smallClusterOpIndex].voltMv) / 1000;
+          (_smallClusterOpps[systemStatus.smallClusterOpIndex].voltUv) / 1000000;
       _cpuUtilization = systemStatus.cpuUtilization;
       _memoryUtilization = systemStatus.memoryUtilization;
       _update();
