@@ -8,7 +8,17 @@ import 'package:test/test.dart';
 import 'package:fidl/fidl.dart' as fidl;
 
 class SuccessCase<T> {
-  SuccessCase(this.input, this.type, this.bytes);
+  static void run<T>(
+      String name, T input, fidl.FidlType<T> type, Uint8List bytes) {
+    group(name, () {
+      EncodeSuccessCase(input, type, bytes)._checkEncode();
+      DecodeSuccessCase(input, type, bytes)._checkDecode();
+    });
+  }
+}
+
+class EncodeSuccessCase<T> {
+  EncodeSuccessCase(this.input, this.type, this.bytes);
 
   final T input;
   final fidl.FidlType<T> type;
@@ -17,9 +27,7 @@ class SuccessCase<T> {
   static void run<T>(
       String name, T input, fidl.FidlType<T> type, Uint8List bytes) {
     group(name, () {
-      SuccessCase(input, type, bytes)
-        .._checkEncode()
-        .._checkDecode();
+      EncodeSuccessCase(input, type, bytes)._checkEncode();
     });
   }
 
@@ -30,6 +38,21 @@ class SuccessCase<T> {
       final message = encoder.message;
       expect(Uint8List.view(message.data.buffer, 0, message.dataLength),
           equals(bytes));
+    });
+  }
+}
+
+class DecodeSuccessCase<T> {
+  DecodeSuccessCase(this.input, this.type, this.bytes);
+
+  final T input;
+  final fidl.FidlType<T> type;
+  final Uint8List bytes;
+
+  static void run<T>(
+      String name, T input, fidl.FidlType<T> type, Uint8List bytes) {
+    group(name, () {
+      DecodeSuccessCase(input, type, bytes)._checkDecode();
     });
   }
 
