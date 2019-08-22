@@ -5,7 +5,8 @@
 group("all") {
   testonly = true
   public_deps = [
-    "//topaz/packages/benchmarks:all",
+    "//garnet/packages/benchmarks:buildbot",
+    "//topaz/tests/benchmarks:all",
     "//topaz/packages/examples:all",
     "//topaz/packages/prod:all",
     "//topaz/packages/sdk:all",

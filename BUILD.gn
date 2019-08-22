@@ -2,6 +2,20 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+group("topaz") {
+  testonly = true
+  public_deps = [
+    "//topaz/packages:kitchen_sink",
+  ]
+}
+
+group("tests") {
+  testonly = true
+  public_deps = [
+    "//topaz/packages/tests:all",
+  ]
+}
+
 group("dart_unittests") {
   testonly = true
 

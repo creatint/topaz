@@ -31,9 +31,10 @@ BASE_PACKAGES=(
 )
 PACKAGES=(
   //garnet/bin/ui/tests/performance/vulkan_is_supported
+  //garnet/packages/benchmarks:buildbot
   //garnet/packages/products:devtools
-  //topaz/packages/benchmarks:all
   //topaz/packages:buildbot
+  //topaz/tests/benchmarks:all
   //topaz/tests/benchmarks:all
   //topaz/tests/benchmarks/dart_inspect:dart_inspect_benchmarks
 )
