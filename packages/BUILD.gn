@@ -6,10 +6,10 @@ group("all") {
   testonly = true
   public_deps = [
     "//garnet/packages/benchmarks:buildbot",
+    "//topaz:tests",
     "//topaz/bin/fidlgen_dart:install(//build/toolchain:host_x64)",
     "//topaz/packages/examples:all",
     "//topaz/packages/prod:all",
-    "//topaz/packages/tests:all",
     "//topaz/public/sdk",
     "//topaz/tests/benchmarks:all",
     "//topaz/tools/doc_checker:tests(//build/toolchain:host_x64)",

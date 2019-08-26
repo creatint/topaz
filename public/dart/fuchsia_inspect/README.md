@@ -20,7 +20,7 @@ Inspect data may be discovered and retrieved with [iquery][iquery].
 
 Unit tests for Inspect are available in the `fuchsia_inspect_package_unittests`
 package. This includes tests from the `test/inspect` and `test/vmo` directories.
-To run these tests, include `--with //topaz/packages/tests:all` in the `fx set`
+To run these tests, include `--with //topaz:tests` in the `fx set`
 invocation and run the following command:
 
 ```
