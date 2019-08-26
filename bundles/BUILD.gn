@@ -6,7 +6,7 @@ group("buildbot") {
   testonly = true
   public_deps = [
     "//peridot/packages:peridot",
-    "//topaz/packages:all",
+    "//topaz",
     "//topaz/public/sdk",
   ]
 }
