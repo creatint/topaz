@@ -12,6 +12,7 @@ import 'package:intl/src/intl_helpers.dart';
 import 'messages_ar-XB.dart' deferred as messages_ar_xb;
 import 'messages_en-XA.dart' deferred as messages_en_xa;
 import 'messages_en-XC.dart' deferred as messages_en_xc;
+import 'messages_he.dart' deferred as messages_he;
 import 'messages_sr-Latn.dart' deferred as messages_sr_latn;
 import 'messages_sr.dart' deferred as messages_sr;
 
@@ -21,6 +22,7 @@ Map<String, LibraryLoader> _deferredLibraries = {
   'en_XA': messages_en_xa.loadLibrary,
   'en_XC': messages_en_xc.loadLibrary,
   'sr_Latn': messages_sr_latn.loadLibrary,
+  'he': messages_he.loadLibrary,
   'sr': messages_sr.loadLibrary,
 };
 
@@ -36,6 +38,8 @@ MessageLookupByLibrary _findExact(localeName) {
       return messages_sr_latn.messages;
     case 'sr':
       return messages_sr.messages;
+    case 'he':
+      return messages_he.messages;
     default:
       return null;
   }
