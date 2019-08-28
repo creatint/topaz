@@ -26,7 +26,6 @@
             "fuchsia.logger.LogSink",
             "fuchsia.modular.Clipboard",
             "fuchsia.modular.ComponentContext",
-            "fuchsia.modular.ContextWriter",
             "fuchsia.modular.ModuleContext",
             "fuchsia.posix.socket.Provider",
             "fuchsia.net.NameLookup",
