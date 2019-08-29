@@ -30,7 +30,7 @@ dart_library("fuchsia_modular_testing") {
     "//topaz/public/dart/fuchsia_modular",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/dart/zircon",
-    "//zircon/public/fidl/fuchsia-mem",
+    "//zircon/system/fidl/fuchsia-mem",
   ]
 }
 

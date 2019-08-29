@@ -144,7 +144,7 @@ template("flutter_runner") {
              "//topaz/runtime/dart/utils:files",
              "//topaz/runtime/dart/utils:inlines",
              "//topaz/runtime/dart/utils:vmo",
-             "//zircon/public/fidl/fuchsia-io",
+             "//zircon/system/fidl/fuchsia-io",
              "//zircon/public/lib/async-cpp",
              "//zircon/public/lib/async-default",
              "//zircon/public/lib/async-loop-cpp",

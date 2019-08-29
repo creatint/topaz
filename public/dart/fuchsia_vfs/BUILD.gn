@@ -31,7 +31,7 @@ dart_library("fuchsia_vfs") {
     "//third_party/dart-pkg/pub/quiver",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/zircon",
-    "//zircon/public/fidl/fuchsia-io",
+    "//zircon/system/fidl/fuchsia-io",
   ]
 }
 

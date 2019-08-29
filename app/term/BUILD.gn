@@ -44,7 +44,7 @@ executable("bin") {
     "//third_party/skia",
     "//topaz/examples/ui/lib:skia_fonts",
     "//topaz/examples/ui/lib:skia_view",
-    "//zircon/public/fidl/fuchsia-hardware-pty:fuchsia-hardware-pty_c",
+    "//zircon/system/fidl/fuchsia-hardware-pty:fuchsia-hardware-pty_c",
     "//zircon/public/lib/async-cpp",
     "//zircon/public/lib/async-loop-cpp",
     "//zircon/public/lib/fdio",

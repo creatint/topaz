@@ -32,8 +32,8 @@ dart_library("fuchsia_webview_flutter") {
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/dart/fuchsia_vfs",
     "//topaz/public/dart/zircon",
-    "//zircon/public/fidl/fuchsia-io",
-    "//zircon/public/fidl/fuchsia-mem",
+    "//zircon/system/fidl/fuchsia-io",
+    "//zircon/system/fidl/fuchsia-mem",
   ]
 }
 

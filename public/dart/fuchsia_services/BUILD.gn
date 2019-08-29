@@ -30,7 +30,7 @@ dart_library("fuchsia_services") {
     "//topaz/public/dart/fuchsia",
     "//topaz/public/dart/fuchsia_vfs",
     "//topaz/public/dart/zircon",
-    "//zircon/public/fidl/fuchsia-io",
+    "//zircon/system/fidl/fuchsia-io",
   ]
 }
 
@@ -43,7 +43,7 @@ flutter_test("fuchsia_services_package_unittests") {
   deps = [
     ":fuchsia_services",
     "//third_party/dart-pkg/pub/test",
-    "//zircon/public/fidl/fuchsia-io",
+    "//zircon/system/fidl/fuchsia-io",
   ]
 }
 
@@ -74,7 +74,7 @@ dart_fuchsia_test("fuchsia_services_package_integration_tests") {
     ":fuchsia_services",
     ":test_foo_fidl",
     "//third_party/dart-pkg/pub/test",
-    "//zircon/public/fidl/fuchsia-io",
+    "//zircon/system/fidl/fuchsia-io",
   ]
   environments = basic_envs
 }
