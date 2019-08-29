@@ -4,11 +4,8 @@
 
 #include "topaz/runtime/dart/utils/tempfs.h"
 
-#include <future>
-#include <string>
-#include <thread>
-
 #include <lib/async-loop/cpp/loop.h>
+#include <lib/async-loop/default.h>
 #include <lib/async/cpp/task.h>
 #include <lib/fdio/namespace.h>
 #include <lib/memfs/memfs.h>
@@ -16,6 +13,10 @@
 #include <zircon/errors.h>
 #include <zircon/status.h>
 #include <zircon/syscalls.h>
+
+#include <future>
+#include <string>
+#include <thread>
 
 #include "topaz/runtime/dart/utils/logging.h"
 
@@ -29,7 +30,8 @@ constexpr char kTmpPath[] = "/tmp";
 namespace dart_utils {
 
 RunnerTemp::RunnerTemp()
-    : loop_(std::make_unique<async::Loop>(&kAsyncLoopConfigNoAttachToThread)) {
+    : loop_(std::make_unique<async::Loop>(
+          &kAsyncLoopConfigNoAttachToCurrentThread)) {
   loop_->StartThread("RunnerTemp");
   Start();
 }

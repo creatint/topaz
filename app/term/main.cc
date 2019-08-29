@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include <lib/async-loop/cpp/loop.h>
+#include <lib/async-loop/default.h>
 #include <trace-provider/provider.h>
 
 #include "src/lib/fxl/log_settings_command_line.h"
@@ -19,7 +20,7 @@ int main(int argc, const char** argv) {
     return 1;
   }
 
-  async::Loop loop(&kAsyncLoopConfigAttachToThread);
+  async::Loop loop(&kAsyncLoopConfigAttachToCurrentThread);
   trace::TraceProviderWithFdio trace_provider(loop.dispatcher());
 
   term::App app(std::move(params));

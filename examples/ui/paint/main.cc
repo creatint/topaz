@@ -3,15 +3,15 @@
 // found in the LICENSE file.
 
 #include <lib/async-loop/cpp/loop.h>
+#include <lib/async-loop/default.h>
 #include <lib/trace-provider/provider.h>
 #include <lib/ui/base_view/cpp/view_provider_component.h>
 
 #include "src/lib/fxl/command_line.h"
 #include "src/lib/fxl/log_settings_command_line.h"
 #include "topaz/examples/ui/paint/paint_view.h"
-
 int main(int argc, const char** argv) {
-  async::Loop loop(&kAsyncLoopConfigAttachToThread);
+  async::Loop loop(&kAsyncLoopConfigAttachToCurrentThread);
   trace::TraceProviderWithFdio trace_provider(loop.dispatcher());
 
   auto command_line = fxl::CommandLineFromArgcArgv(argc, argv);
