@@ -31,7 +31,7 @@ bool CreateVulkanImage(vulkan::VulkanProvider& vulkan_provider,
   FML_DCHECK(out_vulkan_image != nullptr);
 
   // The image creation parameters need to be the same as those in scenic
-  // (garnet/lib/ui/gfx/resources/gpu_image.cc and
+  // (src/ui/scenic/lib/gfx/resources/gpu_image.cc and
   // src/ui/lib/escher/util/image_utils.cc) or else the different vulkan
   // devices may interpret the bytes differently.
   // TODO(SCN-1369): Use API to coordinate this with scenic.
