@@ -35,6 +35,12 @@ dart_library("fuchsia_modular_testing") {
 }
 
 fidl("test_fidl") {
+  # TODO(fxb/35879): Remove lint exclusions by fixing known FIDL lint violations in this target
+  excluded_checks = [
+    "invalid-case-for-decl-name",
+    "string-bounds-not-specified",
+  ]
+
   name = "test.modular.dart"
 
   sources = [
