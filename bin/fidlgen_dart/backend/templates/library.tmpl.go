@@ -47,6 +47,7 @@ import '{{ .AsyncURL }}' as {{ .LocalName }};
 // ignore_for_file: unused_shown_name
 // ignore_for_file: unnecessary_lambdas
 // ignore_for_file: comment_references
+// ignore_for_file: avoid_unused_constructor_parameters
 
 {{ range $const := .Consts -}}
 {{ template "ConstDeclaration" $const }}
