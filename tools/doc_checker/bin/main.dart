@@ -191,24 +191,6 @@ Future<Null> main(List<String> args) async {
     return null;
   }));
 
-  // Verify http links pointing outside the tree.
-  if (!options[_optionLocalLinksOnly]) {
-    await verifyLinks(outOfTreeLinks, (Link<String> link, bool isValid) {
-      if (!isValid) {
-        errors.add(
-            Error(ErrorType.brokenLink, link.payload, link.uri.toString()));
-      }
-    });
-  }
-
-  // Verify singletons and orphans.
-  final List<Node> unreachable = graph.removeSingletons()
-    ..addAll(graph.orphans
-      ..removeWhere((Node node) => node.label == '//docs/navbar.md'));
-  for (Node node in unreachable) {
-    errors.add(Error.forProject(ErrorType.unreachablePage, node.label));
-  }
-
   // Check yaml files
   final List<String> yamls = Directory(docsDir)
       .listSync(recursive: true)
@@ -227,6 +209,18 @@ Future<Null> main(List<String> args) async {
 
   if (yamlErrors.isNotEmpty) {
     errors.addAll(yamlErrors);
+  }
+
+  // Verify http links pointing outside the tree.
+  if (!options[_optionLocalLinksOnly]) {
+    List<Link<String>> menuLinks = checker.outOfTreeLinks;
+    outOfTreeLinks.addAll(menuLinks);
+    await verifyLinks(outOfTreeLinks, (Link<String> link, bool isValid) {
+      if (!isValid) {
+        errors.add(
+            Error(ErrorType.brokenLink, link.payload, link.uri.toString()));
+      }
+    });
   }
 
   errors

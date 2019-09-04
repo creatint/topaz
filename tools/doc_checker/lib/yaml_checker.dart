@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 
 import 'package:doc_checker/errors.dart';
+import 'package:doc_checker/link_verifier.dart';
 
 /// Loads yaml files to verify they are
 /// compatible with fuchsia.dev hosting.
@@ -18,7 +19,8 @@ class YamlChecker {
   String _rootDir;
 
   // List of errors found.
-  List<Error> errors = <Error>[];
+  final List<Error> errors = <Error>[];
+  final List<Link<String>> outOfTreeLinks = <Link<String>>[];
 
   static const List<String> validStatusValues = <String>[
     'alpha',
@@ -73,7 +75,7 @@ class YamlChecker {
               .add(Error(ErrorType.invalidMenu, null, 'unreferenced yaml $s'));
         }
         for (String s in _mdSet) {
-          errors.add(Error(ErrorType.invalidMenu, null,
+          errors.add(Error(ErrorType.unreachablePage, null,
               'File $s not referenced in any yaml file'));
         }
         completer.complete(errors.isEmpty);
@@ -168,10 +170,22 @@ class YamlChecker {
             String menuPath = map[key];
             if (validatePath(menuPath, filename)) {
               // If the path is to a file, check that the file exists.
-              // TODO(wilkinsonclay): check the URLs are valid.
               if (!menuPath.startsWith('https://') &&
                   !menuPath.startsWith('//')) {
                 checkFileExists(menuPath, filename);
+              } else {
+                Uri uri;
+                try {
+                  if (menuPath.startsWith('//')) {
+                    uri = Uri.parse('https:$menuPath');
+                  } else {
+                    uri = Uri.parse(menuPath);
+                  }
+                } on FormatException {
+                  errors.add(Error(ErrorType.invalidUri, filename, menuPath));
+                  continue;
+                }
+                outOfTreeLinks.add(Link(uri, filename));
               }
             }
           }
