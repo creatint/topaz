@@ -65,20 +65,11 @@ void main(List<String> args) {
   t2.newItem(2).add(2);
 
   // DynamicGeneratesNewHierarchy Test
-  const String digitsOfPi = '31415';
-  const String digitsOfE = '27182';
-  const String digitsOfSqrt2 = '14142';
-  const String digitsOfQuake3 = '5f375';
-  const int numDigits = 5;
   int nextDigit = 0;
   void writeNextDigit(Node root) {
-    root.child('transcendental')
-      ..stringProperty('pi').setValue(digitsOfPi[nextDigit])
-      ..stringProperty('e').setValue(digitsOfE[nextDigit]);
-    root.child('nontranscendental')
-      ..stringProperty('sqrt2').setValue(digitsOfSqrt2[nextDigit])
-      ..stringProperty('quake3').setValue(digitsOfQuake3[nextDigit]);
-    nextDigit = (nextDigit + 1) % numDigits;
+    root.child('increments').stringProperty('value').setValue('$nextDigit');
+    root.child('doubles').stringProperty('value').setValue('${nextDigit * 2}');
+    nextDigit += 1;
   }
 
   Inspect.onDemand('digits_of_numbers', writeNextDigit);

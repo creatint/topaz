@@ -7,11 +7,10 @@
 #include <lib/fdio/directory.h>
 #include <lib/fdio/fd.h>
 #include <lib/fdio/fdio.h>
-#include <lib/inspect_deprecated/reader.h>
-#include <lib/inspect_deprecated/testing/inspect.h>
+#include <lib/inspect/cpp/reader.h>
+#include <lib/inspect/testing/cpp/inspect.h>
 
 #include "gmock/gmock.h"
-#include "lib/inspect_deprecated/deprecated/expose.h"
 #include "lib/sys/cpp/testing/test_with_environment.h"
 #include "src/lib/files/glob.h"
 #include "src/lib/fxl/strings/substitute.h"
@@ -21,7 +20,7 @@ namespace {
 using ::fxl::Substitute;
 using sys::testing::EnclosingEnvironment;
 using ::testing::UnorderedElementsAre;
-using namespace inspect_deprecated::testing;
+using namespace inspect::testing;
 
 constexpr char kTestComponent[] =
     "fuchsia-pkg://fuchsia.com/dart_inspect_vmo_test_writer#meta/"
@@ -29,14 +28,6 @@ constexpr char kTestComponent[] =
 constexpr char kTestProcessName[] = "dart_inspect_vmo_test_writer.cmx";
 constexpr char kTestInspectFileName1[] = "test";
 constexpr char kTestInspectFileName2[] = "test_2";
-const std::string digitsOfPi("31415");
-const std::string digitsOfE("27182");
-const std::string digitsOfSqrt2("14142");
-const std::string digitsOfQuake3("5f375");
-constexpr int indexOfDigitOfPi = 0;
-constexpr int indexOfDigitOfE = 1;
-constexpr int indexOfDigitOfSqrt2 = 2;
-constexpr int indexOfDigitOfQuake3 = 3;
 
 class InspectTest : public sys::testing::TestWithEnvironment {
  protected:
@@ -123,44 +114,42 @@ TEST_F(InspectTest, ReadHierarchy) {
   auto describe_file_result = InspectTest::DescribeInspectVmoFile(file);
   ASSERT_TRUE(describe_file_result.is_ok());
   zx::vmo vmo(describe_file_result.take_value());
-  auto read_file_result = inspect_deprecated::ReadFromVmo(std::move(vmo));
+  auto read_file_result = inspect::ReadFromVmo(std::move(vmo));
   ASSERT_TRUE(read_file_result.is_ok());
-  inspect_deprecated::ObjectHierarchy hierarchy = read_file_result.take_value();
+  inspect::Hierarchy hierarchy = read_file_result.take_value();
 
   EXPECT_THAT(
       hierarchy,
       AllOf(
           NodeMatches(NameMatches("root")),
           ChildrenMatch(UnorderedElementsAre(
-              AllOf(NodeMatches(AllOf(
-                        NameMatches("t1"),
-                        PropertyList(UnorderedElementsAre(
-                            StringPropertyIs("version", "1.0"),
-                            ByteVectorPropertyIs(
-                                "frame", std::vector<uint8_t>({0, 0, 0})))),
-                        MetricList(
-                            UnorderedElementsAre(IntMetricIs("value", -10))))),
+              AllOf(NodeMatches(
+                        AllOf(NameMatches("t1"),
+                              PropertyList(UnorderedElementsAre(
+                                  StringIs("version", "1.0"),
+                                  ByteVectorIs("frame",
+                                               std::vector<uint8_t>({0, 0, 0})),
+                                  IntIs("value", -10))))),
                     ChildrenMatch(UnorderedElementsAre(
                         NodeMatches(AllOf(NameMatches("item-0x0"),
-                                          MetricList(UnorderedElementsAre(
-                                              IntMetricIs("value", 10))))),
+                                          PropertyList(UnorderedElementsAre(
+                                              IntIs("value", 10))))),
                         NodeMatches(AllOf(NameMatches("item-0x1"),
-                                          MetricList(UnorderedElementsAre(
-                                              IntMetricIs("value", 100)))))
+                                          PropertyList(UnorderedElementsAre(
+                                              IntIs("value", 100)))))
 
                             ))),
               AllOf(
                   NodeMatches(AllOf(
                       NameMatches("t2"),
                       PropertyList(UnorderedElementsAre(
-                          StringPropertyIs("version", "1.0"),
-                          ByteVectorPropertyIs(
-                              "frame", std::vector<uint8_t>({0, 0, 0})))),
-                      MetricList(
-                          UnorderedElementsAre(IntMetricIs("value", -10))))),
+                          StringIs("version", "1.0"),
+                          ByteVectorIs("frame",
+                                       std::vector<uint8_t>({0, 0, 0})),
+                          IntIs("value", -10))))),
                   ChildrenMatch(UnorderedElementsAre(NodeMatches(AllOf(
-                      NameMatches("item-0x2"), MetricList(UnorderedElementsAre(
-                                                   IntMetricIs("value", 4)))))))
+                      NameMatches("item-0x2"),
+                      PropertyList(UnorderedElementsAre(IntIs("value", 4)))))))
 
                       )))));
 }
@@ -170,15 +159,15 @@ TEST_F(InspectTest, DynamicGeneratesNewHierarchy) {
   ASSERT_TRUE(open_file_result.is_ok());
   fuchsia::io::FileSyncPtr file(open_file_result.take_value());
 
-  auto expectInspectOnDemandVmoFile = [&](std::vector<const std::string>
-                                              digits) {
+  std::vector<std::string> increments_value;
+  std::vector<std::string> doubles_value;
+  auto expectInspectOnDemandVmoFile = [&]() {
     auto describe_file_result(DescribeInspectVmoFile(file));
     ASSERT_TRUE(describe_file_result.is_ok());
     zx::vmo vmo(describe_file_result.take_value());
-    auto read_file_result = inspect_deprecated::ReadFromVmo(std::move(vmo));
+    auto read_file_result = inspect::ReadFromVmo(std::move(vmo));
     ASSERT_TRUE(read_file_result.is_ok());
-    inspect_deprecated::ObjectHierarchy hierarchy =
-        read_file_result.take_value();
+    inspect::Hierarchy hierarchy = read_file_result.take_value();
 
     EXPECT_THAT(
         hierarchy,
@@ -186,32 +175,31 @@ TEST_F(InspectTest, DynamicGeneratesNewHierarchy) {
             NodeMatches(NameMatches("root")),
             ChildrenMatch(UnorderedElementsAre(
                 NodeMatches(AllOf(  // child one
-                    NameMatches("transcendental"),
-                    PropertyList(UnorderedElementsAre(
-                        StringPropertyIs("pi", digits[indexOfDigitOfPi]),
-                        StringPropertyIs("e", digits[indexOfDigitOfE]))))),
+                    NameMatches("increments"),
+                    PropertyList(UnorderedElementsAre(StringIs(
+                        "value", ::testing::Truly([&](const std::string& val) {
+                          increments_value.push_back(val);
+                          return true;
+                        })))))),
                 NodeMatches(AllOf(  // child two
-                    NameMatches("nontranscendental"),
-                    PropertyList(UnorderedElementsAre(
-                        StringPropertyIs("sqrt2", digits[indexOfDigitOfSqrt2]),
-                        StringPropertyIs(
-                            "quake3",
-                            digits
-                                [indexOfDigitOfQuake3])))))))  // ChildrenMatch
-            )                                                  // AllOf
-    );                                                         // EXPECT_THAT
-  };
-  auto getDigitsOfConstants =
-      [](const int digit) -> std::vector<const std::string> {
-    return {digitsOfPi.substr(digit, 1), digitsOfE.substr(digit, 1),
-            digitsOfSqrt2.substr(digit, 1), digitsOfQuake3.substr(digit, 1)};
+                    NameMatches("doubles"),
+                    PropertyList(UnorderedElementsAre(StringIs(
+                        "value", ::testing::Truly([&](const std::string& val) {
+                          doubles_value.push_back(val);
+                          return true;
+                        }))))))))));
   };
 
-  expectInspectOnDemandVmoFile(getDigitsOfConstants(0));
-  expectInspectOnDemandVmoFile(getDigitsOfConstants(1));
-  expectInspectOnDemandVmoFile(getDigitsOfConstants(2));
-  expectInspectOnDemandVmoFile(getDigitsOfConstants(3));
+  expectInspectOnDemandVmoFile();
+  expectInspectOnDemandVmoFile();
+
+  ASSERT_EQ(2u, increments_value.size());
+  ASSERT_EQ(2u, doubles_value.size());
+
+  EXPECT_NE(increments_value[0], increments_value[1]);
+  EXPECT_NE(doubles_value[0], doubles_value[1]);
 }
+
 TEST_F(InspectTest, NamedInspectVisible) {
   files::Glob glob1(
       Substitute("/hub/r/test/*/c/*/*/c/$0/*/out/debug/$1.inspect",
