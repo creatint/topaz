@@ -35,7 +35,6 @@ group("topaz") {
     "//topaz/examples/ui/paint:package",
     "//topaz/examples/ui/simple_flutter",
     "//topaz/lib/story_shell/examples/example_manual_relationships",
-    "//topaz/lib/story_shell/examples/mondrian_test",
     "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod",
     "//topaz/public/dart/fuchsia_modular/examples/fibonacci_agent",
     "//topaz/public/dart/fuchsia_modular/examples/multilevel_mod",
@@ -65,7 +64,6 @@ group("topaz") {
     "//topaz/runtime/flutter_runner:flutter_aot_runner",
     "//topaz/runtime/flutter_runner:flutter_jit_product_runner",
     "//topaz/runtime/flutter_runner:flutter_jit_runner",
-    "//topaz/shell/mondrian_story_shell:mondrian",
     "//topaz/shell/story_shell_labs",
     "//topaz/tests/benchmarks:all",
     "//topaz/tools/doc_checker:tests(//build/toolchain:host_x64)",
@@ -156,7 +154,6 @@ group("tests") {
     "//topaz/runtime/dart_runner/integration:dart_jit_runner_test",
     "//topaz/runtime/dart/utils:run_vmservice_object_tests",
     "//topaz/runtime/flutter_runner:flutter_runner_tests",
-    "//topaz/shell/mondrian_story_shell:mondrian_story_shell_tests($host_toolchain)",
     "//topaz/tests/fidl-changes",
     "//topaz/tests/fidl-dangerous-identifiers",
     "//topaz/tests/web_runner_tests",
@@ -169,7 +166,6 @@ group("dart_unittests") {
   deps = [
     "examples/test/flutter_widget_test:flutter_widget_test",
     "public/dart/sledge:dart_sledge_tests",
-    "shell:tests",
   ]
 }
 
