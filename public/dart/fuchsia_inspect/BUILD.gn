@@ -18,6 +18,8 @@ dart_library("fuchsia_inspect") {
     "src/inspect/internal/_inspect_impl.dart",
     "src/inspect/node.dart",
     "src/inspect/property.dart",
+    "src/testing/matcher.dart",
+    "src/testing/util.dart",
     "src/vmo/bitfield64.dart",
     "src/vmo/block.dart",
     "src/vmo/heap.dart",
@@ -26,9 +28,12 @@ dart_library("fuchsia_inspect") {
     "src/vmo/vmo_fields.dart",
     "src/vmo/vmo_holder.dart",
     "src/vmo/vmo_writer.dart",
+    "testing.dart",
   ]
 
   deps = [
+    "//third_party/dart-pkg/pub/collection",
+    "//third_party/dart-pkg/pub/matcher",
     "//third_party/dart-pkg/pub/meta",
     "//topaz/public/dart/fuchsia_services",
     "//topaz/public/dart/fuchsia_vfs",

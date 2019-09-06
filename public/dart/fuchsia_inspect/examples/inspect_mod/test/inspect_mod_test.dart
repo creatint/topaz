@@ -14,10 +14,9 @@ import 'package:fuchsia_remote_debug_protocol/logging.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:glob/glob.dart';
 import 'package:test/test.dart';
-import 'package:test_vmo_reader/vmo_reader.dart' show VmoReader;
+import 'package:fuchsia_inspect/testing.dart' show VmoMatcher, hasNoErrors;
 // ignore: implementation_imports
 import 'util.dart';
-
 
 const Pattern _testAppName = 'inspect_mod.cmx';
 const _testAppUrl = 'fuchsia-pkg://fuchsia.com/inspect_mod#meta/$_testAppName';
@@ -107,7 +106,7 @@ Future<void> _launchModUnderTest() async {
   await storyPuppetMasterProxy.execute();
 }
 
-Future<String> _readInspect() async {
+Future<FakeVmoReader> _readInspect() async {
   // WARNING: 0) These paths are extremely fragile.
   var globs = [
     // TODO(vickiecheng): remove this one once stories reuse session envs.
@@ -128,7 +127,7 @@ Future<String> _readInspect() async {
           vmoData.setUint8(i, vmoBytes[i]);
         }
         var vmo = FakeVmoReader.usingData(vmoData);
-        return VmoReader(vmo).toString();
+        return vmo;
       }
     }
   }
@@ -166,7 +165,7 @@ void main() {
     testHarnessController.ctrl.close();
   });
 
-  Future<String> tapAndWait(String buttonName, String nextState) async {
+  Future<FakeVmoReader> tapAndWait(String buttonName, String nextState) async {
     await driver.tap(find.text(buttonName));
     await driver.waitFor(find.byValueKey(nextState));
     return await _readInspect();
@@ -175,61 +174,91 @@ void main() {
   test('Put the program through its paces', () async {
     // Wait for initial StateBloc value to appear
     await driver.waitFor(find.byValueKey('Program has started'));
-    var inspect = await _readInspect();
-    expect('<> >> IntProperty "interesting": 118', isIn(inspect));
-    expect('<> >> DoubleProperty "double down": 3.23', isIn(inspect));
-    expect('<> >> ByteDataProperty  "bytes": 01 02 03 04', isIn(inspect));
-    expect('<> >> StringProperty "greeting": "Hello World"', isIn(inspect));
-    expect('<> >> Node: "home-page"', isIn(inspect));
-    expect('<> >> >> IntProperty "counter": 0', isIn(inspect));
-    expect('<> >> >> StringProperty "background-color": "Color(0xffffffff)"',
-        isIn(inspect));
-    expect('<> >> >> StringProperty "title": "Hello Inspect!"', isIn(inspect));
+    var matcher = VmoMatcher(await _readInspect());
 
-    // Tap the "Increment counter" button
-    inspect = await tapAndWait('Increment counter', 'Counter was incremented');
-    expect('IntProperty "counter": 0', isNot(isIn(inspect)));
-    expect('IntProperty "counter": 1', isIn(inspect));
+    expect(
+        matcher.node()
+          ..propertyEquals('interesting', 118)
+          ..propertyEquals('double down', 3.23)
+          ..propertyEquals('bytes', Uint8List.fromList([1, 2, 3, 4]))
+          ..propertyEquals('greeting', 'Hello World'),
+        hasNoErrors);
 
-    // Tap the "Decrement counter" button
-    inspect = await tapAndWait('Decrement counter', 'Counter was decremented');
-    expect('IntProperty "counter": 1', isNot(isIn(inspect)));
-    expect('IntProperty "counter": 0', isIn(inspect));
+    expect(
+        matcher.node().at(['home-page'])
+          ..propertyEquals('counter', 0)
+          ..propertyEquals('background-color', 'Color(0xffffffff)')
+          ..propertyEquals('title', 'Hello Inspect!'),
+        hasNoErrors);
+
+    matcher = VmoMatcher(
+        await tapAndWait('Increment counter', 'Counter was incremented'));
+    expect(matcher.node().at(['home-page'])..propertyEquals('counter', 1),
+        hasNoErrors);
+
+    matcher = VmoMatcher(
+        await tapAndWait('Decrement counter', 'Counter was decremented'));
+    expect(matcher.node().at(['home-page'])..propertyEquals('counter', 0),
+        hasNoErrors);
 
     // The node name below is truncated due to limitations of the maximum node
     // name length.
-    var preTreeInspect = inspect;
-    inspect = await tapAndWait('Make tree', 'Tree was made');
+    matcher = VmoMatcher(await tapAndWait('Make tree', 'Tree was made'));
     expect(
-        '<> >> >> Node: "I think that I shall never see01234567890123456789012345"\n'
-        '<> >> >> >> IntProperty "int0": 0',
-        isIn(inspect));
+        matcher.node().at([
+          'home-page',
+          'I think that I shall never see01234567890123456789012345'
+        ])
+          ..propertyEquals('int0', 0),
+        hasNoErrors);
 
-    inspect = await tapAndWait('Grow tree', 'Tree was grown');
-    expect('<> >> >> >> IntProperty "int0": 0', isIn(inspect));
-    expect('<> >> >> >> IntProperty "int1": 1', isIn(inspect));
-
-    inspect = await tapAndWait('Delete tree', 'Tree was deleted');
-    expect(inspect, preTreeInspect);
-
-    inspect = await tapAndWait('Grow tree', 'Tree was grown');
-    expect(inspect, preTreeInspect);
-
-    inspect = await tapAndWait('Make tree', 'Tree was made');
+    matcher = VmoMatcher(await tapAndWait('Grow tree', 'Tree was grown'));
     expect(
-        '<> >> >> Node: "I think that I shall never see01234567890123456789012345"\n'
-        '<> >> >> >> IntProperty "int3": 3',
-        isIn(inspect));
+        matcher.node().at([
+          'home-page',
+          'I think that I shall never see01234567890123456789012345'
+        ])
+          ..propertyEquals('int0', 0)
+          ..propertyEquals('int1', 1),
+        hasNoErrors);
 
-    inspect = await tapAndWait('Get answer', 'Waiting for answer');
-    expect('>> StringProperty "waiting": "for a hint"', isIn(inspect));
+    matcher = VmoMatcher(await tapAndWait('Delete tree', 'Tree was deleted'));
+    expect(
+        matcher.node().at(['home-page'])
+          ..missingChild(
+              'I think that I shall never see01234567890123456789012345'),
+        hasNoErrors);
 
-    inspect = await tapAndWait('Give hint', 'Displayed answer');
-    expect('>> StringProperty "waiting": "for a hint"', isNot(isIn(inspect)));
+    matcher = VmoMatcher(await tapAndWait('Grow tree', 'Tree was grown'));
+    expect(
+        matcher.node().at(['home-page'])
+          ..missingChild(
+              'I think that I shall never see01234567890123456789012345'),
+        hasNoErrors);
 
-    inspect = await tapAndWait('Change color', 'Color was changed');
-    expect('<> >> >> StringProperty "background-color": "Color(0xffffffff)"',
-        isNot(isIn(inspect)));
-    expect('<> >> >> StringProperty "background-color": "', isIn(inspect));
+    matcher = VmoMatcher(await tapAndWait('Make tree', 'Tree was made'));
+    expect(
+        matcher.node().at([
+          'home-page',
+          'I think that I shall never see01234567890123456789012345'
+        ])
+          ..propertyEquals('int3', 3),
+        hasNoErrors);
+
+    matcher = VmoMatcher(await tapAndWait('Get answer', 'Waiting for answer'));
+    expect(
+        matcher.node().at(['home-page'])
+          ..propertyEquals('waiting', 'for a hint'),
+        hasNoErrors);
+
+    matcher = VmoMatcher(await tapAndWait('Give hint', 'Displayed answer'));
+    expect(
+        matcher.node().at(['home-page'])..missingChild('waiting'), hasNoErrors);
+
+    matcher = VmoMatcher(await tapAndWait('Change color', 'Color was changed'));
+    expect(
+        matcher.node().at(['home-page']).propertyNotEquals(
+            'background-color', 'Color(0xffffffff)'),
+        hasNoErrors);
   });
 }
