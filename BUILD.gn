@@ -15,7 +15,6 @@ group("topaz") {
     "//topaz:tests",
     "//topaz/app/latin-ime",
     "//topaz/app/spinning_cube",
-    "//topaz/app/term",
     "//topaz/bin/fidlgen_dart:install(//build/toolchain:host_x64)",
     "//topaz/bin/system_dashboard",
     "//topaz/bin/ui/skottie_viewer:package",
@@ -184,7 +183,6 @@ group("deprecated_shell_allowlist") {
   # request for that fine-grained feature to help us support least-privileged
   # components.
   visibility = [
-    "//topaz/app/term:term",
     "//topaz/bin/flutter_screencap_test:flutter_screencap_test_pkg",
     "//topaz/examples/test/driver_example_mod:driver_example_mod_tests_pkg",
     "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod:inspect_mod_test_pkg",
