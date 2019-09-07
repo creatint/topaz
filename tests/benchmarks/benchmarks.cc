@@ -31,7 +31,7 @@ int main(int argc, const char** argv) {
   // TODO(PT-118): Input latency tests are only currently supported on NUC.
 #if !defined(__aarch64__)
   constexpr const char* kLabel = "fuchsia.input_latency.button_flutter";
-  std::string out_file = benchmarks_runner.MakePerfResultsOutputFilename("input_latency");
+  std::string out_file = benchmarks_runner.MakePerfResultsOutputFilename(kLabel);
   benchmarks_runner.AddCustomBenchmark(
       kLabel,
       {"/bin/run",
