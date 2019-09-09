@@ -13,3 +13,9 @@ String bufferToString(fidl_mem.Buffer buffer) {
   dataVmo.close();
   return utf8.decode(data.bytesAsUint8List());
 }
+
+/// Writes a string into a VMO and a FIDL transport buffer.
+fidl_mem.Buffer stringToBuffer(String string) {
+  final vmo = SizedVmo.fromUint8List(utf8.encode(string));
+  return fidl_mem.Buffer(vmo: vmo, size: vmo.size);
+}

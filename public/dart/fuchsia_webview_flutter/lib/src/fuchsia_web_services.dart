@@ -3,12 +3,10 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:convert' show utf8;
 import 'dart:io';
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_io/fidl_async.dart' as fidl_io;
-import 'package:fidl_fuchsia_mem/fidl_async.dart' as fidl_mem;
 import 'package:fidl_fuchsia_web/fidl_async.dart' as fidl_web;
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_scenic_flutter/child_view_connection.dart';
@@ -133,15 +131,36 @@ class FuchsiaWebServices {
   // TODO(crbug.com/900391): Investigate if we can run the scripts in
   // isolated JS worlds.
   Future<String> evaluateJavascript(List<String> origins, String script) async {
-    final vmo = SizedVmo.fromUint8List(utf8.encode(script));
-    final buffer = fidl_mem.Buffer(vmo: vmo, size: vmo.size);
+    final buffer = utils.stringToBuffer(script);
     // TODO(nkosote): add catchError and decorate the error based on the error
     // code.
-    // TODO(miguelfrde): replace with executeJavaScript once chromium rolls.
-    await frame.executeJavaScriptNoResult(origins, buffer);
-    final resultVmo = SizedVmo.fromUint8List(utf8.encode('1'));
-    final resultBuffer = fidl_mem.Buffer(vmo: resultVmo, size: resultVmo.size);
-    return utils.bufferToString(resultBuffer);
+    final result = await frame.executeJavaScript(origins, buffer);
+    return utils.bufferToString(result);
+  }
+
+  /// Executes a UTF-8 encoded `script` for every subsequent page load where the
+  /// [`fuchsia.web.Frame`]'s URL has an origin reflected in `origins`. The script is executed
+  /// early, prior to the execution of the document's scripts.
+  ///
+  /// Scripts are identified by a client-managed identifier `id`. Any script previously injected
+  /// using the same `id` will be replaced.
+  ///
+  /// The order in which multiple bindings are executed is the same as the order in which the
+  /// bindings were added. If a script is added which clobbers an existing script of the same
+  /// `id`, the previous script's precedence in the injection order will be preserved.
+  ///
+  /// At least one `origins` entry must be specified. If a wildcard `"*"` is specified in
+  /// `origins`, then the script will be evaluated unconditionally.
+  ///
+  /// If an error occured, the [`fuchsia.web.FrameError`] will be set to one of these values:
+  /// - `BUFFER_NOT_UTF8`: `script` is not UTF-8 encoded.
+  /// - `INVALID_ORIGIN`: `origins` is an empty vector.
+  Future<void> evaluateJavascriptBeforeLoad(
+      int id, List<String> origins, String script) async {
+    final buffer = utils.stringToBuffer(script);
+    // TODO(miguelfrde): add catchError and decorate the error based on the error
+    // code.
+    await frame.addBeforeLoadJavaScript(id, origins, buffer);
   }
 
   /// Posts a message to the [fidl_web.Frame]'s onMessage handler.
@@ -162,9 +181,9 @@ class FuchsiaWebServices {
     String message, {
     InterfaceRequest<fidl_web.MessagePort> outgoingMessagePortRequest,
   }) {
-    final vmo = SizedVmo.fromUint8List(utf8.encode(message));
+    final data = utils.stringToBuffer(message);
     var msg = fidl_web.WebMessage(
-      data: fidl_mem.Buffer(vmo: vmo, size: vmo.size),
+      data: data,
       outgoingTransfer: outgoingMessagePortRequest != null
           ? [
               fidl_web.OutgoingTransferable.withMessagePort(

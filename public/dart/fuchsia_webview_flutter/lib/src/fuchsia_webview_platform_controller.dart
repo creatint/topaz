@@ -14,19 +14,26 @@ import 'package:fuchsia_logger/logger.dart';
 import 'fuchsia_web_services.dart';
 import 'utils.dart' as utils;
 
+class _ChannelSubscription {
+  StreamSubscription<String> subscription;
+  final int id;
+  _ChannelSubscription(this.id, {this.subscription});
+}
+
 /// Fuchsia [WebViewPlatformController] implementation that serves as the entry
 /// point for all [fuchsia_webview_flutter/webview.dart]'s apis
 class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   /// Helper class to interact with fuchsia web services
   FuchsiaWebServices _fuchsiaWebServices;
   String _currentUrl;
-  // Reason: sdk_version_set_literal unsupported until version 2.2
+  int _nextId = 0;
+  // Reason: not supported until v2.2 and we need to support earlier
+  // versions.
   // ignore: prefer_collection_literals
-  final _pendingChannels = Set<String>();
+  var _beforeLoadChannels = Set<String>();
 
   final WebViewPlatformCallbacksHandler _platformCallbacksHandler;
-  final _javascriptChannelSubscriptions =
-      <String, StreamSubscription<String>>{};
+  final _javascriptChannelSubscriptions = <String, _ChannelSubscription>{};
 
   /// Initializes [FuchsiaWebViewPlatformController]
   FuchsiaWebViewPlatformController(this._platformCallbacksHandler,
@@ -36,10 +43,10 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
     fuchsiaWebServices.setNavigationEventListener(
         _WebviewNavigationEventListener(_onNavigationStateChanged));
     updateSettings(creationParams.webSettings);
+    _addBeforeLoadChannels(creationParams.javascriptChannelNames);
     if (creationParams.initialUrl != null) {
       loadUrl(creationParams.initialUrl, {});
     }
-    _pendingChannels.addAll(creationParams.javascriptChannelNames);
   }
 
   /// Returns [FuchsiaWebServices]
@@ -128,7 +135,9 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
       Set<String> javascriptChannelNames) async {
     for (final channelName in javascriptChannelNames) {
       if (_javascriptChannelSubscriptions.containsKey(channelName)) {
-        await _javascriptChannelSubscriptions[channelName].cancel();
+        await _javascriptChannelSubscriptions[channelName]
+            .subscription
+            .cancel();
         _javascriptChannelSubscriptions.remove(channelName);
         await fuchsiaWebServices
             .evaluateJavascript(['*'], 'window.$channelName = undefined;');
@@ -157,7 +166,7 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   /// Close all remaining subscriptions and connections.
   void dispose() {
     for (final entry in _javascriptChannelSubscriptions.entries) {
-      entry.value.cancel();
+      entry.value.subscription.cancel();
     }
     fuchsiaWebServices.dispose();
   }
@@ -170,12 +179,17 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
       _currentUrl = state.url;
     }
     if (state.isMainDocumentLoaded != null && state.isMainDocumentLoaded) {
-      final channelsToAdd =
-          _pendingChannels.union(_javascriptChannelSubscriptions.keys.toSet());
-      await _createChannelSubscriptions(channelsToAdd);
-      _pendingChannels.clear();
+      await _establishCommunication(_beforeLoadChannels);
       _platformCallbacksHandler.onPageFinished(_currentUrl);
     }
+  }
+
+  /// Registers the javascript channels that will be loaded when the page loads.
+  /// Connection will be established when the page loads.
+  Future<void> _addBeforeLoadChannels(
+      Set<String> javascriptChannelNames) async {
+    _beforeLoadChannels = javascriptChannelNames;
+    await _createChannelSubscriptions(javascriptChannelNames, beforeLoad: true);
   }
 
   /// For each channel in [javascriptChannelNames] creates an object with the
@@ -189,55 +203,85 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   ///   3. The frame has a listener on window and will reply with a
   ///      share-port-ack and a port to which the frame will send messages.
   ///   4. Bind that port and start listening on it.
-  ///   5. When a message arrives on that port it is sent to the client through
+  ///   5. Notify the frame that we are ready to receive messages.
+  ///   6. When a message arrives on that port it is sent to the client through
   ///      the platform callback.
-  Future<void> _createChannelSubscriptions(
-      Set<String> javascriptChannelNames) async {
+  Future<void> _createChannelSubscriptions(Set<String> javascriptChannelNames,
+      {bool beforeLoad}) async {
     for (final channelName in javascriptChannelNames) {
       // Close any connections to that object (if any existed)
       if (_javascriptChannelSubscriptions.containsKey(channelName)) {
-        await _javascriptChannelSubscriptions[channelName].cancel();
+        await _javascriptChannelSubscriptions[channelName]
+            .subscription
+            .cancel();
+      } else {
+        _javascriptChannelSubscriptions[channelName] =
+            _ChannelSubscription(_nextId);
+        _nextId += 1;
       }
+    }
 
-      // Create a JavaScript object with one postMessage method. This object
-      // will be exposed on window.$channelName when the FIDL communication is
-      // established. Any window.$channelName already set will be removed.
-      final script = _scriptForChannel(channelName);
-      await evaluateJavascript(script);
+    // Create a JavaScript object with one postMessage method. This object
+    // will be exposed on window.$channelName when the FIDL communication is
+    // established. Any window.$channelName already set will be removed.
+    // If before load, the connection will happen once the page loads.
+    if (beforeLoad) {
+      await Future.wait(javascriptChannelNames.map((channel) {
+        // Reason: not supported until v2.2 and we need to support earlier
+        // versions.
+        // ignore: prefer_collection_literals
+        final script = _scriptForChannels(Set.from([channel]));
+        return fuchsiaWebServices.evaluateJavascriptBeforeLoad(
+            _javascriptChannelSubscriptions[channel].id, ['*'], script);
+      }));
+      return;
+    }
 
+    final script = _scriptForChannels(javascriptChannelNames);
+    await evaluateJavascript(script);
+
+    await _establishCommunication(javascriptChannelNames);
+  }
+
+  Future<void> _establishCommunication(Set<String> javascriptChannelNames) {
+    return Future.wait(javascriptChannelNames.map((channelName) async {
       // Creates the message channel connection.
       fidl_web.MessagePortProxy incomingPort;
       try {
-        incomingPort = await _bindIncomingPort();
+        incomingPort = await _bindIncomingPort(channelName);
       } on Exception catch (e) {
         log.warning('Failed to bind incoming port for $channelName: $e');
-        continue;
+        return;
       }
 
       // Subscribe for incoming messages.
       final incomingMessagesStream = _startReceivingMessages(incomingPort);
-      _javascriptChannelSubscriptions[channelName] =
+      _javascriptChannelSubscriptions[channelName].subscription =
           incomingMessagesStream.listen(
         (message) async {
           _platformCallbacksHandler.onJavaScriptChannelMessage(
               channelName, message);
         },
       );
-    }
+
+      // Notify of readiness
+      await fuchsiaWebServices.postMessage(
+          '*', 'share-port-$channelName-ready');
+    }));
   }
 
-  /// Communicates with the script injected by `_scriptForChannel` to get a port
+  /// Communicates with the script injected by `_scriptForChannels` to get a port
   /// from the web page with which to communicate with the page. See comments on
   /// `_createChannelSubscriptions` for details on the process.
-  Future<fidl_web.MessagePortProxy> _bindIncomingPort() async {
+  Future<fidl_web.MessagePortProxy> _bindIncomingPort(String channel) async {
     final messagePort = fidl_web.MessagePortProxy();
-    await fuchsiaWebServices.postMessage('*', 'share-port',
+    await fuchsiaWebServices.postMessage('*', 'share-port-$channel',
         outgoingMessagePortRequest: messagePort.ctrl.request());
 
     final msg = await messagePort.receiveMessage();
     final ackMsg = utils.bufferToString(msg.data);
-    if (ackMsg != 'share-port-ack') {
-      throw Exception('Expected "share-port-ack", got: "$ackMsg"');
+    if (ackMsg != 'share-port-ack-$channel') {
+      throw Exception('Expected "share-port-ack-$channel", got: "$ackMsg"');
     }
     if (msg.incomingTransfer == null || msg.incomingTransfer.isEmpty) {
       throw Exception('failed to provide an incoming message port');
@@ -250,34 +294,57 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   /// Script injected to the frame to create an object with the given name on
   /// window. See comments on `_createChannelSubscriptions` for details on the
   /// process.
-  String _scriptForChannel(String channelName) {
-    return """
+  String _scriptForChannels(Set<String> channelNames) {
+    return channelNames.map((channel) => '''
         (function() {
-          function init$channelName(event) {
-            if (event.data == 'share-port' && event.ports && event.ports.length > 0) {
-              console.log("Registering channel $channelName");
-              const messageChannel = new MessageChannel();
-              event.ports[0].postMessage('share-port-ack', [messageChannel.port2]);
-              window.$channelName = new $channelName(messageChannel);
-              window.removeEventListener('message', init$channelName, true);
-            }
-          }
-
-          window.addEventListener('message', init$channelName, true);
-
-          class $channelName {
-            constructor(messageChannel) {
-              this._messageChannel = messageChannel;
+          class $channel {
+            constructor() {
+              this._messageChannel = null;
+              this._pendingMessages = [];
+              this._isReady = false;
             }
 
             postMessage(message) {
-              this._messageChannel.port1.postMessage(message);
+              if (this._isReady) {
+                this._messageChannel.port1.postMessage(message);
+              } else {
+                this._pendingMessages.push(message);
+              }
+            }
+
+            _ready() {
+              for (const pendingMessage of this._pendingMessages) {
+                this._messageChannel.port1.postMessage(pendingMessage);
+              }
+              this._isReady = true;
+              this._pendingMessages = [];
+            }
+
+            _setMessageChannel(channel) {
+              this._messageChannel = channel;
             }
           }
 
-          window.$channelName = undefined;
+          window.$channel = new $channel();
+
+          function initializer$channel(event) {
+            if (event.data) {
+              if (event.data == 'share-port-$channel' && event.ports && event.ports.length > 0) {
+                console.log('Registering channel $channel');
+                const messageChannel = new MessageChannel();
+                window.$channel._setMessageChannel(messageChannel);
+                event.ports[0].postMessage('share-port-ack-$channel', [messageChannel.port2]);
+              }
+              if (event.data == 'share-port-$channel-ready') {
+                console.log('Channel $channel ready');
+                window.$channel._ready();
+                window.removeEventListener('message', initializer$channel, true);
+              }
+            }
+          }
+          window.addEventListener('message', initializer$channel, true);
         })();
-      """;
+      ''').join('\n');
   }
 
   /// Listens for messages on the incoming port and streams them.
