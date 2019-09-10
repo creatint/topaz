@@ -6,15 +6,14 @@
 
 import 'package:fuchsia_inspect/src/inspect/internal/_inspect_impl.dart';
 import 'package:fuchsia_inspect/src/vmo/vmo_writer.dart';
+import 'package:fuchsia_inspect/testing.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
-
-import '../../util.dart';
 
 void main() {
   test('Inspect root node is non-null by default', () {
     var context = StartupContext.fromStartupInfo();
-    var vmo = FakeVmo(512);
+    var vmo = FakeVmoHolder(512);
     var writer = VmoWriter.withVmo(vmo);
 
     var inspect =

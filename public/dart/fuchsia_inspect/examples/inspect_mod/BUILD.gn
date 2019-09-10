@@ -29,40 +29,14 @@ flutter_app("inspect_mod") {
   ]
 }
 
-dart_library("test_vmo_reader") {
-  package_name = "test_vmo_reader"
-
-  sdk_category = "partner"
-
-  sources = [
-    "main.dart",
-    "src/inspect_example_app.dart",
-    "src/intent_handlers/root_intent_handler.dart",
-    "util.dart",
-    "vmo_reader.dart",
-  ]
-
-  deps = [
-    "//third_party/dart-pkg/git/flutter/packages/flutter",
-    "//third_party/dart-pkg/pub/test",
-    "//topaz/public/dart/fuchsia_inspect",
-    "//topaz/public/dart/fuchsia_modular",
-    "//topaz/public/dart/fuchsia_services",
-    "//topaz/public/dart/fuchsia_vfs",
-    "//topaz/public/dart/zircon",
-  ]
-}
-
 dart_fuchsia_test("inspect_mod_test") {
   deprecated_shell = "//topaz"
 
   sources = [
     "inspect_mod_test.dart",
-    "util.dart",
   ]
 
   deps = [
-    ":test_vmo_reader",
     "//sdk/fidl/fuchsia.modular.testing",
     "//sdk/fidl/fuchsia.sys",
     "//third_party/dart-pkg/git/flutter/packages/flutter_driver",

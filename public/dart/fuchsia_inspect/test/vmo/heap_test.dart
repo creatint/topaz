@@ -4,6 +4,7 @@
 
 // ignore_for_file: implementation_imports
 
+import 'package:fuchsia_inspect/testing.dart';
 import 'package:fuchsia_inspect/src/vmo/heap.dart';
 import 'package:fuchsia_inspect/src/vmo/block.dart';
 import 'package:fuchsia_inspect/src/vmo/vmo_fields.dart';
@@ -27,7 +28,7 @@ const List<int> _allocatedIndexes = [4, 6];
 void main() {
   group('In the Heap', () {
     test('the initial free state is correct in the VMO', () {
-      var vmo = FakeVmo(_heapSizeBytes);
+      var vmo = FakeVmoHolder(_heapSizeBytes);
       Slab32(vmo);
       var f = hexChar(BlockType.free.value);
       compare(vmo, 0x00, '0  0 000000 00000000  00000000 00000000');
@@ -41,7 +42,7 @@ void main() {
     });
 
     test('allocate changes VMO contents correctly', () {
-      var vmo = FakeVmo(_heapSizeBytes);
+      var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = Slab32(vmo);
       var blocks = _allocateEverything(heap);
       expect(blocks, hasLength(2));
@@ -53,7 +54,7 @@ void main() {
     });
 
     test('free and re-allocate work correctly', () {
-      var vmo = FakeVmo(_heapSizeBytes);
+      var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = Slab32(vmo);
       var blocks = _allocateEverything(heap);
       expect(blocks, hasLength(_allocatedIndexes.length));

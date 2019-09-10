@@ -8,6 +8,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:fuchsia_inspect/testing.dart';
 import 'package:fuchsia_inspect/src/vmo/bitfield64.dart';
 import 'package:fuchsia_inspect/src/vmo/block.dart';
 import 'package:fuchsia_inspect/src/vmo/heap.dart';
@@ -28,7 +29,7 @@ void main() {
 
     group('vmo_writer operations work:', () {
       test('Init VMO writes correctly to the VMO', () {
-        final vmo = FakeVmo(256);
+        final vmo = FakeVmoHolder(256);
         createWriter(vmo);
         final f = hexChar(BlockType.free.value);
         final h = hexChar(BlockType.header.value);
@@ -53,7 +54,7 @@ void main() {
       });
 
       test('failed createNode leaves VMO sequence number even (valid VMO)', () {
-        final vmo = FakeVmo(64); // No space for anything
+        final vmo = FakeVmoHolder(64); // No space for anything
         final writer = createWriter(vmo);
         final h = hexChar(BlockType.header.value);
         writer.createNode(writer.rootNode, 'child');
@@ -63,7 +64,7 @@ void main() {
 
       test('failed createProperty leaves VMO sequence number even (valid VMO)',
           () {
-        final vmo = FakeVmo(64); // No space for anything
+        final vmo = FakeVmoHolder(64); // No space for anything
         final writer = VmoWriter(vmo, Slab32.create);
         final h = hexChar(BlockType.header.value);
         writer.createProperty(writer.rootNode, 'property');
@@ -72,7 +73,7 @@ void main() {
 
       test('failed createMetric leaves VMO sequence number even (valid VMO)',
           () {
-        final vmo = FakeVmo(64); // No space for anything
+        final vmo = FakeVmoHolder(64); // No space for anything
         final writer = createWriter(vmo);
         final h = hexChar(BlockType.header.value);
         writer.createMetric(writer.rootNode, 'metric', 0);
@@ -80,7 +81,7 @@ void main() {
       });
 
       test('make, modify, and free Node', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
         final child = writer.createNode(writer.rootNode, 'child');
@@ -95,7 +96,7 @@ void main() {
       });
 
       test('make, modify, and free IntMetric', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
         final intMetric = writer.createMetric(writer.rootNode, 'intMetric', 1);
@@ -115,7 +116,7 @@ void main() {
       });
 
       test('make, modify, and free DoubleMetric', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
         final doubleMetric =
@@ -136,7 +137,7 @@ void main() {
       });
 
       test('make, modify, and free Property', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
 
@@ -155,7 +156,7 @@ void main() {
       });
 
       test('Node delete permutations', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
         final parent = writer.createNode(writer.rootNode, 'parent');
@@ -183,7 +184,7 @@ void main() {
       });
 
       test('String property has string flag bits', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         final property = writer.createProperty(writer.rootNode, 'property');
         writer.setProperty(property, 'abc');
@@ -191,7 +192,7 @@ void main() {
       });
 
       test('Binary property has binary flag bits', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         final property = writer.createProperty(writer.rootNode, 'property');
         writer.setProperty(property, ByteData(3));
@@ -199,7 +200,7 @@ void main() {
       });
 
       test('Invalid property-set value type throws ArgumentError', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         final property = writer.createProperty(writer.rootNode, 'property');
         expect(() => writer.setProperty(property, 3),
@@ -207,7 +208,7 @@ void main() {
       });
 
       test('Large properties', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         int unique = 2;
         void fill(ByteData data) {
@@ -226,29 +227,46 @@ void main() {
           final data530 = ByteData(530);
           fill(data530);
           final property = writer.createProperty(writer.rootNode, 'property');
-          expect(readProperty(vmo, property), equalsByteData(data0));
+          expect(VmoMatcher(vmo).node()..propertyEquals('property', ''),
+              hasNoErrors);
 
           writer.setProperty(property, data200);
-          expect(readProperty(vmo, property), equalsByteData(data200));
+          expect(
+              VmoMatcher(vmo)
+                  .node()
+                  .propertyEquals('property', data200.buffer.asUint8List()),
+              hasNoErrors);
 
           // There isn't space for 200+230, but the set to 230 should still work.
           writer.setProperty(property, data230);
-          expect(readProperty(vmo, property), equalsByteData(data230));
+          expect(
+              VmoMatcher(vmo)
+                  .node()
+                  .propertyEquals('property', data230.buffer.asUint8List()),
+              hasNoErrors);
 
           // The set to 530 should fail and leave an empty property.
           writer.setProperty(property, data530);
-          expect(readProperty(vmo, property), equalsByteData(data0));
+          expect(
+              VmoMatcher(vmo)
+                  .node()
+                  .propertyEquals('property', data0.buffer.asUint8List()),
+              hasNoErrors);
 
           // And after all that, 200 should still work.
           writer.setProperty(property, data200);
-          expect(readProperty(vmo, property), equalsByteData(data200));
+          expect(
+              VmoMatcher(vmo)
+                  .node()
+                  .propertyEquals('property', data200.buffer.asUint8List()),
+              hasNoErrors);
         } on StateError {
           stdout.write('Test failure caused a VMO dump.\n${dumpBlocks(vmo)}');
           rethrow;
         }
       });
       test('Node and property name length limits', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
 
@@ -280,7 +298,7 @@ void main() {
 
     group('vmo_writer operations work:', () {
       test('Init VMO writes correctly to the VMO', () {
-        final vmo = FakeVmo(256);
+        final vmo = FakeVmoHolder(256);
         createWriter(vmo);
         final f = hexChar(BlockType.free.value);
         final h = hexChar(BlockType.header.value);
@@ -302,7 +320,7 @@ void main() {
       });
 
       test('failed createNode leaves VMO sequence number even (valid VMO)', () {
-        final vmo = FakeVmo(64); // No space for anything
+        final vmo = FakeVmoHolder(64); // No space for anything
         final writer = createWriter(vmo);
         final h = hexChar(BlockType.header.value);
         writer.createNode(writer.rootNode, 'child');
@@ -312,7 +330,7 @@ void main() {
 
       test('failed createProperty leaves VMO sequence number even (valid VMO)',
           () {
-        final vmo = FakeVmo(64); // No space for anything
+        final vmo = FakeVmoHolder(64); // No space for anything
         final writer = VmoWriter(vmo, Slab32.create);
         final h = hexChar(BlockType.header.value);
         writer.createProperty(writer.rootNode, 'property');
@@ -321,7 +339,7 @@ void main() {
 
       test('failed createMetric leaves VMO sequence number even (valid VMO)',
           () {
-        final vmo = FakeVmo(64); // No space for anything
+        final vmo = FakeVmoHolder(64); // No space for anything
         final writer = createWriter(vmo);
         final h = hexChar(BlockType.header.value);
         writer.createMetric(writer.rootNode, 'metric', 0);
@@ -329,7 +347,7 @@ void main() {
       });
 
       test('make, modify, and free Node', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
         final child = writer.createNode(writer.rootNode, 'child');
@@ -344,7 +362,7 @@ void main() {
       });
 
       test('make, modify, and free IntMetric', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
         final intMetric = writer.createMetric(writer.rootNode, 'intMetric', 1);
@@ -364,7 +382,7 @@ void main() {
       });
 
       test('make, modify, and free DoubleMetric', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
         final doubleMetric =
@@ -385,7 +403,7 @@ void main() {
       });
 
       test('make, modify, and free Property', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
 
@@ -404,7 +422,7 @@ void main() {
       });
 
       test('Node delete permutations', () {
-        final vmo = FakeVmo(1024);
+        final vmo = FakeVmoHolder(1024);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
         final parent = writer.createNode(writer.rootNode, 'parent');
@@ -433,7 +451,7 @@ void main() {
       });
 
       test('String property has string flag bits', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         final property = writer.createProperty(writer.rootNode, 'property');
         writer.setProperty(property, 'abc');
@@ -441,7 +459,7 @@ void main() {
       });
 
       test('Binary property has binary flag bits', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         final property = writer.createProperty(writer.rootNode, 'property');
         writer.setProperty(property, ByteData(3));
@@ -449,7 +467,7 @@ void main() {
       });
 
       test('Invalid property-set value type throws ArgumentError', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         final property = writer.createProperty(writer.rootNode, 'property');
         expect(() => writer.setProperty(property, 3),
@@ -457,7 +475,7 @@ void main() {
       });
 
       test('Large properties', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         int unique = 2;
         void fill(ByteData data) {
@@ -476,29 +494,46 @@ void main() {
           final data530 = ByteData(530);
           fill(data530);
           final property = writer.createProperty(writer.rootNode, 'property');
-          expect(readProperty(vmo, property), equalsByteData(data0));
+          expect(VmoMatcher(vmo).node().propertyEquals('property', ''),
+              hasNoErrors);
 
           writer.setProperty(property, data200);
-          expect(readProperty(vmo, property), equalsByteData(data200));
+          expect(
+              VmoMatcher(vmo)
+                  .node()
+                  .propertyEquals('property', data200.buffer.asUint8List()),
+              hasNoErrors);
 
           // There isn't space for 200+230, but the set to 230 should still work.
           writer.setProperty(property, data230);
-          expect(readProperty(vmo, property), equalsByteData(data230));
+          expect(
+              VmoMatcher(vmo)
+                  .node()
+                  .propertyEquals('property', data230.buffer.asUint8List()),
+              hasNoErrors);
 
           // The set to 530 should fail and leave an empty property.
           writer.setProperty(property, data530);
-          expect(readProperty(vmo, property), equalsByteData(data0));
+          expect(
+              VmoMatcher(vmo)
+                  .node()
+                  .propertyEquals('property', data0.buffer.asUint8List()),
+              hasNoErrors);
 
           // And after all that, 200 should still work.
           writer.setProperty(property, data200);
-          expect(readProperty(vmo, property), equalsByteData(data200));
+          expect(
+              VmoMatcher(vmo)
+                  .node()
+                  .propertyEquals('property', data200.buffer.asUint8List()),
+              hasNoErrors);
         } on StateError {
           stdout.write('Test failure caused a VMO dump.\n${dumpBlocks(vmo)}');
           rethrow;
         }
       });
       test('Node and property name length limits', () {
-        final vmo = FakeVmo(512);
+        final vmo = FakeVmoHolder(512);
         final writer = createWriter(vmo);
         final checker = Checker(vmo)..check(0, []);
 
@@ -555,7 +590,7 @@ class Test {
 /// check() must be called once after VmoWriter initialization, and once after
 /// every operation that changes the VMO lock.
 class Checker {
-  final FakeVmo _vmo;
+  final FakeVmoHolder _vmo;
   int nextLock = 0;
   int expectedFree;
   Checker(this._vmo) {

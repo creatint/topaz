@@ -37,6 +37,9 @@ abstract class Property<T> {
         _parent = null,
         index = invalidIndex;
 
+  /// Returns true only if this property is present in underlying storage.
+  bool get valid => _writer != null;
+
   /// Sets the value of this property.
   void setValue(T value);
 

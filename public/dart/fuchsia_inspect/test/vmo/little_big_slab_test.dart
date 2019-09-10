@@ -4,6 +4,7 @@
 
 // ignore_for_file: implementation_imports
 
+import 'package:fuchsia_inspect/testing.dart';
 import 'package:fuchsia_inspect/src/vmo/block.dart';
 import 'package:fuchsia_inspect/src/vmo/heap.dart';
 import 'package:fuchsia_inspect/src/vmo/little_big_slab.dart';
@@ -27,7 +28,7 @@ const int _heapSizeBytes = 128;
 void main() {
   group('Tests inherited from Slab32 allocator:', () {
     test('the initial free state is correct in the VMO', () {
-      var vmo = FakeVmo(_heapSizeBytes);
+      var vmo = FakeVmoHolder(_heapSizeBytes);
       LittleBigSlab(vmo, smallOrder: 1, bigOrder: 3);
       var f = hexChar(BlockType.free.value);
       compare(vmo, 0x00, '0  0 000000 00000000  00000000 00000000');
@@ -43,7 +44,7 @@ void main() {
     test('allocate changes VMO contents correctly', () {
       const List<int> _allocatedIndexes = [4, 6];
 
-      var vmo = FakeVmo(_heapSizeBytes);
+      var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 3);
       var blocks =
           _allocateEverything(heap, allocatedIndexes: _allocatedIndexes);
@@ -58,7 +59,7 @@ void main() {
     test('free and re-allocate work correctly', () {
       const List<int> _allocatedIndexes = [4, 6];
 
-      var vmo = FakeVmo(_heapSizeBytes);
+      var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 5);
       var blocks =
           _allocateEverything(heap, allocatedIndexes: _allocatedIndexes);
@@ -82,7 +83,7 @@ void main() {
     test('Allocate a big slab', () {
       const List<int> _allocatedIndexes = [4, 6];
 
-      var vmo = FakeVmo(_heapSizeBytes);
+      var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 2);
       var blocks = _allocateEverything(heap,
           sizeHint: 128, allocatedIndexes: _allocatedIndexes);
@@ -100,8 +101,9 @@ void main() {
       const List<int> _allocatedIndexes = [4, 6, 8, 10, 12, 14];
 
       const int heapSizeBytes = 256;
-      var vmo = FakeVmo(heapSizeBytes);
-      var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 2, pageSizeBytes: _heapSizeBytes ~/ 2);
+      var vmo = FakeVmoHolder(heapSizeBytes);
+      var heap = LittleBigSlab(vmo,
+          smallOrder: 1, bigOrder: 2, pageSizeBytes: _heapSizeBytes ~/ 2);
 
       var blocks = _allocateEverything(heap,
           sizeHint: 16, allocatedIndexes: _allocatedIndexes);
@@ -121,11 +123,10 @@ void main() {
       compare(vmo, 0xf0, '0  0 000000 00000000  00000000 00000000');
     });
 
-
     test('free and re-allocate work correctly', () {
       List<int> _allocatedIndexes = [4];
 
-      var vmo = FakeVmo(_heapSizeBytes);
+      var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 2);
       var blocks = _allocateEverything(heap,
           sizeHint: 128, allocatedIndexes: _allocatedIndexes);

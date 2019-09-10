@@ -8,12 +8,11 @@ import 'package:test/test.dart';
 import 'package:fuchsia_inspect_flutter/src/inspect_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fuchsia_inspect/inspect.dart';
-import 'package:test_vmo_reader/vmo_reader.dart' show VmoReader;
+import 'package:fuchsia_inspect/testing.dart';
 import 'package:fuchsia_inspect/src/vmo/vmo_holder.dart';
 import 'package:fuchsia_inspect/src/inspect/internal/_inspect_impl.dart';
 import 'package:fuchsia_inspect/src/vmo/vmo_writer.dart';
 import 'package:fuchsia_services/services.dart';
-import 'package:test_vmo_reader/util.dart';
 
 // This class was made to test the InspectFlutter class
 // The FakeDiagnosticsNode allows properties and children
@@ -38,14 +37,12 @@ class FakeDiagnosticsNode extends DiagnosticsNode {
   }
 
   void addProperty(String propertyName, String propertyValue) {
-    var fakeNode =
-        (FakeDiagnosticsNode(propertyName)..value = propertyValue);
+    var fakeNode = (FakeDiagnosticsNode(propertyName)..value = propertyValue);
     properties.add(fakeNode);
   }
 
   void addChild(String childName, String childValue) {
-    var fakeNode =
-        (FakeDiagnosticsNode(childName)..value = childValue);
+    var fakeNode = (FakeDiagnosticsNode(childName)..value = childValue);
     children.add(fakeNode);
   }
 
@@ -62,7 +59,7 @@ void main() {
 
   setUp(() {
     var context = StartupContext.fromStartupInfo();
-    vmo = FakeVmo(defaultVmoSize);
+    vmo = FakeVmoHolder(defaultVmoSize);
     var writer = VmoWriter.withVmo(vmo);
     Inspect inspect =
         InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
@@ -78,16 +75,20 @@ void main() {
       ..addChild('widget', 'node2')
       ..children[0].addProperty('widget', 'node2'));
     InspectFlutter.inspectFromDiagnostic(fakeNode, root);
-    expect(VmoReader(vmo).toString(), matches(RegExp(
-      r'<> Node: "root"\n'
-      r'<> >> Node: "node1_\d+"\n'
-      r'<> >> >> StringProperty "prop3": "value3"\n'
-      r'<> >> >> StringProperty "prop2": "value2"\n'
-      r'<> >> >> StringProperty "prop1": "value1"\n'
-      r'<> >> >> StringProperty "widget": "node1"\n'
-      r'<> >> >> Node: "node2_\d+"\n'
-      r'<> >> >> >> StringProperty "widget": "node2"\n'
-    )));
+    expect(
+        VmoMatcher(vmo).node().at(['node1_${fakeNode.hashCode}'])
+          ..propertyEquals('prop1', 'value1')
+          ..propertyEquals('prop2', 'value2')
+          ..propertyEquals('prop3', 'value3')
+          ..propertyEquals('widget', 'node1'),
+        hasNoErrors);
+    expect(
+        VmoMatcher(vmo).node().at([
+          'node1_${fakeNode.hashCode}',
+          'node2_${fakeNode.children[0].hashCode}'
+        ])
+          ..propertyEquals('widget', 'node2'),
+        hasNoErrors);
   });
 
   test('Widget Tree Output does not display null properties', () {
@@ -98,27 +99,23 @@ void main() {
       ..addProperty('prop3', 'value3')
       ..addProperty(null, null));
     InspectFlutter.inspectFromDiagnostic(fakeNode, root);
-    expect(VmoReader(vmo).toString(), matches(RegExp(
-      r'<> Node: "root"\n'
-      r'<> >> Node: "node1_\d+"\n'
-      r'<> >> >> StringProperty "prop3": "value3"\n'
-      r'<> >> >> StringProperty "prop2": "value2"\n'
-      r'<> >> >> StringProperty "prop1": "value1"\n'
-      r'<> >> >> StringProperty "widget": "node1"\n'
-      ''
-    )));
+    expect(
+        VmoMatcher(vmo).node().at(['node1_${fakeNode.hashCode}'])
+          ..propertyEquals('prop1', 'value1')
+          ..propertyEquals('prop2', 'value2')
+          ..propertyEquals('prop3', 'value3')
+          ..propertyEquals('widget', 'node1'),
+        hasNoErrors);
   });
 
-  test('Widget Tree Output does not display a node with no widget property', () {
+  test('Widget Tree Output does not display a node with no widget property',
+      () {
     FakeDiagnosticsNode fakeNode = (FakeDiagnosticsNode('IGNORED')
       ..addProperty('prop1', 'value1')
       ..addProperty('prop2', 'value2')
       ..addProperty('prop3', 'value3'));
     InspectFlutter.inspectFromDiagnostic(fakeNode, root);
-    expect(VmoReader(vmo).toString(),(
-      '<> Node: "root"\n'
-      ''
-    ));
+    expect(VmoMatcher(vmo).node()..missingChild('node1_${fakeNode.hashCode}'),
+        hasNoErrors);
   });
-
 }

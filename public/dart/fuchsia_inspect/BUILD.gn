@@ -51,7 +51,6 @@ dart_test("fuchsia_inspect_package_unittests") {
     "inspect/node_test.dart",
     "inspect/property_test.dart",
     "integration/writer.dart",
-    "util.dart",
     "vmo/bitfield64_test.dart",
     "vmo/block_test.dart",
     "vmo/heap_test.dart",

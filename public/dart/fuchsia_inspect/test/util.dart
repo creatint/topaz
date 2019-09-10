@@ -4,68 +4,11 @@
 
 // ignore_for_file: implementation_imports
 
-import 'dart:math' show min;
 import 'dart:typed_data';
 
 import 'package:collection/collection.dart';
-import 'package:fuchsia_inspect/inspect.dart';
-import 'package:fuchsia_inspect/src/vmo/block.dart';
-import 'package:fuchsia_inspect/src/vmo/vmo_holder.dart';
+import 'package:fuchsia_inspect/testing.dart';
 import 'package:test/test.dart';
-import 'package:zircon/zircon.dart';
-
-class FakeVmo implements VmoHolder {
-  /// The memory contents of this "VMO".
-  final ByteData bytes;
-
-  final Vmo _vmo = Vmo(null);
-
-  @override
-  Vmo get vmo => _vmo;
-
-  /// Size of the "VMO".
-  @override
-  final int size;
-
-  /// Creates non-shared (ByteData) memory to simulate VMO operations.
-  FakeVmo(this.size) : bytes = ByteData(size);
-
-  @override
-  void beginWork() {}
-
-  @override
-  void commit() {}
-
-  /// Writes to the "VMO".
-  @override
-  void write(int offset, ByteData data) {
-    bytes.buffer.asUint8List().setAll(offset,
-        data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
-  }
-
-  /// Reads from the "VMO".
-  @override
-  ByteData read(int offset, int size) {
-    var reading = ByteData(size);
-    reading.buffer
-        .asUint8List()
-        .setAll(0, bytes.buffer.asUint8List(offset, size));
-    return reading;
-  }
-
-  /// Writes int64 to VMO.
-  @override
-  void writeInt64(int offset, int value) =>
-      bytes.setInt64(offset, value, Endian.little);
-
-  /// Writes int64 directly to VMO for immediate visibility.
-  @override
-  void writeInt64Direct(int offset, int value) => writeInt64(offset, value);
-
-  /// Reads int64 from VMO.
-  @override
-  int readInt64(int offset) => bytes.getInt64(offset, Endian.little);
-}
 
 /// Returns the ascii code of this character.
 int ascii(String char) {
@@ -96,7 +39,7 @@ String hexChar(int value) {
 ///
 /// [spec] is little-endian, which makes integer values look weird. If you
 /// write 0x234 into memory, it'll be matched by '34 02' (or by 'x4_2')
-void compare(FakeVmo vmo, int offset, String spec) {
+void compare(FakeVmoHolder vmo, int offset, String spec) {
   int nybble = offset * 2;
   for (int i = 0; i < spec.length; i++) {
     int rune = spec.codeUnitAt(i);
@@ -135,7 +78,7 @@ void compare(FakeVmo vmo, int offset, String spec) {
 ///
 /// A dump should be printed when a test fails, so that the log can be
 /// inspected on errors.
-String dumpBlocks(FakeVmo vmo, {int startIndex = 0, int howMany32 = -1}) {
+String dumpBlocks(FakeVmoHolder vmo, {int startIndex = 0, int howMany32 = -1}) {
   int lastIndex = (howMany32 == -1)
       ? (vmo.bytes.lengthInBytes >> 4) - 1
       : startIndex + howMany32 - 1;
@@ -173,39 +116,6 @@ String dumpBlocks(FakeVmo vmo, {int startIndex = 0, int howMany32 = -1}) {
   }
   return buffer.toString();
 }
-
-/// Reads the property at [propertyIndex] out of [vmo], and returns the value.
-ByteData readProperty(FakeVmo vmo, int propertyIndex) {
-  final property = Block.read(vmo, propertyIndex);
-  final totalLength = property.propertyTotalLength;
-  final data = ByteData(totalLength);
-  if (totalLength == 0) {
-    return data;
-  }
-  var nextExtentIndex = property.propertyExtentIndex;
-  int offset = 0;
-  while (offset < totalLength) {
-    final extent = Block.read(vmo, nextExtentIndex);
-    int amountToCopy = min(totalLength - offset, extent.payloadSpaceBytes);
-    data.buffer.asUint8List().setRange(offset, offset + amountToCopy,
-        extent.payloadBytes.buffer.asUint8List());
-    offset += amountToCopy;
-    nextExtentIndex = extent.nextExtent;
-  }
-  return data;
-}
-
-/// Returns the name index of [node] in [vmo].
-int readNameIndex(FakeVmo vmo, Node node) =>
-    Block.read(vmo, node.index).nameIndex;
-
-/// Returns the int value of [property] in [vmo].
-int readInt(FakeVmo vmo, IntProperty property) =>
-    Block.read(vmo, property.index).intValue;
-
-/// Returns the double value of [property] in [vmo].
-double readDouble(FakeVmo vmo, DoubleProperty property) =>
-    Block.read(vmo, property.index).doubleValue;
 
 /// A matcher that matches ByteData properties as unit8 lists.
 Matcher equalsByteData(ByteData data) => _EqualsByteData(data);

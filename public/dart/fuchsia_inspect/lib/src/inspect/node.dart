@@ -64,6 +64,9 @@ class Node {
     return _children[name] = Node._(this, name, index, _writer);
   }
 
+  /// Returns true only if this node is present in underlying storage.
+  bool get valid => _writer != null;
+
   void _forgetChild(String name) {
     _children.remove(name);
   }

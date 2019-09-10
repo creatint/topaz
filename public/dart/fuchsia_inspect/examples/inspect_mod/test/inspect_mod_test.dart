@@ -14,9 +14,7 @@ import 'package:fuchsia_remote_debug_protocol/logging.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:glob/glob.dart';
 import 'package:test/test.dart';
-import 'package:fuchsia_inspect/testing.dart' show VmoMatcher, hasNoErrors;
-// ignore: implementation_imports
-import 'util.dart';
+import 'package:fuchsia_inspect/testing.dart';
 
 const Pattern _testAppName = 'inspect_mod.cmx';
 const _testAppUrl = 'fuchsia-pkg://fuchsia.com/inspect_mod#meta/$_testAppName';
@@ -106,7 +104,7 @@ Future<void> _launchModUnderTest() async {
   await storyPuppetMasterProxy.execute();
 }
 
-Future<FakeVmoReader> _readInspect() async {
+Future<FakeVmoHolder> _readInspect() async {
   // WARNING: 0) These paths are extremely fragile.
   var globs = [
     // TODO(vickiecheng): remove this one once stories reuse session envs.
@@ -126,7 +124,7 @@ Future<FakeVmoReader> _readInspect() async {
         for (int i = 0; i < vmoBytes.length; i++) {
           vmoData.setUint8(i, vmoBytes[i]);
         }
-        var vmo = FakeVmoReader.usingData(vmoData);
+        var vmo = FakeVmoHolder.usingData(vmoData);
         return vmo;
       }
     }
@@ -165,7 +163,7 @@ void main() {
     testHarnessController.ctrl.close();
   });
 
-  Future<FakeVmoReader> tapAndWait(String buttonName, String nextState) async {
+  Future<FakeVmoHolder> tapAndWait(String buttonName, String nextState) async {
     await driver.tap(find.text(buttonName));
     await driver.waitFor(find.byValueKey(nextState));
     return await _readInspect();

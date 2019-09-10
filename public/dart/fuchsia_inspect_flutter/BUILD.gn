@@ -31,7 +31,6 @@ flutter_test("inspect_flutter_test") {
   deps = [
     ":fuchsia_inspect_flutter",
     "//third_party/dart-pkg/git/flutter/packages/flutter_test",
-    "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod:test_vmo_reader",
     "//topaz/public/dart/fuchsia_services",
   ]
 }

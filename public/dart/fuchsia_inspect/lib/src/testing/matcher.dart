@@ -107,20 +107,24 @@ class VmoMatcher implements _HasErrors {
   }
 
   ByteData _extentsToByteData(Block property) {
+    if (property.propertyExtentIndex == 0) {
+      return ByteData(0);
+    }
     var payloadLength = property.propertyTotalLength;
-    var bytes = ByteData(payloadLength);
+    var bytes = Uint8List(payloadLength);
     int amountCopied = 0;
     for (Block extentBlock = Block.read(_holder, property.propertyExtentIndex);;
         extentBlock = Block.read(property.vmo, extentBlock.nextExtent)) {
       int copyEnd =
           min(payloadLength, amountCopied + extentBlock.payloadSpaceBytes);
-      bytes.buffer.asUint8List().setRange(
+      bytes.setRange(
           amountCopied, copyEnd, extentBlock.payloadBytes.buffer.asUint8List());
+      amountCopied += copyEnd - amountCopied;
       if (extentBlock.nextExtent == 0) {
         break;
       }
     }
-    return bytes;
+    return bytes.buffer.asByteData();
   }
 
   String _extentsToString(Block property) {
