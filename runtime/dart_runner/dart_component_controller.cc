@@ -211,8 +211,7 @@ bool DartComponentController::SetupFromKernel() {
   }
 
   if (!CreateIsolate(isolate_snapshot_data_.address(),
-                     isolate_snapshot_instructions_.address(), nullptr,
-                     nullptr)) {
+                     isolate_snapshot_instructions_.address())) {
     return false;
   }
 
@@ -280,22 +279,8 @@ bool DartComponentController::SetupFromAppSnapshot() {
     return false;
   }
 
-  if (!MappedResource::LoadFromNamespace(
-          namespace_, data_path_ + "/shared_snapshot_data.bin",
-          shared_snapshot_data_)) {
-    return false;
-  }
-
-  if (!MappedResource::LoadFromNamespace(
-          namespace_, data_path_ + "/shared_snapshot_instructions.bin",
-          shared_snapshot_instructions_, true /* executable */)) {
-    return false;
-  }
-
   return CreateIsolate(isolate_snapshot_data_.address(),
-                       isolate_snapshot_instructions_.address(),
-                       shared_snapshot_data_.address(),
-                       shared_snapshot_instructions_.address());
+                       isolate_snapshot_instructions_.address());
 #endif  // defined(AOT_RUNTIME)
 }
 
@@ -317,9 +302,7 @@ int DartComponentController::SetupFileDescriptor(
 
 bool DartComponentController::CreateIsolate(
     const uint8_t* isolate_snapshot_data,
-    const uint8_t* isolate_snapshot_instructions,
-    const uint8_t* shared_snapshot_data,
-    const uint8_t* shared_snapshot_instructions) {
+    const uint8_t* isolate_snapshot_instructions) {
   // Create the isolate from the snapshot.
   char* error = nullptr;
 
@@ -331,8 +314,9 @@ bool DartComponentController::CreateIsolate(
 
   isolate_ = Dart_CreateIsolateGroup(
       url_.c_str(), label_.c_str(), isolate_snapshot_data,
-      isolate_snapshot_instructions, shared_snapshot_data,
-      shared_snapshot_instructions, nullptr /* flags */, state, state, &error);
+      isolate_snapshot_instructions, nullptr /* shared_snapshot_data */,
+      nullptr /* shared_snapshot_instructions */, nullptr /* flags */, state,
+      state, &error);
   if (!isolate_) {
     FX_LOGF(ERROR, LOG_TAG, "Dart_CreateIsolateGroup failed: %s", error);
     return false;
