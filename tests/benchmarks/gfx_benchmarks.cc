@@ -41,7 +41,7 @@ void AddGraphicsBenchmarks(benchmarking::BenchmarksRunner* benchmarks_runner) {
   // clang-format on
 
   for (const auto& param : params) {
-    std::string out_file = benchmarks_runner->MakeTempFile();
+    std::string out_file = benchmarks_runner->MakePerfResultsOutputFilename("scenic");
 
     // clang-format off
     std::vector<std::string> full_command = {
