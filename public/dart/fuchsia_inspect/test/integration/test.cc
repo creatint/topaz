@@ -118,8 +118,14 @@ TEST_F(InspectTest, ReadHierarchy) {
   ASSERT_TRUE(read_file_result.is_ok());
   inspect::Hierarchy hierarchy = read_file_result.take_value();
 
+  // TODO(36155): Remove this once root migration is complete.
+  auto* real_hierarchy = hierarchy.GetByPath({"root"});
+  if (real_hierarchy == nullptr) {
+    real_hierarchy = &hierarchy;
+  }
+
   EXPECT_THAT(
-      hierarchy,
+      *real_hierarchy,
       AllOf(
           NodeMatches(NameMatches("root")),
           ChildrenMatch(UnorderedElementsAre(
@@ -169,8 +175,14 @@ TEST_F(InspectTest, DynamicGeneratesNewHierarchy) {
     ASSERT_TRUE(read_file_result.is_ok());
     inspect::Hierarchy hierarchy = read_file_result.take_value();
 
+    // TODO(36155): Remove this once root migration is complete.
+    auto* real_hierarchy = hierarchy.GetByPath({"root"});
+    if (real_hierarchy == nullptr) {
+      real_hierarchy = &hierarchy;
+    }
+
     EXPECT_THAT(
-        hierarchy,
+        *real_hierarchy,
         AllOf(
             NodeMatches(NameMatches("root")),
             ChildrenMatch(UnorderedElementsAre(
