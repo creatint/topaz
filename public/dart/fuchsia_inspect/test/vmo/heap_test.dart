@@ -15,15 +15,15 @@ import '../util.dart';
 // In the VMO data structure, indexes 0..3 are reserved for VMO HEADER block,
 // root-node block, and root-node's name.
 //
-// A 128-byte heap holds indexes 0..7 (at 16 bytes per index).
+// A 96-byte heap holds indexes 0..5 (at 16 bytes per index).
 // Since allocated blocks are 32 bytes, the first allocated block will be at
-// index 4, and the second will be at index 6.
+// index 2, and the second will be at index 4.
 //
 // Two allocated blocks should be enough to test the data structure
-// algorithms, so the heap will be conveniently small at 128 bytes, and
-// we'll expect to see 4 and 6 as valid allocated indexes.
-const int _heapSizeBytes = 128;
-const List<int> _allocatedIndexes = [4, 6];
+// algorithms, so the heap will be conveniently small at 96 bytes, and
+// we'll expect to see 2 and 4 as valid allocated indexes.
+const int _heapSizeBytes = 96;
+const List<int> _allocatedIndexes = [2, 4];
 
 void main() {
   group('In the Heap', () {
@@ -33,12 +33,10 @@ void main() {
       var f = hexChar(BlockType.free.value);
       compare(vmo, 0x00, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x10, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x20, '0  0 000000 00000000  00000000 00000000');
+      compare(vmo, 0x20, '$f 1 000000 00000000  00000000 00000000');
       compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x40, '$f 1 0_0000 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x60, '$f 1 0_0000 00000000  00000000 00000000');
-      compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
     });
 
     test('allocate changes VMO contents correctly', () {
@@ -47,10 +45,10 @@ void main() {
       var blocks = _allocateEverything(heap);
       expect(blocks, hasLength(2));
       var r = hexChar(BlockType.reserved.value);
+      compare(vmo, 0x20, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x40, '$r 1 0_0000 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x60, '$r 1 0_0000 00000000  00000000 00000000');
-      compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
     });
 
     test('free and re-allocate work correctly', () {
@@ -80,7 +78,7 @@ List<Block> _allocateEverything(Heap heap) {
   }
   // Make sure we're actually getting unique blocks
   expect(Set.of(blocks.map((block) => block.index)), hasLength(blocks.length));
-  // With a heapSize-byte VMO, valid indexes are only 4 and 6 (see comment above).
+  // With a heapSize-byte VMO, valid indexes are only 2 and 4 (see comment above).
   for (var block in blocks) {
     expect(block.index, isIn(_allocatedIndexes));
   }

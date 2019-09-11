@@ -104,17 +104,6 @@ class Block {
     _vmo.writeInt64Direct(_payloadOffset, _payloadBits.value);
   }
 
-  /// Initializes the root [BlockType.nodeValue] block.
-  ///
-  /// Throws [StateError] if this block wasn't [BlockType.reserved].
-  void becomeRoot() {
-    _checkType(BlockType.reserved);
-    becomeValue(parentIndex: rootParentIndex, nameIndex: rootNameIndex);
-    _header.write(orderBits, 0);
-    becomeNode();
-    _writeAllBits();
-  }
-
   /// Converts a [BlockType.anyValue] block to a [BlockType.nodeValue] block.
   ///
   /// Throws [StateError] if this block wasn't [BlockType.anyValue].

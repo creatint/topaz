@@ -17,12 +17,6 @@ import '../util.dart';
 // root-node block, and root-node's name.
 //
 // A 128-byte heap holds indexes 0..7 (at 16 bytes per index).
-// Since allocated blocks are 32 bytes, the first allocated block will be at
-// index 4, and the second will be at index 6.
-//
-// Two allocated blocks should be enough to test the data structure
-// algorithms, so the heap will be conveniently small at 128 bytes, and
-// we'll expect to see 4 and 6 as valid allocated indexes.
 const int _heapSizeBytes = 128;
 
 void main() {
@@ -33,7 +27,7 @@ void main() {
       var f = hexChar(BlockType.free.value);
       compare(vmo, 0x00, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x10, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x20, '0  0 000000 00000000  00000000 00000000');
+      compare(vmo, 0x20, '$f 1 000000 00000000  00000000 00000000');
       compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x40, '$f 1 0_0000 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
@@ -42,13 +36,13 @@ void main() {
     });
 
     test('allocate changes VMO contents correctly', () {
-      const List<int> _allocatedIndexes = [4, 6];
+      const List<int> _allocatedIndexes = [2, 4, 6];
 
       var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 3);
       var blocks =
           _allocateEverything(heap, allocatedIndexes: _allocatedIndexes);
-      expect(blocks, hasLength(2));
+      expect(blocks, hasLength(3));
       var r = hexChar(BlockType.reserved.value);
       compare(vmo, 0x40, '$r 1 0_0000 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
@@ -57,7 +51,7 @@ void main() {
     });
 
     test('free and re-allocate work correctly', () {
-      const List<int> _allocatedIndexes = [4, 6];
+      const List<int> _allocatedIndexes = [2, 4, 6];
 
       var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 5);
@@ -70,9 +64,12 @@ void main() {
           _allocateEverything(heap, allocatedIndexes: _allocatedIndexes);
       expect(lastBlock, hasLength(1));
       // Free in reverse order to mix up the list
-      heap..freeBlock(blocks.removeLast())..freeBlock(lastBlock.removeLast());
+      heap
+        ..freeBlock(blocks.removeLast())
+        ..freeBlock(blocks.removeLast())
+        ..freeBlock(lastBlock.removeLast());
       blocks = _allocateEverything(heap, allocatedIndexes: _allocatedIndexes);
-      // Should get two blocks again
+      // Should get three blocks again
       expect(blocks, hasLength(_allocatedIndexes.length));
 
       // At this point, it is not possible to allocate a continuous big block
@@ -81,13 +78,13 @@ void main() {
   });
   group('Tests specific to the little big slab allocator:', () {
     test('Allocate a big slab', () {
-      const List<int> _allocatedIndexes = [4, 6];
+      const List<int> _allocatedIndexes = [2, 4, 6];
 
       var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 2);
       var blocks = _allocateEverything(heap,
           sizeHint: 128, allocatedIndexes: _allocatedIndexes);
-      expect(blocks, hasLength(1));
+      expect(blocks, hasLength(2));
       var r = hexChar(BlockType.reserved.value);
       compare(vmo, 0x40, '$r 2 0_0000 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
@@ -98,7 +95,7 @@ void main() {
     // Allocates the entire heap in small blocks.  This exercises block splits,
     // as well as heap grow.
     test('Allocate and grow heap', () {
-      const List<int> _allocatedIndexes = [4, 6, 8, 10, 12, 14];
+      const List<int> _allocatedIndexes = [2, 4, 6, 8, 10, 12, 14];
 
       const int heapSizeBytes = 256;
       var vmo = FakeVmoHolder(heapSizeBytes);
@@ -109,6 +106,8 @@ void main() {
           sizeHint: 16, allocatedIndexes: _allocatedIndexes);
       expect(blocks, hasLength(_allocatedIndexes.length));
       var r = hexChar(BlockType.reserved.value);
+      compare(vmo, 0x20, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x40, '$r 1 0_0000 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x60, '$r 1 0_0000 00000000  00000000 00000000');
@@ -124,7 +123,7 @@ void main() {
     });
 
     test('free and re-allocate work correctly', () {
-      List<int> _allocatedIndexes = [4];
+      List<int> _allocatedIndexes = [2, 4];
 
       var vmo = FakeVmoHolder(_heapSizeBytes);
       var heap = LittleBigSlab(vmo, smallOrder: 1, bigOrder: 2);
@@ -132,17 +131,20 @@ void main() {
           sizeHint: 128, allocatedIndexes: _allocatedIndexes);
       expect(blocks, hasLength(_allocatedIndexes.length));
 
-      // Frees the only block, now the heap is all free.
-      heap.freeBlock(blocks.removeLast());
+      // Frees the only blocks, now the heap is all free.
+      heap..freeBlock(blocks.removeLast())..freeBlock(blocks.removeLast());
 
       // Allocate a smaller block now: it will convert the one big block into
       // two smaller ones.
-      _allocatedIndexes = [4, 6];
+      _allocatedIndexes = [2, 4, 6];
       blocks = _allocateEverything(heap, allocatedIndexes: _allocatedIndexes);
       expect(blocks, hasLength(_allocatedIndexes.length));
       // Free in reverse order to mix up the list
-      heap..freeBlock(blocks.removeLast())..freeBlock(blocks.removeLast());
-      // Should get two blocks again
+      heap
+        ..freeBlock(blocks.removeLast())
+        ..freeBlock(blocks.removeLast())
+        ..freeBlock(blocks.removeLast());
+      // Should get three blocks again
       blocks = _allocateEverything(heap, allocatedIndexes: _allocatedIndexes);
       expect(blocks, hasLength(_allocatedIndexes.length));
     });
@@ -159,7 +161,7 @@ List<Block> _allocateEverything(Heap heap,
   }
   // Make sure we're actually getting unique blocks
   expect(Set.of(blocks.map((block) => block.index)), hasLength(blocks.length));
-  // With a heapSize-byte VMO, valid indexes are only 4 and 6 (see comment above).
+  // With a heapSize-byte VMO, valid indexes are only 2, 4, and 6.
   for (var block in blocks) {
     expect(block.index, isIn(allocatedIndexes));
   }

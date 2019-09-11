@@ -18,9 +18,6 @@ import 'vmo_holder.dart';
 /// Index 0 will never be allocated, so it's the designated 'invalid' value.
 const int invalidIndex = 0;
 
-/// Name of the root node.
-const String rootName = 'root';
-
 /// An Inspect-format VMO with accessors.
 ///
 /// This writes Values (Nodes, Metrics, and Properties) to
@@ -46,9 +43,6 @@ class VmoWriter {
   VmoWriter(this._vmo, Function heapFactory) {
     _vmo.beginWork();
     _headerBlock = Block.create(_vmo, headerIndex)..becomeHeader();
-    Block.create(_vmo, rootNodeIndex, order: defaultBlockOrder).becomeRoot();
-    Block.create(_vmo, rootNameIndex, order: defaultBlockOrder)
-        .becomeName(rootName);
     _heap = heapFactory(_vmo);
     _vmo.commit();
   }
@@ -62,8 +56,8 @@ class VmoWriter {
   /// Creates a [VmoWriter] with a given VMO.
   factory VmoWriter.withVmo(VmoHolder vmo) => VmoWriter(vmo, _heapCreate);
 
-  /// Gets the top Node of the Inspect tree (always at index 1).
-  int get rootNode => rootNodeIndex;
+  /// Gets the top Node of the Inspect tree (always set to index 0, which is the header).
+  int get rootNode => 0;
 
   /// The underlying VMO
   Vmo get vmo => _vmo.vmo;
@@ -221,7 +215,10 @@ class VmoWriter {
     }
     nameBlock.becomeName(name);
     block.becomeValue(parentIndex: parent, nameIndex: nameBlock.index);
-    Block.read(_vmo, parent).childCount += 1;
+    if (parent != 0) {
+      // Only increment child count if the parent is not the special header block.
+      Block.read(_vmo, parent).childCount += 1;
+    }
     return block;
   }
 
@@ -315,6 +312,11 @@ class VmoWriter {
   // If the parent is a TOMBSTONE and has no children then free it.
   // TOMBSTONES have no parent, so there's no recursion.
   void _unparent(Block value) {
+    if (value.parentIndex == 0) {
+      // Never delete the header node.
+      return;
+    }
+
     var parent = Block.read(_vmo, value.parentIndex);
     if (--parent.childCount == 0 && parent.type == BlockType.tombstone) {
       _heap.freeBlock(parent);

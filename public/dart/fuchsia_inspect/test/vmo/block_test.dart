@@ -22,8 +22,6 @@ void main() {
         block.unlock();
       });
       _accepts(
-          'becomeRoot', [BlockType.reserved], (block) => block.becomeRoot());
-      _accepts(
           'becomeNode', [BlockType.anyValue], (block) => block.becomeNode());
       _accepts('becomeProperty', [BlockType.anyValue],
           (block) => block.becomeProperty());
@@ -157,13 +155,6 @@ void main() {
           0,
           '${hexChar(BlockType.header.value)} 0'
           '00 0000 49 4E 53 50  0200 0000 0000 0000');
-    });
-
-    test('Becoming the special root node', () {
-      final vmo = FakeVmoHolder(64);
-      Block.create(vmo, 1).becomeRoot();
-      compare(vmo, 16,
-          '${hexChar(BlockType.nodeValue.value)} 0 00 0000 2000 0000 0000');
     });
 
     test('Becoming and modifying an intValue via free, reserved, anyValue', () {

@@ -46,12 +46,7 @@ class VmoMatcher implements _HasErrors {
   /// Retrieve the root node matcher, which can be used to match against
   /// nested properties and children.
   NodeMatcher node() {
-    if (Block.read(_holder, 1).type == BlockType.nodeValue) {
-      return NodeMatcher._valid(this, 1);
-    } else {
-      _addError('No root node found at index 1');
-      return NodeMatcher._invalid(this);
-    }
+    return NodeMatcher._valid(this, 0);
   }
 
   // Internal method to check if the given index is valid and can be
