@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:story_shell_labs_lib/layout/tile_model.dart';
 import 'package:tiler/tiler.dart';
 
 import '../tile_model/module_info.dart';
@@ -33,9 +34,12 @@ class LayoutSuggestionsWidget extends StatelessWidget {
         stream: presenter.suggestionsUpdate,
         initialData: presenter.currentSuggestionsState,
         builder: (context, snapshot) => Row(
-              mainAxisSize: MainAxisSize.min,
-              children: snapshot.data.models.map(_buildSuggestion).toList(),
-            ),
+          mainAxisSize: MainAxisSize.min,
+          children: snapshot.data.models
+              .map(cloneTiler)
+              .map(_buildSuggestion)
+              .toList(),
+        ),
       );
 
   Widget _buildSuggestion(TilerModel<ModuleInfo> model) => Padding(
