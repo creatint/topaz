@@ -57,6 +57,7 @@ Future<void> _startTestHarness() async {
   final testHarnessSpec = TestHarnessSpec(
       envServicesToInherit: [
         'fuchsia.net.NameLookup',
+        'fuchsia.netstack.Netstack',
         'fuchsia.posix.socket.Provider'
       ],
       envServices: EnvironmentServicesSpec(
