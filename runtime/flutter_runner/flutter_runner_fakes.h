@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef TOPAZ_RUNTIME_FLUTTER_RUNNER_PLATFORM_VIEW_FAKES_H_
-#define TOPAZ_RUNTIME_FLUTTER_RUNNER_PLATFORM_VIEW_FAKES_H_
+#ifndef TOPAZ_RUNTIME_FLUTTER_RUNNER_FLUTTER_RUNNER_FAKES_H_
+#define TOPAZ_RUNTIME_FLUTTER_RUNNER_FLUTTER_RUNNER_FAKES_H_
 
 #include <fuchsia/accessibility/cpp/fidl.h>
 #include <fuchsia/accessibility/semantics/cpp/fidl.h>
@@ -21,10 +21,9 @@ class MockSemanticsManager
   MockSemanticsManager() : tree_binding_(this) {}
 
   // |fuchsia::accessibility::semantics::SemanticsManager|:
-  void RegisterView(
+  void RegisterViewForSemantics(
       fuchsia::ui::views::ViewRef view_ref,
-      fidl::InterfaceHandle<
-          fuchsia::accessibility::semantics::SemanticActionListener>
+      fidl::InterfaceHandle<fuchsia::accessibility::semantics::SemanticListener>
           handle,
       fidl::InterfaceRequest<fuchsia::accessibility::semantics::SemanticTree>
           semantic_tree) override {
@@ -91,7 +90,9 @@ class MockSemanticsManager
     return last_updated_nodes_;
   }
 
-  void Commit() override { commit_count_++; }
+  void CommitUpdates(CommitUpdatesCallback callback) override {
+    commit_count_++;
+  }
 
  private:
   bool has_view_ref_ = false;
@@ -143,4 +144,4 @@ class MockAccessibilitySettingsManager : public AccessibilitySettingsManager {
 
 }  // namespace flutter_runner_test
 
-#endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_PLATFORM_VIEW_FAKES_H_
+#endif  // TOPAZ_RUNTIME_FLUTTER_RUNNER_FLUTTER_RUNNER_FAKES_H_
