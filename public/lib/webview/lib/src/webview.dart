@@ -84,10 +84,6 @@ class ChromiumWebView {
     }
     final channel = Channel.fromFile('/svc');
     final web.CreateContextParams params = web.CreateContextParams(
-        features: web.ContextFeatureFlags.vulkan |
-            web.ContextFeatureFlags.hardwareVideoDecoder |
-            web.ContextFeatureFlags.audio |
-            web.ContextFeatureFlags.network,
         serviceDirectory: InterfaceHandle<fidl_io.Directory>(channel));
     contextProvider.create(params, context.ctrl.request());
     contextProvider.ctrl.close();
