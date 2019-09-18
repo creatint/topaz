@@ -317,14 +317,11 @@ if (current_toolchain == dart_toolchain) {
     _invocation_file = "$target_gen_dir/$target_name"
 
     if (is_linux || is_mac) {
-      # TODO(IN-819): Delete renaming when dart tests are no longer run out of
-      # $root_build_dir/host_tests/.
-      _invocation_file = "$root_out_dir/$target_name"
-
       test_spec(_spec_target_name) {
         testonly = true
         name = _main_target_name
-        location = _invocation_file
+        install_path = _invocation_file
+
         deps = [
           ":$_main_target_name($dart_toolchain)",
         ]
@@ -362,24 +359,6 @@ if (current_toolchain == dart_toolchain) {
       deps = [
         ":$_main_target_name($dart_toolchain)",
       ]
-      if (is_linux || is_mac) {
-        # TODO(IN-819): Temporary measure to support the fx workflow, which is to
-        # take a dependency on tests.json, to which this metadata will be
-        # supplementary. Once flutter tests are contributing test spec metadata,
-        # all relevant information will be in the former and this is to be
-        # deleted.
-        metadata = {
-          pseudo_test_spec = [
-            {
-              test = {
-                location = rebase_path(_invocation_file, root_build_dir)
-                os = current_os
-              }
-            },
-          ]
-        }
-        deps += [ ":$_spec_target_name" ]
-      }
     }
   }
 }
