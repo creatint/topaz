@@ -18,10 +18,18 @@ yaml.
 
 ## Usage
 
-In order to build this tool, add `topaz/packages/doc_checker` to your build
-packages. The tool is then available at:
+First build the tool as part of the Fuchsia build. Specify the `doc_checker`
+package during `fx set`.
+
 ```
-out/x64/dart-tools/doc_checker
+fx set core.x64 --with //topaz/tools/doc_checker
+fx build
+```
+
+Run `doc_checker` without argument.
+```
+cd ${FUCHSIA_SRC_DIR}
+out/{default,x64}/dart-tools/doc_checker
 ```
 
 See the tool's help for how to hold it right.
