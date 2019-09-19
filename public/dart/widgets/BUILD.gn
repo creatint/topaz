@@ -46,7 +46,6 @@ dart_library("lib.widgets") {
     "//sdk/fidl/fuchsia.ui.views",
     "//third_party/dart-pkg/git/flutter/packages/flutter",
     "//third_party/dart-pkg/pub/flutter_image",
-    "//topaz/bin/ui/skottie_viewer:skottie_loader",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia_logger",
     "//topaz/public/dart/fuchsia_scenic_flutter",
