@@ -4,4 +4,4 @@
 
 name: public.dart
 dependencies:
-  webview_flutter: ^0.3.7
+  webview_flutter: ^0.3.14
