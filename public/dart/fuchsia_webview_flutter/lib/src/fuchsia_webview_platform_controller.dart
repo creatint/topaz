@@ -25,10 +25,9 @@ class _ChannelSubscription {
 class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   /// Helper class to interact with fuchsia web services
   FuchsiaWebServices _fuchsiaWebServices;
-  String _currentUrl;
   int _nextId = 0;
-  // Reason: not supported until v2.2 and we need to support earlier
-  // versions.
+  final _currentState = fidl_web.NavigationState();
+  // Reason: sdk_version_set_literal unsupported until version 2.2
   // ignore: prefer_collection_literals
   var _beforeLoadChannels = Set<String>();
 
@@ -61,16 +60,12 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
 
   @override
   Future<bool> canGoBack() async {
-    final navigationState =
-        await fuchsiaWebServices.navigationController.getVisibleEntry();
-    return navigationState.canGoBack;
+    return _currentState.canGoBack;
   }
 
   @override
   Future<bool> canGoForward() async {
-    final navigationState =
-        await fuchsiaWebServices.navigationController.getVisibleEntry();
-    return navigationState.canGoForward;
+    return _currentState.canGoForward;
   }
 
   @override
@@ -81,9 +76,12 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
 
   @override
   Future<String> currentUrl() async {
-    final navigationState =
-        await fuchsiaWebServices.navigationController.getVisibleEntry();
-    return navigationState.url;
+    return _currentState.url;
+  }
+
+  @override
+  Future<String> getTitle() async {
+    return _currentState.title;
   }
 
   @override
@@ -173,14 +171,20 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
 
   /// Called when a navigation state event is received from the webview.
   Future<void> _onNavigationStateChanged(fidl_web.NavigationState state) async {
-    // TODO(miguelfrde): instead of storing just the current url, store the
-    // current state for use in canGoBack, canGoForward, etc.
-    if (state.url != null) {
-      _currentUrl = state.url;
-    }
+    _updateCurrentStateDiff(state);
     if (state.isMainDocumentLoaded != null && state.isMainDocumentLoaded) {
       await _establishCommunication(_beforeLoadChannels);
-      _platformCallbacksHandler.onPageFinished(_currentUrl);
+      _platformCallbacksHandler.onPageFinished(_currentState.url);
+    }
+  }
+
+  /// Updates the current state with each field that is set in the new
+  /// navigation state.
+  void _updateCurrentStateDiff(fidl_web.NavigationState state) {
+    for (final entry in state.$fields.entries) {
+      if (entry.value != null) {
+        _currentState.$fields[entry.key] = entry.value;
+      }
     }
   }
 
