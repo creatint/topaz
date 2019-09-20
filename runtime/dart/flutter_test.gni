@@ -359,6 +359,12 @@ if (current_toolchain == dart_toolchain) {
       deps = [
         ":$_main_target_name($dart_toolchain)",
       ]
+
+      if (is_linux || is_mac) {
+        data_deps = [
+          ":$_spec_target_name",
+        ]
+      }
     }
   }
 }
