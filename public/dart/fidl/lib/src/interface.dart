@@ -13,7 +13,11 @@ import 'message.dart';
 
 // ignore_for_file: public_member_api_docs
 
+const epitaphOrdinal = 0xffffffffffffffff;
+
 typedef _VoidCallback = void Function();
+
+typedef EpitaphHandler = void Function(int statusCode);
 
 /// A channel over which messages from interface T can be sent.
 ///
@@ -244,8 +248,7 @@ abstract class Binding<T> {
   /// The object must have previously been bound (e.g., using [bind]).
   InterfaceRequest<T> unbind() {
     assert(isBound);
-    final InterfaceRequest<T> result =
-        InterfaceRequest<T>(_reader.unbind());
+    final InterfaceRequest<T> result = InterfaceRequest<T>(_reader.unbind());
     _impl = null;
 
     if (onUnbind != null) {

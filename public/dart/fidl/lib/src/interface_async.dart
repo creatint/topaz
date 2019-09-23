@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:collection';
+import 'dart:typed_data';
 
 import 'package:zircon/zircon.dart';
 import 'package:meta/meta.dart';
@@ -193,11 +194,26 @@ abstract class AsyncBinding<T> extends _Stateful {
     return result;
   }
 
+  void _writeEpitaph(int statusCode) {
+    var bytes = ByteData(24)
+      ..setUint32(0, 0) // txid (0 because not tracking this on server side)
+      ..setUint8(4, 0) // flags
+      ..setUint8(5, 0) // flags
+      ..setUint8(6, 0) // flags
+      ..setUint8(7, 0) // magic byte
+      ..setUint64(8, epitaphOrdinal) // ordinal
+      ..setInt32(16, statusCode); // body (epitaph struct)
+    _reader.channel.write(bytes, []);
+  }
+
   /// Close the bound channel.
   ///
   /// This function does nothing if the object is not bound.
-  void close() {
+  void close([int statusCode]) {
     if (isBound) {
+      if (statusCode != null) {
+        _writeEpitaph(statusCode);
+      }
       _reader.close();
       _impl = null;
 
@@ -424,6 +440,9 @@ class AsyncProxyController<T> extends _Stateful {
     _close(error);
   }
 
+  /// Called when an epitaph is received (from channel closure).
+  EpitaphHandler onEpitaphReceived;
+
   /// Called whenever this object receives a response on a bound channel.
   ///
   /// Used by subclasses of [Proxy<T>] to receive responses to messages.
@@ -437,8 +456,14 @@ class AsyncProxyController<T> extends _Stateful {
       return;
     }
     try {
-      if (onResponse != null) {
-        onResponse(Message.fromReadResult(result));
+      Message message = Message.fromReadResult(result);
+      if (message.ordinal == epitaphOrdinal) {
+        int statusCode = message.data.getInt32(16);
+        if (onEpitaphReceived != null) {
+          onEpitaphReceived(statusCode);
+        }
+      } else if (onResponse != null) {
+        onResponse(message);
       }
     } on FidlError catch (e) {
       if (result.handles != null) {
