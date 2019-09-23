@@ -224,6 +224,15 @@ class TestServerImpl extends TestServer {
   }
 
   @override
+  Future<void> closeConnectionWithEpitaph(int status, double delaySeconds) async {
+    if (delaySeconds == 0.0) {
+      _binding.close(status);
+    } else {
+      Timer(durationFromSeconds(delaySeconds), () => _binding.close(status));
+    }
+  }
+
+  @override
   Stream<void> get neverEvent => null;
 }
 

@@ -81,6 +81,7 @@ protocol TestServer {
     ReplyWithErrorEnumMore(bool with_error, string value, bool other_value) -> (string value, bool other_value) error EnumOne;
 
     CloseConnection(float64 delaySeconds);
+    CloseConnectionWithEpitaph(int32 status, float64 delaySeconds);
 
     -> NeverEvent();
 };

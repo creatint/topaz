@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
 
 import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
 import 'package:test/test.dart';
@@ -26,6 +27,22 @@ void main() async {
     test('remote close during call', () async {
       expect(server.proxy.replySlowly('hey man', 1.0), throwsA(anything));
       return server.proxy.closeConnection(0.1);
+    });
+
+    test('remote close during call with epitaph', () async {
+      int expectedStatus = -100;
+      Completer completer = Completer();
+      server.proxy.ctrl.onEpitaphReceived = (int statusCode) {
+        if (statusCode != expectedStatus) {
+          completer.completeError(AssertionError(
+              'status_code $statusCode did not match expected status code $expectedStatus'));
+        } else {
+          completer.complete();
+        }
+      };
+      expect(server.proxy.replySlowly('hey man', 1.0), throwsA(anything));
+      return server.proxy.closeConnectionWithEpitaph(expectedStatus, 0.1)
+        .then((val) => completer);
     });
 
     test('local close during call', () async {
