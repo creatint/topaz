@@ -9,6 +9,7 @@ import 'dart:typed_data';
 import 'package:fuchsia_services/services.dart';
 import 'package:fuchsia_vfs/vfs.dart';
 import 'package:meta/meta.dart';
+import 'package:zircon/zircon.dart';
 
 import '../vmo/vmo_writer.dart';
 import 'internal/_inspect_impl.dart';
@@ -45,6 +46,12 @@ abstract class Inspect {
   /// of that inspector. Used to deduplicate requests for
   /// similarly named inspectors.
   static Map<String, int> nameToInstanceCount;
+
+  /// For use in testing only. There's probably no way to put @visibleForTesting
+  /// because this needs to be used by the Validator Puppet, outside the current
+  /// library.
+  /// @nodoc
+  Handle get vmoHandleForExportTestOnly;
 
   /// Returns a singleton [Inspect] instance at root.inspect
   factory Inspect() {

@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'package:fuchsia_vfs/vfs.dart' as vfs;
+import 'package:zircon/zircon.dart';
 
 import '../../vmo/vmo_writer.dart';
 import '../inspect.dart';
@@ -13,14 +14,24 @@ import '../inspect.dart';
 /// should be used by the [Inspect] factory constructor.
 class InspectImpl implements Inspect {
   Node _root;
+  Vmo _vmo;
 
   /// The default constructor for this instance.
   InspectImpl(vfs.PseudoDir directory, String fileName, VmoWriter writer) {
     directory.addNode(fileName, writer.vmoNode);
 
     _root = RootNode(writer);
+    _vmo = writer.vmo;
   }
 
   @override
   Node get root => _root;
+
+  /// For use in testing only. There's probably no way to put @visibleForTesting
+  /// because this needs to be used by the Validator Puppet, outside the current
+  /// library.
+  /// @nodoc
+  @override
+  Handle get vmoHandleForExportTestOnly =>
+      _vmo.duplicate(ZX.RIGHT_READ | ZX.RIGHTS_BASIC | ZX.RIGHT_MAP).handle;
 }

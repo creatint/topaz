@@ -1,0 +1,142 @@
+// Copyright 2019 The Fuchsia Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import 'dart:async';
+
+import 'package:fidl/fidl.dart';
+import 'package:fidl_test_inspect_validate/fidl_async.dart' as fidl_validate;
+import 'package:fuchsia_inspect/src/inspect/inspect.dart';
+import 'package:fuchsia_logger/logger.dart';
+import 'package:fuchsia_services/services.dart';
+//import 'package:fuchsia/fuchsia.dart' as fuchsia; // for fuchsia.exit()
+
+class _ValidateImpl extends fidl_validate.Validate {
+  final _binding = fidl_validate.ValidateBinding();
+  Inspect _inspect;
+  final _nodes = <int, Node>{};
+  final _properties = <int, Property>{};
+
+  void bind(InterfaceRequest<fidl_validate.Validate> request) {
+    _binding.bind(this, request);
+  }
+
+  @override
+  Future<fidl_validate.Validate$Initialize$Response> initialize(
+      fidl_validate.InitializationParams params) async {
+    _inspect = Inspect();
+
+    var handle = _inspect.vmoHandleForExportTestOnly;
+    return fidl_validate.Validate$Initialize$Response(
+        handle, fidl_validate.TestResult.ok);
+  }
+
+  @override
+  Future<fidl_validate.TestResult> act(fidl_validate.Action action) async {
+    if (_inspect == null) {
+      return fidl_validate.TestResult.illegal;
+    }
+    switch (action.$tag) {
+      case fidl_validate.ActionTag.createNode:
+        _nodes[action.createNode.id] =
+            lookupNode(action.createNode.parent).child(action.createNode.name);
+        break;
+      case fidl_validate.ActionTag.deleteNode:
+        _nodes.remove(action.deleteNode.id).delete();
+        break;
+      case fidl_validate.ActionTag.createNumericProperty:
+        switch (action.createNumericProperty.value.$tag) {
+          case fidl_validate.NumberTag.intT:
+            final property = lookupNode(action.createNumericProperty.parent)
+                .intProperty(action.createNumericProperty.name)
+                  ..setValue(action.createNumericProperty.value.intT);
+            _properties[action.createNumericProperty.id] = property;
+            break;
+          case fidl_validate.NumberTag.doubleT:
+            final property = lookupNode(action.createNumericProperty.parent)
+                .doubleProperty(action.createNumericProperty.name)
+                  ..setValue(action.createNumericProperty.value.doubleT);
+            _properties[action.createNumericProperty.id] = property;
+            break;
+          default:
+            return fidl_validate.TestResult.unimplemented;
+        }
+        break;
+      case fidl_validate.ActionTag.createStringProperty:
+        final property = lookupNode(action.createStringProperty.parent)
+            .stringProperty(action.createStringProperty.name)
+              ..setValue(action.createStringProperty.value);
+        _properties[action.createStringProperty.id] = property;
+        break;
+      case fidl_validate.ActionTag.deleteProperty:
+        _properties.remove(action.deleteProperty.id).delete();
+        break;
+      case fidl_validate.ActionTag.addNumber:
+        switch (action.addNumber.value.$tag) {
+          case fidl_validate.NumberTag.intT:
+            IntProperty p = _properties[action.addNumber.id];
+            p.add(action.addNumber.value.intT);
+            break;
+          case fidl_validate.NumberTag.doubleT:
+            DoubleProperty p = _properties[action.addNumber.id];
+            p.add(action.addNumber.value.doubleT);
+            break;
+          default:
+            return fidl_validate.TestResult.unimplemented;
+        }
+        break;
+      case fidl_validate.ActionTag.subtractNumber:
+        switch (action.subtractNumber.value.$tag) {
+          case fidl_validate.NumberTag.intT:
+            IntProperty p = _properties[action.subtractNumber.id];
+            p.subtract(action.subtractNumber.value.intT);
+            break;
+          case fidl_validate.NumberTag.doubleT:
+            DoubleProperty p = _properties[action.subtractNumber.id];
+            p.subtract(action.subtractNumber.value.doubleT);
+            break;
+          default:
+            return fidl_validate.TestResult.unimplemented;
+        }
+        break;
+      case fidl_validate.ActionTag.setNumber:
+        switch (action.setNumber.value.$tag) {
+          case fidl_validate.NumberTag.intT:
+            IntProperty p = _properties[action.setNumber.id];
+            p.setValue(action.setNumber.value.intT);
+            break;
+          case fidl_validate.NumberTag.doubleT:
+            DoubleProperty p = _properties[action.setNumber.id];
+            p.setValue(action.setNumber.value.doubleT);
+            break;
+          default:
+            return fidl_validate.TestResult.unimplemented;
+        }
+        break;
+      case fidl_validate.ActionTag.setBytes:
+        BytesProperty p = _properties[action.addNumber.id];
+        p.setValue(action.setBytes.value);
+        break;
+      case fidl_validate.ActionTag.setString:
+        StringProperty p = _properties[action.setString.id];
+        p.setValue(action.setString.value);
+        break;
+      default:
+        return fidl_validate.TestResult.unimplemented;
+    }
+    return fidl_validate.TestResult.ok;
+  }
+
+  Node lookupNode(int id) {
+    return (id == 0) ? _inspect.root : _nodes[id];
+  }
+}
+
+void main(List<String> args) {
+  setupLogger();
+  final context = StartupContext.fromStartupInfo();
+  final validate = _ValidateImpl();
+
+  context.outgoing.addPublicService<fidl_validate.Validate>(
+      validate.bind, fidl_validate.Validate.$serviceName);
+}
