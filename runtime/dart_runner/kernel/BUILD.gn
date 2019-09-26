@@ -9,9 +9,14 @@ import("//third_party/dart/utils/compile_platform.gni")
 compile_platform("kernel_platform_files") {
   single_root_scheme = "org-dartlang-sdk"
   single_root_base = rebase_path("../../../../")
-
-  libraries_specification_uri =
+  libraries_found = exec_script("../../get_libraries_json.py", [], "list lines")
+  if (libraries_found[0] == "True") {
+    libraries_specification_uri =
       "org-dartlang-sdk:///topaz/runtime/dart_runner/kernel/libraries.json"
+  } else {
+    libraries_specification_uri =
+      "org-dartlang-sdk:///topaz/runtime/dart_runner/kernel/libraries_old.json"
+  }
 
   outputs = [
     "$root_out_dir/dart_runner_patched_sdk/platform_strong.dill",
