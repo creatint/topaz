@@ -72,6 +72,8 @@ class {{ .Name }} extends $fidl.XUnion {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<{{ .Name }}> {{ .TypeSymbol }} = {{ .TypeExpr }};
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
 const $fidl.XUnionType<{{ .Name }}> {{ .OptTypeSymbol }} = {{ .OptTypeExpr }};
 {{ end }}
 `

@@ -112,6 +112,8 @@ const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_Type =
   },
   ctor: OlderSimpleUnion._ctor,
 );
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
 const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_OptType =
     $fidl.XUnionType<OlderSimpleUnion>(
   encodedSize: 24,
@@ -218,6 +220,8 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_Type =
   },
   ctor: NewerSimpleUnion._ctor,
 );
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
 const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_OptType =
     $fidl.XUnionType<NewerSimpleUnion>(
   encodedSize: 24,
@@ -325,6 +329,8 @@ const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_Type =
   },
   ctor: StrictSimpleXUnion._ctor,
 );
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
 const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_OptType =
     $fidl.XUnionType<StrictSimpleXUnion>(
   encodedSize: 24,
@@ -400,6 +406,8 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
   },
   ctor: XUnionContainingEmptyStruct._ctor,
 );
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
 const $fidl.XUnionType<XUnionContainingEmptyStruct>
     kXUnionContainingEmptyStruct_OptType =
     $fidl.XUnionType<XUnionContainingEmptyStruct>(
@@ -472,6 +480,8 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_Type =
   },
   ctor: StrictBoundedXUnion._ctor,
 );
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
 const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_OptType =
     $fidl.XUnionType<StrictBoundedXUnion>(
   encodedSize: 24,

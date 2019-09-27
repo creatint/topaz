@@ -130,5 +130,63 @@ const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   ctor: Union._ctor,
 );
 
+enum FieldCollisionTag {
+  fieldCollisionTag,
+}
+
+class FieldCollision extends $fidl.Union {
+  const FieldCollision.withFieldCollisionTag(int value)
+      : _data = value,
+        _tag = FieldCollisionTag.fieldCollisionTag;
+
+  FieldCollision._(FieldCollisionTag tag, Object data)
+      : _tag = tag,
+        _data = data;
+
+  final FieldCollisionTag _tag;
+  final _data;
+  int get fieldCollisionTag {
+    if (_tag != FieldCollisionTag.fieldCollisionTag) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_tag) {
+      case FieldCollisionTag.fieldCollisionTag:
+        return r'FieldCollision.fieldCollisionTag($fieldCollisionTag)';
+      default:
+        return null;
+    }
+  }
+
+  FieldCollisionTag get $tag => _tag;
+  // TODO: remove, see: FIDL-587
+  FieldCollisionTag get tag => _tag;
+
+  @override
+  int get $index => _tag.index;
+
+  @override
+  Object get $data => _data;
+
+  static FieldCollision _ctor(int index, Object data) {
+    return FieldCollision._(FieldCollisionTag.values[index], data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
+    $fidl.UnionType<FieldCollision>(
+  encodedSize: 8,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 4),
+  ],
+  ctor: FieldCollision._ctor,
+);
+
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();
