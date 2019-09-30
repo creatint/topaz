@@ -44,6 +44,7 @@ template("generate_dart_profiler_symbols") {
     args = [
       "--build-id-dir",
       rebase_path("$root_build_dir/.build-id"),
+
       # TODO: use llvm-readelf once it supports files without section headers.
       "--build-id-script",
       rebase_path("//build/images/elfinfo.py"),
@@ -81,16 +82,4 @@ generate_dart_profiler_symbols("dart_aot_runner") {
   library_label = "//topaz/runtime/dart_runner:dart_aot_runner_bin"
   library_path = "${root_out_dir}/dart_aot_runner"
   output = "${target_gen_dir}/dart_aot_runner.dartprofilersymbols"
-}
-
-generate_dart_profiler_symbols("flutter_jit_runner") {
-  library_label = "//topaz/runtime/flutter_runner:jit"
-  library_path = "${root_out_dir}/flutter_jit_runner"
-  output = "${target_gen_dir}/flutter_jit_runner.dartprofilersymbols"
-}
-
-generate_dart_profiler_symbols("flutter_aot_runner") {
-  library_label = "//topaz/runtime/flutter_runner:aot"
-  library_path = "${root_out_dir}/flutter_aot_runner"
-  output = "${target_gen_dir}/flutter_aot_runner.dartprofilersymbols"
 }
