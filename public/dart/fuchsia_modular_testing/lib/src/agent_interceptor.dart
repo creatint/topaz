@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'dart:async';
+
 import 'package:fuchsia_modular/agent.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fidl/fidl.dart';
@@ -32,12 +34,24 @@ typedef OnNewAgent = void Function(Agent agent);
 class AgentInterceptor {
   final _registeredAgents = <String, OnNewAgent>{};
   final _mockedAgents = <String, _MockedAgent>{};
+  StreamSubscription<TestHarness$OnNewComponent$Response> _streamSubscription;
 
   /// Creates an instance of this which will listen to the [onNewComponentStream].
   AgentInterceptor(
       Stream<TestHarness$OnNewComponent$Response> onNewComponentStream)
       : assert(onNewComponentStream != null) {
-    onNewComponentStream.listen(_handleResponse);
+    _streamSubscription = onNewComponentStream.listen(_handleResponse);
+  }
+
+  /// Dispose of the interceptor.
+  ///
+  /// This method will cancel the onNewComponent stream subscription.
+  /// The object is no longer valid after this method is called.
+  void dispose() {
+    if (_streamSubscription != null) {
+      _streamSubscription.cancel();
+      _streamSubscription = null;
+    }
   }
 
   /// Register an [agentUrl] to be mocked.

@@ -41,9 +41,10 @@ void main() {
       final harness = await launchTestHarness();
 
       final server = _ServerImpl();
-      AgentInterceptor(harness.onNewComponent).mockAgent(agentUrl, (agent) {
-        agent.exposeService(server);
-      });
+      final interceptor = AgentInterceptor(harness.onNewComponent)
+        ..mockAgent(agentUrl, (agent) {
+          agent.exposeService(server);
+        });
 
       await harness.run(spec);
 
@@ -55,8 +56,10 @@ void main() {
       final result = await proxy.echo('hello');
       componentContext.ctrl.close();
       proxy.ctrl.close();
+      harness.ctrl.close();
 
       expect(result, 'hello');
+      interceptor.dispose();
     });
   });
 }

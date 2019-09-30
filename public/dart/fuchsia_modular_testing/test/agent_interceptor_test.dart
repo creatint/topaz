@@ -55,14 +55,17 @@ void main() {
   group('agent intercepting', () {
     TestHarnessProxy harness;
     String agentUrl;
+    AgentInterceptor interceptor;
 
     setUp(() async {
       agentUrl = generateComponentUrl();
       harness = await launchTestHarness();
+      interceptor = AgentInterceptor(harness.onNewComponent);
     });
 
     tearDown(() {
       harness.ctrl.close();
+      interceptor.dispose();
     });
 
     test('onNewAgent called for mocked agent', () async {
@@ -70,7 +73,7 @@ void main() {
           (TestHarnessSpecBuilder()..addComponentToIntercept(agentUrl)).build();
 
       final didCallCompleter = Completer<bool>();
-      AgentInterceptor(harness.onNewComponent).mockAgent(agentUrl, (agent) {
+      interceptor.mockAgent(agentUrl, (agent) {
         expect(agent, isNotNull);
         didCallCompleter.complete(true);
       });
@@ -92,7 +95,7 @@ void main() {
           (TestHarnessSpecBuilder()..addComponentToIntercept(agentUrl)).build();
 
       final server = _ServerImpl();
-      AgentInterceptor(harness.onNewComponent).mockAgent(agentUrl, (agent) {
+      interceptor.mockAgent(agentUrl, (agent) {
         agent.exposeService(server);
       });
 
@@ -113,10 +116,12 @@ void main() {
       final spec =
           (TestHarnessSpecBuilder()..addComponentToIntercept(agentUrl)).build();
 
+      final interceptors = <AgentInterceptor>[];
       for (final server in <fidl.Service>[_ServerImpl()]) {
-        AgentInterceptor(harness.onNewComponent).mockAgent(agentUrl, (agent) {
-          agent.exposeService(server);
-        });
+        interceptors.add(AgentInterceptor(harness.onNewComponent)
+          ..mockAgent(agentUrl, (agent) {
+            agent.exposeService(server);
+          }));
       }
 
       await harness.run(spec);
@@ -130,6 +135,10 @@ void main() {
 
       fooProxy.ctrl.close();
       componentContext.ctrl.close();
+
+      for (final agentInterceptor in interceptors) {
+        agentInterceptor.dispose();
+      }
     });
   });
 }
