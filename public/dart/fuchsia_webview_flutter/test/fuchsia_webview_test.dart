@@ -78,43 +78,6 @@ void main() {
           )));
     });
 
-    testWidgets('currentUrl', (WidgetTester tester) async {
-      await tester.pumpWidget(webView);
-
-      const fooUrl = 'www.foo.com';
-      when(mockNavigationController.getVisibleEntry()).thenAnswer(
-          (_) => (Future.value(fidl_web.NavigationState(url: fooUrl))));
-
-      final resUrl = await webViewController.currentUrl();
-
-      verify(mockNavigationController.getVisibleEntry());
-      expect(resUrl, 'www.foo.com');
-    });
-
-    testWidgets('canGoBack', (WidgetTester tester) async {
-      await tester.pumpWidget(webView);
-
-      when(mockNavigationController.getVisibleEntry()).thenAnswer(
-          (_) => (Future.value(fidl_web.NavigationState(canGoBack: true))));
-
-      final canGoBack = await webViewController.canGoBack();
-
-      verify(mockNavigationController.getVisibleEntry());
-      expect(canGoBack, true);
-    });
-
-    testWidgets('canGoForward', (WidgetTester tester) async {
-      await tester.pumpWidget(webView);
-
-      when(mockNavigationController.getVisibleEntry()).thenAnswer(
-          (_) => (Future.value(fidl_web.NavigationState(canGoForward: true))));
-
-      final canGoForward = await webViewController.canGoForward();
-
-      verify(mockNavigationController.getVisibleEntry());
-      expect(canGoForward, true);
-    });
-
     testWidgets('goBack', (WidgetTester tester) async {
       await tester.pumpWidget(webView);
 

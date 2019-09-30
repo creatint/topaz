@@ -11,6 +11,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 const kPageHtml = '''
 <html>
+  <head>
+    <title>My test page</title>
+  </head>
   <body>
     Test
   </body>
@@ -26,6 +29,22 @@ const kSampleScript = '''
 void main() {
   setUpAll(() async {
     WebView.platform = FuchsiaWebView();
+  });
+
+  testWidgets('loading', (WidgetTester tester) async {
+    final base64Content = base64Encode(Utf8Encoder().convert(kPageHtml));
+    final url = 'data:text/html;base64,$base64Content';
+    WebViewController webViewController;
+    final webView = WebView(
+      onWebViewCreated: (WebViewController controller) {
+        webViewController = controller;
+      },
+      initialUrl: url,
+    );
+
+    await tester.pumpWidget(webView);
+    expect(await webViewController.currentUrl(), url);
+    expect(await webViewController.getTitle(), 'My test page');
   });
 
   testWidgets('javascript object', (WidgetTester tester) async {
