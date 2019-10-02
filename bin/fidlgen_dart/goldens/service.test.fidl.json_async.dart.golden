@@ -41,6 +41,7 @@ typedef _VoidCallback = void Function();
 
 // methodOnFirst: ()
 const int _kFirstProtocol_MethodOnFirst_Ordinal = 0x2838a83100000000;
+const int _kFirstProtocol_MethodOnFirst_GenOrdinal = 0x580cbd0d43ccbe3b;
 const $fidl.MethodType _kFirstProtocol_MethodOnFirst_Type = $fidl.MethodType(
   request: null,
   response: null,
@@ -135,6 +136,7 @@ class FirstProtocolBinding extends $fidl.AsyncBinding<FirstProtocol> {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kFirstProtocol_MethodOnFirst_Ordinal:
+      case _kFirstProtocol_MethodOnFirst_GenOrdinal:
         final String _name = _kFirstProtocol_MethodOnFirst_Type.name;
         try {
           Timeline.startSync(_name);
@@ -160,6 +162,7 @@ class FirstProtocolBinding extends $fidl.AsyncBinding<FirstProtocol> {
 
 // methodOnSecond: ()
 const int _kSecondProtocol_MethodOnSecond_Ordinal = 0xd09c00f00000000;
+const int _kSecondProtocol_MethodOnSecond_GenOrdinal = 0x5785f9c1f2aece21;
 const $fidl.MethodType _kSecondProtocol_MethodOnSecond_Type = $fidl.MethodType(
   request: null,
   response: null,
@@ -254,6 +257,7 @@ class SecondProtocolBinding extends $fidl.AsyncBinding<SecondProtocol> {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kSecondProtocol_MethodOnSecond_Ordinal:
+      case _kSecondProtocol_MethodOnSecond_GenOrdinal:
         final String _name = _kSecondProtocol_MethodOnSecond_Type.name;
         try {
           Timeline.startSync(_name);

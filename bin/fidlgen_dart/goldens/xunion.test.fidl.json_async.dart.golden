@@ -533,12 +533,65 @@ const $fidl.StructType<Empty> kEmpty_Type = $fidl.StructType<Empty>(
   ctor: Empty._ctor,
 );
 
+class StructWithNullableXUnion extends $fidl.Struct {
+  const StructWithNullableXUnion({
+    this.x1,
+  });
+  StructWithNullableXUnion.clone(
+    StructWithNullableXUnion $orig, {
+    OlderSimpleUnion x1,
+  }) : this(
+          x1: x1 ?? $orig.x1,
+        );
+
+  StructWithNullableXUnion.cloneWithout(
+    StructWithNullableXUnion $orig, {
+    bool x1,
+  }) : this(
+          x1: x1 ? null : $orig.x1,
+        );
+
+  StructWithNullableXUnion._(List<Object> argv) : x1 = argv[0];
+  final OlderSimpleUnion x1;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      x1,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructWithNullableXUnion' r'(x1: ' + x1.toString() + r')';
+  }
+
+  static StructWithNullableXUnion _ctor(List<Object> argv) =>
+      StructWithNullableXUnion._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructWithNullableXUnion>
+    kStructWithNullableXUnion_Type = $fidl.StructType<StructWithNullableXUnion>(
+  encodedSize: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<OlderSimpleUnion>(
+        type: kOlderSimpleUnion_OptType, offset: 0),
+  ],
+  ctor: StructWithNullableXUnion._ctor,
+);
+
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();
 
 // strictXUnionHenceResponseMayBeStackAllocated: () -> (StrictBoundedXUnion xu)
 const int _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Ordinal =
     0x71a1b4b700000000;
+const int
+    _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal =
+    0x2b158c786064d0de;
 const $fidl.MethodType
     _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Type =
     $fidl.MethodType(
@@ -553,6 +606,9 @@ const $fidl.MethodType
 const int
     _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Ordinal =
     0x3959ff0900000000;
+const int
+    _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal =
+    0x5ecf85aadd137696;
 const $fidl.MethodType
     _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Type =
     $fidl.MethodType(
@@ -624,6 +680,7 @@ class TestProtocolProxy extends $fidl.AsyncProxy<TestProtocol>
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Ordinal:
+      case _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal:
         final String _name =
             _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Type
                 .name;
@@ -649,6 +706,7 @@ class TestProtocolProxy extends $fidl.AsyncProxy<TestProtocol>
         }
         break;
       case _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Ordinal:
+      case _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal:
         final String _name =
             _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Type
                 .name;
@@ -725,6 +783,7 @@ class TestProtocolBinding extends $fidl.AsyncBinding<TestProtocol> {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Ordinal:
+      case _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal:
         final String _name =
             _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_Type
                 .name;
@@ -761,6 +820,7 @@ class TestProtocolBinding extends $fidl.AsyncBinding<TestProtocol> {
         }
         break;
       case _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Ordinal:
+      case _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal:
         final String _name =
             _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_Type
                 .name;

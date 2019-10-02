@@ -41,6 +41,7 @@ typedef _VoidCallback = void Function();
 
 // ordinalFive: ()
 const int _kSwitchingOrdinals_OrdinalFive_Ordinal = 0x7784636700000000;
+const int _kSwitchingOrdinals_OrdinalFive_GenOrdinal = 0x254f3bdfa9d3dcab;
 const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type = $fidl.MethodType(
   request: null,
   response: null,
@@ -48,6 +49,8 @@ const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type = $fidl.MethodType(
 );
 // onlyGeneratedOrdinal: ()
 const int _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal = 0x27c9581f00000000;
+const int _kSwitchingOrdinals_OnlyGeneratedOrdinal_GenOrdinal =
+    0x163a45fcac049f5b;
 const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
     $fidl.MethodType(
   request: null,
@@ -56,6 +59,8 @@ const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
 );
 // eventOrdinalFifteen:  -> ()
 const int _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal = 0x577495a100000000;
+const int _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal =
+    0x15e4293098574a7;
 const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
     $fidl.MethodType(
   request: null,
@@ -65,6 +70,8 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
 // eventOnlyGeneratedOrdinal:  -> ()
 const int _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal =
     0x7fec464e00000000;
+const int _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_GenOrdinal =
+    0x47107cabe23f6510;
 const $fidl.MethodType _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type =
     $fidl.MethodType(
   request: null,
@@ -115,6 +122,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal:
+      case _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal:
         final String _name = _kSwitchingOrdinals_EventOrdinalFifteen_Type.name;
         try {
           Timeline.startSync(_name);
@@ -133,6 +141,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
         }
         break;
       case _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal:
+      case _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_GenOrdinal:
         final String _name =
             _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type.name;
         try {
@@ -268,6 +277,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kSwitchingOrdinals_OrdinalFive_Ordinal:
+      case _kSwitchingOrdinals_OrdinalFive_GenOrdinal:
         final String _name = _kSwitchingOrdinals_OrdinalFive_Type.name;
         try {
           Timeline.startSync(_name);
@@ -285,6 +295,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
         }
         break;
       case _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal:
+      case _kSwitchingOrdinals_OnlyGeneratedOrdinal_GenOrdinal:
         final String _name = _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type.name;
         try {
           Timeline.startSync(_name);

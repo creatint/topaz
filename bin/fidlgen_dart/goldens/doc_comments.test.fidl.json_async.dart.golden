@@ -192,6 +192,7 @@ typedef _VoidCallback = void Function();
 
 // method: ()
 const int _kInterface_Method_Ordinal = 0x3f43684c00000000;
+const int _kInterface_Method_GenOrdinal = 0x60e700e002995ef8;
 const $fidl.MethodType _kInterface_Method_Type = $fidl.MethodType(
   request: null,
   response: null,
@@ -199,6 +200,7 @@ const $fidl.MethodType _kInterface_Method_Type = $fidl.MethodType(
 );
 // onEvent:  -> ()
 const int _kInterface_OnEvent_Ordinal = 0x136d200d00000000;
+const int _kInterface_OnEvent_GenOrdinal = 0x914c226136244ed;
 const $fidl.MethodType _kInterface_OnEvent_Type = $fidl.MethodType(
   request: null,
   response: null,
@@ -258,6 +260,7 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kInterface_OnEvent_Ordinal:
+      case _kInterface_OnEvent_GenOrdinal:
         final String _name = _kInterface_OnEvent_Type.name;
         try {
           Timeline.startSync(_name);
@@ -363,6 +366,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
       case _kInterface_Method_Ordinal:
+      case _kInterface_Method_GenOrdinal:
         final String _name = _kInterface_Method_Type.name;
         try {
           Timeline.startSync(_name);
