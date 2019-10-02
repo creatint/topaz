@@ -73,8 +73,12 @@ class Encoder {
 
   void encodeMessageHeader(int ordinal, int txid) {
     alloc(kMessageHeaderSize);
-    encodeUint64(ordinal, kMessageOrdinalOffset);
     encodeUint32(txid, kMessageTxidOffset);
+    encodeUint8(0, kMessageFlagOffset);
+    encodeUint8(0, kMessageFlagOffset + 1);
+    encodeUint8(0, kMessageFlagOffset + 2);
+    encodeUint8(kMagicNumberInitial, kMessageMagicOffset);
+    encodeUint64(ordinal, kMessageOrdinalOffset);
   }
 
   void encodeBool(bool value, int offset) {
