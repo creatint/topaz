@@ -7,7 +7,6 @@ import 'dart:async';
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_auth/fidl_async.dart' as fidl_auth;
 
-import 'agent_task_handler.dart';
 import 'internal/_agent_impl.dart';
 
 /// The service provider function that is responsible to return a service that
@@ -86,20 +85,4 @@ abstract class Agent {
   /// Returns the auth token manager this Agent may use for accessing external
   /// services.
   fidl_auth.TokenManagerProxy getTokenManager();
-
-  /// Registers the [taskHandler] with this.
-  ///
-  /// This method must be called before scheduling any tasks via [scheduleTask].
-  /// It is also recommend to register as part of the main method in order to
-  /// start running tasks as soon as possible.
-  ///
-  /// ```
-  /// void main(List<String> args) {
-  ///   Agent()
-  ///     ..registerTaskHandler(MyAgentTaskHandler());
-  /// }
-  ///
-  /// class MyAgentTaskHandler extends AgentTaskHandler { ... }
-  /// ```
-  void registerTaskHandler(AgentTaskHandler taskHandler);
 }

@@ -5,7 +5,6 @@
 // ignore_for_file: implementation_imports
 
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:fidl/fidl.dart' show AsyncBinding, AsyncProxyController;
 import 'package:fidl/src/interface.dart';
@@ -14,7 +13,6 @@ import 'package:fidl_fuchsia_modular/fidl_async.dart' as fidl;
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_modular/lifecycle.dart';
-import 'package:fuchsia_modular/src/agent/agent_task_handler.dart';
 import 'package:fuchsia_modular/src/agent/internal/_agent_impl.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:mockito/mockito.dart';
@@ -178,59 +176,6 @@ void main() {
 
     verify(mockAgentContext.getTokenManager(any));
   });
-
-  group('Agent Tasks:', () {
-    test('verify calling registerTaskHandler with null task throws', () {
-      expect(() {
-        AgentImpl().registerTaskHandler(null);
-      }, throwsArgumentError);
-    });
-
-    test('verify calling registerTaskHandler twice should throw', () {
-      expect(() {
-        AgentImpl()
-          ..registerTaskHandler(MyAgentTaskHandler())
-          ..registerTaskHandler(MyAgentTaskHandler());
-      }, throwsException);
-    });
-
-    test('verify runTask invokes registered taskHandler', () {
-      final mockAgentContext = MockAgentContext();
-      final handler = MyAgentTaskHandler();
-
-      AgentImpl impl = AgentImpl(agentContext: mockAgentContext)
-        ..registerTaskHandler(handler);
-      expect(handler.runTasks.isEmpty, isTrue);
-      impl.runTask('1');
-      expect(handler.runTasks.first, equals('1'));
-    });
-
-    test(
-        'verify out of band runTasks are queued up and run after task handler '
-        'is registered ', () {
-      final mockAgentContext = MockAgentContext();
-      final handler = MyAgentTaskHandler();
-
-      AgentImpl impl = AgentImpl(agentContext: mockAgentContext)
-        ..runTask('1')
-        ..runTask('2')
-        ..runTask('3');
-      expect(handler.runTasks.isEmpty, isTrue);
-      impl
-        ..registerTaskHandler(handler)
-        ..runTask('4');
-      expect(
-          handler.runTasks, equals(Queue<String>.from(['1', '2', '3', '4'])));
-    });
-  });
-}
-
-class MyAgentTaskHandler extends AgentTaskHandler {
-  final Queue<String> runTasks = Queue<String>();
-  @override
-  Future<void> runTask(String taskId) async {
-    runTasks.add(taskId);
-  }
 }
 
 /// This is a dummyService used for testing.
@@ -242,11 +187,6 @@ class DummyService extends fidl.Agent {
   @override
   Future<void> connect(
       String requestorUrl, InterfaceRequest<ServiceProvider> services) {
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> runTask(String taskId) {
     throw UnimplementedError();
   }
 
