@@ -68,6 +68,8 @@ Future<void> _startTestHarness() async {
             'fuchsia-pkg://fuchsia.com/device_settings_manager#meta/device_settings_manager.cmx',
         'fuchsia.fonts.Provider':
             'fuchsia-pkg://fuchsia.com/fonts#meta/fonts.cmx',
+        'fuchsia.identity.account.AccountManager':
+            'fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx',
         'fuchsia.sysmem.Allocator':
             'fuchsia-pkg://fuchsia.com/sysmem_connector#meta/sysmem_connector.cmx',
         'fuchsia.tracelink.Registry':

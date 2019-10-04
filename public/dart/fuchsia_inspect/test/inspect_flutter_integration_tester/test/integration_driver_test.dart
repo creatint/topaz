@@ -62,6 +62,8 @@ Future<void> _startTestHarness() async {
           servicesFromComponents: _toComponentServices({
             'fuchsia.auth.account.AccountManager':
                 'fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx',
+            'fuchsia.identity.account.AccountManager':
+                'fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx',
             'fuchsia.devicesettings.DeviceSettingsManager':
                 'fuchsia-pkg://fuchsia.com/device_settings_manager#meta/device_settings_manager.cmx',
             'fuchsia.fonts.Provider':
