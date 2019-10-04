@@ -89,15 +89,6 @@ class ModularStoryShellImpl extends modular.StoryShell {
   }
 
   @override
-  Future<void> addContainer(
-      String containerName,
-      String parentId,
-      modular.SurfaceRelation relation,
-      List<modular.ContainerLayout> layout,
-      List<modular.ContainerRelationEntry> relationships,
-      List<modular.ContainerView> views) async {}
-
-  @override
   Future<void> removeSurface(String surfaceId) async {
     final surface = _surfacesById[surfaceId];
     storyShell.onSurfaceRemoved(surface);
@@ -117,9 +108,6 @@ class ModularStoryShellImpl extends modular.StoryShell {
 
   @override
   Stream<String> get onSurfaceFocused => _focusEventStreamController.stream;
-
-  @override
-  Future<void> reconnectView(modular.ViewConnection viewConnection) async {}
 
   @override
   Future<void> updateSurface(modular.ViewConnection viewConnection,

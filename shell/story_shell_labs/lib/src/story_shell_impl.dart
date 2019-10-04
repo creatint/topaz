@@ -98,11 +98,6 @@ class StoryShellImpl extends fidl_modular.StoryShell {
   }
 
   @override
-  Future<void> reconnectView(fidl_modular.ViewConnection viewConnection) async {
-    log.warning('reconnectView not implemented ${viewConnection.surfaceId}');
-  }
-
-  @override
   Future<void> updateSurface(
     fidl_modular.ViewConnection viewConnection,
     fidl_modular.SurfaceInfo surfaceInfo,
@@ -112,17 +107,6 @@ class StoryShellImpl extends fidl_modular.StoryShell {
 
   @override
   Stream<String> get onSurfaceFocused => _focusEventStreamController.stream;
-
-  @Deprecated('Deprecated')
-  @override
-  Future<void> addContainer(
-    String containerName,
-    String parentId,
-    fidl_modular.SurfaceRelation relation,
-    List<fidl_modular.ContainerLayout> layouts,
-    List<fidl_modular.ContainerRelationEntry> relationships,
-    List<fidl_modular.ContainerView> views,
-  ) async {}
 
   Future<void> _onLifecycleTerminate() async {
     _clearBinding();
