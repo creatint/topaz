@@ -14,7 +14,8 @@ linter:
   # Full list available at http://dart-lang.github.io/linter/lints/options/options.html.
   rules:
     - always_declare_return_types
-    - always_put_control_body_on_new_line
+    # This conflicts with the rules used by fx format-code:
+    # - always_put_control_body_on_new_line
     - always_put_required_named_parameters_first
     - always_require_non_null_named_parameters
     # No longer useful with Dart 2.
