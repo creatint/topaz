@@ -6,100 +6,10 @@ import 'dart:async';
 
 import 'package:fidl_fuchsia_net/fidl_async.dart' as net;
 import 'package:fidl_fuchsia_netstack/fidl_async.dart' as ns;
-import 'package:fidl_fuchsia_netstack/fidl_async.dart';
-import 'package:flutter/scheduler.dart';
+import 'package:fidl_fuchsia_hardware_ethernet/fidl_async.dart' as eth;
 import 'package:flutter/widgets.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:lib.widgets/model.dart';
-
-const String _kLoopbackInterfaceName = 'en1';
-
-const Duration _kRepeatAnimationDuration = Duration(milliseconds: 400);
-
-const Duration _kRevealAnimationDuration = Duration(milliseconds: 200);
-void _updateAnimations(
-  bool oldValue,
-  bool newValue,
-  AnimationController reveal,
-  AnimationController repeat,
-) {
-  if (newValue) {
-    reveal.forward();
-  } else {
-    reveal.reverse();
-  }
-  if (newValue && oldValue && !repeat.isAnimating) {
-    repeat
-      ..value = 0.0
-      ..forward();
-  }
-}
-
-/// Information about an interface.
-class InterfaceInfo {
-  /// The animation to use when revealing receiving information.
-  AnimationController receivingRevealAnimation;
-
-  /// The animation to use when repeating receiving information.
-  AnimationController receivingRepeatAnimation;
-
-  /// The animation to use when revealing sending information.
-  AnimationController sendingRevealAnimation;
-
-  /// The animation to use when repeating sending information.
-  AnimationController sendingRepeatAnimation;
-  ns.NetInterface _interface;
-  ns.NetInterfaceStats _stats;
-  bool _receiving = false;
-  bool _sending = false;
-
-  /// Constructor.
-  InterfaceInfo(this._interface, this._stats, TickerProvider _vsync) {
-    receivingRevealAnimation = AnimationController(
-      duration: _kRevealAnimationDuration,
-      vsync: _vsync,
-    );
-    receivingRepeatAnimation = AnimationController(
-      duration: _kRepeatAnimationDuration,
-      vsync: _vsync,
-    );
-    sendingRevealAnimation = AnimationController(
-      duration: _kRevealAnimationDuration,
-      vsync: _vsync,
-    );
-    sendingRepeatAnimation = AnimationController(
-      duration: _kRepeatAnimationDuration,
-      vsync: _vsync,
-    );
-  }
-
-  /// Name of the interface.
-  String get name => _interface.name;
-
-  void _update(ns.NetInterface interface, ns.NetInterfaceStats stats) {
-    _interface = interface;
-
-    bool oldReceiving = _receiving;
-    _receiving = _stats.rx.bytesTotal != stats.rx.bytesTotal;
-    _updateAnimations(
-      oldReceiving,
-      _receiving,
-      receivingRevealAnimation,
-      receivingRepeatAnimation,
-    );
-
-    bool oldSending = _sending;
-    _sending = _stats.tx.bytesTotal != stats.tx.bytesTotal;
-    _updateAnimations(
-      oldSending,
-      _sending,
-      sendingRevealAnimation,
-      sendingRepeatAnimation,
-    );
-
-    _stats = stats;
-  }
-}
 
 /// Provides netstack information.
 class NetstackModel extends Model with TickerProviderModelMixin {
@@ -107,12 +17,12 @@ class NetstackModel extends Model with TickerProviderModelMixin {
   final ns.NetstackProxy netstack;
 
   StreamSubscription<bool> _reachabilitySubscription;
-  StreamSubscription<List<NetInterface>> _interfaceSubscription;
+  StreamSubscription<List<ns.NetInterface>> _interfaceSubscription;
   final net.ConnectivityProxy connectivity = net.ConnectivityProxy();
 
   final ValueNotifier<bool> networkReachable = ValueNotifier<bool>(false);
 
-  final Map<int, InterfaceInfo> _interfaces = <int, InterfaceInfo>{};
+  List<ns.NetInterface> _interfaces;
 
   /// Constructor.
   NetstackModel({this.netstack}) {
@@ -125,39 +35,14 @@ class NetstackModel extends Model with TickerProviderModelMixin {
   }
 
   /// The current interfaces on the device.
-  List<InterfaceInfo> get interfaces => _interfaces.values.toList();
+  List<ns.NetInterface> get interfaces => _interfaces;
 
   void interfacesChanged(List<ns.NetInterface> interfaces) {
-    List<ns.NetInterface> filteredInterfaces = interfaces
+    _interfaces = interfaces
         .where((ns.NetInterface interface) =>
-            interface.name != _kLoopbackInterfaceName)
+            interface.features & eth.infoFeatureLoopback == 0)
         .toList();
-
-    List<int> ids = filteredInterfaces
-        .map((ns.NetInterface interface) => interface.id)
-        .toList();
-
-    _interfaces.keys
-        .where((int id) => !ids.contains(id))
-        .toList()
-        .forEach(_interfaces.remove);
-
-    for (ns.NetInterface interface in filteredInterfaces) {
-      netstack.getStats(interface.id).then(
-        (ns.NetInterfaceStats stats) {
-          if (_interfaces[interface.id] == null) {
-            _interfaces[interface.id] = InterfaceInfo(
-              interface,
-              stats,
-              this,
-            );
-          } else {
-            _interfaces[interface.id]._update(interface, stats);
-          }
-          notifyListeners();
-        },
-      );
-    }
+    notifyListeners();
   }
 
   /// Starts listening for netstack interfaces.
