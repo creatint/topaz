@@ -124,10 +124,12 @@ With indexes, the complexity would be O(number of results of the Query).
 These tests run on the host and use a fake Ledger.
 ```
 cd $FUCHSIA_DIR
-# Debug mode should be activated and the topaz test packages should be included, e.g.
-# fx set x64 out/debug-x64 --args=is_debug=true --packages=topaz/packages/all
+fx set workstation.x64 --with-base ./topaz/public/dart/sledge:dart_sledge_tests
+# if you want to be able to run with `fx run-host-tests dart_sledge_tests`,
+# also include the following packages:
+# --with=//bundles:kitchen_sink,//bundles:tests,//garnet/packages:all,//peridot/packages:all,//src/experiences:dart_unittests,//topaz`.
 fx build
-fx run-host-tests dart_sledge_tests
+./out/default/dartlang/gen/topaz/public/dart/sledge/dart_sledge_tests
 ```
 
 When testing is complete, reset to default packages with:

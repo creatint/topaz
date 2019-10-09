@@ -43,6 +43,13 @@ class Sledge {
 
   Subscription _subscribtion;
 
+  Function() _onChangeCallback;
+
+  /// The callback called whenever any data changes in Sledge.
+  set onChangeCallback(Function() callback) {
+    _onChangeCallback = callback;
+  }
+
   /// Default constructor.
   factory Sledge(modular.ComponentContext componentContext,
       [SledgePageId pageId]) {
@@ -172,6 +179,9 @@ class Sledge {
       _documentByPrefix[prefix]?.then((document) {
         document.applyChange(documentChange.value);
       });
+    }
+    if (_onChangeCallback != null && !change.isEmpty()) {
+      _onChangeCallback();
     }
   }
 

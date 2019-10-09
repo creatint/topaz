@@ -103,6 +103,7 @@ flutter_test("dart_sledge_tests") {
     "query/query_test.dart",
     "schema_test.dart",
     "schemas_obtainer_test.dart",
+    "sledge_onchange_test.dart",
     "sledge_page_id_test.dart",
     "sledge_ss_test.dart",
     "transaction_test.dart",

@@ -20,6 +20,11 @@ class Change {
       : changedEntries = changedEntries ?? <KeyValue>[],
         deletedKeys = deletedKeys ?? <Uint8List>[];
 
+  /// Returns whether the change is empty or not.
+  bool isEmpty() {
+    return changedEntries.isEmpty && deletedKeys.isEmpty;
+  }
+
   /// Adds all changes and deletions to this.
   void addAll(final Change other) {
     changedEntries.addAll(other.changedEntries);
@@ -30,8 +35,8 @@ class Change {
   Change withPrefix(Uint8List prefix) {
     Change result = Change();
     for (final change in changedEntries) {
-      result.changedEntries.add(
-          KeyValue(concatUint8Lists(prefix, change.key), change.value));
+      result.changedEntries
+          .add(KeyValue(concatUint8Lists(prefix, change.key), change.value));
     }
     for (final key in deletedKeys) {
       result.deletedKeys.add(concatUint8Lists(prefix, key));
@@ -45,8 +50,8 @@ class Change {
     for (final change in changedEntries) {
       final prefix = getSublistView(change.key, end: prefixLen);
       final newChange = splittedChanges.putIfAbsent(prefix, () => Change());
-      newChange.changedEntries.add(KeyValue(
-          getSublistView(change.key, start: prefixLen), change.value));
+      newChange.changedEntries.add(
+          KeyValue(getSublistView(change.key, start: prefixLen), change.value));
     }
     for (final deletion in deletedKeys) {
       final prefix = getSublistView(deletion, end: prefixLen);

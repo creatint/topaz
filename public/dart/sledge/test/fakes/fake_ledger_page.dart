@@ -56,7 +56,6 @@ class FakeLedgerPage extends ledger.PageProxy {
   @override
   Future<void> commit() async {
     _storageState.applyChange(_modification);
-    onChange(_modification);
     _modification.clear();
   }
 
