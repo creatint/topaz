@@ -12,8 +12,19 @@ import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
 import 'package:test/test.dart';
 import 'package:fidl/fidl.dart';
 
+class TestAsyncBinding extends AsyncBinding<EmptyImpl> {
+  // ignore: empty_constructor_bodies
+  TestAsyncBinding() : super(r'TestAsyncBinding') {}
+  @override
+  void handleMessage(Message message, MessageSink respond) {
+    assert(false, 'should fail in _handleReadable');
+  }
+}
+
+class EmptyImpl {}
+
 void main() {
-  group('magic number', () {
+  group('magic number write', () {
     test('requests', () async {
       final TestServerProxy proxy = TestServerProxy();
       Channel server = proxy.ctrl.request().passChannel();
@@ -36,6 +47,8 @@ void main() {
       final TestServerInstance server = TestServerInstance();
       await server.start();
       Completer magicNumberCompleter = Completer();
+      // monkey patch the proxy controller to resolve responses to the magic
+      // number of the response message
       server.proxy.ctrl.onResponse = (Message message) {
         magicNumberCompleter.complete(message.magic);
       };
@@ -47,6 +60,21 @@ void main() {
       expect(magic, equals(kMagicNumberInitial));
 
       await server.stop();
+    });
+  });
+
+  group('magic number read', () {
+    test('requests', () {
+      ChannelPair pair = ChannelPair();
+      expect(pair.status, equals(ZX.OK));
+
+      final client = pair.first;
+      TestAsyncBinding().bind(EmptyImpl(), InterfaceRequest(pair.second));
+
+      final encoder = Encoder()
+       ..encodeMessageHeader(0, 0)
+       ..encodeUint8(0, kMessageMagicOffset);
+      client.write(encoder.message.data, encoder.message.handles);
     });
   });
 }

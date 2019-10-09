@@ -33,6 +33,8 @@ class Message {
   int get ordinal => data.getUint64(kMessageOrdinalOffset, Endian.little);
   int get magic => data.getUint8(kMessageMagicOffset);
 
+  bool isCompatible() => magic == kMagicNumberInitial;
+
   void hexDump() {
     const int width = 16;
     Uint8List list = Uint8List.view(data.buffer, 0);

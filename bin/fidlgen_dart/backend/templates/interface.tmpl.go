@@ -59,6 +59,12 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
   }
 
   void _handleEvent($fidl.Message $message) {
+    if (!$message.isCompatible()) {
+      ctrl.proxyError($fidl.FidlError(
+        'Incompatible wire format', $fidl.FidlErrorCode.fidlUnknownMagic
+      ));
+      return;
+    }
     final $fidl.Decoder $decoder = $fidl.Decoder($message);
     switch ($message.ordinal) {
 {{- range .Methods }}

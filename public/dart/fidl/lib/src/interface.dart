@@ -300,6 +300,10 @@ abstract class Binding<T> {
           'from channel ${_reader.channel}');
 
     final Message message = Message.fromReadResult(result);
+    if (!message.isCompatible()) {
+      close();
+      throw FidlError('Incompatible wire format', FidlErrorCode.fidlUnknownMagic);
+    }
     handleMessage(message, sendMessage);
   }
 

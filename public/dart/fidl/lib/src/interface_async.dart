@@ -241,6 +241,10 @@ abstract class AsyncBinding<T> extends _Stateful {
           'AsyncBinding<${$interfaceName}> Unexpected empty message or error: $result');
 
     final Message message = Message.fromReadResult(result);
+    if (!message.isCompatible()) {
+      close();
+      throw FidlError('Incompatible wire format', FidlErrorCode.fidlUnknownMagic);
+    }
     handleMessage(message, sendMessage);
   }
 
