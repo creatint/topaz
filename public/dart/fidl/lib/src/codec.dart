@@ -164,6 +164,12 @@ class Decoder {
     return _message.handles[_nextHandle++];
   }
 
+  // Predicate that is true if a given union should be decoded from xunion bytes.
+  // This is part of the union to xunion migration.
+  // This should not be a constant, but is for the time being as we figure out the
+  // format of the information in the header.
+  bool decodeUnionFromXUnionBytes() => false;
+
   bool decodeBool(int offset) => data.getInt8(offset) != 0;
 
   int decodeInt8(int offset) => data.getInt8(offset);

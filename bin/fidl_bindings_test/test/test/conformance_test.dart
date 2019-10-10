@@ -801,6 +801,18 @@ void main() {
           Uint8List.fromList([
             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xef, 0x7f, //
           ]));
+
+      EncodeSuccessCase.run(
+          'UnionWithBoundString',
+          UnionWithBoundStringStruct(
+              v: UnionWithBoundString.withBoundFiveStr('abcd')),
+          kUnionWithBoundStringStruct_Type,
+          Uint8List.fromList([
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x61, 0x62, 0x63, 0x64, 0x00, 0x00, 0x00, 0x00, //
+          ]));
     });
 
     group('decode success cases', () {
@@ -1590,6 +1602,18 @@ void main() {
           Uint8List.fromList([
             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xef, 0x7f, //
           ]));
+
+      DecodeSuccessCase.run(
+          'UnionWithBoundString',
+          UnionWithBoundStringStruct(
+              v: UnionWithBoundString.withBoundFiveStr('abcd')),
+          kUnionWithBoundStringStruct_Type,
+          Uint8List.fromList([
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x61, 0x62, 0x63, 0x64, 0x00, 0x00, 0x00, 0x00, //
+          ]));
     });
 
     group('encode failure cases', () {
@@ -1597,6 +1621,13 @@ void main() {
           'StringExceedsLimit',
           Length2StringWrapper(length2String: 'abc'),
           kLength2StringWrapper_Type,
+          fidl.FidlErrorCode.fidlStringTooLong);
+
+      EncodeFailureCase.run(
+          'UnionWithBoundString_ExceedsBounds',
+          UnionWithBoundStringStruct(
+              v: UnionWithBoundString.withBoundFiveStr('abcdef')),
+          kUnionWithBoundStringStruct_Type,
           fidl.FidlErrorCode.fidlStringTooLong);
     });
 

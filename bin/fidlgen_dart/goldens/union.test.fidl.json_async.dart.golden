@@ -128,6 +128,11 @@ const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
         offset: 8),
   ],
   ctor: Union._ctor,
+  ordinalToIndex: <int, int>{
+    910042901: 0,
+    891204917: 1,
+    1452916587: 2,
+  },
 );
 
 enum FieldCollisionTag {
@@ -186,6 +191,9 @@ const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
     $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 4),
   ],
   ctor: FieldCollision._ctor,
+  ordinalToIndex: <int, int>{
+    1574011787: 0,
+  },
 );
 
 // ignore: unused_element, avoid_private_typedef_functions

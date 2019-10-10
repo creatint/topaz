@@ -83,12 +83,13 @@ type Union struct {
 
 // UnionMember represents a member of a union declaration.
 type UnionMember struct {
-	Type     Type
-	Name     string
-	CtorName string
-	Tag      string
-	Offset   int
-	typeExpr string
+	Type          Type
+	Name          string
+	XUnionOrdinal int
+	CtorName      string
+	Tag           string
+	Offset        int
+	typeExpr      string
 	Documented
 }
 
@@ -465,6 +466,19 @@ func formatUnionMemberList(members []UnionMember) string {
 	}
 
 	return fmt.Sprintf("<$fidl.MemberType>[\n%s  ]", strings.Join(lines, ""))
+}
+
+func formatOrdinalToIndex(members []UnionMember) string {
+	if len(members) == 0 {
+		return "<int, int>{}"
+	}
+
+	var lines []string
+	for i, v := range members {
+		lines = append(lines, fmt.Sprintf("    %d: %d,\n", v.XUnionOrdinal, i))
+	}
+
+	return fmt.Sprintf("<int, int>{\n%s  }", strings.Join(lines, ""))
 }
 
 func formatXUnionMemberList(members []XUnionMember) string {
@@ -1121,13 +1135,14 @@ func (c *compiler) compileUnionMember(val types.UnionMember) UnionMember {
 	typeStr := fmt.Sprintf("type: %s", t.typeExpr)
 	offsetStr := fmt.Sprintf("offset: %v", val.Offset)
 	return UnionMember{
-		Type:       t,
-		Name:       c.compileLowerCamelIdentifier(val.Name, unionMemberContext),
-		CtorName:   c.compileUpperCamelIdentifier(val.Name, unionMemberContext),
-		Tag:        c.compileLowerCamelIdentifier(val.Name, unionMemberTagContext),
-		Offset:     val.Offset,
-		typeExpr:   fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
-		Documented: docString(val),
+		Type:          t,
+		Name:          c.compileLowerCamelIdentifier(val.Name, unionMemberContext),
+		XUnionOrdinal: val.XUnionOrdinal,
+		CtorName:      c.compileUpperCamelIdentifier(val.Name, unionMemberContext),
+		Tag:           c.compileLowerCamelIdentifier(val.Name, unionMemberTagContext),
+		Offset:        val.Offset,
+		typeExpr:      fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		Documented:    docString(val),
 	}
 }
 
@@ -1150,7 +1165,8 @@ func (c *compiler) compileUnion(val types.Union) Union {
   encodedSize: %v,
   members: %s,
   ctor: %s._ctor,
-)`, r.Name, val.Size, formatUnionMemberList(r.Members), r.Name)
+  ordinalToIndex: %s,
+)`, r.Name, val.Size, formatUnionMemberList(r.Members), r.Name, formatOrdinalToIndex(r.Members))
 	return r
 }
 

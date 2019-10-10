@@ -164,6 +164,10 @@ const $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>
     $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 4),
   ],
   ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
+  ordinalToIndex: <int, int>{
+    138512668: 0,
+    1043053528: 1,
+  },
 );
 
 enum WithErrorSyntaxErrorAsEnumResultTag {
@@ -242,6 +246,10 @@ const $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>
     $fidl.MemberType<ErrorEnun>(type: kErrorEnun_Type, offset: 4),
   ],
   ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
+  ordinalToIndex: <int, int>{
+    1951667349: 0,
+    887935114: 1,
+  },
 );
 
 class WithErrorSyntaxErrorAsPrimitiveResponse extends $fidl.Struct {
