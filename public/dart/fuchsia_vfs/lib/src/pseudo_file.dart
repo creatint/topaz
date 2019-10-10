@@ -359,12 +359,6 @@ class _FileConnection extends File {
   }
 
   @override
-  Future<File$Ioctl$Response> ioctl(
-      int opcode, int maxOut, List<Handle> handles, Uint8List in$) async {
-    return File$Ioctl$Response(ZX.ERR_NOT_SUPPORTED, [], Uint8List(0));
-  }
-
-  @override
   Future<File$Read$Response> read(int count) async {
     var response = _handleRead(count, seekPos);
     if (response.s == ZX.OK) {

@@ -386,12 +386,6 @@ class _DirConnection extends Directory {
   }
 
   @override
-  Future<Directory$Ioctl$Response> ioctl(
-      int opcode, int maxOut, List<Handle> handles, Uint8List in$) async {
-    return Directory$Ioctl$Response(ZX.ERR_NOT_SUPPORTED, null, null);
-  }
-
-  @override
   Future<int> link(String src, Handle dstParentToken, String dst) async {
     return ZX.ERR_NOT_SUPPORTED;
   }

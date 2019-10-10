@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_io/fidl_async.dart';
@@ -52,12 +51,6 @@ class ErrorNodeForSendingEvent extends Node {
   @override
   Future<Node$GetAttr$Response> getAttr() async {
     return Node$GetAttr$Response(ZX.ERR_NOT_SUPPORTED, null);
-  }
-
-  @override
-  Future<Node$Ioctl$Response> ioctl(
-      int opcode, int maxOut, List<Handle> handles, Uint8List in$) async {
-    return Node$Ioctl$Response(ZX.ERR_NOT_SUPPORTED, null, null);
   }
 
   @override
