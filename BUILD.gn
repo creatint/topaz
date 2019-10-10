@@ -105,9 +105,13 @@ group("tests") {
     "//topaz/public/dart/composition_delegate:composition_delegate_tests($host_toolchain)",
     "//topaz/public/dart/fuchsia_inspect:fuchsia_inspect_package_unittests($host_toolchain)",
     "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod",
-    "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod:inspect_mod_test",
+
+    # TODO(fxb/38305): Re-enable test when unblocked and inspect paths are corrected
+    # "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod:inspect_mod_test",
     "//topaz/public/dart/fuchsia_inspect/test/inspect_flutter_integration_tester",
-    "//topaz/public/dart/fuchsia_inspect/test/inspect_flutter_integration_tester:inspect_dart_integration_test_driver",
+
+    # TODO(fxb/38305): Re-enable test when unblocked and inspect paths are corrected
+    # "//topaz/public/dart/fuchsia_inspect/test/inspect_flutter_integration_tester:inspect_dart_integration_test_driver",
     "//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test",
     "//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test_writer",
     "//topaz/public/dart/fuchsia_inspect_flutter:inspect_flutter_test($host_toolchain)",
