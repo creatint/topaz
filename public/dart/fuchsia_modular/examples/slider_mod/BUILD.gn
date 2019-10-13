@@ -48,8 +48,6 @@ flutter_app("slider_mod") {
 # This can be run on the Fuchsia device using fx run-test. The slider mod must
 # be available on the machine.
 dart_fuchsia_test("slider_mod_tests") {
-  deprecated_shell = "//topaz"
-
   sources = [
     "slider_mod_widget_test.dart",
   ]

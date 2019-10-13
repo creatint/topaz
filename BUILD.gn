@@ -165,9 +165,6 @@ group("deprecated_shell_allowlist") {
   # request for that fine-grained feature to help us support least-privileged
   # components.
   visibility = [
-    "//topaz/bin/flutter_screencap_test:flutter_screencap_test_pkg",
-    "//topaz/examples/test/driver_example_mod:driver_example_mod_tests_pkg",
-    "//topaz/public/dart/fuchsia_modular/examples/slider_mod:slider_mod_tests_pkg",
     "//topaz/tests/benchmarks/input_latency:topaz_input_latency_benchmarks",
   ]
 }
