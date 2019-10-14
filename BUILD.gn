@@ -17,7 +17,6 @@ group("topaz") {
     "//topaz/app/spinning_cube",
     "//topaz/bin/fidlgen_dart:install(//build/toolchain:host_x64)",
     "//topaz/bin/system_dashboard",
-    "//topaz/bin/userpicker_base_shell",
     "//topaz/examples/fidl/compiler",
     "//topaz/examples/fidl/echo_client_async_dart",
     "//topaz/examples/fidl/echo_server_async_dart",
