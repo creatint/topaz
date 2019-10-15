@@ -319,12 +319,66 @@ class {{ $className }} {
 {{- end }}
 {{- end }}
 
+{{- define "XUnionConverterDecls" -}}
+  {{- range . -}}
+{{- if eq .MaxHandles 0 }}
+{{- $type := execTmpl "TypeTemplate" .Name }}
+{{- $typeKey := "type" }}
+{{- $valueKey := "value" }}
+{{- $className := (execTmpl "CvtClassTemplate" .Name) }}
+class {{ $className }} {
+  static Object toJson(Object unionVal) {
+    if (unionVal is {{ $type }}) {
+      switch(unionVal.$tag) {
+      {{- if .IsFlexible }}
+        case {{ $type }}Tag.$unknown:
+          return {
+            '{{ $typeKey }}': '{{ .Name }}',
+            '{{ $valueKey }}': '<UNKNOWN>',
+          };
+      {{- end }}
+      {{- range .Members }}
+        {{- $member_name := toLowerCamelCase .Name }}
+         {{- $value_expr := print "unionVal." $member_name }}
+        case {{ $type }}Tag.{{ $member_name }}:
+          return {
+            '{{ $typeKey }}': '{{ .Name }}',
+            '{{ $valueKey }}': {{ printf (execTmpl "EncodeMember" .) $value_expr }},
+          };
+      {{- end }}
+      }
+    }
+
+    return null;
+  }
+
+  static {{ $type }} fromJson(Map<String, dynamic> json) {
+    if (json == null) {
+      return null;
+    }
+
+    switch(json['{{ $typeKey }}']) {
+    {{- range .Members }}
+         {{- $member_ctor := printf "%s.with%s" $type (toUpperCamelCase .Name) -}}
+         {{- $jsonVal := printf "json['%s']" $valueKey }}
+      case '{{ .Name }}':
+        return {{ $member_ctor}}({{ printf (execTmpl "DecodeMember" .) $jsonVal }});
+    {{- end }}
+    }
+
+    return null;
+  }
+}
+{{ end }}
+{{- end }}
+{{- end }}
+
 {{- define "ImplementationFile" }}
   {{- template "FileHeader" . }}
   {{- template "FidlInclude" . }}
   {{- template "EnumConverterDecls" . }}
   {{- template "UnionConverterDecls" .Unions }}
-  {{- template "UnionConverterDecls" .XUnions }}
+  {{- template "XUnionConverterDecls" .XUnions }}
   {{- template "StructConverterDecls" . }}
   {{- template "TableConverterDecls" . }}
 {{- end }}

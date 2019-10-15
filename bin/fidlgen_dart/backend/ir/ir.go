@@ -103,6 +103,7 @@ type XUnion struct {
 	OptTypeSymbol string
 	OptTypeExpr   string
 	Documented
+	types.Strictness
 }
 
 // XUnionMember represents a member of a xunion declaration.
@@ -1193,18 +1194,22 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 		OptTypeSymbol: c.optTypeSymbolForCompoundIdentifier(ci),
 		Members:       members,
 		Documented:    docString(val),
+		Strictness:    val.Strictness,
 	}
 	r.TypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
   encodedSize: %v,
   members: %s,
   ctor: %s._ctor,
-)`, r.Name, val.Size, formatXUnionMemberList(r.Members), r.Name)
+  nullable: false,
+  flexible: %t,
+)`, r.Name, val.Size, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
 	r.OptTypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
 encodedSize: %v,
 members: %s,
 ctor: %s._ctor,
 nullable: true,
-)`, r.Name, val.Size, formatXUnionMemberList(r.Members), r.Name)
+flexible: %t,
+)`, r.Name, val.Size, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
 
 	return r
 }

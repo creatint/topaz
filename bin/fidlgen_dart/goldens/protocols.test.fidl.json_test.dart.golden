@@ -65,6 +65,11 @@ class WithAndWithoutRequestResponse$TestBase
 
 class WithErrorSyntax$TestBase extends WithErrorSyntax {
   @override
+  $async.Future<WithErrorSyntax$ResponseAsStruct$Response> responseAsStruct() {
+    return $async.Future.error(UnimplementedError());
+  }
+
+  @override
   $async.Future<void> errorAsPrimitive() {
     return $async.Future.error(UnimplementedError());
   }

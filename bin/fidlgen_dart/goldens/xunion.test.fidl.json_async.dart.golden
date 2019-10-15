@@ -37,6 +37,7 @@ import 'package:zircon/zircon.dart' as $zx;
 // ignore_for_file: avoid_unused_constructor_parameters
 
 enum OlderSimpleUnionTag {
+  $unknown,
   i, // 0x3d32b1d7
   f, // 0x5136cf7e
 }
@@ -62,7 +63,10 @@ class OlderSimpleUnion extends $fidl.XUnion {
   final int _ordinal;
   final _data;
 
-  OlderSimpleUnionTag get $tag => _OlderSimpleUnionTag_map[_ordinal];
+  OlderSimpleUnionTag get $tag {
+    final OlderSimpleUnionTag $rawtag = _OlderSimpleUnionTag_map[_ordinal];
+    return $rawtag == null ? OlderSimpleUnionTag.$unknown : $rawtag;
+  }
 
   int get i {
     if (_ordinal != 1026732503) {
@@ -86,7 +90,7 @@ class OlderSimpleUnion extends $fidl.XUnion {
       case 1362546558:
         return 'OlderSimpleUnion.f($f)';
       default:
-        return null;
+        return 'OlderSimpleUnion.<UNKNOWN>';
     }
   }
 
@@ -111,6 +115,8 @@ const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_Type =
     1362546558: $fidl.Float32Type(),
   },
   ctor: OlderSimpleUnion._ctor,
+  nullable: false,
+  flexible: true,
 );
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
@@ -123,9 +129,11 @@ const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_OptType =
   },
   ctor: OlderSimpleUnion._ctor,
   nullable: true,
+  flexible: true,
 );
 
 enum NewerSimpleUnionTag {
+  $unknown,
   i, // 0x295cbfde
   s, // 0x1c3b9247
   v, // 0x6c38b28f
@@ -157,7 +165,10 @@ class NewerSimpleUnion extends $fidl.XUnion {
   final int _ordinal;
   final _data;
 
-  NewerSimpleUnionTag get $tag => _NewerSimpleUnionTag_map[_ordinal];
+  NewerSimpleUnionTag get $tag {
+    final NewerSimpleUnionTag $rawtag = _NewerSimpleUnionTag_map[_ordinal];
+    return $rawtag == null ? NewerSimpleUnionTag.$unknown : $rawtag;
+  }
 
   int get i {
     if (_ordinal != 693944286) {
@@ -190,7 +201,7 @@ class NewerSimpleUnion extends $fidl.XUnion {
       case 1815655055:
         return 'NewerSimpleUnion.v($v)';
       default:
-        return null;
+        return 'NewerSimpleUnion.<UNKNOWN>';
     }
   }
 
@@ -219,6 +230,8 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_Type =
         nullable: false),
   },
   ctor: NewerSimpleUnion._ctor,
+  nullable: false,
+  flexible: true,
 );
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
@@ -235,6 +248,7 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_OptType =
   },
   ctor: NewerSimpleUnion._ctor,
   nullable: true,
+  flexible: true,
 );
 
 enum StrictSimpleXUnionTag {
@@ -328,6 +342,8 @@ const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_Type =
     850602487: $fidl.StringType(maybeElementCount: null, nullable: false),
   },
   ctor: StrictSimpleXUnion._ctor,
+  nullable: false,
+  flexible: false,
 );
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
@@ -341,9 +357,11 @@ const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_OptType =
   },
   ctor: StrictSimpleXUnion._ctor,
   nullable: true,
+  flexible: false,
 );
 
 enum XUnionContainingEmptyStructTag {
+  $unknown,
   empty, // 0x1952d1d5
 }
 
@@ -364,8 +382,11 @@ class XUnionContainingEmptyStruct extends $fidl.XUnion {
   final int _ordinal;
   final _data;
 
-  XUnionContainingEmptyStructTag get $tag =>
-      _XUnionContainingEmptyStructTag_map[_ordinal];
+  XUnionContainingEmptyStructTag get $tag {
+    final XUnionContainingEmptyStructTag $rawtag =
+        _XUnionContainingEmptyStructTag_map[_ordinal];
+    return $rawtag == null ? XUnionContainingEmptyStructTag.$unknown : $rawtag;
+  }
 
   Empty get empty {
     if (_ordinal != 424858069) {
@@ -380,7 +401,7 @@ class XUnionContainingEmptyStruct extends $fidl.XUnion {
       case 424858069:
         return 'XUnionContainingEmptyStruct.empty($empty)';
       default:
-        return null;
+        return 'XUnionContainingEmptyStruct.<UNKNOWN>';
     }
   }
 
@@ -405,6 +426,8 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
     424858069: kEmpty_Type,
   },
   ctor: XUnionContainingEmptyStruct._ctor,
+  nullable: false,
+  flexible: true,
 );
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
@@ -417,6 +440,7 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
   },
   ctor: XUnionContainingEmptyStruct._ctor,
   nullable: true,
+  flexible: true,
 );
 
 enum StrictBoundedXUnionTag {
@@ -479,6 +503,8 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_Type =
         element: $fidl.Uint8Type(), maybeElementCount: 10, nullable: false),
   },
   ctor: StrictBoundedXUnion._ctor,
+  nullable: false,
+  flexible: false,
 );
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
@@ -491,6 +517,7 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_OptType =
   },
   ctor: StrictBoundedXUnion._ctor,
   nullable: true,
+  flexible: false,
 );
 
 class Empty extends $fidl.Struct {

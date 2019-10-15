@@ -161,6 +161,43 @@ abstract class NullableFidlType<T> extends FidlType<T> {
   final bool nullable;
 }
 
+class UnknownRawData {
+  Uint8List data;
+  List<Handle> handles;
+  UnknownRawData(this.data, this.handles);
+}
+
+/// This encodes/decodes the UnknowRawData assuming it is in an envelope, i.e.
+/// payload bytes followed directly by handles.
+class UnknownRawDataType extends FidlType<UnknownRawData> {
+  const UnknownRawDataType(this.numBytes, this.numHandles)
+      : super(encodedSize: numBytes);
+
+  final int numBytes;
+  final int numHandles;
+
+  @override
+  void encode(Encoder encoder, UnknownRawData value, int offset) {
+    _copyUint8(encoder.data, value.data, offset);
+    for (int i = 0; i < value.handles.length; i++) {
+      encoder.addHandle(value.handles[i]);
+    }
+  }
+
+  @override
+  UnknownRawData decode(Decoder decoder, int offset) {
+    final Uint8List data = Uint8List(numBytes);
+    for (var i = 0; i < numBytes; i++) {
+      data[i] = decoder.decodeUint8(offset + i);
+    }
+    final handles = List<Handle>(numHandles);
+    for (var i = 0; i < numHandles; i++) {
+      handles[i] = decoder.claimHandle();
+    }
+    return UnknownRawData(data, handles);
+  }
+}
+
 class BoolType extends FidlType<bool> {
   const BoolType() : super(encodedSize: 1);
 
@@ -719,12 +756,30 @@ enum _envelopeMode {
   kMustBeAbsent,
 }
 
+class EnvelopeHeader {
+  int numBytes;
+  int numHandles;
+  int fieldPresent;
+  EnvelopeHeader(this.numBytes, this.numHandles, this.fieldPresent);
+}
+
 T _decodeEnvelope<T>(
     Decoder decoder, int offset, _envelopeMode mode, FidlType<T> fieldType) {
-  final numBytes = decoder.decodeUint32(offset);
-  final numHandles = decoder.decodeUint32(offset + 4);
-  final fieldPresent = decoder.decodeUint64(offset + 8);
-  switch (fieldPresent) {
+  final header = _decodeEnvelopeHeader(decoder, offset);
+  return _decodeEnvelopeContent(decoder, mode, header, fieldType);
+}
+
+EnvelopeHeader _decodeEnvelopeHeader(Decoder decoder, int offset) {
+  return EnvelopeHeader(
+    decoder.decodeUint32(offset),
+    decoder.decodeUint32(offset + 4),
+    decoder.decodeUint64(offset + 8),
+  );
+}
+
+T _decodeEnvelopeContent<T>(Decoder decoder, _envelopeMode mode,
+    EnvelopeHeader header, FidlType<T> fieldType) {
+  switch (header.fieldPresent) {
     case kAllocPresent:
       if (mode == _envelopeMode.kMustBeAbsent)
         throw FidlError('expected empty envelope');
@@ -736,14 +791,14 @@ T _decodeEnvelope<T>(
         final numBytesConsumed = decoder.nextOffset() - fieldOffset;
         final numHandlesConsumed =
             decoder.countClaimedHandles() - claimedHandles;
-        if (numBytes != numBytesConsumed)
+        if (header.numBytes != numBytesConsumed)
           throw FidlError('field was mis-sized');
-        if (numHandles != numHandlesConsumed)
+        if (header.numHandles != numHandlesConsumed)
           throw FidlError('handles were mis-sized');
         return field;
       } else if (mode == _envelopeMode.kAllowUnknown) {
-        decoder.claimMemory(numBytes);
-        for (int i = 0; i < numHandles; i++) {
+        decoder.claimMemory(header.numBytes);
+        for (int i = 0; i < header.numHandles; i++) {
           final handle = decoder.claimHandle();
           try {
             handle.close();
@@ -758,8 +813,9 @@ T _decodeEnvelope<T>(
       }
       break;
     case kAllocAbsent:
-      if (numBytes != 0) throw FidlError('absent envelope with non-zero bytes');
-      if (numHandles != 0)
+      if (header.numBytes != 0)
+        throw FidlError('absent envelope with non-zero bytes');
+      if (header.numHandles != 0)
         throw FidlError('absent envelope with non-zero handles');
       return null;
     default:
@@ -907,15 +963,13 @@ class UnionType<T extends Union> extends FidlType<T> {
 }
 
 class XUnionType<T extends XUnion> extends NullableFidlType<T> {
-  const XUnionType({
-    int encodedSize,
-    this.members,
-    this.ctor,
-    bool nullable,
-  }) : super(encodedSize: encodedSize, nullable: nullable);
+  const XUnionType(
+      {int encodedSize, this.members, this.ctor, bool nullable, this.flexible})
+      : super(encodedSize: encodedSize, nullable: nullable);
 
   final Map<int, FidlType> members;
   final XUnionFactory<T> ctor;
+  final bool flexible;
 
   @override
   void encode(Encoder encoder, T value, int offset) {
@@ -928,8 +982,16 @@ class XUnionType<T extends XUnion> extends NullableFidlType<T> {
       _encodeEnvelopeAbsent(encoder, envelopeOffset);
     } else {
       final int ordinal = value.$ordinal;
-      final FidlType fieldType = members[ordinal];
-      if (fieldType == null) throw FidlError('Bad xunion ordinal: $ordinal');
+      var fieldType = members[ordinal];
+      if (fieldType == null && flexible) {
+        UnknownRawData rawData = value.$data;
+        fieldType =
+            UnknownRawDataType(rawData.data.length, rawData.handles.length);
+      }
+      if (fieldType == null)
+        throw FidlError('Bad xunion ordinal: $ordinal',
+            FidlErrorCode.fidlStrictXUnionUnknownField);
+
       encoder.encodeUint32(ordinal, offset);
       _encodeEnvelopePresent(encoder, envelopeOffset, value.$data, fieldType);
     }
@@ -947,10 +1009,15 @@ class XUnionType<T extends XUnion> extends NullableFidlType<T> {
           decoder, envelopeOffset, _envelopeMode.kMustBeAbsent, null);
       return null;
     } else {
-      final fieldType = members[ordinal];
-      if (fieldType == null) throw FidlError('Bad xunion ordinal: $ordinal');
-      final field = _decodeEnvelope(
-          decoder, envelopeOffset, _envelopeMode.kDisallowUnknown, fieldType);
+      var fieldType = members[ordinal];
+      if (fieldType == null && !flexible)
+        throw FidlError('Bad xunion ordinal: $ordinal',
+            FidlErrorCode.fidlStrictXUnionUnknownField);
+
+      final header = _decodeEnvelopeHeader(decoder, envelopeOffset);
+      fieldType ??= UnknownRawDataType(header.numBytes, header.numHandles);
+      final field = _decodeEnvelopeContent(
+          decoder, _envelopeMode.kDisallowUnknown, header, fieldType);
       if (field == null) throw FidlError('Bad xunion: missing content');
       return ctor(ordinal, field);
     }

@@ -8,6 +8,9 @@ package templates
 const XUnion = `
 {{- define "XUnionDeclaration" -}}
 enum {{ .TagName }} {
+{{- if .IsFlexible }}
+  $unknown,
+{{- end }}
 {{- range .Members }}
   {{ .Tag }}, // {{ .Ordinal | printf "%#x" }}
 {{- end }}
@@ -33,8 +36,14 @@ class {{ .Name }} extends $fidl.XUnion {
 
   final int _ordinal;
   final _data;
-
+{{ if .IsFlexible }}
+  {{ .TagName }} get $tag {
+    final {{ .TagName }} $rawtag = _{{ .TagName }}_map[_ordinal];
+    return $rawtag == null ? {{ .TagName }}.$unknown : $rawtag;
+  }
+{{- else }}
   {{ .TagName }} get $tag => _{{ .TagName }}_map[_ordinal];
+{{- end }}
 
 {{range .Members }}
   {{ .Type.Decl }} get {{ .Name }} {
@@ -54,7 +63,11 @@ class {{ .Name }} extends $fidl.XUnion {
         return '{{ $.Name }}.{{ .Name }}(${{ .Name }})';
 {{- end }}
       default:
+{{- if .IsFlexible }}
+        return '{{ $.Name }}.<UNKNOWN>';
+{{- else }}
         return null;
+{{- end }}
     }
   }
 

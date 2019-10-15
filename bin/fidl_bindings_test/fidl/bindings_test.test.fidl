@@ -10,6 +10,12 @@ struct NoHandleStruct {
     vector<uint8> baz;
 };
 
+struct NumberHandleNumber {
+    uint32 n1;
+    handle h;
+    uint32 n2;
+};
+
 struct ExampleStruct {
     string foo;
     int32 bar;
@@ -26,6 +32,14 @@ xunion ExampleXunion {
     string foo;
     int32 bar;
     vector<uint8> baz;
+    NumberHandleNumber with_handle;
+};
+
+strict xunion ExampleStrictXunion {
+    string foo;
+    int32 bar;
+    vector<uint8> baz;
+    NumberHandleNumber with_handle;
 };
 
 bits ExampleBits {

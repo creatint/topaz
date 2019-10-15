@@ -110,7 +110,7 @@ class DecodeFailureCase<T> {
           ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0))
         ..claimMemory(type.encodedSize);
       expect(() => type.decode(decoder, 0),
-          throwsA(predicate((e) => e.code == code)));
+          throwsA(predicate((e) => e is fidl.FidlError && e.code == code)));
     });
   }
 }

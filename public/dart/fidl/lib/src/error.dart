@@ -8,7 +8,8 @@
 enum FidlErrorCode {
   unknown,
   fidlStringTooLong,
-  fidlNonNullableTypeWithNullValue
+  fidlNonNullableTypeWithNullValue,
+  fidlStrictXUnionUnknownField
 }
 
 class FidlError implements Exception {
