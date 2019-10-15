@@ -25,7 +25,7 @@
     },
     "sandbox": {
         "features": [
-            "deprecated-shell"
+	    "hub"
         ],
         "services": [
             "fuchsia.posix.socket.Provider",

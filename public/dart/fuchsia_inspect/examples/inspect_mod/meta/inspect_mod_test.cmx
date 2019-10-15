@@ -25,8 +25,8 @@
     },
     "sandbox": {
         "features": [
-            "deprecated-shell",
-            "deprecated-ambient-replace-as-executable"
+            "deprecated-ambient-replace-as-executable",
+	    "hub"
         ],
         "services": [
             "fuchsia.sys.Environment",

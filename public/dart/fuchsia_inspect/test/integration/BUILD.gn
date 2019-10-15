@@ -54,8 +54,6 @@ dart_app("dart_inspect_vmo_test_writer") {
 # Run these tests using
 #   fx run-test dart_inspect_vmo_test
 test_package("dart_inspect_vmo_test") {
-  deprecated_shell = "//topaz"
-
   deps = [
     ":dart_inspect_vmo_test_writer",
     ":test",
