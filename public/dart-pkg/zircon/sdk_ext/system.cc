@@ -4,8 +4,6 @@
 
 #include "dart-pkg/zircon/sdk_ext/system.h"
 
-#include <array>
-
 #include <ddk/device.h>
 #include <fcntl.h>
 #include <fs/vfs.h>
@@ -19,8 +17,10 @@
 #include <zircon/process.h>
 #include <zircon/processargs.h>
 
-#include "lib/fsl/io/fd.h"
+#include <array>
+
 #include "src/lib/files/unique_fd.h"
+#include "src/lib/fsl/io/fd.h"
 #include "third_party/tonic/dart_binding_macros.h"
 #include "third_party/tonic/dart_class_library.h"
 
@@ -174,11 +174,11 @@ Dart_Handle System::ChannelCreate(uint32_t options) {
   }
 }
 
-zx_status_t System::ConnectToService(std::string path, fxl::RefPtr<Handle> channel) {
+zx_status_t System::ConnectToService(std::string path,
+                                     fxl::RefPtr<Handle> channel) {
   return fdio_ns_connect(GetNamespace(), path.c_str(),
                          ZX_FS_RIGHT_READABLE | ZX_FS_RIGHT_WRITABLE,
                          channel->ReleaseHandle());
-
 }
 
 Dart_Handle System::ChannelFromFile(std::string path) {
@@ -287,8 +287,7 @@ Dart_Handle System::SocketCreate(uint32_t options) {
 }
 
 Dart_Handle System::SocketWrite(fxl::RefPtr<Handle> socket,
-                                const tonic::DartByteData& data,
-                                int options) {
+                                const tonic::DartByteData& data, int options) {
   if (!socket || !socket->is_valid()) {
     data.Release();
     return ConstructDartObject(kWriteResult, ToDart(ZX_ERR_BAD_HANDLE));
@@ -367,8 +366,7 @@ zx_status_t System::VmoSetSize(fxl::RefPtr<Handle> vmo, uint64_t size) {
   return zx_vmo_set_size(vmo->handle(), size);
 }
 
-zx_status_t System::VmoWrite(fxl::RefPtr<Handle> vmo,
-                             uint64_t offset,
+zx_status_t System::VmoWrite(fxl::RefPtr<Handle> vmo, uint64_t offset,
                              const tonic::DartByteData& data) {
   if (!vmo || !vmo->is_valid()) {
     data.Release();
@@ -382,8 +380,7 @@ zx_status_t System::VmoWrite(fxl::RefPtr<Handle> vmo,
   return status;
 }
 
-Dart_Handle System::VmoRead(fxl::RefPtr<Handle> vmo,
-                            uint64_t offset,
+Dart_Handle System::VmoRead(fxl::RefPtr<Handle> vmo, uint64_t offset,
                             size_t size) {
   if (!vmo || !vmo->is_valid()) {
     return ConstructDartObject(kReadResult, ToDart(ZX_ERR_BAD_HANDLE));
@@ -407,8 +404,7 @@ struct SizedRegion {
 };
 
 void System::VmoMapFinalizer(void* isolate_callback_data,
-                             Dart_WeakPersistentHandle handle,
-                             void* peer) {
+                             Dart_WeakPersistentHandle handle, void* peer) {
   SizedRegion* r = reinterpret_cast<SizedRegion*>(peer);
   zx_vmar_unmap(zx_vmar_root_self(), reinterpret_cast<uintptr_t>(r->region),
                 r->size);

@@ -10,7 +10,6 @@
 #include <gtest/gtest.h>
 #include <lib/fdio/spawn.h>
 #include <lib/fit/function.h>
-#include <lib/fsl/vmo/vector.h>
 #include <lib/gtest/real_loop_fixture.h>
 #include <lib/sys/cpp/component_context.h>
 #include <lib/sys/cpp/service_directory.h>
@@ -27,6 +26,7 @@
 #include <string>
 #include <vector>
 
+#include "src/lib/fsl/vmo/vector.h"
 #include "topaz/tests/web_runner_tests/test_server.h"
 #include "topaz/tests/web_runner_tests/web_context.h"
 

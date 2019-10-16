@@ -31,13 +31,13 @@ source_set("sdk_ext") {
   ]
 
   deps = [
-    "//garnet/public/lib/fsl",
+    "//src/lib/fsl",
     "//third_party/dart/runtime:dart_api",
-    "//zircon/system/fidl/fuchsia-device-manager",
     "//zircon/public/lib/async-default",
     "//zircon/public/lib/ddk",
     "//zircon/public/lib/fs",
     "//zircon/public/lib/zx",
+    "//zircon/system/fidl/fuchsia-device-manager",
   ]
 
   public_deps = [

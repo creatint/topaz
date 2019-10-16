@@ -69,7 +69,6 @@ executable("web_runner_pixel_tests") {
   deps = [
     ":test_server",
     ":web_context",
-    "//garnet/public/lib/fsl",
     "//garnet/public/lib/gtest",
     "//sdk/fidl/fuchsia.sys",
     "//sdk/fidl/fuchsia.ui.app",
@@ -78,6 +77,7 @@ executable("web_runner_pixel_tests") {
     "//sdk/fidl/fuchsia.ui.views",
     "//sdk/lib/sys/cpp",
     "//sdk/lib/ui/scenic/cpp",
+    "//src/lib/fsl",
     "//third_party/googletest:gtest_main",
     "//zircon/public/lib/fit",
   ]
