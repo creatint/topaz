@@ -1633,6 +1633,17 @@ void main() {
 
     group('decode failure cases', () {
       DecodeFailureCase.run(
+          'StrictXUnion Field Unknown',
+          kTestStrictXUnionInStruct_Type,
+          Uint8List.fromList([
+            0x11, 0xba, 0x5e, 0xba, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0xde, 0xad, 0xbe, 0xef, 0x5c, 0xa1, 0xab, 0x1e, //
+          ]),
+          fidl.FidlErrorCode.fidlStrictXUnionUnknownField);
+
+      DecodeFailureCase.run(
           'NonEmptyStringWithNullPtrBody',
           kStringWrapper_Type,
           Uint8List.fromList([
