@@ -6,6 +6,7 @@
 const List<String> validProjects = <String>[
   'atom-language-fidl',
   'cobalt',
+  'experiences',
   'fargo',
   'fuchsia',
   'infra', // This is a family of projects.

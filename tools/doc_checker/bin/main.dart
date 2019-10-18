@@ -43,7 +43,7 @@ void reportError(Error error) {
       case ErrorType.unreachablePage:
         return 'Page should be reachable';
       case ErrorType.obsoleteProject:
-        return 'Project is obsolete';
+        return 'Project or repo that this URL refers to is obsolete (not in validProjects list)';
       case ErrorType.invalidMenu:
         return 'Invalid Menu Entry';
       case ErrorType.invalidUri:
