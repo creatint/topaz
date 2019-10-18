@@ -60,8 +60,6 @@ Future<void> _startTestHarness() async {
   final testHarnessSpec = TestHarnessSpec(
       envServices: EnvironmentServicesSpec(
           servicesFromComponents: _toComponentServices({
-            'fuchsia.auth.account.AccountManager':
-                'fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx',
             'fuchsia.identity.account.AccountManager':
                 'fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx',
             'fuchsia.devicesettings.DeviceSettingsManager':

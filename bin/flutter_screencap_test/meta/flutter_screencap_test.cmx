@@ -2,7 +2,6 @@
     "facets": {
         "fuchsia.test": {
             "injected-services": {
-                "fuchsia.auth.account.AccountManager": "fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx",
                 "fuchsia.devicesettings.DeviceSettingsManager": "fuchsia-pkg://fuchsia.com/device_settings_manager#meta/device_settings_manager.cmx",
                 "fuchsia.fonts.Provider": "fuchsia-pkg://fuchsia.com/fonts#meta/fonts.cmx",
                 "fuchsia.identity.account.AccountManager": "fuchsia-pkg://fuchsia.com/account_manager#meta/account_manager.cmx",
@@ -22,7 +21,6 @@
             "deprecated-ambient-replace-as-executable"
         ],
         "services": [
-            "fuchsia.auth.account.AccountManager",
             "fuchsia.devicesettings.DeviceSettingsManager",
             "fuchsia.fonts.Provider",
             "fuchsia.identity.account.AccountManager",
