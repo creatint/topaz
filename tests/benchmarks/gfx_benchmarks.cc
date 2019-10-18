@@ -4,7 +4,17 @@
 
 #include "topaz/tests/benchmarks/gfx_benchmarks.h"
 
+#include <string>
+#include <vector>
+
 #include "src/lib/fxl/logging.h"
+#include "src/lib/fxl/strings/join_strings.h"
+
+namespace {
+std::string JoinCommands(const std::vector<std::string>& strings) {
+  return fxl::JoinStrings(strings, " ");
+};
+}  // namespace
 
 void AddGraphicsBenchmarks(benchmarking::BenchmarksRunner* benchmarks_runner) {
   FXL_DCHECK(benchmarks_runner != nullptr);
@@ -16,18 +26,23 @@ void AddGraphicsBenchmarks(benchmarking::BenchmarksRunner* benchmarks_runner) {
     std::string renderer_params;
   };
 
-  constexpr char kImageGridFlutterX3Command[] =
-      "present_view fuchsia-pkg://fuchsia.com/tile_view#meta/tile_view.cmx "
-      "image_grid_flutter image_grid_flutter image_grid_flutter";
+  const std::string kPresentViewCommand =
+      "fuchsia-pkg://fuchsia.com/present_view#meta/present_view.cmx";
 
+  const std::string kImageGridFlutterX3Command = JoinCommands(
+      {kPresentViewCommand,
+       "fuchsia-pkg://fuchsia.com/tile_view#meta/tile_view.cmx "
+       "image_grid_flutter image_grid_flutter image_grid_flutter"});
+  const std::string kImageGridFlutterCommand =
+      JoinCommands({kPresentViewCommand, "image_grid_flutter"});
   // clang-format off
   std::vector<Param> params = {
     //
     // image_grid_flutter
     //
-    {"fuchsia.scenic.image_grid_flutter_noclipping_noshadows", "present_view image_grid_flutter", "image_grid_flutter", "--unshadowed --clipping_disabled"},
-    {"fuchsia.scenic.image_grid_flutter_noshadows", "present_view image_grid_flutter", "image_grid_flutter", "--unshadowed --clipping_enabled"},
-    {"fuchsia.scenic.image_grid_flutter_stencil_shadow_volume", "present_view image_grid_flutter", "image_grid_flutter", "--stencil_shadow_volume --clipping_enabled"},
+    {"fuchsia.scenic.image_grid_flutter_noclipping_noshadows", kImageGridFlutterCommand, "image_grid_flutter", "--unshadowed --clipping_disabled"},
+    {"fuchsia.scenic.image_grid_flutter_noshadows", kImageGridFlutterCommand, "image_grid_flutter", "--unshadowed --clipping_enabled"},
+    {"fuchsia.scenic.image_grid_flutter_stencil_shadow_volume", kImageGridFlutterCommand, "image_grid_flutter", "--stencil_shadow_volume --clipping_enabled"},
 
     //
     // image_grid_flutter x3
