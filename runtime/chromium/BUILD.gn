@@ -19,12 +19,11 @@ test_env = [
     dimensions = {
       device_type = "Intel NUC Kit NUC7i5DNHE"
     }
-    tags = [ "chromium-prebuilts" ]
   },
 ]
 
-prebuilt_test_manifest("chromium_prebuilts") {
+prebuilt_test_manifest("chromium_tests") {
   archive_dir = "//prebuilt/third_party/chromium_tests/arch/x64"
-  package_name_prefix = "chromium_prebuilts"
+  package_name_prefix = "chromium_tests"
   environments = test_env
 }

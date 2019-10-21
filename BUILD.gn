@@ -138,7 +138,7 @@ group("tests") {
     "//topaz/public/dart/zircon:test_extract_zircon_constants($host_toolchain)",
     "//topaz/public/lib/display/flutter:display_test($host_toolchain)",
     "//topaz/runtime/chromium",
-    "//topaz/runtime/chromium:chromium_prebuilts",
+    "//topaz/runtime/chromium:chromium_tests",
     "//topaz/runtime/chromium:web_runner",
     "//topaz/runtime/dart/utils:run_vmservice_object_tests",
     "//topaz/runtime/dart_runner/examples/goodbye_dart:goodbye_dart_test",
