@@ -272,7 +272,8 @@ class Handles extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Handles> kHandles_Type = $fidl.StructType<Handles>(
-  encodedSize: 104,
+  inlineSizeOld: 104,
+  inlineSizeV1NoEE: 104,
   members: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 0),

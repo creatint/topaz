@@ -33,7 +33,8 @@ class EncodeSuccessCase<T> {
 
   void _checkEncode() {
     test('encode', () {
-      final fidl.Encoder encoder = fidl.Encoder()..alloc(type.encodedSize);
+      final fidl.Encoder encoder = fidl.Encoder()
+        ..alloc(type.encodingInlineSize());
       type.encode(encoder, input, 0);
       final message = encoder.message;
       expect(Uint8List.view(message.data.buffer, 0, message.dataLength),
@@ -59,8 +60,8 @@ class DecodeSuccessCase<T> {
   void _checkDecode() {
     test('decode', () {
       final fidl.Decoder decoder = fidl.Decoder(fidl.Message(
-          ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0))
-        ..claimMemory(type.encodedSize);
+          ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0));
+      decoder.claimMemory(type.decodingInlineSize(decoder));
       final actual = type.decode(decoder, 0);
       expect(actual, equals(input));
     });
@@ -83,7 +84,8 @@ class EncodeFailureCase<T> {
 
   void _checkEncodeFails() {
     test('encode fails', () {
-      final fidl.Encoder encoder = fidl.Encoder()..alloc(type.encodedSize);
+      final fidl.Encoder encoder = fidl.Encoder()
+        ..alloc(type.encodingInlineSize());
       expect(() => type.encode(encoder, input, 0),
           throwsA(predicate((e) => e.code == code)));
     });
@@ -107,8 +109,8 @@ class DecodeFailureCase<T> {
   void _checkDecodeFails() {
     test('decode fails', () {
       final fidl.Decoder decoder = fidl.Decoder(fidl.Message(
-          ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0))
-        ..claimMemory(type.encodedSize);
+          ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0));
+      decoder.claimMemory(type.decodingInlineSize(decoder));
       expect(() => type.decode(decoder, 0),
           throwsA(predicate((e) => e is fidl.FidlError && e.code == code)));
     });

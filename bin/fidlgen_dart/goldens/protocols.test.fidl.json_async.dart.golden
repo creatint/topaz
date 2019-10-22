@@ -157,7 +157,8 @@ class WithErrorSyntaxResponseAsStructResult extends $fidl.Union {
 const $fidl.UnionType<WithErrorSyntaxResponseAsStructResult>
     kWithErrorSyntax_ResponseAsStruct_Result_Type =
     $fidl.UnionType<WithErrorSyntaxResponseAsStructResult>(
-  encodedSize: 32,
+  inlineSizeOld: 32,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxResponseAsStructResponse>(
         type: kWithErrorSyntax_ResponseAsStruct_Response_Type, offset: 8),
@@ -239,7 +240,8 @@ class WithErrorSyntaxErrorAsPrimitiveResult extends $fidl.Union {
 const $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>
     kWithErrorSyntax_ErrorAsPrimitive_Result_Type =
     $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>(
-  encodedSize: 8,
+  inlineSizeOld: 8,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResponse>(
         type: kWithErrorSyntax_ErrorAsPrimitive_Response_Type, offset: 4),
@@ -321,7 +323,8 @@ class WithErrorSyntaxErrorAsEnumResult extends $fidl.Union {
 const $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>
     kWithErrorSyntax_ErrorAsEnum_Result_Type =
     $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>(
-  encodedSize: 8,
+  inlineSizeOld: 8,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxErrorAsEnumResponse>(
         type: kWithErrorSyntax_ErrorAsEnum_Response_Type, offset: 4),
@@ -389,7 +392,8 @@ class WithErrorSyntaxResponseAsStructResponse extends $fidl.Struct {
 const $fidl.StructType<WithErrorSyntaxResponseAsStructResponse>
     kWithErrorSyntax_ResponseAsStruct_Response_Type =
     $fidl.StructType<WithErrorSyntaxResponseAsStructResponse>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 0),
     $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 8),
@@ -437,7 +441,8 @@ class WithErrorSyntaxErrorAsPrimitiveResponse extends $fidl.Struct {
 const $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>
     kWithErrorSyntax_ErrorAsPrimitive_Response_Type =
     $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>(
-  encodedSize: 1,
+  inlineSizeOld: 1,
+  inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
@@ -482,7 +487,8 @@ class WithErrorSyntaxErrorAsEnumResponse extends $fidl.Struct {
 const $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>
     kWithErrorSyntax_ErrorAsEnum_Response_Type =
     $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>(
-  encodedSize: 1,
+  inlineSizeOld: 1,
+  inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],

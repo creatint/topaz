@@ -6,18 +6,41 @@ import 'package:test/test.dart';
 import 'package:fidl/fidl.dart' as $fidl;
 
 void main() {
-  test('decode xunion bytes into union', () {
-    int inputValue = 5;
+  group('union to xunion migration', () {
+    test('decode xunion bytes into union', () {
+      int inputValue = 5;
 
-    var encoder = $fidl.Encoder()..alloc(24);
+      var encoder = $fidl.Encoder()..alloc(24);
 
-    var xunion = XUnion.withPrimitive(inputValue);
-    kXUnion_Type.encode(encoder, xunion, 0);
+      var xunion = XUnion.withPrimitive(inputValue);
+      kXUnion_Type.encode(encoder, xunion, 0);
 
-    var decoder = DecoderThatDecodesUnionsFromXunions(encoder.message)
-      ..claimMemory(24);
-    var union = kUnion_Type.decode(decoder, 0);
-    expect(union.primitive, equals(inputValue));
+      var decoder = DecoderThatDecodesUnionsFromXunions(encoder.message)
+        ..claimMemory(24);
+      var union = kUnion_Type.decode(decoder, 0);
+      expect(union.primitive, equals(inputValue));
+    });
+
+    test('encode xunion bytes from union', () {
+      $fidl.enableWriteXUnionBytesForUnion = true;
+      int inputValue = 5;
+
+      var xunionEncoder = $fidl.Encoder()..alloc(24);
+      var xunion = XUnion.withPrimitive(inputValue);
+      kXUnion_Type.encode(xunionEncoder, xunion, 0);
+
+      var unionEncoder = $fidl.Encoder()..alloc(24);
+      var union = Union.withPrimitive(inputValue);
+      kUnion_Type.encode(unionEncoder, union, 0);
+
+      final unionBytes = unionEncoder.message.data.buffer.asUint8List();
+      final xunionBytes = xunionEncoder.message.data.buffer.asUint8List();
+      expect(unionBytes.length, equals(xunionBytes.length));
+      for (int i = 0; i < unionBytes.length; i++) {
+        expect(unionBytes[i], equals(xunionBytes[i]));
+      }
+      $fidl.enableWriteXUnionBytesForUnion = false;
+    });
   });
 }
 
@@ -109,7 +132,8 @@ class Union extends $fidl.Union {
 // ignore: recursive_compile_time_constant
 // ignore: constant_identifier_names
 const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 8),
     $fidl.MemberType<String>(
@@ -217,7 +241,8 @@ class XUnion extends $fidl.XUnion {
 // ignore: recursive_compile_time_constant
 // ignore: constant_identifier_names
 const $fidl.XUnionType<XUnion> kXUnion_Type = $fidl.XUnionType<XUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     910042901: $fidl.Int32Type(),
     891204917: $fidl.StringType(maybeElementCount: null, nullable: false),

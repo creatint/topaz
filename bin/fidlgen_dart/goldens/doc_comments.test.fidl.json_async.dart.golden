@@ -98,7 +98,8 @@ class Union extends $fidl.Union {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
-  encodedSize: 8,
+  inlineSizeOld: 8,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 4),
   ],
@@ -148,7 +149,8 @@ class Struct extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Struct> kStruct_Type = $fidl.StructType<Struct>(
-  encodedSize: 4,
+  inlineSizeOld: 4,
+  inlineSizeV1NoEE: 4,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 0),
   ],
@@ -183,7 +185,8 @@ class Table extends $fidl.Table {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<Table> kTable_Type = $fidl.TableType<Table>(
-  encodedSize: 16,
+  inlineSizeOld: 16,
+  inlineSizeV1NoEE: 16,
   members: <int, $fidl.FidlType>{
     1: $fidl.Int32Type(),
   },

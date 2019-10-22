@@ -114,7 +114,8 @@ class Union extends $fidl.Union {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 8),
     $fidl.MemberType<String>(
@@ -186,7 +187,8 @@ class FieldCollision extends $fidl.Union {
 // ignore: recursive_compile_time_constant
 const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
     $fidl.UnionType<FieldCollision>(
-  encodedSize: 8,
+  inlineSizeOld: 8,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 4),
   ],

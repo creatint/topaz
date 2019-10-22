@@ -1085,10 +1085,11 @@ func (c *compiler) compileStruct(val types.Struct) Struct {
 	r.HasNullableField = hasNullableField
 
 	r.TypeExpr = fmt.Sprintf(`$fidl.StructType<%s>(
-  encodedSize: %v,
+  inlineSizeOld: %v,
+  inlineSizeV1NoEE: %v,
   members: %s,
   ctor: %s._ctor,
-)`, r.Name, val.Size, formatStructMemberList(r.Members), r.Name)
+)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1NoEE.InlineSize, formatStructMemberList(r.Members), r.Name)
 	return r
 }
 
@@ -1124,10 +1125,11 @@ func (c *compiler) compileTable(val types.Table) Table {
 	}
 
 	r.TypeExpr = fmt.Sprintf(`$fidl.TableType<%s>(
-  encodedSize: %v,
+  inlineSizeOld: %v,
+  inlineSizeV1NoEE: %v,
   members: %s,
   ctor: %s._ctor,
-)`, r.Name, val.Size, formatTableMemberList(r.Members), r.Name)
+)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1NoEE.InlineSize, formatTableMemberList(r.Members), r.Name)
 	return r
 }
 
@@ -1163,11 +1165,12 @@ func (c *compiler) compileUnion(val types.Union) Union {
 	}
 
 	r.TypeExpr = fmt.Sprintf(`$fidl.UnionType<%s>(
-  encodedSize: %v,
+  inlineSizeOld: %v,
+  inlineSizeV1NoEE: %v,
   members: %s,
   ctor: %s._ctor,
   ordinalToIndex: %s,
-)`, r.Name, val.Size, formatUnionMemberList(r.Members), r.Name, formatOrdinalToIndex(r.Members))
+)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1NoEE.InlineSize, formatUnionMemberList(r.Members), r.Name, formatOrdinalToIndex(r.Members))
 	return r
 }
 
@@ -1197,19 +1200,21 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 		Strictness:    val.Strictness,
 	}
 	r.TypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
-  encodedSize: %v,
+  inlineSizeOld: %v,
+  inlineSizeV1NoEE: %v,
   members: %s,
   ctor: %s._ctor,
   nullable: false,
   flexible: %t,
-)`, r.Name, val.Size, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
+)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1NoEE.InlineSize, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
 	r.OptTypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
-encodedSize: %v,
+inlineSizeOld: %v,
+inlineSizeV1NoEE: %v,
 members: %s,
 ctor: %s._ctor,
 nullable: true,
 flexible: %t,
-)`, r.Name, val.Size, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
+)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1NoEE.InlineSize, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
 
 	return r
 }

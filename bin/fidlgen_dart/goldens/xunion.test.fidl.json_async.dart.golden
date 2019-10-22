@@ -109,7 +109,8 @@ class OlderSimpleUnion extends $fidl.XUnion {
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_Type =
     $fidl.XUnionType<OlderSimpleUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     1026732503: $fidl.Int64Type(),
     1362546558: $fidl.Float32Type(),
@@ -122,7 +123,8 @@ const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_Type =
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_OptType =
     $fidl.XUnionType<OlderSimpleUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     1026732503: $fidl.Int64Type(),
     1362546558: $fidl.Float32Type(),
@@ -220,7 +222,8 @@ class NewerSimpleUnion extends $fidl.XUnion {
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_Type =
     $fidl.XUnionType<NewerSimpleUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     693944286: $fidl.Int64Type(),
     473666119: $fidl.StringType(maybeElementCount: null, nullable: false),
@@ -237,7 +240,8 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_Type =
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_OptType =
     $fidl.XUnionType<NewerSimpleUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     693944286: $fidl.Int64Type(),
     473666119: $fidl.StringType(maybeElementCount: null, nullable: false),
@@ -335,7 +339,8 @@ class StrictSimpleXUnion extends $fidl.XUnion {
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_Type =
     $fidl.XUnionType<StrictSimpleXUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     1851697276: $fidl.Int32Type(),
     855207063: $fidl.Float32Type(),
@@ -349,7 +354,8 @@ const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_Type =
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_OptType =
     $fidl.XUnionType<StrictSimpleXUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     1851697276: $fidl.Int32Type(),
     855207063: $fidl.Float32Type(),
@@ -421,7 +427,8 @@ class XUnionContainingEmptyStruct extends $fidl.XUnion {
 const $fidl.XUnionType<XUnionContainingEmptyStruct>
     kXUnionContainingEmptyStruct_Type =
     $fidl.XUnionType<XUnionContainingEmptyStruct>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     424858069: kEmpty_Type,
   },
@@ -434,7 +441,8 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
 const $fidl.XUnionType<XUnionContainingEmptyStruct>
     kXUnionContainingEmptyStruct_OptType =
     $fidl.XUnionType<XUnionContainingEmptyStruct>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     424858069: kEmpty_Type,
   },
@@ -497,7 +505,8 @@ class StrictBoundedXUnion extends $fidl.XUnion {
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_Type =
     $fidl.XUnionType<StrictBoundedXUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     2024555624: $fidl.VectorType<Uint8List>(
         element: $fidl.Uint8Type(), maybeElementCount: 10, nullable: false),
@@ -510,7 +519,8 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_Type =
 // ignore: recursive_compile_time_constant
 const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_OptType =
     $fidl.XUnionType<StrictBoundedXUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <int, $fidl.FidlType>{
     2024555624: $fidl.VectorType<Uint8List>(
         element: $fidl.Uint8Type(), maybeElementCount: 10, nullable: false),
@@ -553,7 +563,8 @@ class Empty extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Empty> kEmpty_Type = $fidl.StructType<Empty>(
-  encodedSize: 1,
+  inlineSizeOld: 1,
+  inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
@@ -602,7 +613,8 @@ class StructWithNullableXUnion extends $fidl.Struct {
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<StructWithNullableXUnion>
     kStructWithNullableXUnion_Type = $fidl.StructType<StructWithNullableXUnion>(
-  encodedSize: 24,
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<OlderSimpleUnion>(
         type: kOlderSimpleUnion_OptType, offset: 0),
