@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_test_inspect_validate/fidl_async.dart' as fidl_validate;
@@ -68,6 +69,16 @@ class _ValidateImpl extends fidl_validate.Validate {
               ..setValue(action.createStringProperty.value);
         _properties[action.createStringProperty.id] = property;
         break;
+      case fidl_validate.ActionTag.createBytesProperty:
+        final valueAsByteData = ByteData.view(
+            action.createBytesProperty.value.buffer,
+            action.createBytesProperty.value.offsetInBytes,
+            action.createBytesProperty.value.lengthInBytes);
+        final property = lookupNode(action.createBytesProperty.parent)
+            .byteDataProperty(action.createBytesProperty.name)
+              ..setValue(valueAsByteData);
+        _properties[action.createBytesProperty.id] = property;
+        break;
       case fidl_validate.ActionTag.deleteProperty:
         _properties.remove(action.deleteProperty.id).delete();
         break;
@@ -114,8 +125,12 @@ class _ValidateImpl extends fidl_validate.Validate {
         }
         break;
       case fidl_validate.ActionTag.setBytes:
-        BytesProperty p = _properties[action.addNumber.id];
-        p.setValue(action.setBytes.value);
+        final valueAsByteData = ByteData.view(
+            action.setBytes.value.buffer,
+            action.setBytes.value.offsetInBytes,
+            action.setBytes.value.lengthInBytes);
+        BytesProperty p = _properties[action.setBytes.id];
+        p.setValue(valueAsByteData);
         break;
       case fidl_validate.ActionTag.setString:
         StringProperty p = _properties[action.setString.id];

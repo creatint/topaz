@@ -301,8 +301,10 @@ class VmoWriter {
       Block extent = Block.read(_vmo, nextExtent);
       int amountToWrite =
           min(value.lengthInBytes - valueOffset, extent.payloadSpaceBytes);
-      _vmo.write(nextExtent * 16 + 8,
-          value.buffer.asByteData(valueOffset, amountToWrite));
+      _vmo.write(
+          nextExtent * 16 + 8,
+          value.buffer
+              .asByteData(valueOffset + value.offsetInBytes, amountToWrite));
       valueOffset += amountToWrite;
       nextExtent = extent.nextExtent;
     }
