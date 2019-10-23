@@ -168,5 +168,47 @@ const $fidl.TableType<NewerSimpleTable> kNewerSimpleTable_Type =
   ctor: NewerSimpleTable._ctor,
 );
 
+class ReverseOrdinalTable extends $fidl.Table {
+  const ReverseOrdinalTable({
+    this.x,
+    this.y,
+    this.z,
+  });
+
+  ReverseOrdinalTable._(Map<int, dynamic> argv)
+      : x = argv[3],
+        y = argv[2],
+        z = argv[1];
+  final int x;
+  final int y;
+  final int z;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      3: x,
+      2: y,
+      1: z,
+    };
+  }
+
+  static ReverseOrdinalTable _ctor(Map<int, dynamic> argv) =>
+      ReverseOrdinalTable._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<ReverseOrdinalTable> kReverseOrdinalTable_Type =
+    $fidl.TableType<ReverseOrdinalTable>(
+  inlineSizeOld: 16,
+  inlineSizeV1NoEE: 16,
+  members: <int, $fidl.FidlType>{
+    3: $fidl.Int64Type(),
+    2: $fidl.Int64Type(),
+    1: $fidl.Int64Type(),
+  },
+  ctor: ReverseOrdinalTable._ctor,
+);
+
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();

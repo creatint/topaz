@@ -703,19 +703,31 @@ class PointerType<T> extends FidlType<T> {
 class MemberType<T> extends FidlType<T> {
   const MemberType({
     this.type,
-    this.offset,
+    this.offsetOld,
+    this.offsetV1NoEE,
   });
 
   final FidlType type;
-  final int offset;
+  final int offsetOld;
+  final int offsetV1NoEE;
 
   @override
   void encode(Encoder encoder, T value, int base) {
+    int offset = offsetOld;
+    if (enableWriteXUnionBytesForUnion) {
+      offset = offsetV1NoEE;
+    }
     type.encode(encoder, value, base + offset);
   }
 
   @override
-  T decode(Decoder decoder, int base) => type.decode(decoder, base + offset);
+  T decode(Decoder decoder, int base) {
+    int offset = offsetOld;
+    if (decoder.decodeUnionFromXUnionBytes()) {
+      offset = offsetV1NoEE;
+    }
+    return type.decode(decoder, base + offset);
+  }
 }
 
 class StructType<T extends Struct> extends FidlType<T> {

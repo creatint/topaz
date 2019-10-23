@@ -88,7 +88,8 @@ type UnionMember struct {
 	XUnionOrdinal int
 	CtorName      string
 	Tag           string
-	Offset        int
+	OffsetOld     int
+	OffsetV1NoEE  int
 	typeExpr      string
 	Documented
 }
@@ -108,12 +109,13 @@ type XUnion struct {
 
 // XUnionMember represents a member of a xunion declaration.
 type XUnionMember struct {
-	Ordinal  int
-	Type     Type
-	Name     string
-	CtorName string
-	Tag      string
-	Offset   int
+	Ordinal      int
+	Type         Type
+	Name         string
+	CtorName     string
+	Tag          string
+	OffsetOld    int
+	OffsetV1NoEE int
 	Documented
 }
 
@@ -132,7 +134,8 @@ type StructMember struct {
 	Type         Type
 	Name         string
 	DefaultValue string
-	Offset       int
+	OffsetOld    int
+	OffsetV1NoEE int
 	typeExpr     string
 	Documented
 }
@@ -199,11 +202,12 @@ type Method struct {
 
 // Parameter represents an interface method parameter.
 type Parameter struct {
-	Type     Type
-	Name     string
-	Offset   int
-	Convert  string
-	typeExpr string
+	Type         Type
+	Name         string
+	OffsetOld    int
+	OffsetV1NoEE int
+	Convert      string
+	typeExpr     string
 }
 
 // Import describes another FIDL library that will be imported.
@@ -860,13 +864,14 @@ func (c *compiler) compileBits(val types.Bits) Bits {
 	return b
 }
 
-func (c *compiler) compileParameter(paramName types.Identifier, paramType types.Type, offset int) Parameter {
+func (c *compiler) compileParameter(paramName types.Identifier, paramType types.Type, offsetOld, offsetV1NoEE int) Parameter {
 	var (
-		t         = c.compileType(paramType)
-		typeStr   = fmt.Sprintf("type: %s", t.typeExpr)
-		offsetStr = fmt.Sprintf("offset: %v", offset)
-		name      = c.compileLowerCamelIdentifier(paramName, parameterContext)
-		convert   string
+		t               = c.compileType(paramType)
+		typeStr         = fmt.Sprintf("type: %s", t.typeExpr)
+		offsetOldStr    = fmt.Sprintf("offsetOld: %v", offsetOld)
+		offsetV1NoEEStr = fmt.Sprintf("offsetV1NoEE: %v", offsetV1NoEE)
+		name            = c.compileLowerCamelIdentifier(paramName, parameterContext)
+		convert         string
 	)
 	if t.declType == types.InterfaceDeclType {
 		convert = "$fidl.convertInterfaceHandle"
@@ -874,18 +879,19 @@ func (c *compiler) compileParameter(paramName types.Identifier, paramType types.
 		convert = "$fidl.convertInterfaceRequest"
 	}
 	return Parameter{
-		Type:     t,
-		Name:     name,
-		Offset:   offset,
-		Convert:  convert,
-		typeExpr: fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		Type:         t,
+		Name:         name,
+		OffsetOld:    offsetOld,
+		OffsetV1NoEE: offsetV1NoEE,
+		Convert:      convert,
+		typeExpr:     fmt.Sprintf("$fidl.MemberType<%s>(%s, %s, %s)", t.Decl, typeStr, offsetOldStr, offsetV1NoEEStr),
 	}
 }
 
 func (c *compiler) compileParameterArray(val []types.Parameter) []Parameter {
 	r := []Parameter{}
 	for _, v := range val {
-		r = append(r, c.compileParameter(v.Name, v.Type, v.Offset))
+		r = append(r, c.compileParameter(v.Name, v.Type, v.FieldShapeOld.Offset, v.FieldShapeV1NoEE.Offset))
 	}
 	return r
 }
@@ -939,7 +945,7 @@ func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
 
 	// Turn the struct into a parameter array that will be used for function arguments.
 	for _, v := range valueStruct.Members {
-		parameters = append(parameters, c.compileParameter(v.Name, v.Type, v.Offset))
+		parameters = append(parameters, c.compileParameter(v.Name, v.Type, v.FieldShapeOld.Offset, v.FieldShapeV1NoEE.Offset))
 	}
 
 	return MethodResponse{
@@ -1044,13 +1050,15 @@ func (c *compiler) compileStructMember(val types.StructMember) StructMember {
 	}
 
 	typeStr := fmt.Sprintf("type: %s", t.typeExpr)
-	offsetStr := fmt.Sprintf("offset: %v", val.Offset)
+	offsetOldStr := fmt.Sprintf("offsetOld: %v", val.FieldShapeOld.Offset)
+	offsetV1NoEEStr := fmt.Sprintf("offsetV1NoEE: %v", val.FieldShapeV1NoEE.Offset)
 	return StructMember{
 		t,
 		c.compileLowerCamelIdentifier(val.Name, structMemberContext),
 		defaultValue,
-		val.Offset,
-		fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		val.FieldShapeOld.Offset,
+		val.FieldShapeV1NoEE.Offset,
+		fmt.Sprintf("$fidl.MemberType<%s>(%s, %s, %s)", t.Decl, typeStr, offsetOldStr, offsetV1NoEEStr),
 		docString(val),
 	}
 }
@@ -1136,15 +1144,17 @@ func (c *compiler) compileTable(val types.Table) Table {
 func (c *compiler) compileUnionMember(val types.UnionMember) UnionMember {
 	t := c.compileType(val.Type)
 	typeStr := fmt.Sprintf("type: %s", t.typeExpr)
-	offsetStr := fmt.Sprintf("offset: %v", val.Offset)
+	offsetOldStr := fmt.Sprintf("offsetOld: %v", val.Offset)
+	offsetV1NoEEStr := fmt.Sprintf("offsetV1NoEE: %v", val.Offset)
 	return UnionMember{
 		Type:          t,
 		Name:          c.compileLowerCamelIdentifier(val.Name, unionMemberContext),
 		XUnionOrdinal: val.XUnionOrdinal,
 		CtorName:      c.compileUpperCamelIdentifier(val.Name, unionMemberContext),
 		Tag:           c.compileLowerCamelIdentifier(val.Name, unionMemberTagContext),
-		Offset:        val.Offset,
-		typeExpr:      fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
+		OffsetOld:     val.Offset,
+		OffsetV1NoEE:  val.Offset,
+		typeExpr:      fmt.Sprintf("$fidl.MemberType<%s>(%s, %s, %s)", t.Decl, typeStr, offsetOldStr, offsetV1NoEEStr),
 		Documented:    docString(val),
 	}
 }
@@ -1179,13 +1189,14 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 	for _, member := range val.Members {
 		memberType := c.compileType(member.Type)
 		members = append(members, XUnionMember{
-			Ordinal:    member.Ordinal,
-			Type:       memberType,
-			Name:       c.compileLowerCamelIdentifier(member.Name, unionMemberContext),
-			CtorName:   c.compileUpperCamelIdentifier(member.Name, unionMemberContext),
-			Tag:        c.compileLowerCamelIdentifier(member.Name, unionMemberTagContext),
-			Offset:     member.Offset,
-			Documented: docString(member),
+			Ordinal:      member.Ordinal,
+			Type:         memberType,
+			Name:         c.compileLowerCamelIdentifier(member.Name, unionMemberContext),
+			CtorName:     c.compileUpperCamelIdentifier(member.Name, unionMemberContext),
+			Tag:          c.compileLowerCamelIdentifier(member.Name, unionMemberTagContext),
+			OffsetOld:    member.Offset,
+			OffsetV1NoEE: member.Offset,
+			Documented:   docString(member),
 		})
 	}
 

@@ -137,12 +137,16 @@ const $fidl.UnionType<SimpleUnion> kSimpleUnion_Type =
   inlineSizeOld: 24,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 8),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 8),
-    $fidl.MemberType<Int64Struct>(type: kInt64Struct_Type, offset: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<Int64Struct>(
+        type: kInt64Struct_Type, offsetOld: 8, offsetV1NoEE: 8),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 8),
+        offsetOld: 8,
+        offsetV1NoEE: 8),
   ],
   ctor: SimpleUnion._ctor,
   ordinalToIndex: <int, int>{
@@ -221,8 +225,10 @@ const $fidl.UnionType<UnionWithEmptyStruct> kUnionWithEmptyStruct_Type =
   inlineSizeOld: 16,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<EmptyStruct>(type: kEmptyStruct_Type, offset: 8),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 8),
+    $fidl.MemberType<EmptyStruct>(
+        type: kEmptyStruct_Type, offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 8, offsetV1NoEE: 8),
   ],
   ctor: UnionWithEmptyStruct._ctor,
   ordinalToIndex: <int, int>{
@@ -302,8 +308,10 @@ const $fidl.UnionType<IpAddressConfig> kIpAddressConfig_Type =
     $fidl.MemberType<Uint32List>(
         type: $fidl.ArrayType<Uint32List>(
             element: $fidl.Uint32Type(), elementCount: 6),
-        offset: 4),
-    $fidl.MemberType<bool>(type: $fidl.BoolType(), offset: 4),
+        offsetOld: 4,
+        offsetV1NoEE: 4),
+    $fidl.MemberType<bool>(
+        type: $fidl.BoolType(), offsetOld: 4, offsetV1NoEE: 4),
   ],
   ctor: IpAddressConfig._ctor,
   ordinalToIndex: <int, int>{
@@ -368,7 +376,8 @@ const $fidl.UnionType<UnionWithBoundString> kUnionWithBoundString_Type =
   members: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: 5, nullable: false),
-        offset: 8),
+        offsetOld: 8,
+        offsetV1NoEE: 8),
   ],
   ctor: UnionWithBoundString._ctor,
   ordinalToIndex: <int, int>{
@@ -720,7 +729,8 @@ const $fidl.StructType<MyBool> kMyBool_Type = $fidl.StructType<MyBool>(
   inlineSizeOld: 1,
   inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<bool>(type: $fidl.BoolType(), offset: 0),
+    $fidl.MemberType<bool>(
+        type: $fidl.BoolType(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyBool._ctor,
 );
@@ -761,7 +771,8 @@ const $fidl.StructType<MyByte> kMyByte_Type = $fidl.StructType<MyByte>(
   inlineSizeOld: 1,
   inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyByte._ctor,
 );
@@ -802,7 +813,8 @@ const $fidl.StructType<MyInt8> kMyInt8_Type = $fidl.StructType<MyInt8>(
   inlineSizeOld: 1,
   inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int8Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Int8Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyInt8._ctor,
 );
@@ -843,7 +855,8 @@ const $fidl.StructType<MyInt16> kMyInt16_Type = $fidl.StructType<MyInt16>(
   inlineSizeOld: 2,
   inlineSizeV1NoEE: 2,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int16Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Int16Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyInt16._ctor,
 );
@@ -884,7 +897,8 @@ const $fidl.StructType<MyInt32> kMyInt32_Type = $fidl.StructType<MyInt32>(
   inlineSizeOld: 4,
   inlineSizeV1NoEE: 4,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyInt32._ctor,
 );
@@ -925,7 +939,8 @@ const $fidl.StructType<MyInt64> kMyInt64_Type = $fidl.StructType<MyInt64>(
   inlineSizeOld: 8,
   inlineSizeV1NoEE: 8,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyInt64._ctor,
 );
@@ -966,7 +981,8 @@ const $fidl.StructType<MyUint8> kMyUint8_Type = $fidl.StructType<MyUint8>(
   inlineSizeOld: 1,
   inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyUint8._ctor,
 );
@@ -1007,7 +1023,8 @@ const $fidl.StructType<MyUint16> kMyUint16_Type = $fidl.StructType<MyUint16>(
   inlineSizeOld: 2,
   inlineSizeV1NoEE: 2,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint16Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint16Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyUint16._ctor,
 );
@@ -1048,7 +1065,8 @@ const $fidl.StructType<MyUint32> kMyUint32_Type = $fidl.StructType<MyUint32>(
   inlineSizeOld: 4,
   inlineSizeV1NoEE: 4,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyUint32._ctor,
 );
@@ -1089,7 +1107,8 @@ const $fidl.StructType<MyUint64> kMyUint64_Type = $fidl.StructType<MyUint64>(
   inlineSizeOld: 8,
   inlineSizeV1NoEE: 8,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyUint64._ctor,
 );
@@ -1130,7 +1149,8 @@ const $fidl.StructType<MyFloat32> kMyFloat32_Type = $fidl.StructType<MyFloat32>(
   inlineSizeOld: 4,
   inlineSizeV1NoEE: 4,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<double>(type: $fidl.Float32Type(), offset: 0),
+    $fidl.MemberType<double>(
+        type: $fidl.Float32Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyFloat32._ctor,
 );
@@ -1171,7 +1191,8 @@ const $fidl.StructType<MyFloat64> kMyFloat64_Type = $fidl.StructType<MyFloat64>(
   inlineSizeOld: 8,
   inlineSizeV1NoEE: 8,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<double>(type: $fidl.Float64Type(), offset: 0),
+    $fidl.MemberType<double>(
+        type: $fidl.Float64Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: MyFloat64._ctor,
 );
@@ -1231,9 +1252,12 @@ const $fidl.StructType<ThreeByte> kThreeByte_Type = $fidl.StructType<ThreeByte>(
   inlineSizeOld: 3,
   inlineSizeV1NoEE: 3,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 1),
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 2),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 1, offsetV1NoEE: 1),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 2, offsetV1NoEE: 2),
   ],
   ctor: ThreeByte._ctor,
 );
@@ -1285,8 +1309,10 @@ const $fidl.StructType<FiveByte> kFiveByte_Type = $fidl.StructType<FiveByte>(
   inlineSizeOld: 8,
   inlineSizeV1NoEE: 8,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 4),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 4, offsetV1NoEE: 4),
   ],
   ctor: FiveByte._ctor,
 );
@@ -1348,9 +1374,12 @@ const $fidl.StructType<ThreeByteInStruct> kThreeByteInStruct_Type =
   inlineSizeOld: 9,
   inlineSizeV1NoEE: 9,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<ThreeByte>(type: kThreeByte_Type, offset: 0),
-    $fidl.MemberType<ThreeByte>(type: kThreeByte_Type, offset: 3),
-    $fidl.MemberType<ThreeByte>(type: kThreeByte_Type, offset: 6),
+    $fidl.MemberType<ThreeByte>(
+        type: kThreeByte_Type, offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<ThreeByte>(
+        type: kThreeByte_Type, offsetOld: 3, offsetV1NoEE: 3),
+    $fidl.MemberType<ThreeByte>(
+        type: kThreeByte_Type, offsetOld: 6, offsetV1NoEE: 6),
   ],
   ctor: ThreeByteInStruct._ctor,
 );
@@ -1411,9 +1440,12 @@ const $fidl.StructType<FiveByteInStruct> kFiveByteInStruct_Type =
   inlineSizeOld: 24,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<FiveByte>(type: kFiveByte_Type, offset: 0),
-    $fidl.MemberType<FiveByte>(type: kFiveByte_Type, offset: 8),
-    $fidl.MemberType<FiveByte>(type: kFiveByte_Type, offset: 16),
+    $fidl.MemberType<FiveByte>(
+        type: kFiveByte_Type, offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<FiveByte>(
+        type: kFiveByte_Type, offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<FiveByte>(
+        type: kFiveByte_Type, offsetOld: 16, offsetV1NoEE: 16),
   ],
   ctor: FiveByteInStruct._ctor,
 );
@@ -1459,7 +1491,8 @@ const $fidl.StructType<ThreeByteInVector> kThreeByteInVector_Type =
     $fidl.MemberType<List<ThreeByte>>(
         type: $fidl.VectorType<List<ThreeByte>>(
             element: kThreeByte_Type, maybeElementCount: null, nullable: false),
-        offset: 0),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
   ],
   ctor: ThreeByteInVector._ctor,
 );
@@ -1504,7 +1537,8 @@ const $fidl.StructType<FiveByteInVector> kFiveByteInVector_Type =
     $fidl.MemberType<List<FiveByte>>(
         type: $fidl.VectorType<List<FiveByte>>(
             element: kFiveByte_Type, maybeElementCount: null, nullable: false),
-        offset: 0),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
   ],
   ctor: FiveByteInVector._ctor,
 );
@@ -1549,7 +1583,8 @@ const $fidl.StructType<ThreeByteInArray> kThreeByteInArray_Type =
     $fidl.MemberType<List<ThreeByte>>(
         type: $fidl.ArrayType<List<ThreeByte>>(
             element: kThreeByte_Type, elementCount: 3),
-        offset: 0),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
   ],
   ctor: ThreeByteInArray._ctor,
 );
@@ -1594,7 +1629,8 @@ const $fidl.StructType<FiveByteInArray> kFiveByteInArray_Type =
     $fidl.MemberType<List<FiveByte>>(
         type: $fidl.ArrayType<List<FiveByte>>(
             element: kFiveByte_Type, elementCount: 3),
-        offset: 0),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
   ],
   ctor: FiveByteInArray._ctor,
 );
@@ -1636,7 +1672,8 @@ const $fidl.StructType<Int64Struct> kInt64Struct_Type =
   inlineSizeOld: 8,
   inlineSizeV1NoEE: 8,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: Int64Struct._ctor,
 );
@@ -1700,11 +1737,14 @@ const $fidl.StructType<TestInlineXUnionInStruct>
   members: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 0),
-    $fidl.MemberType<SampleXUnion>(type: kSampleXUnion_Type, offset: 16),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
+    $fidl.MemberType<SampleXUnion>(
+        type: kSampleXUnion_Type, offsetOld: 16, offsetV1NoEE: 16),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 40),
+        offsetOld: 40,
+        offsetV1NoEE: 40),
   ],
   ctor: TestInlineXUnionInStruct._ctor,
 );
@@ -1778,11 +1818,14 @@ const $fidl.StructType<TestOptionalXUnionInStruct>
   members: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 0),
-    $fidl.MemberType<SampleXUnion>(type: kSampleXUnion_OptType, offset: 16),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
+    $fidl.MemberType<SampleXUnion>(
+        type: kSampleXUnion_OptType, offsetOld: 16, offsetV1NoEE: 16),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 40),
+        offsetOld: 40,
+        offsetV1NoEE: 40),
   ],
   ctor: TestOptionalXUnionInStruct._ctor,
 );
@@ -1826,7 +1869,7 @@ const $fidl.StructType<TestStrictXUnionInStruct>
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<SampleStrictXUnion>(
-        type: kSampleStrictXUnion_Type, offset: 0),
+        type: kSampleStrictXUnion_Type, offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: TestStrictXUnionInStruct._ctor,
 );
@@ -1870,7 +1913,8 @@ const $fidl.StructType<TestFlexibleXUnionInStruct>
   inlineSizeOld: 24,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<SampleXUnion>(type: kSampleXUnion_Type, offset: 0),
+    $fidl.MemberType<SampleXUnion>(
+        type: kSampleXUnion_Type, offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: TestFlexibleXUnionInStruct._ctor,
 );
@@ -1917,7 +1961,8 @@ const $fidl.StructType<Length2StringWrapper> kLength2StringWrapper_Type =
   members: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: 2, nullable: false),
-        offset: 0),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
   ],
   ctor: Length2StringWrapper._ctor,
 );
@@ -1961,7 +2006,8 @@ const $fidl.StructType<StringWrapper> kStringWrapper_Type =
   members: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 0),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
   ],
   ctor: StringWrapper._ctor,
 );
@@ -2070,22 +2116,25 @@ const $fidl.StructType<StructWithOptionals> kStructWithOptionals_Type =
   inlineSizeOld: 104,
   inlineSizeV1NoEE: 112,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<EmptyStruct>(type: kEmptyStruct_Type, offset: 0),
+    $fidl.MemberType<EmptyStruct>(
+        type: kEmptyStruct_Type, offsetOld: 0, offsetV1NoEE: 0),
     $fidl.MemberType<EmptyStruct>(
         type: $fidl.PointerType<EmptyStruct>(element: kEmptyStruct_Type),
-        offset: 8),
+        offsetOld: 8,
+        offsetV1NoEE: 8),
     $fidl.MemberType<TableWithEmptyStruct>(
-        type: kTableWithEmptyStruct_Type, offset: 16),
+        type: kTableWithEmptyStruct_Type, offsetOld: 16, offsetV1NoEE: 16),
     $fidl.MemberType<XUnionWithEmptyStruct>(
-        type: kXUnionWithEmptyStruct_Type, offset: 32),
+        type: kXUnionWithEmptyStruct_Type, offsetOld: 32, offsetV1NoEE: 32),
     $fidl.MemberType<XUnionWithEmptyStruct>(
-        type: kXUnionWithEmptyStruct_OptType, offset: 56),
+        type: kXUnionWithEmptyStruct_OptType, offsetOld: 56, offsetV1NoEE: 56),
     $fidl.MemberType<UnionWithEmptyStruct>(
-        type: kUnionWithEmptyStruct_Type, offset: 80),
+        type: kUnionWithEmptyStruct_Type, offsetOld: 80, offsetV1NoEE: 80),
     $fidl.MemberType<UnionWithEmptyStruct>(
         type: $fidl.PointerType<UnionWithEmptyStruct>(
             element: kUnionWithEmptyStruct_Type),
-        offset: 96),
+        offsetOld: 96,
+        offsetV1NoEE: 104),
   ],
   ctor: StructWithOptionals._ctor,
 );
@@ -2128,7 +2177,8 @@ const $fidl.StructType<TestXUnionInTable> kTestXUnionInTable_Type =
   inlineSizeOld: 16,
   inlineSizeV1NoEE: 16,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<XUnionInTable>(type: kXUnionInTable_Type, offset: 0),
+    $fidl.MemberType<XUnionInTable>(
+        type: kXUnionInTable_Type, offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: TestXUnionInTable._ctor,
 );
@@ -2183,8 +2233,10 @@ const $fidl.StructType<InterfaceConfig> kInterfaceConfig_Type =
   members: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 0),
-    $fidl.MemberType<IpAddressConfig>(type: kIpAddressConfig_Type, offset: 16),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
+    $fidl.MemberType<IpAddressConfig>(
+        type: kIpAddressConfig_Type, offsetOld: 16, offsetV1NoEE: 16),
   ],
   ctor: InterfaceConfig._ctor,
 );
@@ -2249,9 +2301,12 @@ const $fidl.StructType<TestAddEthernetDeviceRequest>
   members: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 0),
-    $fidl.MemberType<InterfaceConfig>(type: kInterfaceConfig_Type, offset: 16),
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 64),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
+    $fidl.MemberType<InterfaceConfig>(
+        type: kInterfaceConfig_Type, offsetOld: 16, offsetV1NoEE: 16),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 64, offsetV1NoEE: 56),
   ],
   ctor: TestAddEthernetDeviceRequest._ctor,
 );
@@ -2344,13 +2399,20 @@ const $fidl.StructType<NodeAttributes> kNodeAttributes_Type =
   inlineSizeOld: 56,
   inlineSizeV1NoEE: 56,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 8),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 16),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 24),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 32),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 40),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 48),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 16, offsetV1NoEE: 16),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 24, offsetV1NoEE: 24),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 32, offsetV1NoEE: 32),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 40, offsetV1NoEE: 40),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 48, offsetV1NoEE: 48),
   ],
   ctor: NodeAttributes._ctor,
 );
@@ -2404,8 +2466,10 @@ const $fidl.StructType<FileGetAttrResponse> kFileGetAttrResponse_Type =
   inlineSizeOld: 64,
   inlineSizeV1NoEE: 64,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 0),
-    $fidl.MemberType<NodeAttributes>(type: kNodeAttributes_Type, offset: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<NodeAttributes>(
+        type: kNodeAttributes_Type, offsetOld: 8, offsetV1NoEE: 8),
   ],
   ctor: FileGetAttrResponse._ctor,
 );
@@ -2450,7 +2514,7 @@ const $fidl.StructType<UnionWithBoundStringStruct>
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<UnionWithBoundString>(
-        type: kUnionWithBoundString_Type, offset: 0),
+        type: kUnionWithBoundString_Type, offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: UnionWithBoundStringStruct._ctor,
 );
@@ -2492,7 +2556,8 @@ const $fidl.StructType<EmptyStruct> kEmptyStruct_Type =
   inlineSizeOld: 1,
   inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: EmptyStruct._ctor,
 );
@@ -2556,11 +2621,14 @@ const $fidl.StructType<EmptyStructSandwich> kEmptyStructSandwich_Type =
   members: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 0),
-    $fidl.MemberType<EmptyStruct>(type: kEmptyStruct_Type, offset: 16),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
+    $fidl.MemberType<EmptyStruct>(
+        type: kEmptyStruct_Type, offsetOld: 16, offsetV1NoEE: 16),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 24),
+        offsetOld: 24,
+        offsetV1NoEE: 24),
   ],
   ctor: EmptyStructSandwich._ctor,
 );
@@ -2630,10 +2698,14 @@ const $fidl.StructType<Uint8Uint16Uint32Uint64> kUint8Uint16Uint32Uint64_Type =
   inlineSizeOld: 16,
   inlineSizeV1NoEE: 16,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint16Type(), offset: 2),
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 4),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint16Type(), offsetOld: 2, offsetV1NoEE: 2),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1NoEE: 4),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 8, offsetV1NoEE: 8),
   ],
   ctor: Uint8Uint16Uint32Uint64._ctor,
 );
@@ -2703,10 +2775,14 @@ const $fidl.StructType<Uint64Uint32Uint16Uint8> kUint64Uint32Uint16Uint8_Type =
   inlineSizeOld: 16,
   inlineSizeV1NoEE: 16,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 8),
-    $fidl.MemberType<int>(type: $fidl.Uint16Type(), offset: 12),
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 14),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint16Type(), offsetOld: 12, offsetV1NoEE: 12),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 14, offsetV1NoEE: 14),
   ],
   ctor: Uint64Uint32Uint16Uint8._ctor,
 );
@@ -2749,7 +2825,8 @@ const $fidl.StructType<StructOfSimpleTable> kStructOfSimpleTable_Type =
   inlineSizeOld: 16,
   inlineSizeV1NoEE: 16,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<SimpleTable>(type: kSimpleTable_Type, offset: 0),
+    $fidl.MemberType<SimpleTable>(
+        type: kSimpleTable_Type, offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: StructOfSimpleTable._ctor,
 );
@@ -2803,8 +2880,10 @@ const $fidl.StructType<SimpleTableThenUint64> kSimpleTableThenUint64_Type =
   inlineSizeOld: 24,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<SimpleTable>(type: kSimpleTable_Type, offset: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 16),
+    $fidl.MemberType<SimpleTable>(
+        type: kSimpleTable_Type, offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 16, offsetV1NoEE: 16),
   ],
   ctor: SimpleTableThenUint64._ctor,
 );
@@ -2851,7 +2930,7 @@ const $fidl.StructType<StructOfTableWithStringAndVector>
   inlineSizeV1NoEE: 16,
   members: <$fidl.MemberType>[
     $fidl.MemberType<TableWithStringAndVector>(
-        type: kTableWithStringAndVector_Type, offset: 0),
+        type: kTableWithStringAndVector_Type, offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: StructOfTableWithStringAndVector._ctor,
 );
@@ -2893,7 +2972,8 @@ const $fidl.StructType<StructWithInt> kStructWithInt_Type =
   inlineSizeOld: 4,
   inlineSizeV1NoEE: 4,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: StructWithInt._ctor,
 );
@@ -2981,33 +3061,39 @@ const $fidl.StructType<StructWithArrays> kStructWithArrays_Type =
     $fidl.MemberType<Int32List>(
         type: $fidl.ArrayType<Int32List>(
             element: $fidl.Int32Type(), elementCount: 2),
-        offset: 0),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
     $fidl.MemberType<List<String>>(
         type: $fidl.ArrayType<List<String>>(
             element: $fidl.StringType(maybeElementCount: null, nullable: false),
             elementCount: 2),
-        offset: 8),
+        offsetOld: 8,
+        offsetV1NoEE: 8),
     $fidl.MemberType<List<String>>(
         type: $fidl.ArrayType<List<String>>(
             element: $fidl.StringType(maybeElementCount: null, nullable: true),
             elementCount: 2),
-        offset: 40),
+        offsetOld: 40,
+        offsetV1NoEE: 40),
     $fidl.MemberType<List<StructWithInt>>(
         type: $fidl.ArrayType<List<StructWithInt>>(
             element: kStructWithInt_Type, elementCount: 2),
-        offset: 72),
+        offsetOld: 72,
+        offsetV1NoEE: 72),
     $fidl.MemberType<List<StructWithInt>>(
         type: $fidl.ArrayType<List<StructWithInt>>(
             element:
                 $fidl.PointerType<StructWithInt>(element: kStructWithInt_Type),
             elementCount: 2),
-        offset: 80),
+        offsetOld: 80,
+        offsetV1NoEE: 80),
     $fidl.MemberType<List<Int32List>>(
         type: $fidl.ArrayType<List<Int32List>>(
             element: $fidl.ArrayType<Int32List>(
                 element: $fidl.Int32Type(), elementCount: 3),
             elementCount: 2),
-        offset: 96),
+        offsetOld: 96,
+        offsetV1NoEE: 96),
   ],
   ctor: StructWithArrays._ctor,
 );
@@ -3106,38 +3192,44 @@ const $fidl.StructType<StructWithVectors> kStructWithVectors_Type =
             element: $fidl.Int32Type(),
             maybeElementCount: null,
             nullable: false),
-        offset: 0),
+        offsetOld: 0,
+        offsetV1NoEE: 0),
     $fidl.MemberType<Int32List>(
         type: $fidl.VectorType<Int32List>(
             element: $fidl.Int32Type(),
             maybeElementCount: null,
             nullable: false),
-        offset: 16),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
     $fidl.MemberType<List<String>>(
         type: $fidl.VectorType<List<String>>(
             element: $fidl.StringType(maybeElementCount: null, nullable: false),
             maybeElementCount: null,
             nullable: false),
-        offset: 32),
+        offsetOld: 32,
+        offsetV1NoEE: 32),
     $fidl.MemberType<List<String>>(
         type: $fidl.VectorType<List<String>>(
             element: $fidl.StringType(maybeElementCount: null, nullable: true),
             maybeElementCount: null,
             nullable: false),
-        offset: 48),
+        offsetOld: 48,
+        offsetV1NoEE: 48),
     $fidl.MemberType<List<StructWithInt>>(
         type: $fidl.VectorType<List<StructWithInt>>(
             element: kStructWithInt_Type,
             maybeElementCount: null,
             nullable: false),
-        offset: 64),
+        offsetOld: 64,
+        offsetV1NoEE: 64),
     $fidl.MemberType<List<StructWithInt>>(
         type: $fidl.VectorType<List<StructWithInt>>(
             element:
                 $fidl.PointerType<StructWithInt>(element: kStructWithInt_Type),
             maybeElementCount: null,
             nullable: false),
-        offset: 80),
+        offsetOld: 80,
+        offsetV1NoEE: 80),
     $fidl.MemberType<List<Int32List>>(
         type: $fidl.VectorType<List<Int32List>>(
             element: $fidl.VectorType<Int32List>(
@@ -3146,7 +3238,8 @@ const $fidl.StructType<StructWithVectors> kStructWithVectors_Type =
                 nullable: false),
             maybeElementCount: null,
             nullable: false),
-        offset: 96),
+        offsetOld: 96,
+        offsetV1NoEE: 96),
   ],
   ctor: StructWithVectors._ctor,
 );

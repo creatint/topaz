@@ -101,7 +101,8 @@ const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   inlineSizeOld: 8,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 4),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 4, offsetV1NoEE: 4),
   ],
   ctor: Union._ctor,
   ordinalToIndex: <int, int>{
@@ -152,7 +153,8 @@ const $fidl.StructType<Struct> kStruct_Type = $fidl.StructType<Struct>(
   inlineSizeOld: 4,
   inlineSizeV1NoEE: 4,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: Struct._ctor,
 );

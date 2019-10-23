@@ -122,7 +122,9 @@ const $fidl.MethodType _kParent_GetChild_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<$fidl.InterfaceHandle<Child>>(
-        type: $fidl.InterfaceHandleType<Child>(nullable: false), offset: 16),
+        type: $fidl.InterfaceHandleType<Child>(nullable: false),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"Parent.GetChild",
 );
@@ -133,7 +135,9 @@ const $fidl.MethodType _kParent_GetChildRequest_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<$fidl.InterfaceRequest<Child>>(
-        type: $fidl.InterfaceRequestType<Child>(nullable: false), offset: 16),
+        type: $fidl.InterfaceRequestType<Child>(nullable: false),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"Parent.GetChildRequest",
 );
@@ -143,7 +147,9 @@ const int _kParent_TakeChild_GenOrdinal = 0x6a9827d18871f87d;
 const $fidl.MethodType _kParent_TakeChild_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$fidl.InterfaceHandle<Child>>(
-        type: $fidl.InterfaceHandleType<Child>(nullable: false), offset: 16),
+        type: $fidl.InterfaceHandleType<Child>(nullable: false),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   response: null,
   name: r"Parent.TakeChild",
@@ -154,7 +160,9 @@ const int _kParent_TakeChildRequest_GenOrdinal = 0x6c4a70e2a2126637;
 const $fidl.MethodType _kParent_TakeChildRequest_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$fidl.InterfaceRequest<Child>>(
-        type: $fidl.InterfaceRequestType<Child>(nullable: false), offset: 16),
+        type: $fidl.InterfaceRequestType<Child>(nullable: false),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   response: null,
   name: r"Parent.TakeChildRequest",

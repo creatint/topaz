@@ -31,6 +31,9 @@ service.test.fidl.json_test.dart.golden
 tables.test.fidl.json
 tables.test.fidl.json_async.dart.golden
 tables.test.fidl.json_test.dart.golden
+union_sandwich.test.fidl.json
+union_sandwich.test.fidl.json_async.dart.golden
+union_sandwich.test.fidl.json_test.dart.golden
 union.test.fidl.json
 union.test.fidl.json_async.dart.golden
 union.test.fidl.json_test.dart.golden

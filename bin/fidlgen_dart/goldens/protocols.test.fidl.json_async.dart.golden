@@ -161,13 +161,16 @@ const $fidl.UnionType<WithErrorSyntaxResponseAsStructResult>
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxResponseAsStructResponse>(
-        type: kWithErrorSyntax_ResponseAsStruct_Response_Type, offset: 8),
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 8),
+        type: kWithErrorSyntax_ResponseAsStruct_Response_Type,
+        offsetOld: 8,
+        offsetV1NoEE: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 8, offsetV1NoEE: 8),
   ],
   ctor: WithErrorSyntaxResponseAsStructResult._ctor,
   ordinalToIndex: <int, int>{
-    415743989: 0,
-    1728496323: 1,
+    1: 0,
+    2: 1,
   },
 );
 
@@ -244,13 +247,16 @@ const $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResponse>(
-        type: kWithErrorSyntax_ErrorAsPrimitive_Response_Type, offset: 4),
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 4),
+        type: kWithErrorSyntax_ErrorAsPrimitive_Response_Type,
+        offsetOld: 4,
+        offsetV1NoEE: 4),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1NoEE: 4),
   ],
   ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
   ordinalToIndex: <int, int>{
-    138512668: 0,
-    1043053528: 1,
+    1: 0,
+    2: 1,
   },
 );
 
@@ -327,13 +333,16 @@ const $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxErrorAsEnumResponse>(
-        type: kWithErrorSyntax_ErrorAsEnum_Response_Type, offset: 4),
-    $fidl.MemberType<ErrorEnun>(type: kErrorEnun_Type, offset: 4),
+        type: kWithErrorSyntax_ErrorAsEnum_Response_Type,
+        offsetOld: 4,
+        offsetV1NoEE: 4),
+    $fidl.MemberType<ErrorEnun>(
+        type: kErrorEnun_Type, offsetOld: 4, offsetV1NoEE: 4),
   ],
   ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
   ordinalToIndex: <int, int>{
-    1951667349: 0,
-    887935114: 1,
+    1: 0,
+    2: 1,
   },
 );
 
@@ -395,9 +404,12 @@ const $fidl.StructType<WithErrorSyntaxResponseAsStructResponse>
   inlineSizeOld: 24,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 0),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 8),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 16, offsetV1NoEE: 16),
   ],
   ctor: WithErrorSyntaxResponseAsStructResponse._ctor,
 );
@@ -444,7 +456,8 @@ const $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>
   inlineSizeOld: 1,
   inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: WithErrorSyntaxErrorAsPrimitiveResponse._ctor,
 );
@@ -490,7 +503,8 @@ const $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>
   inlineSizeOld: 1,
   inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: WithErrorSyntaxErrorAsEnumResponse._ctor,
 );
@@ -533,7 +547,8 @@ const $fidl.MethodType
   response: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 16),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"WithAndWithoutRequestResponse.NoRequestWithResponse",
 );
@@ -548,7 +563,8 @@ const $fidl.MethodType
   request: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 16),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   response: null,
   name: r"WithAndWithoutRequestResponse.WithRequestNoResponse",
@@ -564,7 +580,8 @@ const $fidl.MethodType
   request: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 16),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   response: null,
   name: r"WithAndWithoutRequestResponse.WithRequestEmptyResponse",
@@ -580,12 +597,14 @@ const $fidl.MethodType
   request: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 16),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   response: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 16),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"WithAndWithoutRequestResponse.WithRequestWithResponse",
 );
@@ -611,7 +630,8 @@ const $fidl.MethodType _kWithAndWithoutRequestResponse_OnWithResponse_Type =
   response: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 16),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"WithAndWithoutRequestResponse.OnWithResponse",
 );
@@ -1191,7 +1211,9 @@ const $fidl.MethodType _kWithErrorSyntax_ResponseAsStruct_Type =
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxResponseAsStructResult>(
-        type: kWithErrorSyntax_ResponseAsStruct_Result_Type, offset: 16),
+        type: kWithErrorSyntax_ResponseAsStruct_Result_Type,
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"WithErrorSyntax.ResponseAsStruct",
 );
@@ -1203,7 +1225,9 @@ const $fidl.MethodType _kWithErrorSyntax_ErrorAsPrimitive_Type =
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResult>(
-        type: kWithErrorSyntax_ErrorAsPrimitive_Result_Type, offset: 16),
+        type: kWithErrorSyntax_ErrorAsPrimitive_Result_Type,
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"WithErrorSyntax.ErrorAsPrimitive",
 );
@@ -1214,7 +1238,9 @@ const $fidl.MethodType _kWithErrorSyntax_ErrorAsEnum_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxErrorAsEnumResult>(
-        type: kWithErrorSyntax_ErrorAsEnum_Result_Type, offset: 16),
+        type: kWithErrorSyntax_ErrorAsEnum_Result_Type,
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"WithErrorSyntax.ErrorAsEnum",
 );
@@ -1577,8 +1603,10 @@ const int _kChannelProtocol_MethodA_Ordinal = 0x556693d200000000;
 const int _kChannelProtocol_MethodA_GenOrdinal = 0x1b1e059b3f02bffc;
 const $fidl.MethodType _kChannelProtocol_MethodA_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 16, offsetV1NoEE: 16),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 24, offsetV1NoEE: 24),
   ],
   response: null,
   name: r"ChannelProtocol.MethodA",
@@ -1589,8 +1617,10 @@ const int _kChannelProtocol_EventA_GenOrdinal = 0x2558b206a254d8a0;
 const $fidl.MethodType _kChannelProtocol_EventA_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 16, offsetV1NoEE: 16),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 24, offsetV1NoEE: 24),
   ],
   name: r"ChannelProtocol.EventA",
 );
@@ -1599,11 +1629,14 @@ const int _kChannelProtocol_MethodB_Ordinal = 0xac6551b00000000;
 const int _kChannelProtocol_MethodB_GenOrdinal = 0x5db17a61464744a3;
 const $fidl.MethodType _kChannelProtocol_MethodB_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 16, offsetV1NoEE: 16),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 24, offsetV1NoEE: 24),
   ],
   response: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(
+        type: $fidl.Int64Type(), offsetOld: 16, offsetV1NoEE: 16),
   ],
   name: r"ChannelProtocol.MethodB",
 );
@@ -1613,11 +1646,15 @@ const int _kChannelProtocol_MutateSocket_GenOrdinal = 0x36caa6fff7569577;
 const $fidl.MethodType _kChannelProtocol_MutateSocket_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Socket>(
-        type: $fidl.SocketType(nullable: false), offset: 16),
+        type: $fidl.SocketType(nullable: false),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   response: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Socket>(
-        type: $fidl.SocketType(nullable: false), offset: 16),
+        type: $fidl.SocketType(nullable: false),
+        offsetOld: 16,
+        offsetV1NoEE: 16),
   ],
   name: r"ChannelProtocol.MutateSocket",
 );

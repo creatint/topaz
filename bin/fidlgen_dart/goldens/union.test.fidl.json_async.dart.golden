@@ -117,16 +117,19 @@ const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   inlineSizeOld: 24,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 8, offsetV1NoEE: 8),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offset: 8),
+        offsetOld: 8,
+        offsetV1NoEE: 8),
     $fidl.MemberType<List<String>>(
         type: $fidl.VectorType<List<String>>(
             element: $fidl.StringType(maybeElementCount: null, nullable: false),
             maybeElementCount: null,
             nullable: false),
-        offset: 8),
+        offsetOld: 8,
+        offsetV1NoEE: 8),
   ],
   ctor: Union._ctor,
   ordinalToIndex: <int, int>{
@@ -190,7 +193,8 @@ const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
   inlineSizeOld: 8,
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 4),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 4, offsetV1NoEE: 4),
   ],
   ctor: FieldCollision._ctor,
   ordinalToIndex: <int, int>{

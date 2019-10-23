@@ -566,7 +566,8 @@ const $fidl.StructType<Empty> kEmpty_Type = $fidl.StructType<Empty>(
   inlineSizeOld: 1,
   inlineSizeV1NoEE: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint8Type(), offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: Empty._ctor,
 );
@@ -617,7 +618,7 @@ const $fidl.StructType<StructWithNullableXUnion>
   inlineSizeV1NoEE: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<OlderSimpleUnion>(
-        type: kOlderSimpleUnion_OptType, offset: 0),
+        type: kOlderSimpleUnion_OptType, offsetOld: 0, offsetV1NoEE: 0),
   ],
   ctor: StructWithNullableXUnion._ctor,
 );
@@ -637,7 +638,7 @@ const $fidl.MethodType
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<StrictBoundedXUnion>(
-        type: kStrictBoundedXUnion_Type, offset: 16),
+        type: kStrictBoundedXUnion_Type, offsetOld: 16, offsetV1NoEE: 16),
   ],
   name: r"TestProtocol.StrictXUnionHenceResponseMayBeStackAllocated",
 );
@@ -654,7 +655,7 @@ const $fidl.MethodType
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<OlderSimpleUnion>(
-        type: kOlderSimpleUnion_Type, offset: 16),
+        type: kOlderSimpleUnion_Type, offsetOld: 16, offsetV1NoEE: 16),
   ],
   name: r"TestProtocol.FlexibleXUnionHenceResponseMustBeHeapAllocated",
 );
