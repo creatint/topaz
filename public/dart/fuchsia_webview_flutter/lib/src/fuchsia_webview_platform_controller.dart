@@ -375,6 +375,6 @@ class _WebviewNavigationEventListener extends fidl_web.NavigationEventListener {
 
   @override
   Future<void> onNavigationStateChanged(fidl_web.NavigationState state) async {
-    await this.navigationStateCallback(state);
+    await navigationStateCallback(state);
   }
 }

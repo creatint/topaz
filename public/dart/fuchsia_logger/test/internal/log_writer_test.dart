@@ -152,7 +152,7 @@ class StubLogWriter extends LogWriter {
   }) : super(logStream: logger.onRecord, shouldBufferLogs: shouldBufferLogs);
 
   @override
-  void onMessage(LogMessage message) => this.onMessageFunc(message);
+  void onMessage(LogMessage message) => onMessageFunc(message);
 
   void readyToListen() => startListening(onMessageFunc);
 }

@@ -189,4 +189,13 @@ class _ChildSceneLayer extends Layer {
 
   @override
   Iterable<S> findAll<S>(Offset regionOffset) => <S>[];
+
+  @override
+  bool findAnnotations<S>(AnnotationResult<S> result, Offset localPosition,
+          {bool onlyFirst}) =>
+      false;
+
+  @override
+  AnnotationResult<S> findAllAnnotations<S>(Offset localPosition) =>
+      AnnotationResult<S>();
 }
