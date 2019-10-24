@@ -16,6 +16,7 @@ void main() {
   group('conformance', () {
     group('encode success cases', () {
       EncodeSuccessCase.run(
+          EncodingOld(),
           '3ByteObjectAlignmentInStruct',
           ThreeByteInStruct(
               elem1: ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
@@ -28,6 +29,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           '5ByteObjectAlignmentInStruct',
           FiveByteInStruct(
               elem1: FiveByte(elem1: 0x1020304, elem2: 0x5),
@@ -41,6 +43,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           '3ByteObjectAlignmentInVector',
           ThreeByteInVector(elems: [
             ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
@@ -56,6 +59,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           '5ByteObjectAlignmentInVector',
           FiveByteInVector(elems: [
             FiveByte(elem1: 0x1020304, elem2: 0x5),
@@ -72,6 +76,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           '3ByteObjectAlignmentInArray',
           ThreeByteInArray(elems: [
             ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
@@ -85,6 +90,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           '5ByteObjectAlignmentInArray',
           FiveByteInArray(elems: [
             FiveByte(elem1: 0x1020304, elem2: 0x5),
@@ -99,6 +105,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'EmptyStruct',
           EmptyStruct(),
           kEmptyStruct_Type,
@@ -107,6 +114,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'EmptyStructSandwich',
           EmptyStructSandwich(
               before: 'before', es: EmptyStruct(), after: 'after'),
@@ -122,6 +130,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint8Uint16Uint32Uint64',
           Uint8Uint16Uint32Uint64(
               f1: 0x1, f2: 0x203, f3: 0x4050607, f4: 0x8090a0b0c0d0e0f),
@@ -132,6 +141,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint64Uint32Uint16Uint8',
           Uint64Uint32Uint16Uint8(
               f1: 0x8090a0b0c0d0e0f, f2: 0x4050607, f3: 0x203, f4: 0x1),
@@ -142,6 +152,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'SimpleTableEmpty',
           StructOfSimpleTable(table: SimpleTable()),
           kStructOfSimpleTable_Type,
@@ -151,6 +162,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'SimpleTableXAndY',
           StructOfSimpleTable(table: SimpleTable(x: 0x2a, y: 0x43)),
           kStructOfSimpleTable_Type,
@@ -172,6 +184,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'SimpleTableJustY',
           StructOfSimpleTable(table: SimpleTable(y: 0x43)),
           kStructOfSimpleTable_Type,
@@ -192,6 +205,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'TableWithStringAndVectorNoVectorContent',
           StructOfTableWithStringAndVector(
               table: TableWithStringAndVector(foo: 'hello', bar: 0x1b)),
@@ -210,6 +224,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'SimpleTableThenUint64',
           SimpleTableThenUint64(
               table: SimpleTable(x: 0x2a, y: 0x43), number: 0xdeadbeefdeadbeef),
@@ -233,6 +248,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'InlineXUnionInStruct',
           TestInlineXUnionInStruct(
               before: 'before',
@@ -253,6 +269,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'OptionalXUnionInStructAbsent',
           TestOptionalXUnionInStruct(before: 'before', after: 'after'),
           kTestOptionalXUnionInStruct_Type,
@@ -269,6 +286,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'OptionalXUnionInStructPresent',
           TestOptionalXUnionInStruct(
               before: 'before',
@@ -289,6 +307,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'XUnionInTableXUnionAbsent',
           TestXUnionInTable(
               value: XUnionInTable(before: 'before', after: 'after')),
@@ -311,6 +330,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'XUnionInTableXUnionPresent',
           TestXUnionInTable(
               value: XUnionInTable(
@@ -340,6 +360,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'StrictXUnion',
           TestStrictXUnionInStruct(xu: SampleStrictXUnion.withU(0xdeadbeef)),
           kTestStrictXUnionInStruct_Type,
@@ -351,6 +372,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'AddEthernetDeviceRequest',
           TestAddEthernetDeviceRequest(
               topologicalPath: '@/dev/sys/pci/00:03.0/e1000/ethernet',
@@ -378,6 +400,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'FileGetAttrResponse',
           FileGetAttrResponse(
               s: 0x7eadbeaf,
@@ -402,6 +425,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Optionals',
           StructWithOptionals(
               s: EmptyStruct(),
@@ -437,6 +461,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Arrays',
           StructWithArrays(arrInt: Int32List.fromList([0x1, 0x2]), arrString: [
             'a',
@@ -478,6 +503,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Vectors',
           StructWithVectors(
               vecEmpty: Int32List.fromList([]),
@@ -547,6 +573,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'BoolTrue',
           MyBool(value: true),
           kMyBool_Type,
@@ -555,6 +582,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'BoolFalse',
           MyBool(value: false),
           kMyBool_Type,
@@ -563,6 +591,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'ByteZero',
           MyByte(value: 0x0),
           kMyByte_Type,
@@ -571,6 +600,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Byte255',
           MyByte(value: 0xff),
           kMyByte_Type,
@@ -579,6 +609,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int8Min',
           MyInt8(value: -128),
           kMyInt8_Type,
@@ -587,6 +618,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int8Zero',
           MyInt8(value: 0x0),
           kMyInt8_Type,
@@ -595,6 +627,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int8Max',
           MyInt8(value: 0x7f),
           kMyInt8_Type,
@@ -603,6 +636,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int16Min',
           MyInt16(value: -32768),
           kMyInt16_Type,
@@ -611,6 +645,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int16Zero',
           MyInt16(value: 0x0),
           kMyInt16_Type,
@@ -619,6 +654,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int16Max',
           MyInt16(value: 0x7fff),
           kMyInt16_Type,
@@ -627,6 +663,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int32Min',
           MyInt32(value: -2147483648),
           kMyInt32_Type,
@@ -635,6 +672,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int32Zero',
           MyInt32(value: 0x0),
           kMyInt32_Type,
@@ -643,6 +681,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int32Max',
           MyInt32(value: 0x7fffffff),
           kMyInt32_Type,
@@ -651,6 +690,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int64Min',
           MyInt64(value: -9223372036854775808),
           kMyInt64_Type,
@@ -659,6 +699,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int64Zero',
           MyInt64(value: 0x0),
           kMyInt64_Type,
@@ -667,6 +708,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Int64Max',
           MyInt64(value: 0x7fffffffffffffff),
           kMyInt64_Type,
@@ -675,6 +717,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint8Zero',
           MyUint8(value: 0x0),
           kMyUint8_Type,
@@ -683,6 +726,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint8Max',
           MyUint8(value: 0xff),
           kMyUint8_Type,
@@ -691,6 +735,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint16Zero',
           MyUint16(value: 0x0),
           kMyUint16_Type,
@@ -699,6 +744,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint16Max',
           MyUint16(value: 0xffff),
           kMyUint16_Type,
@@ -707,6 +753,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint32Zero',
           MyUint32(value: 0x0),
           kMyUint32_Type,
@@ -715,6 +762,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint32Max',
           MyUint32(value: 0xffffffff),
           kMyUint32_Type,
@@ -723,6 +771,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint64Zero',
           MyUint64(value: 0x0),
           kMyUint64_Type,
@@ -731,6 +780,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Uint64Max',
           MyUint64(value: 0xffffffffffffffff),
           kMyUint64_Type,
@@ -739,6 +789,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Float32Zero',
           MyFloat32(value: 0),
           kMyFloat32_Type,
@@ -747,6 +798,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Float32One',
           MyFloat32(value: 1),
           kMyFloat32_Type,
@@ -755,6 +807,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Float32MinusOne',
           MyFloat32(value: -1),
           kMyFloat32_Type,
@@ -763,6 +816,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Float32Max',
           MyFloat32(value: 3.4028234663852886e+38),
           kMyFloat32_Type,
@@ -771,6 +825,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Float64Zero',
           MyFloat64(value: 0),
           kMyFloat64_Type,
@@ -779,6 +834,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Float64One',
           MyFloat64(value: 1),
           kMyFloat64_Type,
@@ -787,6 +843,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Float64MinusOne',
           MyFloat64(value: -1),
           kMyFloat64_Type,
@@ -795,6 +852,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'Float64Max',
           MyFloat64(value: 1.7976931348623157e+308),
           kMyFloat64_Type,
@@ -803,6 +861,7 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          EncodingOld(),
           'UnionWithBoundString',
           UnionWithBoundStringStruct(
               v: UnionWithBoundString.withBoundFiveStr('abcd')),
@@ -817,6 +876,7 @@ void main() {
 
     group('decode success cases', () {
       DecodeSuccessCase.run(
+          EncodingOld(),
           '3ByteObjectAlignmentInStruct',
           ThreeByteInStruct(
               elem1: ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
@@ -829,6 +889,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           '5ByteObjectAlignmentInStruct',
           FiveByteInStruct(
               elem1: FiveByte(elem1: 0x1020304, elem2: 0x5),
@@ -842,6 +903,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           '3ByteObjectAlignmentInVector',
           ThreeByteInVector(elems: [
             ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
@@ -857,6 +919,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           '5ByteObjectAlignmentInVector',
           FiveByteInVector(elems: [
             FiveByte(elem1: 0x1020304, elem2: 0x5),
@@ -873,6 +936,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           '3ByteObjectAlignmentInArray',
           ThreeByteInArray(elems: [
             ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
@@ -886,6 +950,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           '5ByteObjectAlignmentInArray',
           FiveByteInArray(elems: [
             FiveByte(elem1: 0x1020304, elem2: 0x5),
@@ -900,6 +965,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'EmptyStruct',
           EmptyStruct(),
           kEmptyStruct_Type,
@@ -908,6 +974,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'EmptyStructSandwich',
           EmptyStructSandwich(
               before: 'before', es: EmptyStruct(), after: 'after'),
@@ -923,6 +990,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint8Uint16Uint32Uint64',
           Uint8Uint16Uint32Uint64(
               f1: 0x1, f2: 0x203, f3: 0x4050607, f4: 0x8090a0b0c0d0e0f),
@@ -933,6 +1001,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint64Uint32Uint16Uint8',
           Uint64Uint32Uint16Uint8(
               f1: 0x8090a0b0c0d0e0f, f2: 0x4050607, f3: 0x203, f4: 0x1),
@@ -943,6 +1012,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'SimpleTableEmpty',
           StructOfSimpleTable(table: SimpleTable()),
           kStructOfSimpleTable_Type,
@@ -952,6 +1022,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'SimpleTableXAndY',
           StructOfSimpleTable(table: SimpleTable(x: 0x2a, y: 0x43)),
           kStructOfSimpleTable_Type,
@@ -973,6 +1044,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'SimpleTableJustY',
           StructOfSimpleTable(table: SimpleTable(y: 0x43)),
           kStructOfSimpleTable_Type,
@@ -993,6 +1065,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'TableWithStringAndVectorNoVectorContent',
           StructOfTableWithStringAndVector(
               table: TableWithStringAndVector(foo: 'hello', bar: 0x1b)),
@@ -1011,6 +1084,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'SimpleTableThenUint64',
           SimpleTableThenUint64(
               table: SimpleTable(x: 0x2a, y: 0x43), number: 0xdeadbeefdeadbeef),
@@ -1034,6 +1108,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'InlineXUnionInStruct',
           TestInlineXUnionInStruct(
               before: 'before',
@@ -1054,6 +1129,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'OptionalXUnionInStructAbsent',
           TestOptionalXUnionInStruct(before: 'before', after: 'after'),
           kTestOptionalXUnionInStruct_Type,
@@ -1070,6 +1146,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'OptionalXUnionInStructPresent',
           TestOptionalXUnionInStruct(
               before: 'before',
@@ -1090,6 +1167,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'XUnionInTableXUnionAbsent',
           TestXUnionInTable(
               value: XUnionInTable(before: 'before', after: 'after')),
@@ -1112,6 +1190,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'XUnionInTableXUnionPresent',
           TestXUnionInTable(
               value: XUnionInTable(
@@ -1141,6 +1220,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'StrictXUnion',
           TestStrictXUnionInStruct(xu: SampleStrictXUnion.withU(0xdeadbeef)),
           kTestStrictXUnionInStruct_Type,
@@ -1152,6 +1232,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'AddEthernetDeviceRequest',
           TestAddEthernetDeviceRequest(
               topologicalPath: '@/dev/sys/pci/00:03.0/e1000/ethernet',
@@ -1179,6 +1260,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'FileGetAttrResponse',
           FileGetAttrResponse(
               s: 0x7eadbeaf,
@@ -1203,6 +1285,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Optionals',
           StructWithOptionals(
               s: EmptyStruct(),
@@ -1238,6 +1321,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Arrays',
           StructWithArrays(arrInt: Int32List.fromList([0x1, 0x2]), arrString: [
             'a',
@@ -1279,6 +1363,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Vectors',
           StructWithVectors(
               vecEmpty: Int32List.fromList([]),
@@ -1348,6 +1433,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'BoolTrue',
           MyBool(value: true),
           kMyBool_Type,
@@ -1356,6 +1442,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'BoolFalse',
           MyBool(value: false),
           kMyBool_Type,
@@ -1364,6 +1451,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'ByteZero',
           MyByte(value: 0x0),
           kMyByte_Type,
@@ -1372,6 +1460,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Byte255',
           MyByte(value: 0xff),
           kMyByte_Type,
@@ -1380,6 +1469,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int8Min',
           MyInt8(value: -128),
           kMyInt8_Type,
@@ -1388,6 +1478,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int8Zero',
           MyInt8(value: 0x0),
           kMyInt8_Type,
@@ -1396,6 +1487,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int8Max',
           MyInt8(value: 0x7f),
           kMyInt8_Type,
@@ -1404,6 +1496,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int16Min',
           MyInt16(value: -32768),
           kMyInt16_Type,
@@ -1412,6 +1505,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int16Zero',
           MyInt16(value: 0x0),
           kMyInt16_Type,
@@ -1420,6 +1514,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int16Max',
           MyInt16(value: 0x7fff),
           kMyInt16_Type,
@@ -1428,6 +1523,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int32Min',
           MyInt32(value: -2147483648),
           kMyInt32_Type,
@@ -1436,6 +1532,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int32Zero',
           MyInt32(value: 0x0),
           kMyInt32_Type,
@@ -1444,6 +1541,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int32Max',
           MyInt32(value: 0x7fffffff),
           kMyInt32_Type,
@@ -1452,6 +1550,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int64Min',
           MyInt64(value: -9223372036854775808),
           kMyInt64_Type,
@@ -1460,6 +1559,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int64Zero',
           MyInt64(value: 0x0),
           kMyInt64_Type,
@@ -1468,6 +1568,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Int64Max',
           MyInt64(value: 0x7fffffffffffffff),
           kMyInt64_Type,
@@ -1476,6 +1577,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint8Zero',
           MyUint8(value: 0x0),
           kMyUint8_Type,
@@ -1484,6 +1586,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint8Max',
           MyUint8(value: 0xff),
           kMyUint8_Type,
@@ -1492,6 +1595,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint16Zero',
           MyUint16(value: 0x0),
           kMyUint16_Type,
@@ -1500,6 +1604,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint16Max',
           MyUint16(value: 0xffff),
           kMyUint16_Type,
@@ -1508,6 +1613,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint32Zero',
           MyUint32(value: 0x0),
           kMyUint32_Type,
@@ -1516,6 +1622,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint32Max',
           MyUint32(value: 0xffffffff),
           kMyUint32_Type,
@@ -1524,6 +1631,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint64Zero',
           MyUint64(value: 0x0),
           kMyUint64_Type,
@@ -1532,6 +1640,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Uint64Max',
           MyUint64(value: 0xffffffffffffffff),
           kMyUint64_Type,
@@ -1540,6 +1649,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Float32Zero',
           MyFloat32(value: 0),
           kMyFloat32_Type,
@@ -1548,6 +1658,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Float32One',
           MyFloat32(value: 1),
           kMyFloat32_Type,
@@ -1556,6 +1667,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Float32MinusOne',
           MyFloat32(value: -1),
           kMyFloat32_Type,
@@ -1564,6 +1676,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Float32Max',
           MyFloat32(value: 3.4028234663852886e+38),
           kMyFloat32_Type,
@@ -1572,6 +1685,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Float64Zero',
           MyFloat64(value: 0),
           kMyFloat64_Type,
@@ -1580,6 +1694,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Float64One',
           MyFloat64(value: 1),
           kMyFloat64_Type,
@@ -1588,6 +1703,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Float64MinusOne',
           MyFloat64(value: -1),
           kMyFloat64_Type,
@@ -1596,6 +1712,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'Float64Max',
           MyFloat64(value: 1.7976931348623157e+308),
           kMyFloat64_Type,
@@ -1604,6 +1721,7 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          EncodingOld(),
           'UnionWithBoundString',
           UnionWithBoundStringStruct(
               v: UnionWithBoundString.withBoundFiveStr('abcd')),
@@ -1618,12 +1736,14 @@ void main() {
 
     group('encode failure cases', () {
       EncodeFailureCase.run(
+          EncodingOld(),
           'StringExceedsLimit',
           Length2StringWrapper(length2String: 'abc'),
           kLength2StringWrapper_Type,
           fidl.FidlErrorCode.fidlStringTooLong);
 
       EncodeFailureCase.run(
+          EncodingOld(),
           'UnionWithBoundString_ExceedsBounds',
           UnionWithBoundStringStruct(
               v: UnionWithBoundString.withBoundFiveStr('abcdef')),
@@ -1633,6 +1753,7 @@ void main() {
 
     group('decode failure cases', () {
       DecodeFailureCase.run(
+          EncodingOld(),
           'StrictXUnion Field Unknown',
           kTestStrictXUnionInStruct_Type,
           Uint8List.fromList([
@@ -1644,6 +1765,7 @@ void main() {
           fidl.FidlErrorCode.fidlStrictXUnionUnknownField);
 
       DecodeFailureCase.run(
+          EncodingOld(),
           'NonEmptyStringWithNullPtrBody',
           kStringWrapper_Type,
           Uint8List.fromList([

@@ -7,111 +7,125 @@ import 'dart:typed_data';
 import 'package:test/test.dart';
 import 'package:fidl/fidl.dart' as fidl;
 
-class SuccessCase<T> {
-  static void run<T>(
-      String name, T input, fidl.FidlType<T> type, Uint8List bytes) {
+abstract class Encoding {
+  Uint8List encode<T>(fidl.FidlType<T> type, T input);
+  T decode<T>(fidl.FidlType<T> type, Uint8List bytes);
+}
+
+class EncodingOld extends Encoding {
+  @override
+  Uint8List encode<T>(fidl.FidlType<T> type, T input) {
+    final fidl.Encoder encoder = fidl.Encoder()
+      ..alloc(type.encodingInlineSize());
+    type.encode(encoder, input, 0);
+    final message = encoder.message;
+    return Uint8List.view(message.data.buffer, 0, message.dataLength);
+  }
+
+  @override
+  T decode<T>(fidl.FidlType<T> type, Uint8List bytes) {
+    final fidl.Decoder decoder = fidl.Decoder(fidl.Message(
+        ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0));
+    decoder.claimMemory(type.decodingInlineSize(decoder));
+    return type.decode(decoder, 0);
+  }
+}
+
+class SuccessCase<T, E extends Encoding> {
+  static void run<T, E extends Encoding>(E encoding, String name, T input,
+      fidl.FidlType<T> type, Uint8List bytes) {
     group(name, () {
-      EncodeSuccessCase(input, type, bytes)._checkEncode();
-      DecodeSuccessCase(input, type, bytes)._checkDecode();
+      EncodeSuccessCase(encoding, input, type, bytes)._checkEncode();
+      DecodeSuccessCase(encoding, input, type, bytes)._checkDecode();
     });
   }
 }
 
-class EncodeSuccessCase<T> {
-  EncodeSuccessCase(this.input, this.type, this.bytes);
+class EncodeSuccessCase<T, E extends Encoding> {
+  EncodeSuccessCase(this.encoding, this.input, this.type, this.bytes);
 
+  final E encoding;
   final T input;
   final fidl.FidlType<T> type;
   final Uint8List bytes;
 
-  static void run<T>(
-      String name, T input, fidl.FidlType<T> type, Uint8List bytes) {
+  static void run<T, E extends Encoding>(E encoding, String name, T input,
+      fidl.FidlType<T> type, Uint8List bytes) {
     group(name, () {
-      EncodeSuccessCase(input, type, bytes)._checkEncode();
+      EncodeSuccessCase(encoding, input, type, bytes)._checkEncode();
     });
   }
 
   void _checkEncode() {
     test('encode', () {
-      final fidl.Encoder encoder = fidl.Encoder()
-        ..alloc(type.encodingInlineSize());
-      type.encode(encoder, input, 0);
-      final message = encoder.message;
-      expect(Uint8List.view(message.data.buffer, 0, message.dataLength),
-          equals(bytes));
+      expect(encoding.encode(type, input), equals(bytes));
     });
   }
 }
 
-class DecodeSuccessCase<T> {
-  DecodeSuccessCase(this.input, this.type, this.bytes);
+class DecodeSuccessCase<T, E extends Encoding> {
+  DecodeSuccessCase(this.encoding, this.input, this.type, this.bytes);
 
+  final E encoding;
   final T input;
   final fidl.FidlType<T> type;
   final Uint8List bytes;
 
-  static void run<T>(
-      String name, T input, fidl.FidlType<T> type, Uint8List bytes) {
+  static void run<T, E extends Encoding>(E encoding, String name, T input,
+      fidl.FidlType<T> type, Uint8List bytes) {
     group(name, () {
-      DecodeSuccessCase(input, type, bytes)._checkDecode();
+      DecodeSuccessCase(encoding, input, type, bytes)._checkDecode();
     });
   }
 
   void _checkDecode() {
     test('decode', () {
-      final fidl.Decoder decoder = fidl.Decoder(fidl.Message(
-          ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0));
-      decoder.claimMemory(type.decodingInlineSize(decoder));
-      final actual = type.decode(decoder, 0);
-      expect(actual, equals(input));
+      expect(encoding.decode(type, bytes), equals(input));
     });
   }
 }
 
-class EncodeFailureCase<T> {
-  EncodeFailureCase(this.input, this.type, this.code);
+class EncodeFailureCase<T, E extends Encoding> {
+  EncodeFailureCase(this.encoding, this.input, this.type, this.code);
 
+  final E encoding;
   final T input;
   final fidl.FidlType<T> type;
   final fidl.FidlErrorCode code;
 
-  static void run<T>(
-      String name, T input, fidl.FidlType<T> type, fidl.FidlErrorCode code) {
+  static void run<T, E extends Encoding>(E encoding, String name, T input,
+      fidl.FidlType<T> type, fidl.FidlErrorCode code) {
     group(name, () {
-      EncodeFailureCase(input, type, code)._checkEncodeFails();
+      EncodeFailureCase(encoding, input, type, code)._checkEncodeFails();
     });
   }
 
   void _checkEncodeFails() {
     test('encode fails', () {
-      final fidl.Encoder encoder = fidl.Encoder()
-        ..alloc(type.encodingInlineSize());
-      expect(() => type.encode(encoder, input, 0),
+      expect(() => encoding.encode(type, input),
           throwsA(predicate((e) => e.code == code)));
     });
   }
 }
 
-class DecodeFailureCase<T> {
-  DecodeFailureCase(this.type, this.bytes, this.code);
+class DecodeFailureCase<T, E extends Encoding> {
+  DecodeFailureCase(this.encoding, this.type, this.bytes, this.code);
 
+  final E encoding;
   final fidl.FidlType<T> type;
   final Uint8List bytes;
   final fidl.FidlErrorCode code;
 
-  static void run<T>(String name, fidl.FidlType<T> type, Uint8List bytes,
-      fidl.FidlErrorCode code) {
+  static void run<T, E extends Encoding>(E encoding, String name,
+      fidl.FidlType<T> type, Uint8List bytes, fidl.FidlErrorCode code) {
     group(name, () {
-      DecodeFailureCase(type, bytes, code)._checkDecodeFails();
+      DecodeFailureCase(encoding, type, bytes, code)._checkDecodeFails();
     });
   }
 
   void _checkDecodeFails() {
     test('decode fails', () {
-      final fidl.Decoder decoder = fidl.Decoder(fidl.Message(
-          ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0));
-      decoder.claimMemory(type.decodingInlineSize(decoder));
-      expect(() => type.decode(decoder, 0),
+      expect(() => encoding.decode(type, bytes),
           throwsA(predicate((e) => e is fidl.FidlError && e.code == code)));
     });
   }
