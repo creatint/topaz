@@ -31,7 +31,7 @@ const int _kInitialBufferSize = 1024;
 class Encoder {
   Message get message {
     final ByteData trimmed = ByteData.view(data.buffer, 0, _extent);
-    return Message(trimmed, _handles, _extent, _handles.length);
+    return Message(trimmed, _handles);
   }
 
   ByteData data = ByteData(_kInitialBufferSize);
@@ -147,7 +147,7 @@ class Decoder {
   int claimMemory(int size) {
     final int result = _nextOffset;
     _nextOffset += _align(size);
-    if (_nextOffset > _message.dataLength) {
+    if (_nextOffset > _message.data.lengthInBytes) {
       throw FidlError('Cannot access out of range memory');
     }
     return result;
@@ -158,7 +158,7 @@ class Decoder {
   }
 
   Handle claimHandle() {
-    if (_nextHandle >= _message.handlesLength) {
+    if (_nextHandle >= _message.handles.length) {
       throw FidlError('Cannot access out of range handle');
     }
     return _message.handles[_nextHandle++];

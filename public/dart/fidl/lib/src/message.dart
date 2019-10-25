@@ -17,18 +17,14 @@ const int kMessageOrdinalOffset = 8;
 const int kMagicNumberInitial = 1;
 
 class Message {
-  Message(this.data, this.handles, this.dataLength, this.handlesLength);
+  Message(this.data, this.handles);
   Message.fromReadResult(ReadResult result)
       : data = result.bytes,
         handles = result.handles,
-        dataLength = result.bytes.lengthInBytes,
-        handlesLength = result.handles.length,
         assert(result.status == ZX.OK);
 
   final ByteData data;
   final List<Handle> handles;
-  final int dataLength;
-  final int handlesLength;
 
   int get txid => data.getUint32(kMessageTxidOffset, Endian.little);
   set txid(int value) =>
@@ -42,10 +38,10 @@ class Message {
     Uint8List list = Uint8List.view(data.buffer, 0);
     StringBuffer buffer = StringBuffer();
     final RegExp isPrintable = RegExp(r'\w');
-    for (int i = 0; i < dataLength; i += width) {
+    for (int i = 0; i < data.lengthInBytes; i += width) {
       StringBuffer hex = StringBuffer();
       StringBuffer printable = StringBuffer();
-      for (int j = 0; j < width && i + j < dataLength; j++) {
+      for (int j = 0; j < width && i + j < data.lengthInBytes; j++) {
         int v = list[i + j];
         String s = v.toRadixString(16);
         if (s.length == 1)
@@ -78,7 +74,7 @@ class Message {
 
   @override
   String toString() {
-    return 'Message(numBytes=$dataLength, numHandles=$handlesLength)';
+    return 'Message(numBytes=${data.lengthInBytes}, numHandles=${handles.length})';
   }
 }
 

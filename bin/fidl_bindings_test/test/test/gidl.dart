@@ -19,13 +19,13 @@ class EncodingOld extends Encoding {
       ..alloc(type.encodingInlineSize());
     type.encode(encoder, input, 0);
     final message = encoder.message;
-    return Uint8List.view(message.data.buffer, 0, message.dataLength);
+    return Uint8List.view(message.data.buffer, 0, message.data.lengthInBytes);
   }
 
   @override
   T decode<T>(fidl.FidlType<T> type, Uint8List bytes) {
-    final fidl.Decoder decoder = fidl.Decoder(fidl.Message(
-        ByteData.view(bytes.buffer, 0, bytes.length), [], bytes.length, 0));
+    final fidl.Decoder decoder = fidl.Decoder(
+        fidl.Message(ByteData.view(bytes.buffer, 0, bytes.length), []));
     decoder.claimMemory(type.decodingInlineSize(decoder));
     return type.decode(decoder, 0);
   }

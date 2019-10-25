@@ -30,7 +30,7 @@ void main() async {
 
       encoder = Encoder()..alloc(24);
       kExampleXunion_Type.encode(encoder, unknownXunion, 0);
-      expect(encoder.message.dataLength, 32);
+      expect(encoder.message.data.lengthInBytes, 32);
       final bytes = encoder.message.data.buffer.asUint8List(0, 32);
       expect(
           bytes,
@@ -40,7 +40,7 @@ void main() async {
             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, // PRESENT
             0x04, 0x03, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, // data + padding
           ]));
-      expect(encoder.message.handlesLength, 0);
+      expect(encoder.message.handles.length, 0);
     });
 
     test('unknown ordinal flexible with handles', () async {
@@ -70,7 +70,7 @@ void main() async {
 
       encoder = Encoder()..alloc(24);
       kExampleXunion_Type.encode(encoder, unknownXunion, 0);
-      expect(encoder.message.dataLength, 40);
+      expect(encoder.message.data.lengthInBytes, 40);
       final bytes = encoder.message.data.buffer.asUint8List(0, 40);
       expect(
           bytes,
@@ -81,7 +81,7 @@ void main() async {
             0x01, 0x00, 0x00, 0x00, 0xff, 0xff, 0xff, 0xff, // n1 + h
             0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // n2 + paddding
           ]));
-      expect(encoder.message.handlesLength, equals(1));
+      expect(encoder.message.handles.length, equals(1));
       encoder.message.handles[0].close();
     });
 
