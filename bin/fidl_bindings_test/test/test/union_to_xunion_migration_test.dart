@@ -15,21 +15,23 @@ void main() {
       var xunion = XUnion.withPrimitive(inputValue);
       kXUnion_Type.encode(encoder, xunion, 0);
 
-      var decoder = DecoderThatDecodesUnionsFromXunions(encoder.message)
-        ..claimMemory(24);
+      var decoder = $fidl.Decoder(encoder.message)
+        ..claimMemory(24)
+        ..decodeUnionFromXUnionBytes = true;
       var union = kUnion_Type.decode(decoder, 0);
       expect(union.primitive, equals(inputValue));
     });
 
     test('encode xunion bytes from union', () {
-      $fidl.enableWriteXUnionBytesForUnion = true;
       int inputValue = 5;
 
       var xunionEncoder = $fidl.Encoder()..alloc(24);
       var xunion = XUnion.withPrimitive(inputValue);
       kXUnion_Type.encode(xunionEncoder, xunion, 0);
 
-      var unionEncoder = $fidl.Encoder()..alloc(24);
+      var unionEncoder = $fidl.Encoder()
+        ..alloc(24)
+        ..encodeUnionAsXUnionBytes = true;
       var union = Union.withPrimitive(inputValue);
       kUnion_Type.encode(unionEncoder, union, 0);
 
@@ -39,16 +41,8 @@ void main() {
       for (int i = 0; i < unionBytes.length; i++) {
         expect(unionBytes[i], equals(xunionBytes[i]));
       }
-      $fidl.enableWriteXUnionBytesForUnion = false;
     });
   });
-}
-
-class DecoderThatDecodesUnionsFromXunions extends $fidl.Decoder {
-  DecoderThatDecodesUnionsFromXunions($fidl.Message message) : super(message);
-
-  @override
-  bool decodeUnionFromXUnionBytes() => true;
 }
 
 // Generated code modified to keep ordinals the same:

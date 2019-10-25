@@ -17,12 +17,6 @@ import 'table.dart';
 import 'union.dart';
 import 'xunion.dart';
 
-// Switches union encoding from legacy union bytes to xunion bytes.
-// This is part of the union to xunion migration.
-// This only applies to encode/write. The analogous decoding flag
-// exists in the decoder.
-bool enableWriteXUnionBytesForUnion = false;
-
 // ignore_for_file: public_member_api_docs
 // ignore_for_file: always_specify_types
 
@@ -141,15 +135,15 @@ abstract class FidlType<T> {
   final int inlineSizeOld;
   final int inlineSizeV1NoEE;
 
-  int encodingInlineSize() {
-    if (enableWriteXUnionBytesForUnion) {
+  int encodingInlineSize(Encoder encoder) {
+    if (encoder.encodeUnionAsXUnionBytes) {
       return inlineSizeV1NoEE;
     }
     return inlineSizeOld;
   }
 
   int decodingInlineSize(Decoder decoder) {
-    if (decoder.decodeUnionFromXUnionBytes()) {
+    if (decoder.decodeUnionFromXUnionBytes) {
       return inlineSizeV1NoEE;
     }
     return inlineSizeOld;
@@ -160,7 +154,7 @@ abstract class FidlType<T> {
 
   void encodeArray(Encoder encoder, List<T> value, int offset) {
     final int count = value.length;
-    final int stride = encodingInlineSize();
+    final int stride = encodingInlineSize(encoder);
     for (int i = 0; i < count; ++i) {
       encode(encoder, value[i], offset + i * stride);
     }
@@ -677,7 +671,7 @@ class PointerType<T> extends FidlType<T> {
       encoder.encodeUint64(kAllocAbsent, offset);
     } else {
       encoder.encodeUint64(kAllocPresent, offset);
-      int childOffset = encoder.alloc(element.encodingInlineSize());
+      int childOffset = encoder.alloc(element.encodingInlineSize(encoder));
       element.encode(encoder, value, childOffset);
     }
   }
@@ -714,7 +708,7 @@ class MemberType<T> extends FidlType<T> {
   @override
   void encode(Encoder encoder, T value, int base) {
     int offset = offsetOld;
-    if (enableWriteXUnionBytesForUnion) {
+    if (encoder.encodeUnionAsXUnionBytes) {
       offset = offsetV1NoEE;
     }
     type.encode(encoder, value, base + offset);
@@ -723,7 +717,7 @@ class MemberType<T> extends FidlType<T> {
   @override
   T decode(Decoder decoder, int base) {
     int offset = offsetOld;
-    if (decoder.decodeUnionFromXUnionBytes()) {
+    if (decoder.decodeUnionFromXUnionBytes) {
       offset = offsetV1NoEE;
     }
     return type.decode(decoder, base + offset);
@@ -770,7 +764,7 @@ const int _kEnvelopeSize = 16;
 void _encodeEnvelopePresent<T>(
     Encoder encoder, int offset, T field, FidlType<T> fieldType) {
   int numHandles = encoder.countHandles();
-  final fieldOffset = encoder.alloc(fieldType.encodingInlineSize());
+  final fieldOffset = encoder.alloc(fieldType.encodingInlineSize(encoder));
   fieldType.encode(encoder, field, fieldOffset);
   numHandles = encoder.countHandles() - numHandles;
   final numBytes = encoder.nextOffset() - fieldOffset;
@@ -964,7 +958,7 @@ class UnionType<T extends Union> extends FidlType<T> {
 
   @override
   void encode(Encoder encoder, T value, int offset) {
-    if (enableWriteXUnionBytesForUnion) {
+    if (encoder.encodeUnionAsXUnionBytes) {
       encodeAsXUnionBytes(encoder, value, offset);
       return;
     }
@@ -987,7 +981,7 @@ class UnionType<T extends Union> extends FidlType<T> {
 
   @override
   T decode(Decoder decoder, int offset) {
-    if (decoder.decodeUnionFromXUnionBytes()) {
+    if (decoder.decodeUnionFromXUnionBytes) {
       return decodeFromXUnionBytes(decoder, offset);
     }
     final int index = decoder.decodeUint32(offset);
@@ -1178,7 +1172,8 @@ class VectorType<T extends List> extends NullableFidlType<T> {
       encoder
         ..encodeUint64(count, offset) // count
         ..encodeUint64(kAllocPresent, offset + 8); // data
-      int childOffset = encoder.alloc(count * element.encodingInlineSize());
+      int childOffset =
+          encoder.alloc(count * element.encodingInlineSize(encoder));
       element.encodeArray(encoder, value, childOffset);
     }
   }

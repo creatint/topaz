@@ -13,6 +13,11 @@ import 'message.dart';
 // ignore_for_file: avoid_positional_boolean_parameters
 // ignore_for_file: public_member_api_docs
 
+// Switches default union encoding from legacy union bytes to xunion
+// bytes. The default can be overwritten via the encoder.
+// This is part of the union to xunion migration.
+bool defaultEnableWriteXUnionBytesForUnion = false;
+
 const int _kAlignment = 8;
 const int _kAlignmentMask = 0x7;
 
@@ -37,6 +42,9 @@ class Encoder {
   ByteData data = ByteData(_kInitialBufferSize);
   final List<Handle> _handles = <Handle>[];
   int _extent = 0;
+  // True if a given union should be encoded as xunion bytes
+  // false if it should be encoded as legacy union bytes
+  bool encodeUnionAsXUnionBytes = defaultEnableWriteXUnionBytesForUnion;
 
   void _grow(int newSize) {
     final Uint8List newList = Uint8List(newSize)
@@ -131,14 +139,18 @@ class Encoder {
 
 class Decoder {
   Decoder(Message message)
-      : _message = message,
-        data = message.data;
+      : data = message.data,
+        handles = message.handles;
+  Decoder.fromRawArgs(this.data, this.handles);
 
-  final Message _message;
   ByteData data;
+  List<Handle> handles;
 
   int _nextOffset = 0;
   int _nextHandle = 0;
+  // True if a given union should be decoded from xunion bytes
+  // false if it should be decoded from legacy union bytes
+  bool decodeUnionFromXUnionBytes = false;
 
   int nextOffset() {
     return _nextOffset;
@@ -147,7 +159,7 @@ class Decoder {
   int claimMemory(int size) {
     final int result = _nextOffset;
     _nextOffset += _align(size);
-    if (_nextOffset > _message.data.lengthInBytes) {
+    if (_nextOffset > data.lengthInBytes) {
       throw FidlError('Cannot access out of range memory');
     }
     return result;
@@ -158,17 +170,11 @@ class Decoder {
   }
 
   Handle claimHandle() {
-    if (_nextHandle >= _message.handles.length) {
+    if (_nextHandle >= handles.length) {
       throw FidlError('Cannot access out of range handle');
     }
-    return _message.handles[_nextHandle++];
+    return handles[_nextHandle++];
   }
-
-  // Predicate that is true if a given union should be decoded from xunion bytes.
-  // This is part of the union to xunion migration.
-  // This should not be a constant, but is for the time being as we figure out the
-  // format of the information in the header.
-  bool decodeUnionFromXUnionBytes() => false;
 
   bool decodeBool(int offset) => data.getInt8(offset) != 0;
 
