@@ -76,6 +76,8 @@ dart_fuchsia_test("fuchsia_services_package_integration_tests") {
     "incoming_test.dart",
     "launch_flow_test.dart",
     "outgoing_test.dart",
+    "service_provider_impl_test.dart",
+    "startup_context_test.dart",
   ]
 
   deps = [

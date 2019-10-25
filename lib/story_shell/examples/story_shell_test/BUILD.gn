@@ -6,6 +6,9 @@ import("//build/dart/dart_library.gni")
 import("//topaz/runtime/dart/dart_fuchsia_test.gni")
 
 dart_fuchsia_test("key_listener_device_tests") {
+  sources = [
+    "key_listener_test.dart",
+  ]
   meta = [
     {
       path = rebase_path("meta/key_listener_device_tests.cmx")

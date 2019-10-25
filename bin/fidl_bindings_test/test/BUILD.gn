@@ -7,7 +7,22 @@ import("//topaz/runtime/dart/dart_fuchsia_test.gni")
 import("//topaz/runtime/dart_runner/dart_app.gni")
 
 dart_fuchsia_test("fidl_bindings_test") {
-  source_dir = "test/"
+  sources = [
+    "channel_close_test.dart",
+    "clone_test.dart",
+    "codec_test.dart",
+    "conformance_test.dart",
+    "error_test.dart",
+    "event_test.dart",
+    "failure_test.dart",
+    "hash_test.dart",
+    "header_test.dart",
+    "oneway_test.dart",
+    "state_test.dart",
+    "tostring_test.dart",
+    "twoway_test.dart",
+    "union_to_xunion_migration_test.dart",
+  ]
 
   meta = [
     {

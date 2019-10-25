@@ -86,7 +86,7 @@ flutter_test("fuchsia_modular_package_unittests") {
   ]
 }
 
-# Run tese tests using:
+# Run these tests using:
 #  fx set x64 --packages topaz/packages/buildbot
 # Start a qemu emulator (using a real device is also possible):
 #  fx run -kN  (tip: to terminate the emulator press "ctrl+a x")
@@ -102,6 +102,7 @@ dart_fuchsia_test("fuchsia_modular_package_integration_tests") {
     },
   ]
 
+  # TODO(ianloic): these seem wrong, actually...
   sources = [
     "entity/internal/entity_impl_test.dart",
     "internal/component_context_integ_test.dart",

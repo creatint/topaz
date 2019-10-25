@@ -147,6 +147,9 @@ dart_fuchsia_test("sledge_integration_tests") {
   ]
 
   source_dir = "test/integration_tests"
+  sources = [
+    "sledge_integration_test.dart",
+  ]
 
   deps = [
     ":sledge",

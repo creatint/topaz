@@ -14,7 +14,7 @@ import("//topaz/runtime/dart_runner/dart_app.gni")
 #
 # Parameters
 #
-#   sources (optional)
+#   sources (required)
 #     The list of test sources. These sources must be within source_dir.
 #
 #   source_dir (optional)
@@ -57,6 +57,9 @@ import("//topaz/runtime/dart_runner/dart_app.gni")
 #   - Get a public API into `package:test` for what we're doing.
 #
 template("dart_fuchsia_test") {
+  assert(defined(invoker.sources),
+         "dart_fuchsia_test() requires 'sources' be defined")
+
   if (defined(invoker.source_dir)) {
     test_source_dir = invoker.source_dir
   } else {
@@ -81,10 +84,13 @@ template("dart_fuchsia_test") {
     outputs = [
       generated_test_main,
     ]
-    args = [
-      "--out=" + rebase_path(generated_test_main),
-      "--source-dir=" + rebase_path(test_source_dir),
-    ]
+    inputs = []
+    args = [ "--out=" + rebase_path(generated_test_main) ]
+    foreach(source, invoker.sources) {
+      source_path = "$test_source_dir/$source"
+      args += [ "--source=" + rebase_path(source_path) ]
+      inputs += [ source_path ]
+    }
   }
 
   if (!test_package_only) {

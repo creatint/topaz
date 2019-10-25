@@ -24,6 +24,9 @@ flutter_app("flutter_screencap_test_app") {
 }
 
 dart_fuchsia_test("flutter_screencap_test") {
+  sources = [
+    "flutter_screencap_test.dart",
+  ]
   meta = [
     {
       path = rebase_path("meta/flutter_screencap_test.cmx")

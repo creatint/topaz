@@ -40,6 +40,9 @@ flutter_app("driver_example_mod") {
 # device using fx run-test. The target application must be available on the
 # machine.
 dart_fuchsia_test("driver_example_mod_tests") {
+  sources = [
+    "driver_example_mod_test.dart",
+  ]
   deps = [
     "//sdk/fidl/fuchsia.sys",
     "//third_party/dart-pkg/git/flutter/packages/flutter_driver",

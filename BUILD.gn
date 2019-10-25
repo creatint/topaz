@@ -129,7 +129,6 @@ group("tests") {
     "//topaz/public/dart/fuchsia_services:fuchsia_services_package_integration_tests",
     "//topaz/public/dart/fuchsia_services:fuchsia_services_package_unittests($host_toolchain)",
     "//topaz/public/dart/fuchsia_vfs:fuchsia_vfs_package_unittests",
-    "//topaz/public/dart/fuchsia_webview_flutter:fuchsia_webview_flutter_target_tests",
     "//topaz/public/dart/fuchsia_webview_flutter:fuchsia_webview_flutter_unittests($host_toolchain)",
     "//topaz/public/dart/sledge:dart_sledge_tests($host_toolchain)",
     "//topaz/public/dart/sledge:sledge_integration_tests",

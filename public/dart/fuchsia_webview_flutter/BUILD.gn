@@ -52,27 +52,3 @@ flutter_test("fuchsia_webview_flutter_unittests") {
     "//topaz/public/lib/testing/flutter",
   ]
 }
-
-# fx run-test fuchsia_services_package_integration_tests
-dart_fuchsia_test("fuchsia_webview_flutter_target_tests") {
-  meta = [
-    {
-      path = rebase_path("meta/fuchsia_webview_flutter_target_tests.cmx")
-      dest = "fuchsia_webview_flutter_target_tests.cmx"
-    },
-  ]
-
-  source_dir = "fuchsia_test"
-
-  sources = [
-    "fuchsia_webview_target_tests.dart",
-  ]
-
-  deps = [
-    ":fuchsia_webview_flutter",
-    "//third_party/dart-pkg/git/flutter/packages/flutter_test",
-    "//third_party/dart-pkg/pub/test",
-  ]
-
-  environments = basic_envs
-}
