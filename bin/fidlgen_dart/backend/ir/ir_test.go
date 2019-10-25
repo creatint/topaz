@@ -7,8 +7,179 @@ package ir
 import (
 	"testing"
 
+	"github.com/google/go-cmp/cmp"
+
 	"fidl/compiler/backend/types"
 )
+
+func TestCompileXUnion(t *testing.T) {
+	cases := []struct {
+		name     string
+		input    types.XUnion
+		expected XUnion
+	}{
+		{
+			name: "SingleInt64",
+			input: types.XUnion{
+				Attributes: types.Attributes{
+					Attributes: []types.Attribute{
+						{
+							Name:  types.Identifier("Foo"),
+							Value: "Bar",
+						},
+					},
+				},
+				Name: types.EncodedCompoundIdentifier("Test"),
+				Members: []types.XUnionMember{
+					{
+						Reserved: true,
+						Ordinal:  0xbeefbabe,
+					},
+					{
+						Reserved:   false,
+						Attributes: types.Attributes{},
+						Ordinal:    0xdeadbeef,
+						Type: types.Type{
+							Kind:             types.PrimitiveType,
+							PrimitiveSubtype: types.Int64,
+						},
+						Name:         types.Identifier("i"),
+						Offset:       0,
+						MaxOutOfLine: 0,
+					},
+				},
+				Size:         24,
+				MaxHandles:   0,
+				MaxOutOfLine: 4294967295,
+				Strictness:   types.IsFlexible,
+			},
+			expected: XUnion{
+				Name:    "Test",
+				TagName: "TestTag",
+				Members: []XUnionMember{
+					{
+						Ordinal: 0xdeadbeef,
+						Type: Type{
+							Decl:          "int",
+							SyncDecl:      "int",
+							AsyncDecl:     "int",
+							typedDataDecl: "Int64List",
+							typeExpr:      "$fidl.Int64Type()",
+						},
+						Name:     "i",
+						CtorName: "I",
+						Tag:      "i",
+						OffsetOld:   0,
+						OffsetV1NoEE: 0,
+					},
+				},
+				TypeSymbol:    "kTest_Type",
+				TypeExpr:      "$fidl.XUnionType<Test>(\n  inlineSizeOld: 0,\n  inlineSizeV1NoEE: 0,\n  members: <int, $fidl.FidlType>{\n    3735928559: $fidl.Int64Type(),\n  },\n  ctor: Test._ctor,\n  nullable: false,\n  flexible: true,\n)",
+				OptTypeSymbol: "kTest_OptType",
+				OptTypeExpr:   "$fidl.XUnionType<Test>(\ninlineSizeOld: 0,\ninlineSizeV1NoEE: 0,\nmembers: <int, $fidl.FidlType>{\n    3735928559: $fidl.Int64Type(),\n  },\nctor: Test._ctor,\nnullable: true,\nflexible: true,\n)",
+				Strictness:    types.IsFlexible,
+			},
+		},
+	}
+	for _, ex := range cases {
+		t.Run(ex.name, func(t *testing.T) {
+			root := types.Root{
+				XUnions: []types.XUnion{ex.input},
+				DeclOrder: []types.EncodedCompoundIdentifier{
+					ex.input.Name,
+				},
+			}
+			result := Compile(root)
+			actual := result.XUnions[0]
+
+			if diff := cmp.Diff(ex.expected, actual, cmp.AllowUnexported(Type{})); diff != "" {
+				t.Errorf("expected != actual (-want +got)\n%s", diff)
+			}
+		})
+	}
+}
+
+func TestCompileUnion(t *testing.T) {
+	cases := []struct {
+		name     string
+		input    types.Union
+		expected Union
+	}{
+		{
+			name: "SingleInt64",
+			input: types.Union{
+				Attributes: types.Attributes{
+					Attributes: []types.Attribute{
+						{
+							Name:  types.Identifier("Foo"),
+							Value: "Bar",
+						},
+					},
+				},
+				Name: types.EncodedCompoundIdentifier("Test"),
+				Members: []types.UnionMember{
+					{
+						Reserved:      true,
+						XUnionOrdinal: 0xbeefbabe,
+					},
+					{
+						Reserved:      false,
+						Attributes:    types.Attributes{},
+						XUnionOrdinal: 0xdeadbeef,
+						Type: types.Type{
+							Kind:             types.PrimitiveType,
+							PrimitiveSubtype: types.Int64,
+						},
+						Name:         types.Identifier("i"),
+						Offset:       0,
+						MaxOutOfLine: 0,
+					},
+				},
+				Size:         24,
+				MaxHandles:   0,
+				MaxOutOfLine: 4294967295,
+			},
+			expected: Union{
+				Name:    "Test",
+				TagName: "TestTag",
+				Members: []UnionMember{
+					{
+						Type: Type{
+							Decl:          "int",
+							SyncDecl:      "int",
+							AsyncDecl:     "int",
+							typedDataDecl: "Int64List",
+							typeExpr:      "$fidl.Int64Type()",
+						},
+						Name:          "i",
+						XUnionOrdinal: 0xdeadbeef,
+						CtorName:      "I",
+						Tag:           "i",
+						typeExpr:      "$fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 0, offsetV1NoEE: 0)",
+					},
+				},
+				TypeSymbol: "kTest_Type",
+				TypeExpr:   "$fidl.UnionType<Test>(\n  inlineSizeOld: 0,\n  inlineSizeV1NoEE: 0,\n  members: <$fidl.MemberType>[\n    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 0, offsetV1NoEE: 0),\n  ],\n  ctor: Test._ctor,\n  ordinalToIndex: <int, int>{\n    3735928559: 0,\n  },\n)",
+			},
+		},
+	}
+	for _, ex := range cases {
+		t.Run(ex.name, func(t *testing.T) {
+			root := types.Root{
+				Unions: []types.Union{ex.input},
+				DeclOrder: []types.EncodedCompoundIdentifier{
+					ex.input.Name,
+				},
+			}
+			result := Compile(root)
+			actual := result.Unions[0]
+
+			if diff := cmp.Diff(ex.expected, actual, cmp.AllowUnexported(UnionMember{}, Type{})); diff != "" {
+				t.Errorf("expected != actual (-want +got)\n%s", diff)
+			}
+		})
+	}
+}
 
 func makeLiteralConstant(value string) types.Constant {
 	return types.Constant{

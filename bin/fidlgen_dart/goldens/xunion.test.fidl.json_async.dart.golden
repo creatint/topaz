@@ -530,6 +530,104 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_OptType =
   flexible: false,
 );
 
+enum ExplicitXUnionTag {
+  $unknown,
+  i, // 0x1
+  f, // 0x4
+}
+
+const Map<int, ExplicitXUnionTag> _ExplicitXUnionTag_map = {
+  1: ExplicitXUnionTag.i,
+  4: ExplicitXUnionTag.f,
+};
+
+class ExplicitXUnion extends $fidl.XUnion {
+  const ExplicitXUnion.withI(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  const ExplicitXUnion.withF(double value)
+      : _ordinal = 4,
+        _data = value;
+
+  ExplicitXUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  ExplicitXUnionTag get $tag {
+    final ExplicitXUnionTag $rawtag = _ExplicitXUnionTag_map[_ordinal];
+    return $rawtag == null ? ExplicitXUnionTag.$unknown : $rawtag;
+  }
+
+  int get i {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  double get f {
+    if (_ordinal != 4) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'ExplicitXUnion.i($i)';
+      case 4:
+        return 'ExplicitXUnion.f($f)';
+      default:
+        return 'ExplicitXUnion.<UNKNOWN>';
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static ExplicitXUnion _ctor(int ordinal, Object data) {
+    return ExplicitXUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_Type =
+    $fidl.XUnionType<ExplicitXUnion>(
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int64Type(),
+    4: $fidl.Float32Type(),
+  },
+  ctor: ExplicitXUnion._ctor,
+  nullable: false,
+  flexible: true,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_OptType =
+    $fidl.XUnionType<ExplicitXUnion>(
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int64Type(),
+    4: $fidl.Float32Type(),
+  },
+  ctor: ExplicitXUnion._ctor,
+  nullable: true,
+  flexible: true,
+);
+
 class Empty extends $fidl.Struct {
   const Empty({
     this.reserved: 0x0,

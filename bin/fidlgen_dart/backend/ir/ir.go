@@ -1171,6 +1171,9 @@ func (c *compiler) compileUnion(val types.Union) Union {
 	}
 
 	for _, v := range val.Members {
+		if v.Reserved {
+			continue
+		}
 		r.Members = append(r.Members, c.compileUnionMember(v))
 	}
 
@@ -1187,6 +1190,9 @@ func (c *compiler) compileUnion(val types.Union) Union {
 func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 	var members []XUnionMember
 	for _, member := range val.Members {
+		if member.Reserved {
+			continue
+		}
 		memberType := c.compileType(member.Type)
 		members = append(members, XUnionMember{
 			Ordinal:      member.Ordinal,

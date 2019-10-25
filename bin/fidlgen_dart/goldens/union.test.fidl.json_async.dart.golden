@@ -202,5 +202,87 @@ const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
   },
 );
 
+enum ExplicitUnionTag {
+  primitive,
+  stringNeedsConstructor,
+}
+
+class ExplicitUnion extends $fidl.Union {
+  const ExplicitUnion.withPrimitive(int value)
+      : _data = value,
+        _tag = ExplicitUnionTag.primitive;
+
+  const ExplicitUnion.withStringNeedsConstructor(String value)
+      : _data = value,
+        _tag = ExplicitUnionTag.stringNeedsConstructor;
+
+  ExplicitUnion._(ExplicitUnionTag tag, Object data)
+      : _tag = tag,
+        _data = data;
+
+  final ExplicitUnionTag _tag;
+  final _data;
+  int get primitive {
+    if (_tag != ExplicitUnionTag.primitive) {
+      return null;
+    }
+    return _data;
+  }
+
+  String get stringNeedsConstructor {
+    if (_tag != ExplicitUnionTag.stringNeedsConstructor) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_tag) {
+      case ExplicitUnionTag.primitive:
+        return r'ExplicitUnion.primitive($primitive)';
+      case ExplicitUnionTag.stringNeedsConstructor:
+        return r'ExplicitUnion.stringNeedsConstructor($stringNeedsConstructor)';
+      default:
+        return null;
+    }
+  }
+
+  ExplicitUnionTag get $tag => _tag;
+  // TODO: remove, see: FIDL-587
+  ExplicitUnionTag get tag => _tag;
+
+  @override
+  int get $index => _tag.index;
+
+  @override
+  Object get $data => _data;
+
+  static ExplicitUnion _ctor(int index, Object data) {
+    return ExplicitUnion._(ExplicitUnionTag.values[index], data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.UnionType<ExplicitUnion> kExplicitUnion_Type =
+    $fidl.UnionType<ExplicitUnion>(
+  inlineSizeOld: 24,
+  inlineSizeV1NoEE: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
+        offsetOld: 8,
+        offsetV1NoEE: 8),
+  ],
+  ctor: ExplicitUnion._ctor,
+  ordinalToIndex: <int, int>{
+    1: 0,
+    3: 1,
+  },
+);
+
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();
