@@ -69,5 +69,5 @@ void main() {
       await driver.waitFor(find.byValueKey('fib-result-widget-key'));
       print('test is finished successfully');
     });
-  });
+  }, skip: 'disabled due to flake. See (34885) for more information');
 }
