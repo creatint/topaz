@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+# Copyright 2018 The Fuchsia Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import argparse
+import json
+import os
+import shutil
+import sys
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description='List the sources for the "sky_engine" dart library.')
+    parser.add_argument(
+        '--sky_engine_framework',
+        help='Path to the "sky_engine" directory in the framework.',
+        required=True)
+    parser.add_argument(
+        '--out_dir',
+        help='Path that the "sky_engine" sources should be copied to.',
+        required=True)
+    parser.add_argument(
+        '--dry_run', dest='dry_run', action='store_true', default=False)
+    args = parser.parse_args()
+
+    source_dir = args.sky_engine_framework
+    assert os.path.exists(source_dir)
+    dry_run = args.dry_run
+
+    out_dir = args.out_dir
+    out_dir = os.path.join(out_dir, 'dart-pkg', 'sky_engine')
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+    else:
+        # Clean the outdir if it already exists.
+        if not dry_run:
+            shutil.rmtree(out_dir)
+
+    sky_engine_sources = [
+        os.path.join(dir_path, filename)
+        for dir_path, dir_name, filenames in os.walk(source_dir)
+        for filename in filenames
+    ]
+
+    out_paths = []
+    for source in sky_engine_sources:
+        src_rel_path = os.path.relpath(source, source_dir)
+        out_path = os.path.normpath(
+            os.path.join('dart-pkg', 'sky_engine', src_rel_path))
+        out_paths.append(out_path)
+        if not dry_run:
+            shutil.copy2(source, out_path)
+
+    res = {}
+    res['sources'] = sky_engine_sources
+    res['outputs'] = out_paths
+
+    print(json.dumps(res))
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

@@ -1,0 +1,46 @@
+# Copyright 2016 The Chromium Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+assert(is_fuchsia || is_fuchsia_host)
+
+import("//build/dart/dart_library.gni")
+
+action("sky_engine_sources") {
+  script = "copy_sky_engine_sources.py"
+
+  _args = [
+    "--sky_engine_framework",
+    rebase_path("//third_party/dart-pkg/git/flutter/bin/cache/pkg/sky_engine"),
+    "--out_dir",
+    rebase_path(root_gen_dir),
+  ]
+
+  _sources_and_outputs = exec_script(script, _args + [ "--dry_run" ], "json")
+
+  sources = _sources_and_outputs.sources
+
+  _outputs = _sources_and_outputs.outputs
+  outputs = []
+  foreach(_output, _outputs) {
+    outputs += [ "${root_gen_dir}/${_output}" ]
+  }
+
+  args = _args
+}
+
+dart_library("sky_engine_dart") {
+  package_name = "sky_engine"
+
+  package_root = "$root_gen_dir/dart-pkg/sky_engine"
+
+  sources = []
+
+  disable_analysis = true
+
+  non_dart_deps = [
+    # This will ensure all the source files needed for this package are
+    # copied to the right location.
+    ":sky_engine_sources",
+  ]
+}
