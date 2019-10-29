@@ -37,7 +37,7 @@ import 'package:flutter_driver/driver_extension.dart';
   outfile.write("import '%s' as flutter_app_main;\n" % args.main_dart)
   outfile.write('''
 void main() async {
-  assert(await (() async {
+  assert((()  {
     // TODO(awdavies): Use the logger instead.
     print('Overriding app main method because flutter_driver_extendable '
         'is enabled in the build file');
