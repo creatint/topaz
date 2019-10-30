@@ -37,7 +37,7 @@ killall flutter* || true
 killall set_root_view* || true
 
 echo "== $BENCHMARK_LABEL: Starting app..."
- /bin/run -d fuchsia-pkg://fuchsia.com/basemgr#meta/basemgr.cmx \
+ /bin/run -d fuchsia-pkg://fuchsia.com/basemgr_launcher#meta/basemgr_launcher.cmx \
    --base_shell=fuchsia-pkg://fuchsia.com/button_flutter#meta/button_flutter.cmx
 
 # Wait for button_flutter to start.
