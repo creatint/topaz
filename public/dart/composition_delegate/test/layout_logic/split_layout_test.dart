@@ -8,8 +8,8 @@ import 'package:test/test.dart';
 void main() {
   CompositionDelegate setupCompositionDelegate() {
     CompositionDelegate compDelegate = CompositionDelegate(
-        layoutContext:
-            LayoutContext(size: Size(1280, 800), minSurfaceWidth: 320))
+        layoutContext: LayoutContext(
+            size: Size(1280, 800), minSurfaceWidth: 320, minSurfaceHeight: 320))
       ..setLayoutStrategy(
           layoutStrategy: layoutStrategyType.splitEvenlyStrategy);
     return compDelegate;

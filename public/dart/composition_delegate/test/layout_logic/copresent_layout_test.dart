@@ -4,9 +4,23 @@ import 'package:test/test.dart';
 void main() {
   CompositionDelegate setupCompositionDelegate() {
     CompositionDelegate compDelegate = CompositionDelegate(
-        layoutContext:
-            LayoutContext(size: Size(1280, 800), minSurfaceWidth: 320))
-      ..setLayoutStrategy(layoutStrategy: layoutStrategyType.copresentStrategy);
+      layoutContext: LayoutContext(
+        size: Size(1280, 800),
+        minSurfaceWidth: 320,
+        minSurfaceHeight: 320,
+      ),
+    )..setLayoutStrategy(layoutStrategy: layoutStrategyType.copresentStrategy);
+    return compDelegate;
+  }
+
+  CompositionDelegate setupCompositionDelegatePortrait() {
+    CompositionDelegate compDelegate = CompositionDelegate(
+      layoutContext: LayoutContext(
+        size: Size(256, 800),
+        minSurfaceWidth: 100,
+        minSurfaceHeight: 100,
+      ),
+    )..setLayoutStrategy(layoutStrategy: layoutStrategyType.copresentStrategy);
     return compDelegate;
   }
 
@@ -57,7 +71,7 @@ void main() {
         expect(compDelegate.getLayout(), equals(expectedLayout));
       });
 
-      test('For two Surfaces with co-present is split-screen', () {
+      test('For two Surfaces with co-present is split-screen (landscape)', () {
         CompositionDelegate compDelegate = setupCompositionDelegate();
 
         Layer expectedUpper = Layer.fromList(
@@ -82,6 +96,99 @@ void main() {
                 SurfaceRelation(arrangement: SurfaceArrangement.copresent),
           )
           ..focusSurface(surfaceId: 'second');
+        expect(compDelegate.getLayout(), equals(expectedLayout));
+      });
+
+      test(
+          'For two Surfaces with co-present is vertical split-screen (portrait)',
+          () {
+        CompositionDelegate compDelegate = setupCompositionDelegatePortrait();
+
+        Layer expectedUpper = Layer.fromList(
+          elements: [
+            SurfaceLayout(
+              x: 0.0,
+              y: 0.0,
+              w: compDelegate.layoutContext.size.width,
+              h: compDelegate.layoutContext.size.height / 2.0,
+              surfaceId: 'first',
+            ),
+            SurfaceLayout(
+              x: 0.0,
+              y: compDelegate.layoutContext.size.height / 2.0,
+              w: compDelegate.layoutContext.size.width,
+              h: compDelegate.layoutContext.size.height / 2.0,
+              surfaceId: 'second',
+            ),
+          ],
+        );
+        // expect a List of two Layers, with one SurfaceLayout in each
+        List<Layer> expectedLayout = [expectedUpper];
+        // This test relies on the surface being focused in the correct order as the focus list is
+        // maintained separaretly from what has been added to the tree.
+        compDelegate
+          ..addSurface(surface: Surface(surfaceId: 'first'))
+          ..focusSurface(surfaceId: 'first')
+          ..addSurface(
+            surface: Surface(surfaceId: 'second'),
+            parentId: 'first',
+            relation:
+                SurfaceRelation(arrangement: SurfaceArrangement.copresent),
+          )
+          ..focusSurface(surfaceId: 'second');
+        expect(compDelegate.getLayout(), equals(expectedLayout));
+      });
+
+      test('For three Surfaces with co-present is vertical stack (portrait)',
+          () {
+        CompositionDelegate compDelegate = setupCompositionDelegatePortrait();
+
+        Layer expectedUpper = Layer.fromList(
+          elements: [
+            SurfaceLayout(
+              x: 0.0,
+              y: 0.0,
+              w: compDelegate.layoutContext.size.width,
+              h: compDelegate.layoutContext.size.height / 3.0,
+              surfaceId: 'first',
+            ),
+            SurfaceLayout(
+              x: 0.0,
+              y: compDelegate.layoutContext.size.height / 3.0,
+              w: compDelegate.layoutContext.size.width,
+              h: compDelegate.layoutContext.size.height / 3.0,
+              surfaceId: 'second',
+            ),
+            SurfaceLayout(
+              x: 0.0,
+              y: compDelegate.layoutContext.size.height / 3.0 * 2,
+              w: compDelegate.layoutContext.size.width,
+              h: compDelegate.layoutContext.size.height / 3.0,
+              surfaceId: 'third',
+            ),
+          ],
+        );
+        // expect a List of two Layers, with one SurfaceLayout in each
+        List<Layer> expectedLayout = [expectedUpper];
+        // This test relies on the surface being focused in the correct order as the focus list is
+        // maintained separaretly from what has been added to the tree.
+        compDelegate
+          ..addSurface(surface: Surface(surfaceId: 'first'))
+          ..focusSurface(surfaceId: 'first')
+          ..addSurface(
+            surface: Surface(surfaceId: 'second'),
+            parentId: 'first',
+            relation:
+                SurfaceRelation(arrangement: SurfaceArrangement.copresent),
+          )
+          ..focusSurface(surfaceId: 'second')
+          ..addSurface(
+            surface: Surface(surfaceId: 'third'),
+            parentId: 'second',
+            relation:
+                SurfaceRelation(arrangement: SurfaceArrangement.copresent),
+          )
+          ..focusSurface(surfaceId: 'third');
         expect(compDelegate.getLayout(), equals(expectedLayout));
       });
 

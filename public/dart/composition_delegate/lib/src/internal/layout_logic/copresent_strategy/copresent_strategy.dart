@@ -11,25 +11,6 @@ import 'package:composition_delegate/src/internal/tree/_surface_node.dart';
 /// Strategy for splitting the space according to the co-presentation
 /// determination between adjacent Surfaces, and their Surface order
 class CopresentStrategy extends LayoutStrategy {
-  /// The snapshot of ordered set of focused Surfaces in the Story provided to
-  /// the layout strategy
-  LinkedHashSet focusedSurfaces;
-
-  /// The snapshot of the set of hidden Surfaces in the Story provided to the
-  /// layout strategy
-  Set<String> hiddenSurfaces;
-
-  /// The snapshot of the current layoutContext e.g. viewport size provided to
-  /// the layout strategy
-  LayoutContext layoutContext;
-
-  /// The previously determined layout (not necessarily by this strategy)
-  List<Layer> previousLayout;
-
-  /// The snapshot of the surface tree describing relationships between
-  /// surfaces in the story.
-  SurfaceTree surfaceTree;
-
   /// Split a List of <T> into List of Lists of <T> of [chunkSize], working from
   /// the back of the list. (Newly focused surfaces are pushed to the end of the
   /// list)
@@ -46,13 +27,17 @@ class CopresentStrategy extends LayoutStrategy {
   /// Returns the layout for copresent strategy given the current context. The
   /// co-present strategy tries to layout Surfaces that have co-present
   /// relationship
+  ///
+  /// [grouping] is the optional parameter that dictates what should happen
+  /// if the Surfaces cannot all fit in the space provided.
   @override
-  List<Layer> getLayout(
-      {LinkedHashSet<String> focusedSurfaces,
-      Set<String> hiddenSurfaces,
-      LayoutContext layoutContext,
-      List<Layer> previousLayout,
-      SurfaceTree surfaceTree}) {
+  List<Layer> getLayout({
+    LinkedHashSet<String> focusedSurfaces,
+    Set<String> hiddenSurfaces,
+    LayoutContext layoutContext,
+    List<Layer> previousLayout,
+    SurfaceTree surfaceTree,
+  }) {
     // Get the groups of Surfaces that we should try to lay out together
     List<List<String>> layoutGroups = _getLayoutGroups(
         focusedSurfaces: focusedSurfaces, surfaceTree: surfaceTree);
@@ -68,7 +53,7 @@ class CopresentStrategy extends LayoutStrategy {
                 layoutContext: layoutContext, surfaceId: layoutGroup.first),
           ),
         );
-      } else {
+      } else if (layoutContext.size.width >= layoutContext.size.height) {
         // TODO (djmurphy): add or deprecate emphasis
         // In a naive left-to-right co-present layout, horizontally
         int maxSurfacesPerLayer =
@@ -95,6 +80,40 @@ class CopresentStrategy extends LayoutStrategy {
                           y: 0.0,
                           w: width,
                           h: layoutContext.size.height,
+                          surfaceId: value),
+                    ),
+                  )
+                  .values
+                  .toList(),
+            ),
+          );
+        }
+      } else {
+        // In a naive top-to-bottom co-present layout, vertically
+        int maxSurfacesPerLayer =
+            layoutContext.size.height ~/ layoutContext.minSurfaceHeight;
+        // Chop the layoutGroup into sets that will fit in a layer, starting
+        // from the most focused (at the end of the list) of Surfaces to be laid
+        // out.
+        List<List<String>> layerLists = _chunkRightToLeft(
+            list: layoutGroup, chunkSize: maxSurfacesPerLayer);
+        // And turn those into layers of SurfaceLayouts
+        for (List<String> layerList in layerLists) {
+          // TODO (djmurphy): add emphasis
+          double height = max(layoutContext.size.height / layerList.length,
+              layoutContext.minSurfaceHeight);
+          layout.add(
+            Layer.fromList(
+              elements: layerList
+                  .asMap()
+                  .map(
+                    (index, value) => MapEntry(
+                      index,
+                      SurfaceLayout(
+                          x: 0.0,
+                          y: index * height,
+                          w: layoutContext.size.width,
+                          h: height,
                           surfaceId: value),
                     ),
                   )

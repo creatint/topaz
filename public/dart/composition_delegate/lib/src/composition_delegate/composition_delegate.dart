@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:collection';
+import 'package:composition_delegate/src/internal/layout_logic/archetype_strategy/archetype_strategy.dart';
 import 'package:composition_delegate/src/internal/layout_logic/copresent_strategy/copresent_strategy.dart';
 import 'package:meta/meta.dart';
 
@@ -36,8 +37,11 @@ class CompositionDelegate {
 
   /// The default LayoutContext: resolution of 1280 x 800 units and 320 minimum
   /// width for Surfaces.
-  static const LayoutContext defaultContext =
-      LayoutContext(size: Size(1280, 800), minSurfaceWidth: 320);
+  static const LayoutContext defaultContext = LayoutContext(
+    size: Size(1280, 800),
+    minSurfaceWidth: 320,
+    minSurfaceHeight: 320,
+  );
 
   /// Keep instances of layout strategies around to avoid re-instantiating
   final Map<layoutStrategyType, LayoutStrategy> _strategyEngines = {};
@@ -121,6 +125,9 @@ class CompositionDelegate {
           break;
         case layoutStrategyType.copresentStrategy:
           _strategyEngines[layoutStrategy] = CopresentStrategy();
+          break;
+        case layoutStrategyType.archetypeStrategy:
+          _strategyEngines[layoutStrategy] = ArchetypeStrategy();
           break;
       }
     }

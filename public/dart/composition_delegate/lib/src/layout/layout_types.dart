@@ -3,14 +3,27 @@
 // found in the LICENSE file.
 
 import 'dart:collection' show ListBase;
+import 'package:collection/collection.dart' show ListEquality;
 import 'package:meta/meta.dart';
 import 'package:quiver/core.dart';
+
+/// An offset to use when modifying
+class Offset {
+  /// The x offset
+  final double dx;
+
+  /// The y offset
+  final double dy;
+
+  /// Constructor
+  Offset(this.dx, this.dy);
+}
 
 /// Generic class for layout elements: provides the box coordinates of
 /// viewport position and the element to place at that position.
 abstract class LayoutElement<T> {
   /// Box layout for this Element
-  final double x, y, w, h;
+  double x, y, w, h;
 
   /// The element positioned at this location
   final T element;
@@ -34,6 +47,12 @@ abstract class LayoutElement<T> {
   int get hashCode {
     return hash4(
         (w - x).hashCode, (h - y).hashCode, (x * y).hashCode, element.hashCode);
+  }
+
+  /// Offset this LayoutElement
+  void offset(Offset offset) {
+    x += offset.dx;
+    y += offset.dy;
   }
 }
 
@@ -74,6 +93,13 @@ class Layer<LayoutElement> extends ListBase<LayoutElement> {
 
   @override
   void addAll(Iterable<LayoutElement> all) => _innerList.addAll(all);
+
+  /// Offset the elements in this Layer by [offset]
+  void offset(Offset offset) {
+    for (dynamic ele in _innerList) {
+      ele.offset(offset);
+    }
+  }
 }
 
 /// Convenience class for placing a single Surface at a coordinate and size on
@@ -148,6 +174,76 @@ class StackLayout extends LayoutElement {
   String toString() {
     return toJson().toString();
   }
+
+  /// Override comparator so LayoutElements with the same values evaluate to
+  /// equal.
+  @override
+  bool operator ==(dynamic other) =>
+      other is LayoutElement &&
+      x == other.x &&
+      y == other.y &&
+      w == other.w &&
+      h == other.h &&
+      ListEquality().equals(element, other.element);
+
+  /// get hashCode
+  @override
+  int get hashCode {
+    return hash4(
+        (w - x).hashCode, (h - y).hashCode, (x * y).hashCode, element.hashCode);
+  }
+}
+
+/// Convenience class for describing a toggleable collection of [Surface]
+/// elements at a coordinate and size on screen. The box dimensions of the
+/// [ToggleLayout] defines the total area assigned to the container, including
+/// any chrome for toggling (like tabs) the Presenter may want to implement
+class ToggleableLayout extends LayoutElement {
+  /// Constructor
+  ToggleableLayout(
+      {double x, double y, double w, double h, List<String> toggleStack})
+      : super(x: x, y: y, w: w, h: h, element: toggleStack);
+
+  /// Export to JSON
+  Map<String, dynamic> toJson() => {
+        'x': x,
+        'y': y,
+        'w': w,
+        'h': h,
+        'toggleStack': element,
+      };
+
+  /// Decode from JSON
+  ToggleableLayout.fromJson(Map<String, dynamic> json)
+      : super(
+            x: json['x'],
+            y: json['y'],
+            w: json['w'],
+            h: json['h'],
+            element: json['toggleStack']);
+
+  @override
+  String toString() {
+    return toJson().toString();
+  }
+
+  /// Override comparator so LayoutElements with the same values evaluate to
+  /// equal.
+  @override
+  bool operator ==(dynamic other) =>
+      other is LayoutElement &&
+      x == other.x &&
+      y == other.y &&
+      w == other.w &&
+      h == other.h &&
+      ListEquality().equals(element, other.element);
+
+  /// get hashCode
+  @override
+  int get hashCode {
+    return hash4(
+        (w - x).hashCode, (h - y).hashCode, (x * y).hashCode, element.hashCode);
+  }
 }
 
 /// The context in which the CompositionDelegate determines layout
@@ -158,8 +254,15 @@ class LayoutContext {
   /// The acceptable minimum width of a Surface in this context
   final double minSurfaceWidth;
 
+  /// The acceptable minimum height of a Surface in this context
+  final double minSurfaceHeight;
+
   /// Constructor
-  const LayoutContext({@required this.size, @required this.minSurfaceWidth});
+  const LayoutContext({
+    @required this.size,
+    @required this.minSurfaceWidth,
+    @required this.minSurfaceHeight,
+  });
 }
 
 /// Simple class for capturing 2D size of boxes in layout.
@@ -195,4 +298,8 @@ enum layoutStrategyType {
   /// starting with the most focused surface.
   /// Logic in copresent_strategy/copresent_strategy.dart
   copresentStrategy,
+
+  /// A strategy that finds collections of Surfaces claiming to participate in
+  /// the same 'archetype', and lays them out according to their roles
+  archetypeStrategy,
 }
