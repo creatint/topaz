@@ -320,7 +320,8 @@ if (current_toolchain == dart_toolchain) {
       test_spec(_spec_target_name) {
         testonly = true
         name = _main_target_name
-        install_path = _invocation_file
+        target = _main_target_name
+        path = _invocation_file
 
         deps = [
           ":$_main_target_name($dart_toolchain)",

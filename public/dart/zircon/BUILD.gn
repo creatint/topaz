@@ -73,7 +73,8 @@ if (is_linux || is_mac) {
   _test = "$root_out_dir/test_extract_zircon_constants"
   test_spec("test_extract_zircon_constants_spec") {
     name = "test_extract_zircon_constants"
-    install_path = _test
+    target = _test
+    path = _test
 
     deps = [
       ":extract_zircon_constants_data",
