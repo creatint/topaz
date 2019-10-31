@@ -64,8 +64,18 @@ dart_fuchsia_test("driver_example_mod_tests") {
   # release CI/CQ.
   if (is_debug) {
     environments += [
-      nuc_env,
-      vim2_env,
+      {
+        dimensions = {
+          device_type = "Intel NUC Kit NUC7i5DNHE"
+        }
+        tags = [ "flaky" ]  # fxb/38260
+      },
+      {
+        dimensions = {
+          device_type = "Khadas Vim2 Max"
+        }
+        tags = [ "flaky" ]  # fxb/38260
+      },
     ]
   }
 }
