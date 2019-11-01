@@ -21,6 +21,7 @@ shas are provided for reference only. Code can be checked out with:
 * topaz/app/image: 5e731a943a907cf960ecfbda1c391958f9093afa
 * topaz/app/link_viewer: 00fe1236c6851da5d54c625a8293561bb617804c
 * topaz/app/video: fc03877f787fc119140b900d476c4563bd04a529
+* topaz/app/spinning_cube: [d51f6cdd4](https://fuchsia.googlesource.com/topaz/+/d51f6cdd4)
 * topaz/bin/repl: fc25fb9b825f4100b316c4d5135156ef05e0dc4b
 * topaz/examples/bluetooth: f4287c5ae0e9b099983121b41be66e1994b83a02
 * topaz/examples/tictactoe: 07fd955f4

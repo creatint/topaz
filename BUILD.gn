@@ -14,7 +14,6 @@ group("topaz") {
     "//third_party/dart-pkg/git/flutter/examples/flutter_gallery",
     "//topaz:tests",
     "//topaz/app/latin-ime",
-    "//topaz/app/spinning_cube",
     "//topaz/bin/fidlgen_dart:install(//build/toolchain:host_x64)",
     "//topaz/bin/system_dashboard",
     "//topaz/examples/fidl/compiler",
