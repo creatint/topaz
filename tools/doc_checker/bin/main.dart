@@ -22,7 +22,10 @@ const String _optionDotFile = 'dot-file';
 const String _optionLocalLinksOnly = 'local-links-only';
 
 // The fuchsia Gerrit host.
-const String _fuchsiaHost = 'fuchsia.googlesource.com';
+const String _fuchsiaGerritHost = 'fuchsia.googlesource.com';
+
+// Fuchsia.dev
+const String _publishedDocsHost = 'fuchsia.dev';
 
 // Different ways of pointing to the master branch of a project in a Gerrit
 // link.
@@ -30,6 +33,14 @@ const List<String> _masterSynonyms = ['master', 'refs/heads/master', 'HEAD'];
 
 // Documentation subdirectory to inspect.
 const String _docsDir = 'docs';
+
+// Files that are allowed to link to the documentation host site.
+const List<String> _filesAllowedToLinkToPublishedDocs = ['navbar.md'];
+
+// Top level paths to the published doc site that any page can link to.
+// Links to other locations have to be allowed by adding the source doc
+// page to _filesAllowedToLinkToPublishedDocs.
+const List<String> _publishedLinksAllowed = ['', 'reference'];
 
 void reportError(Error error) {
   String errorToString(ErrorType type) {
@@ -147,13 +158,31 @@ Future<Null> main(List<String> args) async {
         if (uri.scheme != 'http' && uri.scheme != 'https') {
           continue;
         }
-        final bool onFuchsiaHost = uri.authority == _fuchsiaHost;
+        final bool linkToFuchsiaGerritHost =
+            uri.authority == _fuchsiaGerritHost;
+        final bool linkToPublishedDocsHost =
+            uri.authority == _publishedDocsHost;
         final String project =
             uri.pathSegments.isEmpty ? '' : uri.pathSegments[0];
-        if (onFuchsiaHost && onGerritMaster(uri) && project == docsProject) {
-          errors.add(Error(ErrorType.convertHttpToPath, label, uri.toString()));
-        } else if (onFuchsiaHost && !validProjects.contains(project)) {
-          errors.add(Error(ErrorType.obsoleteProject, label, uri.toString()));
+
+        // Check links back to the gerrit host server.
+        if (linkToFuchsiaGerritHost) {
+          if (onGerritMaster(uri) && project == docsProject) {
+            errors
+                .add(Error(ErrorType.convertHttpToPath, label, uri.toString()));
+          } else if (!validProjects.contains(project)) {
+            errors.add(Error(ErrorType.obsoleteProject, label, uri.toString()));
+          }
+        }
+
+        // Check links to the published docs server.
+        if (linkToPublishedDocsHost &&
+            !_publishedLinksAllowed.contains(project)) {
+          if (!_filesAllowedToLinkToPublishedDocs
+              .contains(path.basename(label))) {
+            errors
+                .add(Error(ErrorType.convertHttpToPath, label, uri.toString()));
+          }
         } else {
           outOfTreeLinks.add(Link(uri, label));
         }
