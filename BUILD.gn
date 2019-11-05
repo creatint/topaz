@@ -62,6 +62,7 @@ group("tests") {
   public_deps = [
     # TODO: This target should just aggregate the top-level directories and
     # most of these dependencies should be in those subdirectories.
+    "//garnet/examples/ui:tile_view",
     "//garnet/packages/tests:fidl_compatibility_test_server_cpp",
     "//garnet/packages/tests:fidl_compatibility_test_server_go",
     "//garnet/packages/tests:fidl_compatibility_test_server_llcpp",
