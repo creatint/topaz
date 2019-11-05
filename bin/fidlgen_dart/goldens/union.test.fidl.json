@@ -19,7 +19,7 @@
       },
       "members": [
         {
-          "xunion_ordinal": 910042901,
+          "xunion_ordinal": 1,
           "reserved": false,
           "name": "Primitive",
           "type": {
@@ -37,7 +37,7 @@
           "offset": 8
         },
         {
-          "xunion_ordinal": 891204917,
+          "xunion_ordinal": 2,
           "reserved": false,
           "name": "StringNeedsConstructor",
           "type": {
@@ -55,7 +55,7 @@
           "offset": 8
         },
         {
-          "xunion_ordinal": 1452916587,
+          "xunion_ordinal": 3,
           "reserved": false,
           "name": "VectorStringAlsoNeedsConstructor",
           "type": {
@@ -88,7 +88,18 @@
         "max_handles": 0,
         "max_out_of_line": 4294967295,
         "has_padding": true,
-        "has_flexible_envelope": false
+        "has_flexible_envelope": false,
+        "contains_union": true
+      },
+      "type_shape_v1": {
+        "inline_size": 24,
+        "alignment": 8,
+        "depth": 3,
+        "max_handles": 0,
+        "max_out_of_line": 4294967295,
+        "has_padding": true,
+        "has_flexible_envelope": false,
+        "contains_union": true
       },
       "type_shape_v1_no_ee": {
         "inline_size": 24,
@@ -97,7 +108,8 @@
         "max_handles": 0,
         "max_out_of_line": 4294967295,
         "has_padding": true,
-        "has_flexible_envelope": false
+        "has_flexible_envelope": false,
+        "contains_union": true
       }
     },
     {
@@ -109,7 +121,7 @@
       },
       "members": [
         {
-          "xunion_ordinal": 1574011787,
+          "xunion_ordinal": 1,
           "reserved": false,
           "name": "field_collision_tag",
           "type": {
@@ -138,7 +150,18 @@
         "max_handles": 0,
         "max_out_of_line": 0,
         "has_padding": false,
-        "has_flexible_envelope": false
+        "has_flexible_envelope": false,
+        "contains_union": true
+      },
+      "type_shape_v1": {
+        "inline_size": 24,
+        "alignment": 8,
+        "depth": 1,
+        "max_handles": 0,
+        "max_out_of_line": 8,
+        "has_padding": true,
+        "has_flexible_envelope": false,
+        "contains_union": true
       },
       "type_shape_v1_no_ee": {
         "inline_size": 24,
@@ -147,7 +170,8 @@
         "max_handles": 0,
         "max_out_of_line": 8,
         "has_padding": true,
-        "has_flexible_envelope": false
+        "has_flexible_envelope": false,
+        "contains_union": true
       }
     },
     {
@@ -158,15 +182,6 @@
         "column": 7
       },
       "members": [
-        {
-          "xunion_ordinal": 2,
-          "reserved": true,
-          "location": {
-            "filename": "garnet/go/src/fidl/compiler/backend/typestest/union.test.fidl",
-            "line": 14,
-            "column": 5
-          }
-        },
         {
           "xunion_ordinal": 1,
           "reserved": false,
@@ -215,7 +230,18 @@
         "max_handles": 0,
         "max_out_of_line": 4294967295,
         "has_padding": true,
-        "has_flexible_envelope": false
+        "has_flexible_envelope": false,
+        "contains_union": true
+      },
+      "type_shape_v1": {
+        "inline_size": 24,
+        "alignment": 8,
+        "depth": 2,
+        "max_handles": 0,
+        "max_out_of_line": 4294967295,
+        "has_padding": true,
+        "has_flexible_envelope": false,
+        "contains_union": true
       },
       "type_shape_v1_no_ee": {
         "inline_size": 24,
@@ -224,7 +250,8 @@
         "max_handles": 0,
         "max_out_of_line": 4294967295,
         "has_padding": true,
-        "has_flexible_envelope": false
+        "has_flexible_envelope": false,
+        "contains_union": true
       }
     }
   ],

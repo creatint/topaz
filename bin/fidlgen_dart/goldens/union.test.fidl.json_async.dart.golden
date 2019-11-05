@@ -133,9 +133,9 @@ const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   ],
   ctor: Union._ctor,
   ordinalToIndex: <int, int>{
-    910042901: 0,
-    891204917: 1,
-    1452916587: 2,
+    1: 0,
+    2: 1,
+    3: 2,
   },
 );
 
@@ -198,7 +198,7 @@ const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
   ],
   ctor: FieldCollision._ctor,
   ordinalToIndex: <int, int>{
-    1574011787: 0,
+    1: 0,
   },
 );
 

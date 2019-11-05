@@ -106,7 +106,7 @@ const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   ],
   ctor: Union._ctor,
   ordinalToIndex: <int, int>{
-    1868605377: 0,
+    1: 0,
   },
 );
 

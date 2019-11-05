@@ -95,7 +95,7 @@ const $fidl.UnionType<UnionSize8Alignment4> kUnionSize8Alignment4_Type =
   ],
   ctor: UnionSize8Alignment4._ctor,
   ordinalToIndex: <int, int>{
-    551421578: 0,
+    1: 0,
   },
 );
 
@@ -162,7 +162,7 @@ const $fidl.UnionType<UnionSize12Alignment4> kUnionSize12Alignment4_Type =
   ],
   ctor: UnionSize12Alignment4._ctor,
   ordinalToIndex: <int, int>{
-    1305904317: 0,
+    1: 0,
   },
 );
 
@@ -226,7 +226,7 @@ const $fidl.UnionType<UnionSize24Alignment8> kUnionSize24Alignment8_Type =
   ],
   ctor: UnionSize24Alignment8._ctor,
   ordinalToIndex: <int, int>{
-    711125680: 0,
+    1: 0,
   },
 );
 
@@ -293,7 +293,7 @@ const $fidl.UnionType<UnionSize36Alignment4> kUnionSize36Alignment4_Type =
   ],
   ctor: UnionSize36Alignment4._ctor,
   ordinalToIndex: <int, int>{
-    1000405696: 0,
+    1: 0,
   },
 );
 

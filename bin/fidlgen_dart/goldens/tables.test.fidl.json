@@ -29,7 +29,18 @@
         "max_handles": 0,
         "max_out_of_line": 0,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
+      },
+      "type_shape_v1": {
+        "inline_size": 16,
+        "alignment": 8,
+        "depth": 1,
+        "max_handles": 0,
+        "max_out_of_line": 0,
+        "has_padding": false,
+        "has_flexible_envelope": true,
+        "contains_union": false
       },
       "type_shape_v1_no_ee": {
         "inline_size": 16,
@@ -38,7 +49,8 @@
         "max_handles": 0,
         "max_out_of_line": 0,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
       }
     },
     {
@@ -125,7 +137,18 @@
         "max_handles": 0,
         "max_out_of_line": 48,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
+      },
+      "type_shape_v1": {
+        "inline_size": 16,
+        "alignment": 8,
+        "depth": 2,
+        "max_handles": 0,
+        "max_out_of_line": 48,
+        "has_padding": false,
+        "has_flexible_envelope": true,
+        "contains_union": false
       },
       "type_shape_v1_no_ee": {
         "inline_size": 16,
@@ -134,7 +157,8 @@
         "max_handles": 0,
         "max_out_of_line": 48,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
       }
     },
     {
@@ -185,7 +209,18 @@
         "max_handles": 0,
         "max_out_of_line": 24,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
+      },
+      "type_shape_v1": {
+        "inline_size": 16,
+        "alignment": 8,
+        "depth": 2,
+        "max_handles": 0,
+        "max_out_of_line": 24,
+        "has_padding": false,
+        "has_flexible_envelope": true,
+        "contains_union": false
       },
       "type_shape_v1_no_ee": {
         "inline_size": 16,
@@ -194,7 +229,8 @@
         "max_handles": 0,
         "max_out_of_line": 24,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
       }
     },
     {
@@ -308,7 +344,18 @@
         "max_handles": 0,
         "max_out_of_line": 72,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
+      },
+      "type_shape_v1": {
+        "inline_size": 16,
+        "alignment": 8,
+        "depth": 2,
+        "max_handles": 0,
+        "max_out_of_line": 72,
+        "has_padding": false,
+        "has_flexible_envelope": true,
+        "contains_union": false
       },
       "type_shape_v1_no_ee": {
         "inline_size": 16,
@@ -317,7 +364,8 @@
         "max_handles": 0,
         "max_out_of_line": 72,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
       }
     },
     {
@@ -395,7 +443,18 @@
         "max_handles": 0,
         "max_out_of_line": 72,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
+      },
+      "type_shape_v1": {
+        "inline_size": 16,
+        "alignment": 8,
+        "depth": 2,
+        "max_handles": 0,
+        "max_out_of_line": 72,
+        "has_padding": false,
+        "has_flexible_envelope": true,
+        "contains_union": false
       },
       "type_shape_v1_no_ee": {
         "inline_size": 16,
@@ -404,7 +463,8 @@
         "max_handles": 0,
         "max_out_of_line": 72,
         "has_padding": false,
-        "has_flexible_envelope": true
+        "has_flexible_envelope": true,
+        "contains_union": false
       }
     }
   ],

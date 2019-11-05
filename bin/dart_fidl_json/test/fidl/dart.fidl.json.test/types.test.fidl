@@ -13,8 +13,8 @@ struct ExampleStruct2 {
 };
 
 union ExampleUnion {
-  ExampleStruct struct1;
-  ExampleStruct2 struct2;
+  1: ExampleStruct struct1;
+  2: ExampleStruct2 struct2;
 };
 
 xunion ExampleXUnion {

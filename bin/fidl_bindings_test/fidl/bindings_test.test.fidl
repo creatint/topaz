@@ -119,15 +119,15 @@ struct HandleStruct {
 };
 
 union UnionOne {
-    string foo;
-    string bar;
-    uint32 baz;
+    1: string foo;
+    2: string bar;
+    3: uint32 baz;
 };
 
 union UnionTwo {
-    string foo;
-    string bar;
-    uint32 baz;
+    1: string foo;
+    2: string bar;
+    3: uint32 baz;
 };
 
 protocol SimpleServer {
