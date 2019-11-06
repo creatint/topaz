@@ -127,21 +127,21 @@ class Union extends $fidl.Union {
 // ignore: constant_identifier_names
 const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   inlineSizeOld: 24,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 8, offsetV1NoEE: 8),
+        type: $fidl.Int32Type(), offsetOld: 8, offsetV1: 8),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offsetOld: 8,
-        offsetV1NoEE: 8),
+        offsetV1: 8),
     $fidl.MemberType<List<String>>(
         type: $fidl.VectorType<List<String>>(
             element: $fidl.StringType(maybeElementCount: null, nullable: false),
             maybeElementCount: null,
             nullable: false),
         offsetOld: 8,
-        offsetV1NoEE: 8),
+        offsetV1: 8),
   ],
   ctor: Union._ctor,
   ordinalToIndex: <int, int>{
@@ -239,7 +239,7 @@ class XUnion extends $fidl.XUnion {
 // ignore: constant_identifier_names
 const $fidl.XUnionType<XUnion> kXUnion_Type = $fidl.XUnionType<XUnion>(
   inlineSizeOld: 24,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <int, $fidl.FidlType>{
     910042901: $fidl.Int32Type(),
     891204917: $fidl.StringType(maybeElementCount: null, nullable: false),

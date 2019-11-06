@@ -88,10 +88,9 @@ class UnionSize8Alignment4 extends $fidl.Union {
 const $fidl.UnionType<UnionSize8Alignment4> kUnionSize8Alignment4_Type =
     $fidl.UnionType<UnionSize8Alignment4>(
   inlineSizeOld: 8,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1NoEE: 4),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: 4),
   ],
   ctor: UnionSize8Alignment4._ctor,
   ordinalToIndex: <int, int>{
@@ -152,13 +151,13 @@ class UnionSize12Alignment4 extends $fidl.Union {
 const $fidl.UnionType<UnionSize12Alignment4> kUnionSize12Alignment4_Type =
     $fidl.UnionType<UnionSize12Alignment4>(
   inlineSizeOld: 12,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<Uint8List>(
         type: $fidl.ArrayType<Uint8List>(
             element: $fidl.Uint8Type(), elementCount: 6),
         offsetOld: 4,
-        offsetV1NoEE: 4),
+        offsetV1: 4),
   ],
   ctor: UnionSize12Alignment4._ctor,
   ordinalToIndex: <int, int>{
@@ -219,10 +218,10 @@ class UnionSize24Alignment8 extends $fidl.Union {
 const $fidl.UnionType<UnionSize24Alignment8> kUnionSize24Alignment8_Type =
     $fidl.UnionType<UnionSize24Alignment8>(
   inlineSizeOld: 24,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<StructSize16Alignment8>(
-        type: kStructSize16Alignment8_Type, offsetOld: 8, offsetV1NoEE: 8),
+        type: kStructSize16Alignment8_Type, offsetOld: 8, offsetV1: 8),
   ],
   ctor: UnionSize24Alignment8._ctor,
   ordinalToIndex: <int, int>{
@@ -283,13 +282,13 @@ class UnionSize36Alignment4 extends $fidl.Union {
 const $fidl.UnionType<UnionSize36Alignment4> kUnionSize36Alignment4_Type =
     $fidl.UnionType<UnionSize36Alignment4>(
   inlineSizeOld: 36,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<Uint8List>(
         type: $fidl.ArrayType<Uint8List>(
             element: $fidl.Uint8Type(), elementCount: 32),
         offsetOld: 4,
-        offsetV1NoEE: 4),
+        offsetV1: 4),
   ],
   ctor: UnionSize36Alignment4._ctor,
   ordinalToIndex: <int, int>{
@@ -353,14 +352,13 @@ const $fidl.StructType<SandwichUnionSize8Alignment4>
     kSandwichUnionSize8Alignment4_Type =
     $fidl.StructType<SandwichUnionSize8Alignment4>(
   inlineSizeOld: 16,
-  inlineSizeV1NoEE: 40,
+  inlineSizeV1: 40,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
     $fidl.MemberType<UnionSize8Alignment4>(
-        type: kUnionSize8Alignment4_Type, offsetOld: 4, offsetV1NoEE: 8),
+        type: kUnionSize8Alignment4_Type, offsetOld: 4, offsetV1: 8),
     $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 12, offsetV1NoEE: 32),
+        type: $fidl.Uint32Type(), offsetOld: 12, offsetV1: 32),
   ],
   ctor: SandwichUnionSize8Alignment4._ctor,
 );
@@ -421,14 +419,12 @@ const $fidl.StructType<SandwichUnionSize12Alignment4>
     kSandwichUnionSize12Alignment4_Type =
     $fidl.StructType<SandwichUnionSize12Alignment4>(
   inlineSizeOld: 20,
-  inlineSizeV1NoEE: 40,
+  inlineSizeV1: 40,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
     $fidl.MemberType<UnionSize12Alignment4>(
-        type: kUnionSize12Alignment4_Type, offsetOld: 4, offsetV1NoEE: 8),
-    $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 16, offsetV1NoEE: 32),
+        type: kUnionSize12Alignment4_Type, offsetOld: 4, offsetV1: 8),
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 16, offsetV1: 32),
   ],
   ctor: SandwichUnionSize12Alignment4._ctor,
 );
@@ -480,12 +476,10 @@ class StructSize16Alignment8 extends $fidl.Struct {
 const $fidl.StructType<StructSize16Alignment8> kStructSize16Alignment8_Type =
     $fidl.StructType<StructSize16Alignment8>(
   inlineSizeOld: 16,
-  inlineSizeV1NoEE: 16,
+  inlineSizeV1: 16,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Uint64Type(), offsetOld: 0, offsetV1NoEE: 0),
-    $fidl.MemberType<int>(
-        type: $fidl.Uint64Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offsetOld: 8, offsetV1: 8),
   ],
   ctor: StructSize16Alignment8._ctor,
 );
@@ -546,14 +540,13 @@ const $fidl.StructType<SandwichUnionSize24Alignment8>
     kSandwichUnionSize24Alignment8_Type =
     $fidl.StructType<SandwichUnionSize24Alignment8>(
   inlineSizeOld: 40,
-  inlineSizeV1NoEE: 40,
+  inlineSizeV1: 40,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
     $fidl.MemberType<UnionSize24Alignment8>(
-        type: kUnionSize24Alignment8_Type, offsetOld: 8, offsetV1NoEE: 8),
+        type: kUnionSize24Alignment8_Type, offsetOld: 8, offsetV1: 8),
     $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 32, offsetV1NoEE: 32),
+        type: $fidl.Uint32Type(), offsetOld: 32, offsetV1: 32),
   ],
   ctor: SandwichUnionSize24Alignment8._ctor,
 );
@@ -614,14 +607,13 @@ const $fidl.StructType<SandwichUnionSize36Alignment4>
     kSandwichUnionSize36Alignment4_Type =
     $fidl.StructType<SandwichUnionSize36Alignment4>(
   inlineSizeOld: 44,
-  inlineSizeV1NoEE: 40,
+  inlineSizeV1: 40,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 0, offsetV1NoEE: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
     $fidl.MemberType<UnionSize36Alignment4>(
-        type: kUnionSize36Alignment4_Type, offsetOld: 4, offsetV1NoEE: 8),
+        type: kUnionSize36Alignment4_Type, offsetOld: 4, offsetV1: 8),
     $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 40, offsetV1NoEE: 32),
+        type: $fidl.Uint32Type(), offsetOld: 40, offsetV1: 32),
   ],
   ctor: SandwichUnionSize36Alignment4._ctor,
 );

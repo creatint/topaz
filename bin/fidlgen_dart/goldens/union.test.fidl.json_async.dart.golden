@@ -115,21 +115,20 @@ class Union extends $fidl.Union {
 // ignore: recursive_compile_time_constant
 const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   inlineSizeOld: 24,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 8, offsetV1: 8),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offsetOld: 8,
-        offsetV1NoEE: 8),
+        offsetV1: 8),
     $fidl.MemberType<List<String>>(
         type: $fidl.VectorType<List<String>>(
             element: $fidl.StringType(maybeElementCount: null, nullable: false),
             maybeElementCount: null,
             nullable: false),
         offsetOld: 8,
-        offsetV1NoEE: 8),
+        offsetV1: 8),
   ],
   ctor: Union._ctor,
   ordinalToIndex: <int, int>{
@@ -191,10 +190,9 @@ class FieldCollision extends $fidl.Union {
 const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
     $fidl.UnionType<FieldCollision>(
   inlineSizeOld: 8,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 4, offsetV1NoEE: 4),
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 4, offsetV1: 4),
   ],
   ctor: FieldCollision._ctor,
   ordinalToIndex: <int, int>{
@@ -268,14 +266,13 @@ class ExplicitUnion extends $fidl.Union {
 const $fidl.UnionType<ExplicitUnion> kExplicitUnion_Type =
     $fidl.UnionType<ExplicitUnion>(
   inlineSizeOld: 24,
-  inlineSizeV1NoEE: 24,
+  inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 8, offsetV1NoEE: 8),
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 8, offsetV1: 8),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offsetOld: 8,
-        offsetV1NoEE: 8),
+        offsetV1: 8),
   ],
   ctor: ExplicitUnion._ctor,
   ordinalToIndex: <int, int>{
