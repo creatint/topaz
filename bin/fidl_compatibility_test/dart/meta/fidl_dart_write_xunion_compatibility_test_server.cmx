@@ -1,0 +1,15 @@
+{
+    "program": {
+        "args": [
+            "write_xunions"
+        ],
+        "data": "data/fidl_dart_write_xunion_compatibility_test_server"
+    },
+    "sandbox": {
+        "services": [
+            "fuchsia.logger.LogSink",
+            "fuchsia.sys.Launcher",
+            "fuchsia.sys.Environment"
+        ]
+    }
+}

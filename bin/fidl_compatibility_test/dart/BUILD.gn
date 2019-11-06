@@ -4,14 +4,32 @@
 
 import("//topaz/runtime/dart_runner/dart_app.gni")
 
-dart_app("fidl_compatibility_test_server_dart") {
-
+dart_app("fidl_dart_compatibility_test_server") {
   main_dart = "lib/main.dart"
 
   meta = [
     {
-      path = rebase_path("meta/fidl_compatibility_test_server_dart.cmx")
-      dest = "fidl_compatibility_test_server_dart.cmx"
+      path = rebase_path("meta/fidl_dart_compatibility_test_server.cmx")
+      dest = "fidl_dart_compatibility_test_server.cmx"
+    },
+  ]
+
+  source_dir = "."
+  sources = []
+  deps = [
+    "//garnet/public/lib/fidl/compatibility_test:compatibility_test_service",
+    "//topaz/public/dart/fuchsia_services",
+  ]
+}
+
+dart_app("fidl_dart_write_xunion_compatibility_test_server") {
+  main_dart = "lib/main.dart"
+
+  meta = [
+    {
+      path = rebase_path(
+              "meta/fidl_dart_write_xunion_compatibility_test_server.cmx")
+      dest = "fidl_dart_write_xunion_compatibility_test_server.cmx"
     },
   ]
 

@@ -82,7 +82,11 @@ class Encoder {
   void encodeMessageHeader(int ordinal, int txid) {
     alloc(kMessageHeaderSize);
     encodeUint32(txid, kMessageTxidOffset);
-    encodeUint8(0, kMessageFlagOffset);
+    if (encodeUnionAsXUnionBytes) {
+      encodeUint8(1, kMessageFlagOffset);
+    } else {
+      encodeUint8(0, kMessageFlagOffset);
+    }
     encodeUint8(0, kMessageFlagOffset + 1);
     encodeUint8(0, kMessageFlagOffset + 2);
     encodeUint8(kMagicNumberInitial, kMessageMagicOffset);

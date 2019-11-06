@@ -63,10 +63,6 @@ group("tests") {
     # TODO: This target should just aggregate the top-level directories and
     # most of these dependencies should be in those subdirectories.
     "//garnet/examples/ui:tile_view",
-    "//garnet/packages/tests:fidl_compatibility_test_server_cpp",
-    "//garnet/packages/tests:fidl_compatibility_test_server_go",
-    "//garnet/packages/tests:fidl_compatibility_test_server_llcpp",
-    "//garnet/packages/tests:fidl_compatibility_test_server_rust",
     "//garnet/packages/tests:run_test_component",
     "//garnet/packages/tests:scenic",
     "//garnet/packages/tools:scenic",
@@ -81,7 +77,8 @@ group("tests") {
     "//topaz/bin/fidl_bindings_test/server:fidl_bindings_test_server",
     "//topaz/bin/fidl_bindings_test/test:fidl_bindings_test",
     "//topaz/bin/fidl_compatibility_test:fidl_compatibility_test_topaz",
-    "//topaz/bin/fidl_compatibility_test/dart:fidl_compatibility_test_server_dart",
+    "//topaz/bin/fidl_compatibility_test/dart:fidl_dart_compatibility_test_server",
+    "//topaz/bin/fidl_compatibility_test/dart:fidl_dart_write_xunion_compatibility_test_server",
     "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_ir_test($host_toolchain)",
     "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_test($host_toolchain)",
     "//topaz/bin/flutter_screencap_test",

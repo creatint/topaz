@@ -1,11 +1,9 @@
 {
     "program": {
-        "binary": "test/fidl_compatibility_test_topaz",
         "args": [
-          "fuchsia-pkg://fuchsia.com/fidl_compatibility_test_server_cpp#meta/fidl_compatibility_test_server_cpp.cmx",
-          "fuchsia-pkg://fuchsia.com/fidl_compatibility_test_server_go#meta/fidl_compatibility_test_server_go.cmx",
-          "fuchsia-pkg://fuchsia.com/fidl_compatibility_test_server_dart#meta/fidl_compatibility_test_server_dart.cmx"
-        ]
+            "fuchsia-pkg://fuchsia.com/fidl_dart_compatibility_test_server#meta/fidl_dart_compatibility_test_server.cmx"
+        ],
+        "binary": "test/fidl_compatibility_test_topaz"
     },
     "sandbox": {
         "services": [
@@ -13,4 +11,3 @@
         ]
     }
 }
-

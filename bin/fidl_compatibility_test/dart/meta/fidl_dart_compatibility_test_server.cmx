@@ -1,6 +1,6 @@
 {
     "program": {
-        "data": "data/fidl_compatibility_test_server_dart"
+        "data": "data/fidl_dart_compatibility_test_server"
     },
     "sandbox": {
         "services": [
