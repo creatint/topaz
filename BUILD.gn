@@ -140,7 +140,6 @@ group("tests") {
     "//topaz/runtime/dart_runner/integration:dart_jit_runner_test",
     "//topaz/tests/fidl-changes",
     "//topaz/tests/fidl-dangerous-identifiers",
-    "//topaz/tests/web_runner_tests",
   ]
 }
 
