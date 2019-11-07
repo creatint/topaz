@@ -34,6 +34,7 @@ class RootIntentHandler extends modular.IntentHandler {
 }
 
 void main() {
+  // ignore: invalid_use_of_visible_for_testing_member
   WebView.platform = FuchsiaWebView();
   setupLogger(name: 'Webview Mod');
   final intentHandler = RootIntentHandler();
