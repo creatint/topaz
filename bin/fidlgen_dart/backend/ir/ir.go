@@ -773,11 +773,15 @@ func (c *compiler) compileType(val types.Type) Type {
 			}
 			r.AsyncDecl = r.SyncDecl
 			if val.Nullable {
-				if r.declType != types.XUnionDeclType {
+				switch r.declType {
+				case types.XUnionDeclType:
+					r.typeExpr = c.optTypeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier))
+				case types.UnionDeclType:
+					r.typeExpr = fmt.Sprintf("$fidl.OptUnionType<%s>(element: %s)",
+						t, c.typeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier)))
+				default:
 					r.typeExpr = fmt.Sprintf("$fidl.PointerType<%s>(element: %s)",
 						t, c.typeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier)))
-				} else {
-					r.typeExpr = c.optTypeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier))
 				}
 			} else {
 				r.typeExpr = c.typeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier))
@@ -1217,21 +1221,17 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 		Strictness:    val.Strictness,
 	}
 	r.TypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
-  inlineSizeOld: %v,
-  inlineSizeV1: %v,
   members: %s,
   ctor: %s._ctor,
   nullable: false,
   flexible: %t,
-)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1.InlineSize, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
+)`, r.Name, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
 	r.OptTypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
-inlineSizeOld: %v,
-inlineSizeV1: %v,
 members: %s,
 ctor: %s._ctor,
 nullable: true,
 flexible: %t,
-)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1.InlineSize, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
+)`, r.Name, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
 
 	return r
 }

@@ -694,6 +694,39 @@ class PointerType<T> extends FidlType<T> {
   }
 }
 
+class OptUnionType<T extends Union> extends FidlType<T> {
+  const OptUnionType({
+    this.element,
+  }) : super(inlineSizeOld: 8, inlineSizeV1: 24);
+
+  final FidlType element;
+
+  @override
+  void encode(Encoder encoder, T value, int offset) {
+    if (encoder.encodeUnionAsXUnionBytes) {
+      if (value == null) {
+        final int envelopeOffset = offset + 8;
+        encoder.encodeUint32(0, offset);
+        _encodeEnvelopeAbsent(encoder, envelopeOffset);
+      } else {
+        element.encode(encoder, value, offset);
+      }
+    } else {
+      PointerType(element: element).encode(encoder, value, offset);
+    }
+  }
+
+  @override
+  T decode(Decoder decoder, int offset) {
+    if (decoder.decodeUnionFromXUnionBytes) {
+      UnionType<T> uElement = element;
+      return uElement.decodeFromXUnionBytes(decoder, offset, nullable: true);
+    } else {
+      return PointerType(element: element).decode(decoder, offset);
+    }
+  }
+}
+
 class MemberType<T> extends FidlType<T> {
   const MemberType({
     this.type,
@@ -982,7 +1015,7 @@ class UnionType<T extends Union> extends FidlType<T> {
   @override
   T decode(Decoder decoder, int offset) {
     if (decoder.decodeUnionFromXUnionBytes) {
-      return decodeFromXUnionBytes(decoder, offset);
+      return decodeFromXUnionBytes(decoder, offset, nullable: false);
     }
     final int index = decoder.decodeUint32(offset);
     if (index < 0 || index >= members.length)
@@ -990,11 +1023,16 @@ class UnionType<T extends Union> extends FidlType<T> {
     return ctor(index, members[index].decode(decoder, offset));
   }
 
-  T decodeFromXUnionBytes(Decoder decoder, int offset) {
+  T decodeFromXUnionBytes(Decoder decoder, int offset, {bool nullable}) {
     final int envelopeOffset = offset + 8;
     final int ordinal = decoder.decodeUint32(offset);
     if (ordinal == 0) {
-      throw FidlError('Zero xunion ordinal on non-nullable union');
+      if (!nullable) {
+        throw FidlError('Zero xunion ordinal on non-nullable');
+      }
+      _decodeEnvelope(
+          decoder, envelopeOffset, _envelopeMode.kMustBeAbsent, null);
+      return null;
     } else {
       final index = ordinalToIndex[ordinal];
       if (index == null) throw FidlError('Bad xunion ordinal: $ordinal');
@@ -1010,16 +1048,11 @@ class UnionType<T extends Union> extends FidlType<T> {
 
 class XUnionType<T extends XUnion> extends NullableFidlType<T> {
   const XUnionType({
-    int inlineSizeOld,
-    int inlineSizeV1,
     this.members,
     this.ctor,
     bool nullable,
     this.flexible,
-  }) : super(
-            inlineSizeOld: inlineSizeOld,
-            inlineSizeV1: inlineSizeV1,
-            nullable: nullable);
+  }) : super(inlineSizeOld: 24, inlineSizeV1: 24, nullable: nullable);
 
   final Map<int, FidlType> members;
   final XUnionFactory<T> ctor;
