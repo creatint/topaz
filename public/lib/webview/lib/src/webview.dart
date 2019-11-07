@@ -20,14 +20,18 @@ import 'package:zircon/zircon.dart';
 
 class ChromiumWebView {
   final web.ContextProxy _context;
-  final web.FrameProxy _frame = web.FrameProxy();
+  final web.FrameProxy _frame;
   final web.NavigationControllerProxy _navigationController =
       web.NavigationControllerProxy();
 
   final web.NavigationEventListenerBinding _navigationEventObserverBinding =
       web.NavigationEventListenerBinding();
+  final web.PopupFrameCreationListenerBinding
+      _popupFrameCreationObserverBinding =
+      web.PopupFrameCreationListenerBinding();
 
   final bool _ownsContext;
+  final web.ConsoleLogLevel _javascriptLogLevel;
 
   ChildViewConnection _childViewConnection;
 
@@ -35,23 +39,35 @@ class ChromiumWebView {
     sys.ServiceProvider serviceProvider,
     web.ConsoleLogLevel javascriptLogLevel,
   })  : _context = createContext(serviceProvider: serviceProvider),
-        _ownsContext = true {
-    _setup(javascriptLogLevel: javascriptLogLevel);
+        _frame = web.FrameProxy(),
+        _ownsContext = true,
+        _javascriptLogLevel = javascriptLogLevel ?? web.ConsoleLogLevel.none {
+    _context.createFrame(_frame.ctrl.request());
+    _setup();
   }
 
   ChromiumWebView.withContext({
     @required web.ContextProxy context,
     web.ConsoleLogLevel javascriptLogLevel,
   })  : _context = context,
-        _ownsContext = false {
-    _setup(javascriptLogLevel: javascriptLogLevel);
+        _frame = web.FrameProxy(),
+        _ownsContext = false,
+        _javascriptLogLevel = javascriptLogLevel ?? web.ConsoleLogLevel.none {
+    _context.createFrame(_frame.ctrl.request());
+    _setup();
   }
 
-  void _setup({
-    web.ConsoleLogLevel javascriptLogLevel,
-  }) {
-    _context.createFrame(_frame.ctrl.request());
+  // Create a webView for a "popup".
+  ChromiumWebView.withFrame(
+      {@required web.FrameProxy frame, web.ConsoleLogLevel javascriptLogLevel})
+      : _context = null,
+        _frame = frame,
+        _ownsContext = false,
+        _javascriptLogLevel = javascriptLogLevel ?? web.ConsoleLogLevel.none {
+    _setup();
+  }
 
+  void _setup() {
     // Create a token pair for the newly-created View.
     final tokenPair = EventPairPair();
     assert(tokenPair.status == ZX.OK);
@@ -62,7 +78,7 @@ class ChromiumWebView {
     _childViewConnection = ChildViewConnection(viewHolderToken);
     _frame
       ..getNavigationController(_navigationController.ctrl.request())
-      ..setJavaScriptLogLevel(javascriptLogLevel ?? web.ConsoleLogLevel.none);
+      ..setJavaScriptLogLevel(_javascriptLogLevel);
   }
 
   static web.ContextProxy createContext({sys.ServiceProvider serviceProvider}) {
@@ -98,6 +114,11 @@ class ChromiumWebView {
   void setNavigationEventListener(web.NavigationEventListener observer) {
     _frame.setNavigationEventListener(
         _navigationEventObserverBinding.wrap(observer));
+  }
+
+  void setPopupFrameCreationListener(web.PopupFrameCreationListener observer) {
+    _frame.setPopupFrameCreationListener(
+        _popupFrameCreationObserverBinding.wrap(observer));
   }
 
   Future<void> injectJavascript(int id, String script, List<String> origins) {
