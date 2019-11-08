@@ -143,22 +143,21 @@ template("dart_kernel") {
 
     script = _compiler_path
     args += [
-             "--target",
-             invoker.platform_name,
-             "--platform",
-             rebase_path("${invoker.platform_path}/platform_strong.dill"),
-             "--filesystem-scheme",
-             multi_root_scheme,
-             "--filesystem-root",
-             rebase_path("//"),
-             "--packages",
-             "$multi_root_scheme:///$rebased_packages_path",
-             "--depfile",
-             rebase_path(depfile, root_build_dir),
-             "--output",
-             rebase_path(kernel_path, root_build_dir),
-             "--no-link-platform",
-           ]
+      "--target",
+      invoker.platform_name,
+      "--platform",
+      rebase_path("${invoker.platform_path}/platform_strong.dill"),
+      "--filesystem-scheme",
+      multi_root_scheme,
+      "--filesystem-root",
+      rebase_path("//"),
+      "--packages",
+      "$multi_root_scheme:///$rebased_packages_path",
+      "--depfile",
+      rebase_path(depfile, root_build_dir),
+      "--output",
+      rebase_path(kernel_path, root_build_dir),
+    ]
     if (defined(invoker.manifest)) {
       args += [
         "--split-output-by-packages",
@@ -177,6 +176,8 @@ template("dart_kernel") {
         "--aot",
         "--tfa",
       ]
+    } else {
+      args += [ "--no-link-platform" ]
     }
 
     if (product) {
@@ -187,20 +188,19 @@ template("dart_kernel") {
       # https://github.com/dart-lang/sdk/blob/master/runtime/bin/vmservice/vmservice_io.dart#L240
       #
       # Also, this define excludes debugging and profiling code from Flutter.
-      args += [
-        "-Ddart.vm.product=true",
-      ]
+      args += [ "-Ddart.vm.product=true" ]
     } else {
       if (!is_debug) {
         # The following define excludes debugging code from Flutter.
-        args += [
-          "-Ddart.vm.profile=true",
-        ]
+        args += [ "-Ddart.vm.profile=true" ]
       }
     }
 
     if (defined(invoker.gen_bytecode) && invoker.gen_bytecode) {
-      args += [ "--gen-bytecode", "--drop-ast" ]
+      args += [
+        "--gen-bytecode",
+        "--drop-ast",
+      ]
     }
 
     rebased_main_dart = rebase_path(invoker.main_dart, "//")
