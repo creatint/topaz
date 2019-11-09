@@ -72,8 +72,8 @@ void main() {
       TestAsyncBinding().bind(EmptyImpl(), InterfaceRequest(pair.second));
 
       final encoder = Encoder(encodeUnionAsXUnionBytes: false)
-       ..encodeMessageHeader(0, 0)
-       ..encodeUint8(0, kMessageMagicOffset);
+        ..encodeMessageHeader(0, 0)
+        ..encodeUint8(0, kMessageMagicOffset);
       client.write(encoder.message.data, encoder.message.handles);
     });
   });

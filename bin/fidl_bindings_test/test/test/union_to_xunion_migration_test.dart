@@ -10,8 +10,7 @@ void main() {
     test('decode xunion bytes into union', () {
       int inputValue = 5;
 
-      var encoder = $fidl.Encoder(encodeUnionAsXUnionBytes: false)
-        ..alloc(24);
+      var encoder = $fidl.Encoder(encodeUnionAsXUnionBytes: false)..alloc(24);
 
       var xunion = XUnion.withPrimitive(inputValue);
       kXUnion_Type.encode(encoder, xunion, 0);
