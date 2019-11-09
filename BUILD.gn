@@ -99,6 +99,7 @@ group("tests") {
     "//topaz/public/dart/composition_delegate:composition_delegate_tests($host_toolchain)",
     "//topaz/public/dart/fuchsia_inspect:fuchsia_inspect_package_unittests($host_toolchain)",
     "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod",
+    "//topaz/public/dart/fuchsia_internationalization_flutter:tests($host_toolchain)",
 
     # TODO(fxb/38305): Re-enable test when unblocked and inspect paths are corrected
     # "//topaz/public/dart/fuchsia_inspect/examples/inspect_mod:inspect_mod_test",
