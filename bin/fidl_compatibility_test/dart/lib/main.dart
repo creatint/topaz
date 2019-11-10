@@ -4,7 +4,7 @@
 
 import 'dart:async';
 
-import 'package:fidl/fidl.dart' show InterfaceRequest;
+import 'package:fidl/fidl.dart' show InterfaceRequest, MethodException;
 import 'package:fidl_fidl_test_compatibility/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
@@ -49,6 +49,20 @@ class EchoImpl extends Echo {
     return value;
   }
 
+  @override
+  Future<Struct> echoStructWithError(Struct value, DefaultEnum err,
+      String forwardToServer, RespondWith resultVariant) async {
+    if (forwardToServer != null && forwardToServer.isNotEmpty) {
+      return (await proxy(forwardToServer))
+          .echoStructWithError(value, err, '', resultVariant);
+    }
+    if (resultVariant == RespondWith.err) {
+      throw MethodException(err);
+    } else {
+      return value;
+    }
+  }
+
   void _handleEchoEvent(Struct value, String serverUrl) {
     _echoEventStreamController.add(value);
     // Not technically safe if there's more than one outstanding event on this
@@ -83,12 +97,43 @@ class EchoImpl extends Echo {
   }
 
   @override
+  Future<ArraysStruct> echoArraysWithError(ArraysStruct value, DefaultEnum err,
+      String forwardToServer, RespondWith resultVariant) async {
+    if (forwardToServer != null && forwardToServer.isNotEmpty) {
+      return (await proxy(forwardToServer))
+          .echoArraysWithError(value, err, '', resultVariant);
+    }
+    if (resultVariant == RespondWith.err) {
+      throw MethodException(err);
+    } else {
+      return value;
+    }
+  }
+
+  @override
   Future<VectorsStruct> echoVectors(
       VectorsStruct value, String forwardToServer) async {
     if (forwardToServer != null && forwardToServer.isNotEmpty) {
       return (await proxy(forwardToServer)).echoVectors(value, '');
     }
     return value;
+  }
+
+  @override
+  Future<VectorsStruct> echoVectorsWithError(
+      VectorsStruct value,
+      DefaultEnum err,
+      String forwardToServer,
+      RespondWith resultVariant) async {
+    if (forwardToServer != null && forwardToServer.isNotEmpty) {
+      return (await proxy(forwardToServer))
+          .echoVectorsWithError(value, err, '', resultVariant);
+    }
+    if (resultVariant == RespondWith.err) {
+      throw MethodException(err);
+    } else {
+      return value;
+    }
   }
 
   @override
@@ -101,12 +146,43 @@ class EchoImpl extends Echo {
   }
 
   @override
+  Future<AllTypesTable> echoTableWithError(AllTypesTable value, DefaultEnum err,
+      String forwardToServer, RespondWith resultVariant) async {
+    if (forwardToServer != null && forwardToServer.isNotEmpty) {
+      return (await proxy(forwardToServer))
+          .echoTableWithError(value, err, '', resultVariant);
+    }
+    if (resultVariant == RespondWith.err) {
+      throw MethodException(err);
+    } else {
+      return value;
+    }
+  }
+
+  @override
   Future<List<AllTypesXunion>> echoXunions(
       List<AllTypesXunion> value, String forwardToServer) async {
     if (forwardToServer != null && forwardToServer.isNotEmpty) {
       return (await proxy(forwardToServer)).echoXunions(value, '');
     }
     return value;
+  }
+
+  @override
+  Future<List<AllTypesXunion>> echoXunionsWithError(
+      List<AllTypesXunion> value,
+      DefaultEnum err,
+      String forwardToServer,
+      RespondWith resultVariant) async {
+    if (forwardToServer != null && forwardToServer.isNotEmpty) {
+      return (await proxy(forwardToServer))
+          .echoXunionsWithError(value, err, '', resultVariant);
+    }
+    if (resultVariant == RespondWith.err) {
+      throw MethodException(err);
+    } else {
+      return value;
+    }
   }
 }
 
