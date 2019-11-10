@@ -82,7 +82,7 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
             return;
           }
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
-          $decoder.claimMemory({{ .ResponseSize }});
+          $decoder.claimMemory({{ .TypeSymbol }}.decodeResponseInlineSize($decoder));
           $callback(
       {{- range $index, $response := .Response.WireParameters }}
             $types[{{ $index }}].decode($decoder, 0),
@@ -130,7 +130,7 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
         try {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
-          $decoder.claimMemory({{ .ResponseSize }});
+          $decoder.claimMemory({{ .TypeSymbol }}.decodeResponseInlineSize($decoder));
           $callback(
         {{- range $index, $response := .Response.WireParameters }}
             $types[{{ $index }}].decode($decoder, 0),
@@ -164,10 +164,10 @@ class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
       return;
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(encodeUnionAsXUnionBytes:  $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, 0);
     {{- if .Request }}
-    $encoder.alloc({{ .RequestSize }} - $fidl.kMessageHeaderSize);
+    $encoder.alloc({{ .TypeSymbol }}.encodingRequestInlineSize($encoder) - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
     {{- end }}
     {{- range $index, $request := .Request }}
@@ -214,10 +214,10 @@ class {{ .EventsName }} {
   {{- if not .HasRequest }}
     {{- if .HasResponse }}
   void {{ template "ResponseMethodSignature" . }} {
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(encodeUnionAsXUnionBytes:  $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, 0);
       {{- if .Response.WireParameters }}
-    $encoder.alloc({{ .ResponseSize }} - $fidl.kMessageHeaderSize);
+    $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder) - $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
       {{- end }}
       {{- range $index, $response := .Response.WireParameters }}
@@ -246,10 +246,10 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
     {{- if .HasResponse }}
   Function _{{ .Name }}Responder($fidl.MessageSink $respond, int $txid) {
     return ({{ template "Params" .Response.WireParameters }}) {
-      final $fidl.Encoder $encoder = $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder(encodeUnionAsXUnionBytes:  $fidl.defaultEnableWriteXUnionBytesForUnion);
       $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, $txid);
       {{- if .Response.WireParameters }}
-      $encoder.alloc({{ .ResponseSize }} - $fidl.kMessageHeaderSize);
+      $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder) - $fidl.kMessageHeaderSize);
       final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
       {{- end }}
       {{- range $index, $response := .Response.WireParameters }}
@@ -275,7 +275,7 @@ class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
         try {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
-          $decoder.claimMemory({{ .RequestSize }});
+          $decoder.claimMemory({{ .TypeSymbol }}.decodeRequestInlineSize($decoder));
           impl.{{ .Name }}(
       {{- range $index, $request := .Request }}
             $types[{{ $index }}].decode($decoder, 0),
@@ -507,7 +507,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
         try {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
-          $decoder.claimMemory({{ .ResponseSize }});
+          $decoder.claimMemory({{ .TypeSymbol }}.decodeResponseInlineSize($decoder));
           _{{ .Name }}EventStreamController.add(
             {{- template "DecodeResponse" . -}}
           );
@@ -553,7 +553,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
         try {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
-          $decoder.claimMemory({{ .ResponseSize }});
+          $decoder.claimMemory({{ .TypeSymbol }}.decodeResponseInlineSize($decoder));
           // ignore: prefer_const_declarations
           final $response = {{- template "DecodeResponse" . -}};
           {{ if .Response.HasError }}
@@ -608,10 +608,10 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
         return $async.Future.error($fidl.FidlStateException('Proxy<${ctrl.$interfaceName}> is closed.'), StackTrace.current);
       }
 
-      final $fidl.Encoder $encoder = $fidl.Encoder();
+      final $fidl.Encoder $encoder = $fidl.Encoder(encodeUnionAsXUnionBytes:  $fidl.defaultEnableWriteXUnionBytesForUnion);
       $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, 0);
       {{- if .Request }}
-        $encoder.alloc({{ .RequestSize }} - $fidl.kMessageHeaderSize);
+        $encoder.alloc({{ .TypeSymbol }}.encodingRequestInlineSize($encoder) - $fidl.kMessageHeaderSize);
         final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
       {{- end }}
       {{- range $index, $request := .Request }}
@@ -654,9 +654,9 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
         {{- if not .HasRequest }}
           if (impl.{{ .Name }} != null) {
             $subscriptions.add(impl.{{ .Name }}.listen(($response) {
-              final $fidl.Encoder $encoder = $fidl.Encoder();
+              final $fidl.Encoder $encoder = $fidl.Encoder(encodeUnionAsXUnionBytes:  $fidl.defaultEnableWriteXUnionBytesForUnion);
               $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, 0);
-              $encoder.alloc({{ .ResponseSize }} - $fidl.kMessageHeaderSize);
+              $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder) - $fidl.kMessageHeaderSize);
               final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
               {{ template "EncodeResponse" . }}
               sendMessage($encoder.message);
@@ -684,7 +684,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
             try {
               Timeline.startSync(_name);
               final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
-              $decoder.claimMemory({{ .RequestSize }});
+              $decoder.claimMemory({{ .TypeSymbol }}.decodeRequestInlineSize($decoder));
               final {{ template "AsyncReturn" . }} $future = impl.{{ .Name }}(
               {{- range $index, $request := .Request }}
                 $types[{{ $index }}].decode($decoder, 0),
@@ -718,10 +718,10 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
                 })
                 {{ end }}
                 .then(($response) {
-                  final $fidl.Encoder $encoder = $fidl.Encoder();
+                  final $fidl.Encoder $encoder = $fidl.Encoder(encodeUnionAsXUnionBytes:  $fidl.defaultEnableWriteXUnionBytesForUnion);
                   $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, $message.txid);
                   {{- if .Response.WireParameters }}
-                    $encoder.alloc({{ .ResponseSize }} - $fidl.kMessageHeaderSize);
+                    $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder) - $fidl.kMessageHeaderSize);
                     final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
                     {{ template "EncodeResponse" . -}}
                   {{- end }}

@@ -46,6 +46,10 @@ const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OrdinalFive",
+  requestInlineSizeOld: 16,
+  requestInlineSizeV1: 16,
+  responseInlineSizeOld: 0,
+  responseInlineSizeV1: 0,
 );
 // onlyGeneratedOrdinal: ()
 const int _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal = 0x27c9581f00000000;
@@ -56,6 +60,10 @@ const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OnlyGeneratedOrdinal",
+  requestInlineSizeOld: 16,
+  requestInlineSizeV1: 16,
+  responseInlineSizeOld: 0,
+  responseInlineSizeV1: 0,
 );
 // eventOrdinalFifteen:  -> ()
 const int _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal = 0x577495a100000000;
@@ -66,6 +74,10 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
   request: null,
   response: null,
   name: r"SwitchingOrdinals.EventOrdinalFifteen",
+  requestInlineSizeOld: 0,
+  requestInlineSizeV1: 0,
+  responseInlineSizeOld: 16,
+  responseInlineSizeV1: 16,
 );
 // eventOnlyGeneratedOrdinal:  -> ()
 const int _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal =
@@ -77,6 +89,10 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type =
   request: null,
   response: null,
   name: r"SwitchingOrdinals.EventOnlyGeneratedOrdinal",
+  requestInlineSizeOld: 0,
+  requestInlineSizeV1: 0,
+  responseInlineSizeOld: 16,
+  responseInlineSizeV1: 16,
 );
 
 abstract class SwitchingOrdinals extends $fidl.Service {
@@ -128,7 +144,8 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_EventOrdinalFifteen_Type.response;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(_kSwitchingOrdinals_EventOrdinalFifteen_Type
+              .decodeResponseInlineSize($decoder));
           _eventOrdinalFifteenEventStreamController.add(null);
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
@@ -148,7 +165,9 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type.response;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(
+              _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type
+                  .decodeResponseInlineSize($decoder));
           _eventOnlyGeneratedOrdinalEventStreamController.add(null);
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
@@ -197,7 +216,8 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(_kSwitchingOrdinals_OrdinalFive_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
@@ -212,7 +232,8 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(
         _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal, 0);
     return $async.Future.sync(() {
@@ -246,10 +267,14 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
     whenBound.then((_) {
       if (impl.eventOrdinalFifteen != null) {
         $subscriptions.add(impl.eventOrdinalFifteen.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder();
+          final $fidl.Encoder $encoder = $fidl.Encoder(
+              encodeUnionAsXUnionBytes:
+                  $fidl.defaultEnableWriteXUnionBytesForUnion);
           $encoder.encodeMessageHeader(
               _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal, 0);
-          $encoder.alloc(16 - $fidl.kMessageHeaderSize);
+          $encoder.alloc(_kSwitchingOrdinals_EventOrdinalFifteen_Type
+                  .encodingResponseInlineSize($encoder) -
+              $fidl.kMessageHeaderSize);
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_EventOrdinalFifteen_Type.response;
 
@@ -258,10 +283,14 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
       }
       if (impl.eventOnlyGeneratedOrdinal != null) {
         $subscriptions.add(impl.eventOnlyGeneratedOrdinal.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder();
+          final $fidl.Encoder $encoder = $fidl.Encoder(
+              encodeUnionAsXUnionBytes:
+                  $fidl.defaultEnableWriteXUnionBytesForUnion);
           $encoder.encodeMessageHeader(
               _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal, 0);
-          $encoder.alloc(16 - $fidl.kMessageHeaderSize);
+          $encoder.alloc(_kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type
+                  .encodingResponseInlineSize($encoder) -
+              $fidl.kMessageHeaderSize);
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type.response;
 
@@ -283,7 +312,8 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_OrdinalFive_Type.request;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(_kSwitchingOrdinals_OrdinalFive_Type
+              .decodeRequestInlineSize($decoder));
           final $async.Future<void> $future = impl.ordinalFive();
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
@@ -301,7 +331,8 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type.request;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(_kSwitchingOrdinals_OnlyGeneratedOrdinal_Type
+              .decodeRequestInlineSize($decoder));
           final $async.Future<void> $future = impl.onlyGeneratedOrdinal();
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {

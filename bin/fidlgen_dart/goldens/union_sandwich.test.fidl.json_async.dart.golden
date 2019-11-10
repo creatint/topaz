@@ -90,7 +90,8 @@ const $fidl.UnionType<UnionSize8Alignment4> kUnionSize8Alignment4_Type =
   inlineSizeOld: 8,
   inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: 4),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
   ],
   ctor: UnionSize8Alignment4._ctor,
   ordinalToIndex: <int, int>{
@@ -157,7 +158,7 @@ const $fidl.UnionType<UnionSize12Alignment4> kUnionSize12Alignment4_Type =
         type: $fidl.ArrayType<Uint8List>(
             element: $fidl.Uint8Type(), elementCount: 6),
         offsetOld: 4,
-        offsetV1: 4),
+        offsetV1: -1 /* unused */),
   ],
   ctor: UnionSize12Alignment4._ctor,
   ordinalToIndex: <int, int>{
@@ -221,7 +222,9 @@ const $fidl.UnionType<UnionSize24Alignment8> kUnionSize24Alignment8_Type =
   inlineSizeV1: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<StructSize16Alignment8>(
-        type: kStructSize16Alignment8_Type, offsetOld: 8, offsetV1: 8),
+        type: kStructSize16Alignment8_Type,
+        offsetOld: 8,
+        offsetV1: -1 /* unused */),
   ],
   ctor: UnionSize24Alignment8._ctor,
   ordinalToIndex: <int, int>{
@@ -288,7 +291,7 @@ const $fidl.UnionType<UnionSize36Alignment4> kUnionSize36Alignment4_Type =
         type: $fidl.ArrayType<Uint8List>(
             element: $fidl.Uint8Type(), elementCount: 32),
         offsetOld: 4,
-        offsetV1: 4),
+        offsetV1: -1 /* unused */),
   ],
   ctor: UnionSize36Alignment4._ctor,
   ordinalToIndex: <int, int>{

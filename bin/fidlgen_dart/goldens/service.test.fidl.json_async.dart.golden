@@ -46,6 +46,10 @@ const $fidl.MethodType _kFirstProtocol_MethodOnFirst_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"FirstProtocol.MethodOnFirst",
+  requestInlineSizeOld: 16,
+  requestInlineSizeV1: 16,
+  responseInlineSizeOld: 0,
+  responseInlineSizeV1: 0,
 );
 
 abstract class FirstProtocol extends $fidl.Service {
@@ -120,7 +124,8 @@ class FirstProtocolProxy extends $fidl.AsyncProxy<FirstProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(_kFirstProtocol_MethodOnFirst_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
@@ -142,7 +147,8 @@ class FirstProtocolBinding extends $fidl.AsyncBinding<FirstProtocol> {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kFirstProtocol_MethodOnFirst_Type.request;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(_kFirstProtocol_MethodOnFirst_Type
+              .decodeRequestInlineSize($decoder));
           final $async.Future<void> $future = impl.methodOnFirst();
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
@@ -167,6 +173,10 @@ const $fidl.MethodType _kSecondProtocol_MethodOnSecond_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"SecondProtocol.MethodOnSecond",
+  requestInlineSizeOld: 16,
+  requestInlineSizeV1: 16,
+  responseInlineSizeOld: 0,
+  responseInlineSizeV1: 0,
 );
 
 abstract class SecondProtocol extends $fidl.Service {
@@ -241,7 +251,8 @@ class SecondProtocolProxy extends $fidl.AsyncProxy<SecondProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(_kSecondProtocol_MethodOnSecond_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
@@ -263,7 +274,8 @@ class SecondProtocolBinding extends $fidl.AsyncBinding<SecondProtocol> {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kSecondProtocol_MethodOnSecond_Type.request;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(_kSecondProtocol_MethodOnSecond_Type
+              .decodeRequestInlineSize($decoder));
           final $async.Future<void> $future = impl.methodOnSecond();
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {

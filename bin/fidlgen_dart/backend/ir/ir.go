@@ -88,8 +88,6 @@ type UnionMember struct {
 	XUnionOrdinal int
 	CtorName      string
 	Tag           string
-	OffsetOld     int
-	OffsetV1      int
 	typeExpr      string
 	Documented
 }
@@ -109,13 +107,11 @@ type XUnion struct {
 
 // XUnionMember represents a member of a xunion declaration.
 type XUnionMember struct {
-	Ordinal   int
-	Type      Type
-	Name      string
-	CtorName  string
-	Tag       string
-	OffsetOld int
-	OffsetV1  int
+	Ordinal  int
+	Type     Type
+	Name     string
+	CtorName string
+	Tag      string
 	Documented
 }
 
@@ -187,10 +183,8 @@ type Method struct {
 	Name               string
 	HasRequest         bool
 	Request            []Parameter
-	RequestSize        int
 	HasResponse        bool
 	Response           MethodResponse
-	ResponseSize       int
 	AsyncResponseClass string
 	AsyncResponseType  string
 	CallbackType       string
@@ -198,6 +192,8 @@ type Method struct {
 	TypeExpr           string
 	Transitional       bool
 	Documented
+
+	EncodeUnionAsXUnionBytes string
 }
 
 // Parameter represents an interface method parameter.
@@ -507,12 +503,18 @@ func formatLibraryName(library types.LibraryIdentifier) string {
 	return strings.Join(parts, "_")
 }
 
-func typeExprForMethod(request []Parameter, response []Parameter, name string) string {
+func typeExprForMethod(val types.Method, request []Parameter, response []Parameter, name string) string {
 	return fmt.Sprintf(`$fidl.MethodType(
 	    request: %s,
 		response: %s,
 		name: r"%s",
-	  )`, formatParameterList(request), formatParameterList(response), name)
+		requestInlineSizeOld: %d,
+		requestInlineSizeV1: %d,
+		responseInlineSizeOld: %d,
+		responseInlineSizeV1: %d,
+	  )`, formatParameterList(request), formatParameterList(response), name,
+		val.RequestTypeShapeOld.InlineSize, val.RequestTypeShapeV1.InlineSize,
+		val.ResponseTypeShapeOld.InlineSize, val.ResponseTypeShapeV1.InlineSize)
 }
 
 func typeExprForPrimitiveSubtype(val types.PrimitiveSubtype) string {
@@ -969,7 +971,7 @@ NotAResult:
 	}
 }
 
-func (c *compiler) compileMethod(val types.Method, protocol Interface) Method {
+func (c *compiler) compileMethod(val types.Method, protocol Interface, fidlProtocol types.Interface) Method {
 	var (
 		name               = c.compileLowerCamelIdentifier(val.Name, methodContext)
 		request            = c.compileParameterArray(val.Request)
@@ -1002,15 +1004,13 @@ func (c *compiler) compileMethod(val types.Method, protocol Interface) Method {
 		Name:               name,
 		HasRequest:         val.HasRequest,
 		Request:            request,
-		RequestSize:        val.RequestSize,
 		HasResponse:        val.HasResponse,
 		Response:           response,
-		ResponseSize:       val.ResponseSize,
 		AsyncResponseClass: asyncResponseClass,
 		AsyncResponseType:  asyncResponseType,
 		CallbackType:       fmt.Sprintf("%s%sCallback", protocol.Name, c.compileUpperCamelIdentifier(val.Name, methodContext)),
 		TypeSymbol:         fmt.Sprintf("_k%s_%s_Type", protocol.Name, val.Name),
-		TypeExpr:           typeExprForMethod(request, response.WireParameters, fmt.Sprintf("%s.%s", protocol.Name, val.Name)),
+		TypeExpr:           typeExprForMethod(val, request, response.WireParameters, fmt.Sprintf("%s.%s", protocol.Name, val.Name)),
 		Transitional:       transitional,
 		Documented:         docString(val),
 	}
@@ -1035,7 +1035,7 @@ func (c *compiler) compileInterface(val types.Interface) Interface {
 	}
 
 	for _, v := range val.Methods {
-		m := c.compileMethod(v, r)
+		m := c.compileMethod(v, r, val)
 		r.Methods = append(r.Methods, m)
 		if !v.HasRequest && v.HasResponse {
 			r.HasEvents = true
@@ -1149,15 +1149,13 @@ func (c *compiler) compileUnionMember(val types.UnionMember) UnionMember {
 	t := c.compileType(val.Type)
 	typeStr := fmt.Sprintf("type: %s", t.typeExpr)
 	offsetOldStr := fmt.Sprintf("offsetOld: %v", val.Offset)
-	offsetV1Str := fmt.Sprintf("offsetV1: %v", val.Offset)
+	offsetV1Str := "offsetV1: -1 /* unused */"
 	return UnionMember{
 		Type:          t,
 		Name:          c.compileLowerCamelIdentifier(val.Name, unionMemberContext),
 		XUnionOrdinal: val.XUnionOrdinal,
 		CtorName:      c.compileUpperCamelIdentifier(val.Name, unionMemberContext),
 		Tag:           c.compileLowerCamelIdentifier(val.Name, unionMemberTagContext),
-		OffsetOld:     val.Offset,
-		OffsetV1:      val.Offset,
 		typeExpr:      fmt.Sprintf("$fidl.MemberType<%s>(%s, %s, %s)", t.Decl, typeStr, offsetOldStr, offsetV1Str),
 		Documented:    docString(val),
 	}
@@ -1204,8 +1202,6 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 			Name:       c.compileLowerCamelIdentifier(member.Name, unionMemberContext),
 			CtorName:   c.compileUpperCamelIdentifier(member.Name, unionMemberContext),
 			Tag:        c.compileLowerCamelIdentifier(member.Name, unionMemberTagContext),
-			OffsetOld:  member.Offset,
-			OffsetV1:   member.Offset,
 			Documented: docString(member),
 		})
 	}

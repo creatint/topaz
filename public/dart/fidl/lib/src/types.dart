@@ -1166,11 +1166,47 @@ class MethodType extends FidlType<Null> {
     this.request,
     this.response,
     this.name,
+    this.requestInlineSizeOld,
+    this.requestInlineSizeV1,
+    this.responseInlineSizeOld,
+    this.responseInlineSizeV1,
   });
 
   final List<MemberType> request;
   final List<MemberType> response;
   final String name;
+  final int requestInlineSizeOld;
+  final int requestInlineSizeV1;
+  final int responseInlineSizeOld;
+  final int responseInlineSizeV1;
+
+  int encodingRequestInlineSize(Encoder encoder) {
+    if (encoder.encodeUnionAsXUnionBytes) {
+      return requestInlineSizeV1;
+    }
+    return requestInlineSizeOld;
+  }
+
+  int encodingResponseInlineSize(Encoder encoder) {
+    if (encoder.encodeUnionAsXUnionBytes) {
+      return responseInlineSizeV1;
+    }
+    return responseInlineSizeOld;
+  }
+
+  int decodeRequestInlineSize(Decoder decoder) {
+    if (decoder.decodeUnionFromXUnionBytes) {
+      return requestInlineSizeV1;
+    }
+    return requestInlineSizeOld;
+  }
+
+  int decodeResponseInlineSize(Decoder decoder) {
+    if (decoder.decodeUnionFromXUnionBytes) {
+      return responseInlineSizeV1;
+    }
+    return responseInlineSizeOld;
+  }
 
   @override
   void encode(Encoder encoder, Null value, int offset) {

@@ -101,7 +101,8 @@ const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   inlineSizeOld: 8,
   inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 4, offsetV1: 4),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
   ],
   ctor: Union._ctor,
   ordinalToIndex: <int, int>{
@@ -203,6 +204,10 @@ const $fidl.MethodType _kInterface_Method_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"Interface.Method",
+  requestInlineSizeOld: 16,
+  requestInlineSizeV1: 16,
+  responseInlineSizeOld: 0,
+  responseInlineSizeV1: 0,
 );
 // onEvent:  -> ()
 const int _kInterface_OnEvent_Ordinal = 0x136d200d00000000;
@@ -211,6 +216,10 @@ const $fidl.MethodType _kInterface_OnEvent_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"Interface.OnEvent",
+  requestInlineSizeOld: 0,
+  requestInlineSizeV1: 0,
+  responseInlineSizeOld: 16,
+  responseInlineSizeV1: 16,
 );
 
 /// interface comment #1
@@ -272,7 +281,8 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kInterface_OnEvent_Type.response;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(
+              _kInterface_OnEvent_Type.decodeResponseInlineSize($decoder));
           _onEventEventStreamController.add(null);
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {
@@ -324,7 +334,8 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(_kInterface_Method_Ordinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
@@ -354,9 +365,13 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
     whenBound.then((_) {
       if (impl.onEvent != null) {
         $subscriptions.add(impl.onEvent.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder();
+          final $fidl.Encoder $encoder = $fidl.Encoder(
+              encodeUnionAsXUnionBytes:
+                  $fidl.defaultEnableWriteXUnionBytesForUnion);
           $encoder.encodeMessageHeader(_kInterface_OnEvent_Ordinal, 0);
-          $encoder.alloc(16 - $fidl.kMessageHeaderSize);
+          $encoder.alloc(
+              _kInterface_OnEvent_Type.encodingResponseInlineSize($encoder) -
+                  $fidl.kMessageHeaderSize);
           final List<$fidl.MemberType> $types =
               _kInterface_OnEvent_Type.response;
 
@@ -377,7 +392,8 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
         try {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = _kInterface_Method_Type.request;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(
+              _kInterface_Method_Type.decodeRequestInlineSize($decoder));
           final $async.Future<void> $future = impl.method();
           // ignore: avoid_catches_without_on_clauses
         } catch (_e) {

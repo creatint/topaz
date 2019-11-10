@@ -117,18 +117,19 @@ const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
   inlineSizeOld: 24,
   inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 8, offsetV1: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 8, offsetV1: -1 /* unused */),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offsetOld: 8,
-        offsetV1: 8),
+        offsetV1: -1 /* unused */),
     $fidl.MemberType<List<String>>(
         type: $fidl.VectorType<List<String>>(
             element: $fidl.StringType(maybeElementCount: null, nullable: false),
             maybeElementCount: null,
             nullable: false),
         offsetOld: 8,
-        offsetV1: 8),
+        offsetV1: -1 /* unused */),
   ],
   ctor: Union._ctor,
   ordinalToIndex: <int, int>{
@@ -192,7 +193,8 @@ const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
   inlineSizeOld: 8,
   inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 4, offsetV1: 4),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
   ],
   ctor: FieldCollision._ctor,
   ordinalToIndex: <int, int>{
@@ -268,17 +270,71 @@ const $fidl.UnionType<ExplicitUnion> kExplicitUnion_Type =
   inlineSizeOld: 24,
   inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 8, offsetV1: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Int32Type(), offsetOld: 8, offsetV1: -1 /* unused */),
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
         offsetOld: 8,
-        offsetV1: 8),
+        offsetV1: -1 /* unused */),
   ],
   ctor: ExplicitUnion._ctor,
   ordinalToIndex: <int, int>{
     1: 0,
     3: 1,
   },
+);
+
+class NullableUnionStruct extends $fidl.Struct {
+  const NullableUnionStruct({
+    this.theUnion,
+  });
+  NullableUnionStruct.clone(
+    NullableUnionStruct $orig, {
+    Union theUnion,
+  }) : this(
+          theUnion: theUnion ?? $orig.theUnion,
+        );
+
+  NullableUnionStruct.cloneWithout(
+    NullableUnionStruct $orig, {
+    bool theUnion,
+  }) : this(
+          theUnion: theUnion ? null : $orig.theUnion,
+        );
+
+  NullableUnionStruct._(List<Object> argv) : theUnion = argv[0];
+  final Union theUnion;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      theUnion,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'NullableUnionStruct' r'(theUnion: ' + theUnion.toString() + r')';
+  }
+
+  static NullableUnionStruct _ctor(List<Object> argv) =>
+      NullableUnionStruct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<NullableUnionStruct> kNullableUnionStruct_Type =
+    $fidl.StructType<NullableUnionStruct>(
+  inlineSizeOld: 8,
+  inlineSizeV1: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<Union>(
+        type: $fidl.OptUnionType<Union>(element: kUnion_Type),
+        offsetOld: 0,
+        offsetV1: 0),
+  ],
+  ctor: NullableUnionStruct._ctor,
 );
 
 // ignore: unused_element, avoid_private_typedef_functions

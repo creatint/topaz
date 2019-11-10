@@ -10,24 +10,22 @@ import 'package:fidl/fidl.dart' as fidl;
 // ignore: avoid_classes_with_only_static_members
 abstract class Encoders {
   static fidl.Encoder get old {
-    return fidl.Encoder();
+    return fidl.Encoder(encodeUnionAsXUnionBytes: false);
   }
 
   static fidl.Encoder get v1 {
-    return fidl.Encoder()
-      ..encodeUnionAsXUnionBytes = true;
+    return fidl.Encoder(encodeUnionAsXUnionBytes: true);
   }
 }
 
 // ignore: avoid_classes_with_only_static_members
 abstract class Decoders {
   static fidl.Decoder get old {
-    return fidl.Decoder.fromRawArgs(null, []);
+    return fidl.Decoder.fromRawArgs(null, [], false);
   }
 
   static fidl.Decoder get v1 {
-    return fidl.Decoder.fromRawArgs(null, [])
-      ..decodeUnionFromXUnionBytes = true;
+    return fidl.Decoder.fromRawArgs(null, [], true);
   }
 }
 
@@ -120,8 +118,8 @@ class DecodeFailureCase<T> {
   final Uint8List bytes;
   final fidl.FidlErrorCode code;
 
-  static void run<T>(fidl.Decoder decoder, String name,
-      fidl.FidlType<T> type, Uint8List bytes, fidl.FidlErrorCode code) {
+  static void run<T>(fidl.Decoder decoder, String name, fidl.FidlType<T> type,
+      Uint8List bytes, fidl.FidlErrorCode code) {
     group(name, () {
       DecodeFailureCase(decoder, type, bytes, code)._checkDecodeFails();
     });

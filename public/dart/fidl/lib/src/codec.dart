@@ -4,6 +4,7 @@
 
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
 import 'package:zircon/zircon.dart';
 
 import 'error.dart';
@@ -14,12 +15,14 @@ import 'message.dart';
 // ignore_for_file: public_member_api_docs
 
 // Switches default union encoding from legacy union bytes to xunion
-// bytes. The default can be overwritten via the encoder.
+// bytes -- this value is referenced by the generated bindings only.
 // This is part of the union to xunion migration.
 bool defaultEnableWriteXUnionBytesForUnion = false;
 
 const int _kAlignment = 8;
 const int _kAlignmentMask = 0x7;
+
+const int _kUnionAsXUnionFlag = 1;
 
 int _align(int size) =>
     size + ((_kAlignment - (size & _kAlignmentMask)) & _kAlignmentMask);
@@ -31,9 +34,16 @@ void _throwIfNegative(int value) {
   }
 }
 
+bool _hasUnionAsXUnionFlag(ByteData data) {
+  assert(data.buffer.lengthInBytes > kMessageFlagOffset);
+  return (data.getUint8(kMessageFlagOffset) & _kUnionAsXUnionFlag) != 0;
+}
+
 const int _kInitialBufferSize = 1024;
 
 class Encoder {
+  Encoder({@required this.encodeUnionAsXUnionBytes});
+
   Message get message {
     final ByteData trimmed = ByteData.view(data.buffer, 0, _extent);
     return Message(trimmed, _handles);
@@ -42,9 +52,11 @@ class Encoder {
   ByteData data = ByteData(_kInitialBufferSize);
   final List<Handle> _handles = <Handle>[];
   int _extent = 0;
-  // True if a given union should be encoded as xunion bytes
-  // false if it should be encoded as legacy union bytes
-  bool encodeUnionAsXUnionBytes = defaultEnableWriteXUnionBytesForUnion;
+
+  // Indicates whether unions should be encoded as xunion. When `true`, unions
+  // are encoded as xunions (v1). When `false`, unions are encoded as
+  // static-unions (old).
+  final bool encodeUnionAsXUnionBytes;
 
   void _grow(int newSize) {
     final Uint8List newList = Uint8List(newSize)
@@ -83,7 +95,7 @@ class Encoder {
     alloc(kMessageHeaderSize);
     encodeUint32(txid, kMessageTxidOffset);
     if (encodeUnionAsXUnionBytes) {
-      encodeUint8(1, kMessageFlagOffset);
+      encodeUint8(_kUnionAsXUnionFlag, kMessageFlagOffset);
     } else {
       encodeUint8(0, kMessageFlagOffset);
     }
@@ -144,8 +156,10 @@ class Encoder {
 class Decoder {
   Decoder(Message message)
       : data = message.data,
-        handles = message.handles;
-  Decoder.fromRawArgs(this.data, this.handles);
+        handles = message.handles,
+        decodeUnionFromXUnionBytes = _hasUnionAsXUnionFlag(message.data);
+
+  Decoder.fromRawArgs(this.data, this.handles, this.decodeUnionFromXUnionBytes);
 
   ByteData data;
   List<Handle> handles;

@@ -10,7 +10,8 @@ void main() {
     test('decode xunion bytes into union', () {
       int inputValue = 5;
 
-      var encoder = $fidl.Encoder()..alloc(24);
+      var encoder = $fidl.Encoder(encodeUnionAsXUnionBytes: false)
+        ..alloc(24);
 
       var xunion = XUnion.withPrimitive(inputValue);
       kXUnion_Type.encode(encoder, xunion, 0);
@@ -25,13 +26,13 @@ void main() {
     test('encode xunion bytes from union', () {
       int inputValue = 5;
 
-      var xunionEncoder = $fidl.Encoder()..alloc(24);
+      var xunionEncoder = $fidl.Encoder(encodeUnionAsXUnionBytes: false)
+        ..alloc(24);
       var xunion = XUnion.withPrimitive(inputValue);
       kXUnion_Type.encode(xunionEncoder, xunion, 0);
 
-      var unionEncoder = $fidl.Encoder()
-        ..alloc(24)
-        ..encodeUnionAsXUnionBytes = true;
+      var unionEncoder = $fidl.Encoder(encodeUnionAsXUnionBytes: true)
+        ..alloc(24);
       var union = Union.withPrimitive(inputValue);
       kUnion_Type.encode(unionEncoder, union, 0);
 

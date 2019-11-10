@@ -127,6 +127,10 @@ const $fidl.MethodType _kParent_GetChild_Type = $fidl.MethodType(
         offsetV1: 16),
   ],
   name: r"Parent.GetChild",
+  requestInlineSizeOld: 16,
+  requestInlineSizeV1: 16,
+  responseInlineSizeOld: 24,
+  responseInlineSizeV1: 24,
 );
 // getChildRequest: () -> ($fidl.InterfaceRequest<Child> r)
 const int _kParent_GetChildRequest_Ordinal = 0x3faacc7e00000000;
@@ -140,6 +144,10 @@ const $fidl.MethodType _kParent_GetChildRequest_Type = $fidl.MethodType(
         offsetV1: 16),
   ],
   name: r"Parent.GetChildRequest",
+  requestInlineSizeOld: 16,
+  requestInlineSizeV1: 16,
+  responseInlineSizeOld: 24,
+  responseInlineSizeV1: 24,
 );
 // takeChild: ($fidl.InterfaceHandle<Child> c)
 const int _kParent_TakeChild_Ordinal = 0x4c0642f900000000;
@@ -153,6 +161,10 @@ const $fidl.MethodType _kParent_TakeChild_Type = $fidl.MethodType(
   ],
   response: null,
   name: r"Parent.TakeChild",
+  requestInlineSizeOld: 24,
+  requestInlineSizeV1: 24,
+  responseInlineSizeOld: 0,
+  responseInlineSizeV1: 0,
 );
 // takeChildRequest: ($fidl.InterfaceRequest<Child> r)
 const int _kParent_TakeChildRequest_Ordinal = 0x5ec3867a00000000;
@@ -166,6 +178,10 @@ const $fidl.MethodType _kParent_TakeChildRequest_Type = $fidl.MethodType(
   ],
   response: null,
   name: r"Parent.TakeChildRequest",
+  requestInlineSizeOld: 24,
+  requestInlineSizeV1: 24,
+  responseInlineSizeOld: 0,
+  responseInlineSizeV1: 0,
 );
 
 abstract class Parent extends $fidl.Service {
@@ -232,7 +248,8 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
         try {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = _kParent_GetChild_Type.response;
-          $decoder.claimMemory(24);
+          $decoder.claimMemory(
+              _kParent_GetChild_Type.decodeResponseInlineSize($decoder));
           // ignore: prefer_const_declarations
           final $response = $types[0].decode($decoder, 0);
 
@@ -255,7 +272,8 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kParent_GetChildRequest_Type.response;
-          $decoder.claimMemory(24);
+          $decoder.claimMemory(
+              _kParent_GetChildRequest_Type.decodeResponseInlineSize($decoder));
           // ignore: prefer_const_declarations
           final $response = $types[0].decode($decoder, 0);
 
@@ -287,7 +305,8 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(_kParent_GetChild_Ordinal, 0);
     final $completer = $async.Completer<$fidl.InterfaceHandle<Child>>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
@@ -302,7 +321,8 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(_kParent_GetChildRequest_Ordinal, 0);
     final $completer = $async.Completer<$fidl.InterfaceRequest<Child>>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
@@ -317,9 +337,11 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(_kParent_TakeChild_Ordinal, 0);
-    $encoder.alloc(24 - $fidl.kMessageHeaderSize);
+    $encoder.alloc(_kParent_TakeChild_Type.encodingRequestInlineSize($encoder) -
+        $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types = _kParent_TakeChild_Type.request;
     $types[0].encode($encoder, c, 0);
     return $async.Future.sync(() {
@@ -335,9 +357,12 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder();
+    final $fidl.Encoder $encoder = $fidl.Encoder(
+        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(_kParent_TakeChildRequest_Ordinal, 0);
-    $encoder.alloc(24 - $fidl.kMessageHeaderSize);
+    $encoder.alloc(
+        _kParent_TakeChildRequest_Type.encodingRequestInlineSize($encoder) -
+            $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types =
         _kParent_TakeChildRequest_Type.request;
     $types[0].encode($encoder, r, 0);
@@ -360,14 +385,19 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
         try {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = _kParent_GetChild_Type.request;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(
+              _kParent_GetChild_Type.decodeRequestInlineSize($decoder));
           final $async.Future<$fidl.InterfaceHandle<Child>> $future =
               impl.getChild();
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder();
+            final $fidl.Encoder $encoder = $fidl.Encoder(
+                encodeUnionAsXUnionBytes:
+                    $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
                 _kParent_GetChild_Ordinal, $message.txid);
-            $encoder.alloc(24 - $fidl.kMessageHeaderSize);
+            $encoder.alloc(
+                _kParent_GetChild_Type.encodingResponseInlineSize($encoder) -
+                    $fidl.kMessageHeaderSize);
             final List<$fidl.MemberType> $types =
                 _kParent_GetChild_Type.response;
             $types[0].encode($encoder, $response, 0);
@@ -392,14 +422,19 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kParent_GetChildRequest_Type.request;
-          $decoder.claimMemory(16);
+          $decoder.claimMemory(
+              _kParent_GetChildRequest_Type.decodeRequestInlineSize($decoder));
           final $async.Future<$fidl.InterfaceRequest<Child>> $future =
               impl.getChildRequest();
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder();
+            final $fidl.Encoder $encoder = $fidl.Encoder(
+                encodeUnionAsXUnionBytes:
+                    $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
                 _kParent_GetChildRequest_Ordinal, $message.txid);
-            $encoder.alloc(24 - $fidl.kMessageHeaderSize);
+            $encoder.alloc(_kParent_GetChildRequest_Type
+                    .encodingResponseInlineSize($encoder) -
+                $fidl.kMessageHeaderSize);
             final List<$fidl.MemberType> $types =
                 _kParent_GetChildRequest_Type.response;
             $types[0].encode($encoder, $response, 0);
@@ -423,7 +458,8 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
         try {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types = _kParent_TakeChild_Type.request;
-          $decoder.claimMemory(24);
+          $decoder.claimMemory(
+              _kParent_TakeChild_Type.decodeRequestInlineSize($decoder));
           final $async.Future<void> $future = impl.takeChild(
             $types[0].decode($decoder, 0),
           );
@@ -443,7 +479,8 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
           Timeline.startSync(_name);
           final List<$fidl.MemberType> $types =
               _kParent_TakeChildRequest_Type.request;
-          $decoder.claimMemory(24);
+          $decoder.claimMemory(
+              _kParent_TakeChildRequest_Type.decodeRequestInlineSize($decoder));
           final $async.Future<void> $future = impl.takeChildRequest(
             $types[0].decode($decoder, 0),
           );
