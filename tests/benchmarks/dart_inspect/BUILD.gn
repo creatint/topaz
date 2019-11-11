@@ -6,6 +6,7 @@ import("//topaz/runtime/dart/dart_fuchsia_test.gni")
 
 dart_aot_app("dart_inspect_benchmarks") {
   testonly = true
+  product = true
 
   main_dart = "lib/dart_inspect_benchmarks.dart"
 

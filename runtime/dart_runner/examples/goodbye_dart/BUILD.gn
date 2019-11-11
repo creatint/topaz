@@ -30,6 +30,7 @@ dart_aot_app("goodbye_dart_aot") {
     "goodbye_dart.dart",
   ]
   main_dart = "goodbye_dart.dart"
+  product = true
 
   source_dir = "."
   deps = [

@@ -71,15 +71,3 @@ generate_dart_profiler_symbols("libdart_precompiled_runtime") {
   library_path = "${_shared_out_dir}/libdart_precompiled_runtime.so"
   output = "${target_gen_dir}/libdart_precompiled_runtime.dartprofilersymbols"
 }
-
-generate_dart_profiler_symbols("dart_jit_runner") {
-  library_label = "//topaz/runtime/dart_runner:dart_jit_runner_bin"
-  library_path = "${root_out_dir}/dart_jit_runner"
-  output = "${target_gen_dir}/dart_jit_runner.dartprofilersymbols"
-}
-
-generate_dart_profiler_symbols("dart_aot_runner") {
-  library_label = "//topaz/runtime/dart_runner:dart_aot_runner_bin"
-  library_path = "${root_out_dir}/dart_aot_runner"
-  output = "${target_gen_dir}/dart_aot_runner.dartprofilersymbols"
-}
