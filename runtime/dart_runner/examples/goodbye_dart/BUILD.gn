@@ -60,6 +60,9 @@ package("goodbye_dart_test") {
     {
       name = "goodbye_dart_test"
       environments = basic_envs
+
+      # TODO(fxbug.dev/8845): Re-enable once made into a component.
+      disabled = true
     },
   ]
   deps = [
