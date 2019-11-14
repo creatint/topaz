@@ -11,7 +11,7 @@ action("sky_engine_sources") {
 
   _args = [
     "--sky_engine_framework",
-    rebase_path("//third_party/dart-pkg/git/flutter/bin/cache/pkg/sky_engine"),
+    rebase_path("//prebuilt/third_party/sky_engine"),
     "--out_dir",
     rebase_path(root_gen_dir),
   ]
