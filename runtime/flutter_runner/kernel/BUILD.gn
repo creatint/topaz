@@ -4,10 +4,6 @@
 
 import("//build/dart/dart_tool.gni")
 import("//build/host.gni")
-import("//third_party/dart/utils/compile_platform.gni")
-import("//topaz/runtime/dart/dart_component.gni")
-import("//topaz/runtime/dart/dart_kernel.gni")
-import("//topaz/runtime/flutter_runner/prebuilt_framework.gni")
 
 copy("kernel_platform_files") {
   # TODO(kaushikiska): Currently flutter bundles variants of patched SDK for release
