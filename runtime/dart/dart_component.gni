@@ -2,9 +2,9 @@
 # Use of this source code is governed by a BSD-style license that can be
 # found in the LICENSE file.
 
+import("//build/dart/dart.gni")
 import("//build/package.gni")
 import("//build/tools/json_merge/json_merge.gni")
-import("//third_party/dart/build/dart/dart_action.gni")
 import("//topaz/runtime/dart/config.gni")
 import("//topaz/runtime/dart/dart_kernel.gni")
 
@@ -840,7 +840,7 @@ template("flutter_dart_aot_component") {
       pool = "//build/dart:dart_pool($dart_toolchain)"
     }
 
-    dart_action(stats_target_name) {
+    action(stats_target_name) {
       if (defined(invoker.testonly)) {
         testonly = invoker.testonly
       }
@@ -848,7 +848,7 @@ template("flutter_dart_aot_component") {
       deps = [
         ":$snapshot_target_name",
       ]
-      script = "//third_party/dart/pkg/vm/bin/run_binary_size_analysis.dart"
+      script = prebuilt_dart
       inputs = [
         stats_json_path,
       ]
@@ -856,6 +856,8 @@ template("flutter_dart_aot_component") {
         "$stats_html_dir/index.html",
       ]
       args = [
+        rebase_path(
+            "//third_party/dart/pkg/vm/bin/run_binary_size_analysis.dart"),
         rebase_path(stats_json_path),
         rebase_path(stats_html_dir),
       ]
