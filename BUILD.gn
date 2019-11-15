@@ -18,8 +18,6 @@ group("topaz") {
     "//topaz/examples/fidl/compiler",
     "//topaz/examples/fidl/echo_client_async_dart",
     "//topaz/examples/fidl/echo_server_async_dart",
-    "//topaz/examples/ledger/todo_list",
-    "//topaz/examples/ledger/todo_list_sledge",
     "//topaz/examples/mediaplayer/mediaplayer_flutter",
     "//topaz/examples/mine_digger",
     "//topaz/examples/ui/button_flutter",
@@ -79,7 +77,6 @@ group("tests") {
       "//topaz/lib/setui/common:lib_setui_common_test($host_toolchain)",
       "//topaz/lib/setui/flutter:lib_setui_flutter_test($host_toolchain)",
       "//topaz/lib/tiler:tiler_unittests($host_toolchain)",
-      "//topaz/examples/ledger/todo_list:todo_list_test($host_toolchain)",
       "//topaz/public/dart/fuchsia_inspect_flutter/examples/torus15:torus15_flutter_test($host_toolchain)",
     ]
   }
@@ -91,7 +88,6 @@ group("tests") {
                   "//garnet/packages/tests:scenic",
                   "//garnet/packages/tools:scenic",
                   "//peridot/packages:peridot",
-                  "//peridot/packages/tests:ledger",
                   "//peridot/packages/tests:modular_test_harness",
                   "//src/fonts",
                   "//src/modular/bundles:integration_testing",

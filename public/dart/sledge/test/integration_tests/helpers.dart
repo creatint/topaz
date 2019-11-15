@@ -48,7 +48,7 @@ Future<LedgerTestInstanceProvider> newLedgerTestInstanceProvider() async {
 class _SledgeForTesting extends Sledge {
   _SledgeForTesting(fidl.InterfaceHandle<ledger.Ledger> ledgerHandle,
       SledgePageId pageId, this._controller)
-      : super.fromLedgerHandle(ledgerHandle, pageId);
+      : super(ledgerHandle, pageId);
   // Prevents the connection to Ledger from being closed.
   // ignore: unused_field
   final ComponentControllerProxy _controller;

@@ -6,9 +6,7 @@ import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:fidl_fuchsia_ledger/fidl_async.dart' as ledger;
-import 'package:fidl_fuchsia_modular/fidl_async.dart' as modular;
 import 'package:fidl/fidl.dart' as fidl;
-import 'package:zircon/zircon.dart' show ChannelPair;
 
 import 'document/change.dart';
 import 'document/document.dart';
@@ -51,15 +49,7 @@ class Sledge {
   }
 
   /// Default constructor.
-  factory Sledge(modular.ComponentContext componentContext,
-      [SledgePageId pageId]) {
-    final pair = ChannelPair();
-    componentContext.getLedger(fidl.InterfaceRequest(pair.first));
-    return Sledge._(fidl.InterfaceHandle(pair.second), pageId);
-  }
-
-  /// Internal constructor
-  Sledge._(fidl.InterfaceHandle<ledger.Ledger> ledgerHandle,
+  Sledge(fidl.InterfaceHandle<ledger.Ledger> ledgerHandle,
       [SledgePageId pageId])
       : _pageProxy = ledger.PageProxy(),
         _ledgerObjectsFactory = LedgerObjectsFactoryImpl() {
@@ -89,11 +79,6 @@ class Sledge {
         ModificationQueue(this, _ledgerObjectsFactory, _pageProxy);
     _subscribtion = _subscribe();
   }
-
-  /// Convenience constructor for integration tests.
-  Sledge.fromLedgerHandle(fidl.InterfaceHandle<ledger.Ledger> ledgerHandle,
-      [SledgePageId pageId])
-      : this._(ledgerHandle, pageId);
 
   /// Closes connection to ledger.
   void close() {
