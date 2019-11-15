@@ -67,11 +67,12 @@ if (current_toolchain == dart_toolchain) {
 
     _dot_packages_file = "$target_gen_dir/$_library_target_name.packages"
 
-    _flutter_shell_label =
-        "//third_party/flutter/shell/testing/($host_toolchain)"
-    _flutter_shell_out_dir =
-        get_label_info(_flutter_shell_label, "root_out_dir")
-    _flutter_shell_bin = "$_flutter_shell_out_dir/flutter_tester"
+    # The binary does not depend on the runtime-mode, using debug is fine.
+    _flutter_tester_label = "//topaz/runtime/flutter_runner:flutter_tester"
+    _flutter_tester_gen_dir =
+        get_label_info(_flutter_tester_label, "target_gen_dir")
+    _flutter_tester_bin =
+        rebase_path("${_flutter_tester_gen_dir}/flutter_tester")
 
     _precompiled_kernel_target_names = []
     _tests_json = []
@@ -255,7 +256,7 @@ if (current_toolchain == dart_toolchain) {
       },
       {
         flag = "--flutter-shell"
-        path = _flutter_shell_bin
+        path = _flutter_tester_bin
         base = root_build_dir
       },
       {
@@ -280,7 +281,7 @@ if (current_toolchain == dart_toolchain) {
       inputs = [
         _dot_packages_file,
         _bootstrap_filename,
-        _flutter_shell_bin,
+        _flutter_tester_bin,
         _tests_filename,
       ]
 
@@ -301,7 +302,7 @@ if (current_toolchain == dart_toolchain) {
                ":${_kernel_target_name}_kernel",
                ":$_snapshot_target_name",
                ":$_copy_target_name",
-               _flutter_shell_label,
+               _flutter_tester_label,
              ] + _precompiled_kernel_target_names
 
       metadata = {
