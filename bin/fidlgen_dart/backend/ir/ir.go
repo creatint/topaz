@@ -996,7 +996,7 @@ func (c *compiler) compileMethod(val types.Method, protocol Interface, fidlProto
 	}
 	_, transitional := val.LookupAttribute("Transitional")
 	return Method{
-		Ordinals: types.NewOrdinalsStep5(
+		Ordinals: types.NewOrdinalsStep7(
 			val,
 			fmt.Sprintf("_k%s_%s_Ordinal", protocol.Name, val.Name),
 			fmt.Sprintf("_k%s_%s_GenOrdinal", protocol.Name, val.Name),

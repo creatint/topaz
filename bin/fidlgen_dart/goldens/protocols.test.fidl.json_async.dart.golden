@@ -905,7 +905,7 @@ class WithAndWithoutRequestResponseProxy
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(
-        _kWithAndWithoutRequestResponse_NoRequestNoResponse_Ordinal, 0);
+        _kWithAndWithoutRequestResponse_NoRequestNoResponse_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -922,7 +922,7 @@ class WithAndWithoutRequestResponseProxy
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(
-        _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Ordinal, 0);
+        _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_GenOrdinal, 0);
     final $completer = $async.Completer<void>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -939,7 +939,7 @@ class WithAndWithoutRequestResponseProxy
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(
-        _kWithAndWithoutRequestResponse_NoRequestWithResponse_Ordinal, 0);
+        _kWithAndWithoutRequestResponse_NoRequestWithResponse_GenOrdinal, 0);
     final $completer = $async.Completer<String>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -956,7 +956,7 @@ class WithAndWithoutRequestResponseProxy
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(
-        _kWithAndWithoutRequestResponse_WithRequestNoResponse_Ordinal, 0);
+        _kWithAndWithoutRequestResponse_WithRequestNoResponse_GenOrdinal, 0);
     $encoder.alloc(_kWithAndWithoutRequestResponse_WithRequestNoResponse_Type
             .encodingRequestInlineSize($encoder) -
         $fidl.kMessageHeaderSize);
@@ -979,7 +979,7 @@ class WithAndWithoutRequestResponseProxy
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(
-        _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Ordinal, 0);
+        _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_GenOrdinal, 0);
     $encoder.alloc(_kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Type
             .encodingRequestInlineSize($encoder) -
         $fidl.kMessageHeaderSize);
@@ -1002,7 +1002,7 @@ class WithAndWithoutRequestResponseProxy
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(
-        _kWithAndWithoutRequestResponse_WithRequestWithResponse_Ordinal, 0);
+        _kWithAndWithoutRequestResponse_WithRequestWithResponse_GenOrdinal, 0);
     $encoder.alloc(_kWithAndWithoutRequestResponse_WithRequestWithResponse_Type
             .encodingRequestInlineSize($encoder) -
         $fidl.kMessageHeaderSize);
@@ -1046,7 +1046,7 @@ class WithAndWithoutRequestResponseBinding
               encodeUnionAsXUnionBytes:
                   $fidl.defaultEnableWriteXUnionBytesForUnion);
           $encoder.encodeMessageHeader(
-              _kWithAndWithoutRequestResponse_OnEmptyResponse_Ordinal, 0);
+              _kWithAndWithoutRequestResponse_OnEmptyResponse_GenOrdinal, 0);
           $encoder.alloc(_kWithAndWithoutRequestResponse_OnEmptyResponse_Type
                   .encodingResponseInlineSize($encoder) -
               $fidl.kMessageHeaderSize);
@@ -1062,7 +1062,7 @@ class WithAndWithoutRequestResponseBinding
               encodeUnionAsXUnionBytes:
                   $fidl.defaultEnableWriteXUnionBytesForUnion);
           $encoder.encodeMessageHeader(
-              _kWithAndWithoutRequestResponse_OnWithResponse_Ordinal, 0);
+              _kWithAndWithoutRequestResponse_OnWithResponse_GenOrdinal, 0);
           $encoder.alloc(_kWithAndWithoutRequestResponse_OnWithResponse_Type
                   .encodingResponseInlineSize($encoder) -
               $fidl.kMessageHeaderSize);
@@ -1119,7 +1119,7 @@ class WithAndWithoutRequestResponseBinding
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Ordinal,
+                _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_GenOrdinal,
                 $message.txid);
             $respond($encoder.message);
           }, onError: (_e) {
@@ -1153,7 +1153,7 @@ class WithAndWithoutRequestResponseBinding
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kWithAndWithoutRequestResponse_NoRequestWithResponse_Ordinal,
+                _kWithAndWithoutRequestResponse_NoRequestWithResponse_GenOrdinal,
                 $message.txid);
             $encoder.alloc(
                 _kWithAndWithoutRequestResponse_NoRequestWithResponse_Type
@@ -1221,7 +1221,7 @@ class WithAndWithoutRequestResponseBinding
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Ordinal,
+                _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_GenOrdinal,
                 $message.txid);
             $respond($encoder.message);
           }, onError: (_e) {
@@ -1257,7 +1257,7 @@ class WithAndWithoutRequestResponseBinding
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kWithAndWithoutRequestResponse_WithRequestWithResponse_Ordinal,
+                _kWithAndWithoutRequestResponse_WithRequestWithResponse_GenOrdinal,
                 $message.txid);
             $encoder.alloc(
                 _kWithAndWithoutRequestResponse_WithRequestWithResponse_Type
@@ -1520,7 +1520,8 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kWithErrorSyntax_ResponseAsStruct_Ordinal, 0);
+    $encoder.encodeMessageHeader(
+        _kWithErrorSyntax_ResponseAsStruct_GenOrdinal, 0);
     final $completer =
         $async.Completer<WithErrorSyntax$ResponseAsStruct$Response>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
@@ -1537,7 +1538,8 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kWithErrorSyntax_ErrorAsPrimitive_Ordinal, 0);
+    $encoder.encodeMessageHeader(
+        _kWithErrorSyntax_ErrorAsPrimitive_GenOrdinal, 0);
     final $completer = $async.Completer<void>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -1553,7 +1555,7 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kWithErrorSyntax_ErrorAsEnum_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kWithErrorSyntax_ErrorAsEnum_GenOrdinal, 0);
     final $completer = $async.Completer<void>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -1597,7 +1599,7 @@ class WithErrorSyntaxBinding extends $fidl.AsyncBinding<WithErrorSyntax> {
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kWithErrorSyntax_ResponseAsStruct_Ordinal, $message.txid);
+                _kWithErrorSyntax_ResponseAsStruct_GenOrdinal, $message.txid);
             $encoder.alloc(_kWithErrorSyntax_ResponseAsStruct_Type
                     .encodingResponseInlineSize($encoder) -
                 $fidl.kMessageHeaderSize);
@@ -1643,7 +1645,7 @@ class WithErrorSyntaxBinding extends $fidl.AsyncBinding<WithErrorSyntax> {
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kWithErrorSyntax_ErrorAsPrimitive_Ordinal, $message.txid);
+                _kWithErrorSyntax_ErrorAsPrimitive_GenOrdinal, $message.txid);
             $encoder.alloc(_kWithErrorSyntax_ErrorAsPrimitive_Type
                     .encodingResponseInlineSize($encoder) -
                 $fidl.kMessageHeaderSize);
@@ -1688,7 +1690,7 @@ class WithErrorSyntaxBinding extends $fidl.AsyncBinding<WithErrorSyntax> {
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kWithErrorSyntax_ErrorAsEnum_Ordinal, $message.txid);
+                _kWithErrorSyntax_ErrorAsEnum_GenOrdinal, $message.txid);
             $encoder.alloc(_kWithErrorSyntax_ErrorAsEnum_Type
                     .encodingResponseInlineSize($encoder) -
                 $fidl.kMessageHeaderSize);
@@ -1942,7 +1944,7 @@ class ChannelProtocolProxy extends $fidl.AsyncProxy<ChannelProtocol>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kChannelProtocol_MethodA_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kChannelProtocol_MethodA_GenOrdinal, 0);
     $encoder.alloc(
         _kChannelProtocol_MethodA_Type.encodingRequestInlineSize($encoder) -
             $fidl.kMessageHeaderSize);
@@ -1971,7 +1973,7 @@ class ChannelProtocolProxy extends $fidl.AsyncProxy<ChannelProtocol>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kChannelProtocol_MethodB_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kChannelProtocol_MethodB_GenOrdinal, 0);
     $encoder.alloc(
         _kChannelProtocol_MethodB_Type.encodingRequestInlineSize($encoder) -
             $fidl.kMessageHeaderSize);
@@ -1994,7 +1996,7 @@ class ChannelProtocolProxy extends $fidl.AsyncProxy<ChannelProtocol>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kChannelProtocol_MutateSocket_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kChannelProtocol_MutateSocket_GenOrdinal, 0);
     $encoder.alloc(_kChannelProtocol_MutateSocket_Type
             .encodingRequestInlineSize($encoder) -
         $fidl.kMessageHeaderSize);
@@ -2023,7 +2025,7 @@ class ChannelProtocolBinding extends $fidl.AsyncBinding<ChannelProtocol> {
           final $fidl.Encoder $encoder = $fidl.Encoder(
               encodeUnionAsXUnionBytes:
                   $fidl.defaultEnableWriteXUnionBytesForUnion);
-          $encoder.encodeMessageHeader(_kChannelProtocol_EventA_Ordinal, 0);
+          $encoder.encodeMessageHeader(_kChannelProtocol_EventA_GenOrdinal, 0);
           $encoder.alloc(_kChannelProtocol_EventA_Type
                   .encodingResponseInlineSize($encoder) -
               $fidl.kMessageHeaderSize);
@@ -2083,7 +2085,7 @@ class ChannelProtocolBinding extends $fidl.AsyncBinding<ChannelProtocol> {
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kChannelProtocol_MethodB_Ordinal, $message.txid);
+                _kChannelProtocol_MethodB_GenOrdinal, $message.txid);
             $encoder.alloc(_kChannelProtocol_MethodB_Type
                     .encodingResponseInlineSize($encoder) -
                 $fidl.kMessageHeaderSize);
@@ -2121,7 +2123,7 @@ class ChannelProtocolBinding extends $fidl.AsyncBinding<ChannelProtocol> {
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kChannelProtocol_MutateSocket_Ordinal, $message.txid);
+                _kChannelProtocol_MutateSocket_GenOrdinal, $message.txid);
             $encoder.alloc(_kChannelProtocol_MutateSocket_Type
                     .encodingResponseInlineSize($encoder) -
                 $fidl.kMessageHeaderSize);

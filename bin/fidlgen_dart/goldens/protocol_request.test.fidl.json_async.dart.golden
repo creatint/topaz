@@ -307,7 +307,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kParent_GetChild_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kParent_GetChild_GenOrdinal, 0);
     final $completer = $async.Completer<$fidl.InterfaceHandle<Child>>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -323,7 +323,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kParent_GetChildRequest_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kParent_GetChildRequest_GenOrdinal, 0);
     final $completer = $async.Completer<$fidl.InterfaceRequest<Child>>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
     return $completer.future;
@@ -339,7 +339,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kParent_TakeChild_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kParent_TakeChild_GenOrdinal, 0);
     $encoder.alloc(_kParent_TakeChild_Type.encodingRequestInlineSize($encoder) -
         $fidl.kMessageHeaderSize);
     final List<$fidl.MemberType> $types = _kParent_TakeChild_Type.request;
@@ -359,7 +359,7 @@ class ParentProxy extends $fidl.AsyncProxy<Parent> implements Parent {
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kParent_TakeChildRequest_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kParent_TakeChildRequest_GenOrdinal, 0);
     $encoder.alloc(
         _kParent_TakeChildRequest_Type.encodingRequestInlineSize($encoder) -
             $fidl.kMessageHeaderSize);
@@ -394,7 +394,7 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kParent_GetChild_Ordinal, $message.txid);
+                _kParent_GetChild_GenOrdinal, $message.txid);
             $encoder.alloc(
                 _kParent_GetChild_Type.encodingResponseInlineSize($encoder) -
                     $fidl.kMessageHeaderSize);
@@ -431,7 +431,7 @@ class ParentBinding extends $fidl.AsyncBinding<Parent> {
                 encodeUnionAsXUnionBytes:
                     $fidl.defaultEnableWriteXUnionBytesForUnion);
             $encoder.encodeMessageHeader(
-                _kParent_GetChildRequest_Ordinal, $message.txid);
+                _kParent_GetChildRequest_GenOrdinal, $message.txid);
             $encoder.alloc(_kParent_GetChildRequest_Type
                     .encodingResponseInlineSize($encoder) -
                 $fidl.kMessageHeaderSize);

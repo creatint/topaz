@@ -336,7 +336,7 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kInterface_Method_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kInterface_Method_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -368,7 +368,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
           final $fidl.Encoder $encoder = $fidl.Encoder(
               encodeUnionAsXUnionBytes:
                   $fidl.defaultEnableWriteXUnionBytesForUnion);
-          $encoder.encodeMessageHeader(_kInterface_OnEvent_Ordinal, 0);
+          $encoder.encodeMessageHeader(_kInterface_OnEvent_GenOrdinal, 0);
           $encoder.alloc(
               _kInterface_OnEvent_Type.encodingResponseInlineSize($encoder) -
                   $fidl.kMessageHeaderSize);

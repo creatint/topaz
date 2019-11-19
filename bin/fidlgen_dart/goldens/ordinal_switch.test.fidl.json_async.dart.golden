@@ -218,7 +218,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kSwitchingOrdinals_OrdinalFive_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kSwitchingOrdinals_OrdinalFive_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -235,7 +235,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
     $encoder.encodeMessageHeader(
-        _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal, 0);
+        _kSwitchingOrdinals_OnlyGeneratedOrdinal_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -271,7 +271,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
               encodeUnionAsXUnionBytes:
                   $fidl.defaultEnableWriteXUnionBytesForUnion);
           $encoder.encodeMessageHeader(
-              _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal, 0);
+              _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal, 0);
           $encoder.alloc(_kSwitchingOrdinals_EventOrdinalFifteen_Type
                   .encodingResponseInlineSize($encoder) -
               $fidl.kMessageHeaderSize);
@@ -287,7 +287,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
               encodeUnionAsXUnionBytes:
                   $fidl.defaultEnableWriteXUnionBytesForUnion);
           $encoder.encodeMessageHeader(
-              _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal, 0);
+              _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_GenOrdinal, 0);
           $encoder.alloc(_kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type
                   .encodingResponseInlineSize($encoder) -
               $fidl.kMessageHeaderSize);

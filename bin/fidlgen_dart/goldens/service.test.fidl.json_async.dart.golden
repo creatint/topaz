@@ -126,7 +126,7 @@ class FirstProtocolProxy extends $fidl.AsyncProxy<FirstProtocol>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kFirstProtocol_MethodOnFirst_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kFirstProtocol_MethodOnFirst_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
@@ -253,7 +253,7 @@ class SecondProtocolProxy extends $fidl.AsyncProxy<SecondProtocol>
 
     final $fidl.Encoder $encoder = $fidl.Encoder(
         encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
-    $encoder.encodeMessageHeader(_kSecondProtocol_MethodOnSecond_Ordinal, 0);
+    $encoder.encodeMessageHeader(_kSecondProtocol_MethodOnSecond_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
     });
