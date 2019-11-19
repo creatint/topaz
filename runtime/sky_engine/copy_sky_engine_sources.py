@@ -47,17 +47,23 @@ def main():
     out_paths = []
     for source in sky_engine_sources:
         src_rel_path = os.path.relpath(source, source_dir)
-        out_path = os.path.normpath(
-            os.path.join('dart-pkg', 'sky_engine', src_rel_path))
-        out_paths.append(out_path)
         if not dry_run:
-            shutil.copy2(source, out_path)
+            abs_out_path = os.path.normpath(os.path.join(out_dir, src_rel_path))
+            dir_name = os.path.dirname(abs_out_path)
+            if not os.path.exists(dir_name):
+                os.makedirs(dir_name)
+            shutil.copy2(source, abs_out_path)
+        else:
+            rel_out_path = os.path.normpath(
+                os.path.join('dart-pkg', 'sky_engine', src_rel_path))
+            # dry-run requires relative paths
+            out_paths.append(rel_out_path)
 
-    res = {}
-    res['sources'] = sky_engine_sources
-    res['outputs'] = out_paths
-
-    print(json.dumps(res))
+    if dry_run:
+        res = {}
+        res['sources'] = sky_engine_sources
+        res['outputs'] = out_paths
+        print(json.dumps(res))
     return 0
 
 
