@@ -21,3 +21,12 @@ prebuilt_package("flutter_aot_runner") {
 prebuilt_package("flutter_aot_product_runner") {
   archive = "//prebuilt/third_party/flutter/$target_cpu/release/aot/flutter_aot_product_runner-0.far"
 }
+
+copy("flutter_tester") {
+  sources = [
+    "//prebuilt/third_party/flutter/${target_cpu}/debug/jit/flutter_binaries/flutter_tester",
+  ]
+  outputs = [
+    "$target_gen_dir/flutter_tester",
+  ]
+}
