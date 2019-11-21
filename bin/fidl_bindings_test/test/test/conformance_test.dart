@@ -17,7 +17,7 @@ void main() {
     group('encode success cases', () {
       EncodeSuccessCase.run(
           Encoders.old,
-          '3ByteObjectAlignmentInStruct',
+          '3ByteObjectAlignmentInStruct_old',
           ThreeByteInStruct(
               elem1: ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
               elem2: ThreeByte(elem1: 0x4, elem2: 0x5, elem3: 0x6),
@@ -30,7 +30,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          '5ByteObjectAlignmentInStruct',
+          '5ByteObjectAlignmentInStruct_old',
           FiveByteInStruct(
               elem1: FiveByte(elem1: 0x1020304, elem2: 0x5),
               elem2: FiveByte(elem1: 0x6070809, elem2: 0xa),
@@ -44,7 +44,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          '3ByteObjectAlignmentInVector',
+          '3ByteObjectAlignmentInVector_old',
           ThreeByteInVector(elems: [
             ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
             ThreeByte(elem1: 0x4, elem2: 0x5, elem3: 0x6),
@@ -60,7 +60,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          '5ByteObjectAlignmentInVector',
+          '5ByteObjectAlignmentInVector_old',
           FiveByteInVector(elems: [
             FiveByte(elem1: 0x1020304, elem2: 0x5),
             FiveByte(elem1: 0x6070809, elem2: 0xa),
@@ -77,7 +77,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          '3ByteObjectAlignmentInArray',
+          '3ByteObjectAlignmentInArray_old',
           ThreeByteInArray(elems: [
             ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
             ThreeByte(elem1: 0x4, elem2: 0x5, elem3: 0x6),
@@ -91,7 +91,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          '5ByteObjectAlignmentInArray',
+          '5ByteObjectAlignmentInArray_old',
           FiveByteInArray(elems: [
             FiveByte(elem1: 0x1020304, elem2: 0x5),
             FiveByte(elem1: 0x6070809, elem2: 0xa),
@@ -106,7 +106,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'EmptyStruct',
+          'EmptyStruct_old',
           EmptyStruct(),
           kEmptyStruct_Type,
           Uint8List.fromList([
@@ -115,7 +115,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'EmptyStructSandwich',
+          'EmptyStructSandwich_old',
           EmptyStructSandwich(
               before: 'before', es: EmptyStruct(), after: 'after'),
           kEmptyStructSandwich_Type,
@@ -131,7 +131,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint8Uint16Uint32Uint64',
+          'Uint8Uint16Uint32Uint64_old',
           Uint8Uint16Uint32Uint64(
               f1: 0x1, f2: 0x203, f3: 0x4050607, f4: 0x8090a0b0c0d0e0f),
           kUint8Uint16Uint32Uint64_Type,
@@ -142,7 +142,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint64Uint32Uint16Uint8',
+          'Uint64Uint32Uint16Uint8_old',
           Uint64Uint32Uint16Uint8(
               f1: 0x8090a0b0c0d0e0f, f2: 0x4050607, f3: 0x203, f4: 0x1),
           kUint64Uint32Uint16Uint8_Type,
@@ -153,7 +153,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'SimpleTableEmpty',
+          'SimpleTableEmpty_old',
           StructOfSimpleTable(table: SimpleTable()),
           kStructOfSimpleTable_Type,
           Uint8List.fromList([
@@ -163,7 +163,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'SimpleTableXAndY',
+          'SimpleTableXAndY_old',
           StructOfSimpleTable(table: SimpleTable(x: 0x2a, y: 0x43)),
           kStructOfSimpleTable_Type,
           Uint8List.fromList([
@@ -185,7 +185,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'SimpleTableJustY',
+          'SimpleTableJustY_old',
           StructOfSimpleTable(table: SimpleTable(y: 0x43)),
           kStructOfSimpleTable_Type,
           Uint8List.fromList([
@@ -206,7 +206,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'TableWithStringAndVectorNoVectorContent',
+          'TableWithStringAndVectorNoVectorContent_old',
           StructOfTableWithStringAndVector(
               table: TableWithStringAndVector(foo: 'hello', bar: 0x1b)),
           kStructOfTableWithStringAndVector_Type,
@@ -225,7 +225,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'SimpleTableThenUint64',
+          'SimpleTableThenUint64_old',
           SimpleTableThenUint64(
               table: SimpleTable(x: 0x2a, y: 0x43), number: 0xdeadbeefdeadbeef),
           kSimpleTableThenUint64_Type,
@@ -249,7 +249,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'InlineXUnionInStruct',
+          'InlineXUnionInStruct_old',
           TestInlineXUnionInStruct(
               before: 'before',
               xu: SampleXUnion.withU(0xdeadbeef),
@@ -270,7 +270,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'OptionalXUnionInStructAbsent',
+          'OptionalXUnionInStructAbsent_old',
           TestOptionalXUnionInStruct(before: 'before', after: 'after'),
           kTestOptionalXUnionInStruct_Type,
           Uint8List.fromList([
@@ -287,7 +287,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'OptionalXUnionInStructPresent',
+          'OptionalXUnionInStructPresent_old',
           TestOptionalXUnionInStruct(
               before: 'before',
               xu: SampleXUnion.withU(0xdeadbeef),
@@ -308,7 +308,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'XUnionInTableXUnionAbsent',
+          'XUnionInTableXUnionAbsent_old',
           TestXUnionInTable(
               value: XUnionInTable(before: 'before', after: 'after')),
           kTestXUnionInTable_Type,
@@ -331,7 +331,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'XUnionInTableXUnionPresent',
+          'XUnionInTableXUnionPresent_old',
           TestXUnionInTable(
               value: XUnionInTable(
                   before: 'before',
@@ -361,7 +361,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'StrictXUnion',
+          'StrictXUnion_old',
           TestStrictXUnionInStruct(xu: SampleStrictXUnion.withU(0xdeadbeef)),
           kTestStrictXUnionInStruct_Type,
           Uint8List.fromList([
@@ -373,7 +373,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'AddEthernetDeviceRequest',
+          'AddEthernetDeviceRequest_old',
           TestAddEthernetDeviceRequest(
               topologicalPath: '@/dev/sys/pci/00:03.0/e1000/ethernet',
               config: InterfaceConfig(
@@ -400,8 +400,36 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          Encoders.v1,
+          'AddEthernetDeviceRequest_v1',
+          TestAddEthernetDeviceRequest(
+              topologicalPath: '@/dev/sys/pci/00:03.0/e1000/ethernet',
+              config: InterfaceConfig(
+                  name: 'ethp0003',
+                  ipAddressConfig: IpAddressConfig.withDhcp(true)),
+              thisShouldBeAHandle: 0xffffffff),
+          kTestAddEthernetDeviceRequest_Type,
+          Uint8List.fromList([
+            0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x40, 0x2f, 0x64, 0x65, 0x76, 0x2f, 0x73, 0x79, //
+            0x73, 0x2f, 0x70, 0x63, 0x69, 0x2f, 0x30, 0x30, //
+            0x3a, 0x30, 0x33, 0x2e, 0x30, 0x2f, 0x65, 0x31, //
+            0x30, 0x30, 0x30, 0x2f, 0x65, 0x74, 0x68, 0x65, //
+            0x72, 0x6e, 0x65, 0x74, 0x00, 0x00, 0x00, 0x00, //
+            0x65, 0x74, 0x68, 0x70, 0x30, 0x30, 0x30, 0x33, //
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      EncodeSuccessCase.run(
           Encoders.old,
-          'FileGetAttrResponse',
+          'FileGetAttrResponse_old',
           FileGetAttrResponse(
               s: 0x7eadbeaf,
               attributes: NodeAttributes(
@@ -426,7 +454,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Optionals',
+          'Optionals_old',
           StructWithOptionals(
               s: EmptyStruct(),
               s2: EmptyStruct(),
@@ -461,8 +489,47 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          Encoders.v1,
+          'Optionals_v1',
+          StructWithOptionals(
+              s: EmptyStruct(),
+              s2: EmptyStruct(),
+              t: TableWithEmptyStruct(s: EmptyStruct()),
+              xu: XUnionWithEmptyStruct.withS(EmptyStruct()),
+              xu2: XUnionWithEmptyStruct.withS(EmptyStruct()),
+              u: UnionWithEmptyStruct.withS(EmptyStruct()),
+              u2: UnionWithEmptyStruct.withS(EmptyStruct())),
+          kStructWithOptionals_Type,
+          Uint8List.fromList([
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0xfe, 0xe0, 0x99, 0x74, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0xfe, 0xe0, 0x99, 0x74, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      EncodeSuccessCase.run(
           Encoders.old,
-          'Arrays',
+          'Arrays_old',
           StructWithArrays(arrInt: Int32List.fromList([0x1, 0x2]), arrString: [
             'a',
             'b'
@@ -504,7 +571,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Vectors',
+          'Vectors_old',
           StructWithVectors(
               vecEmpty: Int32List.fromList([]),
               vecInt: Int32List.fromList([0x1, 0x2]),
@@ -574,7 +641,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'BoolTrue',
+          'BoolTrue_old',
           MyBool(value: true),
           kMyBool_Type,
           Uint8List.fromList([
@@ -583,7 +650,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'BoolFalse',
+          'BoolFalse_old',
           MyBool(value: false),
           kMyBool_Type,
           Uint8List.fromList([
@@ -592,7 +659,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'ByteZero',
+          'ByteZero_old',
           MyByte(value: 0x0),
           kMyByte_Type,
           Uint8List.fromList([
@@ -601,7 +668,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Byte255',
+          'Byte255_old',
           MyByte(value: 0xff),
           kMyByte_Type,
           Uint8List.fromList([
@@ -610,7 +677,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int8Min',
+          'Int8Min_old',
           MyInt8(value: -128),
           kMyInt8_Type,
           Uint8List.fromList([
@@ -619,7 +686,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int8Zero',
+          'Int8Zero_old',
           MyInt8(value: 0x0),
           kMyInt8_Type,
           Uint8List.fromList([
@@ -628,7 +695,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int8Max',
+          'Int8Max_old',
           MyInt8(value: 0x7f),
           kMyInt8_Type,
           Uint8List.fromList([
@@ -637,7 +704,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int16Min',
+          'Int16Min_old',
           MyInt16(value: -32768),
           kMyInt16_Type,
           Uint8List.fromList([
@@ -646,7 +713,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int16Zero',
+          'Int16Zero_old',
           MyInt16(value: 0x0),
           kMyInt16_Type,
           Uint8List.fromList([
@@ -655,7 +722,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int16Max',
+          'Int16Max_old',
           MyInt16(value: 0x7fff),
           kMyInt16_Type,
           Uint8List.fromList([
@@ -664,7 +731,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int32Min',
+          'Int32Min_old',
           MyInt32(value: -2147483648),
           kMyInt32_Type,
           Uint8List.fromList([
@@ -673,7 +740,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int32Zero',
+          'Int32Zero_old',
           MyInt32(value: 0x0),
           kMyInt32_Type,
           Uint8List.fromList([
@@ -682,7 +749,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int32Max',
+          'Int32Max_old',
           MyInt32(value: 0x7fffffff),
           kMyInt32_Type,
           Uint8List.fromList([
@@ -691,7 +758,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int64Min',
+          'Int64Min_old',
           MyInt64(value: -9223372036854775808),
           kMyInt64_Type,
           Uint8List.fromList([
@@ -700,7 +767,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int64Zero',
+          'Int64Zero_old',
           MyInt64(value: 0x0),
           kMyInt64_Type,
           Uint8List.fromList([
@@ -709,7 +776,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Int64Max',
+          'Int64Max_old',
           MyInt64(value: 0x7fffffffffffffff),
           kMyInt64_Type,
           Uint8List.fromList([
@@ -718,7 +785,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint8Zero',
+          'Uint8Zero_old',
           MyUint8(value: 0x0),
           kMyUint8_Type,
           Uint8List.fromList([
@@ -727,7 +794,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint8Max',
+          'Uint8Max_old',
           MyUint8(value: 0xff),
           kMyUint8_Type,
           Uint8List.fromList([
@@ -736,7 +803,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint16Zero',
+          'Uint16Zero_old',
           MyUint16(value: 0x0),
           kMyUint16_Type,
           Uint8List.fromList([
@@ -745,7 +812,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint16Max',
+          'Uint16Max_old',
           MyUint16(value: 0xffff),
           kMyUint16_Type,
           Uint8List.fromList([
@@ -754,7 +821,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint32Zero',
+          'Uint32Zero_old',
           MyUint32(value: 0x0),
           kMyUint32_Type,
           Uint8List.fromList([
@@ -763,7 +830,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint32Max',
+          'Uint32Max_old',
           MyUint32(value: 0xffffffff),
           kMyUint32_Type,
           Uint8List.fromList([
@@ -772,7 +839,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint64Zero',
+          'Uint64Zero_old',
           MyUint64(value: 0x0),
           kMyUint64_Type,
           Uint8List.fromList([
@@ -781,7 +848,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Uint64Max',
+          'Uint64Max_old',
           MyUint64(value: 0xffffffffffffffff),
           kMyUint64_Type,
           Uint8List.fromList([
@@ -790,7 +857,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Float32Zero',
+          'Float32Zero_old',
           MyFloat32(value: 0),
           kMyFloat32_Type,
           Uint8List.fromList([
@@ -799,7 +866,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Float32One',
+          'Float32One_old',
           MyFloat32(value: 1),
           kMyFloat32_Type,
           Uint8List.fromList([
@@ -808,7 +875,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Float32MinusOne',
+          'Float32MinusOne_old',
           MyFloat32(value: -1),
           kMyFloat32_Type,
           Uint8List.fromList([
@@ -817,7 +884,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Float32Max',
+          'Float32Max_old',
           MyFloat32(value: 3.4028234663852886e+38),
           kMyFloat32_Type,
           Uint8List.fromList([
@@ -826,7 +893,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Float64Zero',
+          'Float64Zero_old',
           MyFloat64(value: 0),
           kMyFloat64_Type,
           Uint8List.fromList([
@@ -835,7 +902,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Float64One',
+          'Float64One_old',
           MyFloat64(value: 1),
           kMyFloat64_Type,
           Uint8List.fromList([
@@ -844,7 +911,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Float64MinusOne',
+          'Float64MinusOne_old',
           MyFloat64(value: -1),
           kMyFloat64_Type,
           Uint8List.fromList([
@@ -853,7 +920,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Float64Max',
+          'Float64Max_old',
           MyFloat64(value: 1.7976931348623157e+308),
           kMyFloat64_Type,
           Uint8List.fromList([
@@ -862,7 +929,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich1Case1',
+          'Sandwich1Case1_old',
           Sandwich1(
               before: 0x4030201,
               theUnion: UnionSize8Align4.withVariant(0xc0b0a09),
@@ -892,7 +959,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich1WithOptUnionPresent',
+          'Sandwich1WithOptUnionPresent_old',
           Sandwich1WithOptUnion(
               before: 0x4030201,
               optUnion: UnionSize8Align4.withVariant(0xc0b0a09),
@@ -924,7 +991,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich1WithOptUnionAbsent',
+          'Sandwich1WithOptUnionAbsent_old',
           Sandwich1WithOptUnion(before: 0x4030201, after: 0x8070605),
           kSandwich1WithOptUnion_Type,
           Uint8List.fromList([
@@ -948,7 +1015,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich2Case1',
+          'Sandwich2Case1_old',
           Sandwich2(
               before: 0x4030201,
               theUnion: UnionSize12Align4.withVariant(
@@ -981,7 +1048,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich3Case1',
+          'Sandwich3Case1_old',
           Sandwich3(
               before: 0x4030201,
               theUnion: UnionSize24Align8.withVariant(StructSize16Align8(
@@ -1017,7 +1084,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich4Case1',
+          'Sandwich4Case1_old',
           Sandwich4(
               before: 0x4030201,
               theUnion: UnionSize36Align4.withVariant(Uint8List.fromList([
@@ -1120,7 +1187,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich5Case1',
+          'Sandwich5Case1_old',
           Sandwich5(
               before: 0x4030201,
               unionOfUnion: UnionOfUnion.withSize8align4(
@@ -1159,7 +1226,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich5Case2',
+          'Sandwich5Case2_old',
           Sandwich5(
               before: 0x4030201,
               unionOfUnion: UnionOfUnion.withSize24align8(
@@ -1201,7 +1268,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case1',
+          'Sandwich6Case1_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withVectorOfUint8(
@@ -1239,7 +1306,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case1AbsentVector',
+          'Sandwich6Case1AbsentVector_old',
           Sandwich6(
               before: 0x4030201,
               theUnion:
@@ -1275,7 +1342,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case2',
+          'Sandwich6Case2_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withS('soft migrations rock!'),
@@ -1315,7 +1382,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case3',
+          'Sandwich6Case3_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withVectorS3A1([
@@ -1367,7 +1434,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case4',
+          'Sandwich6Case4_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withVectorS3A2([
@@ -1413,7 +1480,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case5',
+          'Sandwich6Case5_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withHandles(
@@ -1453,7 +1520,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case6',
+          'Sandwich6Case6_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withArrayS3A1([
@@ -1496,7 +1563,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case7',
+          'Sandwich6Case7_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withArrayS3A2([
@@ -1535,7 +1602,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich6Case8',
+          'Sandwich6Case8_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withVectorUnion(
@@ -1576,7 +1643,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich7Case1',
+          'Sandwich7Case1_old',
           Sandwich7(
               before: 0x14131211,
               optSandwich1: Sandwich1(
@@ -1618,7 +1685,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich7Case2',
+          'Sandwich7Case2_old',
           Sandwich7(before: 0x14131211, after: 0x24232221),
           kSandwich7_Type,
           Uint8List.fromList([
@@ -1640,7 +1707,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Regression1',
+          'Regression1_old',
           Regression1(f1: 0x1, f2: 0x2, f3: 0x3, f4: 0x4, f5: 0x5, f6: 0x6),
           kRegression1_Type,
           Uint8List.fromList([
@@ -1664,7 +1731,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Regression2',
+          'Regression2_old',
           Regression2(
               head: Regression1(
                   f1: 0x1, f2: 0x2, f3: 0x3, f4: 0x4, f5: 0x5, f6: 0x6),
@@ -1696,7 +1763,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Regression3Absent',
+          'Regression3Absent_old',
           Regression3(),
           kRegression3_Type,
           Uint8List.fromList([
@@ -1714,7 +1781,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Regression3Present',
+          'Regression3Present_old',
           Regression3(
               optValue: Regression2(
                   head: Regression1(
@@ -1750,7 +1817,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Size5Alignment1Array',
+          'Size5Alignment1Array_old',
           Size5Alignment1Array(a: [
             Size5Alignment1(
                 data: Uint8List.fromList([0x1, 0x2, 0x3, 0x4, 0x5])),
@@ -1782,7 +1849,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Size5Alignment4Array',
+          'Size5Alignment4Array_old',
           Size5Alignment4Array(a: [
             Size5Alignment4(four: 0x4030201, one: 0x5),
             Size5Alignment4(four: 0x9080706, one: 0xa),
@@ -1812,7 +1879,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Size5Alignment1Vector',
+          'Size5Alignment1Vector_old',
           Size5Alignment1Vector(v: [
             Size5Alignment1(
                 data: Uint8List.fromList([0x1, 0x2, 0x3, 0x4, 0x5])),
@@ -1844,7 +1911,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Size5Alignment4Vector',
+          'Size5Alignment4Vector_old',
           Size5Alignment4Vector(v: [
             Size5Alignment4(four: 0x4030201, one: 0x5),
             Size5Alignment4(four: 0x9080706, one: 0xa)
@@ -1874,7 +1941,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Table_StructWithReservedSandwich',
+          'Table_StructWithReservedSandwich_old',
           TableStructWithReservedSandwichStruct(
               table: TableStructWithReservedSandwich(
                   s1: StructSize3Align1(
@@ -1920,7 +1987,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Table_StructWithUint32Sandwich',
+          'Table_StructWithUint32Sandwich_old',
           TableStructWithUint32SandwichStruct(
               table: TableStructWithUint32Sandwich(
                   i: 0x4030201,
@@ -1978,7 +2045,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Table_UnionWithVector_ReservedSandwich',
+          'Table_UnionWithVector_ReservedSandwich_old',
           TableUnionWithVectorReservedSandwichStruct(
               table: TableUnionWithVectorReservedSandwich(
                   uv: UnionWithVector.withS('hello'))),
@@ -2020,7 +2087,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Table_UnionWithVector_StructSandwich',
+          'Table_UnionWithVector_StructSandwich_old',
           TableUnionWithVectorStructSandwichStruct(
               table: TableUnionWithVectorStructSandwich(
                   s1: StructSize3Align1(
@@ -2078,7 +2145,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'XUnionWithStruct',
+          'XUnionWithStruct_old',
           XUnionWithStructStruct(
               xu: XUnionWithStruct.withS(StructSize3Align1(
                   threeBytes: Uint8List.fromList([0x1, 0x2, 0x3])))),
@@ -2106,7 +2173,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'ArrayStruct',
+          'ArrayStruct_old',
           ArrayStruct(unions: [
             StringUnion.withS('one'),
             StringUnion.withS('two'),
@@ -2201,7 +2268,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'TransformerEmptyStruct',
+          'TransformerEmptyStruct_old',
           TransformerEmptyStruct(),
           kTransformerEmptyStruct_Type,
           Uint8List.fromList([
@@ -2219,7 +2286,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'EmptyStructUnion',
+          'EmptyStructUnion_old',
           EmptyStructUnionStruct(
               u: EmptyStructUnion.withEs(TransformerEmptyStruct())),
           kEmptyStructUnionStruct_Type,
@@ -2242,7 +2309,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'NoCodingTablesStressor',
+          'NoCodingTablesStressor_old',
           NoCodingTablesStressor(
               f1: 0x1111111111111111,
               f2: 0x2222222222222222,
@@ -2546,7 +2613,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'OutOfLineSandwich1Case1',
+          'OutOfLineSandwich1Case1_old',
           OutOfLineSandwich1(
               before: 'soft migrations rock!',
               v: [
@@ -2610,7 +2677,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'OutOfLineSandwich1WithOptUnionPresent',
+          'OutOfLineSandwich1WithOptUnionPresent_old',
           OutOfLineSandwich1WithOptUnion(
               before: 'soft migrations rock!',
               v: [
@@ -2676,7 +2743,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'OutOfLineSandwich1WithOptUnionAbsent',
+          'OutOfLineSandwich1WithOptUnionAbsent_old',
           OutOfLineSandwich1WithOptUnion(
               before: 'soft migrations rock!',
               v: [Sandwich1WithOptUnion(before: 0x4030201, after: 0x8070605)],
@@ -2730,7 +2797,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Regression4',
+          'Regression4_old',
           Regression4(
               f1: 0x1,
               f2: 0x2,
@@ -2770,7 +2837,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich4Align8',
+          'Sandwich4Align8_old',
           Sandwich4Align8(
               sandwich4: Sandwich4(
                   before: 0x4030201,
@@ -2879,7 +2946,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich4Align8WithPointer',
+          'Sandwich4Align8WithPointer_old',
           Sandwich4Align8WithPointer(
               sandwich4: Sandwich4(
                   before: 0x4030201,
@@ -2990,7 +3057,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich8Case1',
+          'Sandwich8Case1_old',
           Sandwich8(
               before: 0x4030201,
               unionOfUnion: UnionOfUnion.withSize8align4(
@@ -3029,7 +3096,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'Sandwich9Case1',
+          'Sandwich9Case1_old',
           Sandwich9(
               before: 0x201,
               theUnion: UnionWithVectorOfVectors.withV([
@@ -3089,7 +3156,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'SimpleTableArrayStruct',
+          'SimpleTableArrayStruct_old',
           SimpleTableArrayStruct(theArray: [
             TransformerSimpleTable(value: 0xa3a2a1a0),
             TransformerSimpleTable(value: 0xb3b2b1b0)
@@ -3131,7 +3198,7 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'StringUnionVector',
+          'StringUnionVector_old',
           StringUnionVector(theVector: [
             StringUnion.withS('hello'),
             StringUnion.withU8(0xaa),
@@ -3186,7 +3253,87 @@ void main() {
 
       EncodeSuccessCase.run(
           Encoders.old,
-          'UnionWithBoundString',
+          'CreateComponentRequest_old',
+          CreateComponentRequest(
+              launchInfo: LaunchInfo(
+                  url:
+                      'fuchsia-pkg://fuchsia.com/fidl_compatibility_test_server_rust_write_xunion#meta/fidl_compatibility_test_server_rust_write_xunion.cmx',
+                  directoryRequest: 0xffffffff),
+              controller: 0xffffffff),
+          kCreateComponentRequest_Type,
+          Uint8List.fromList([
+            0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x66, 0x75, 0x63, 0x68, 0x73, 0x69, 0x61, 0x2d, //
+            0x70, 0x6b, 0x67, 0x3a, 0x2f, 0x2f, 0x66, 0x75, //
+            0x63, 0x68, 0x73, 0x69, 0x61, 0x2e, 0x63, 0x6f, //
+            0x6d, 0x2f, 0x66, 0x69, 0x64, 0x6c, 0x5f, 0x63, //
+            0x6f, 0x6d, 0x70, 0x61, 0x74, 0x69, 0x62, 0x69, //
+            0x6c, 0x69, 0x74, 0x79, 0x5f, 0x74, 0x65, 0x73, //
+            0x74, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, //
+            0x5f, 0x72, 0x75, 0x73, 0x74, 0x5f, 0x77, 0x72, //
+            0x69, 0x74, 0x65, 0x5f, 0x78, 0x75, 0x6e, 0x69, //
+            0x6f, 0x6e, 0x23, 0x6d, 0x65, 0x74, 0x61, 0x2f, //
+            0x66, 0x69, 0x64, 0x6c, 0x5f, 0x63, 0x6f, 0x6d, //
+            0x70, 0x61, 0x74, 0x69, 0x62, 0x69, 0x6c, 0x69, //
+            0x74, 0x79, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, //
+            0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x72, //
+            0x75, 0x73, 0x74, 0x5f, 0x77, 0x72, 0x69, 0x74, //
+            0x65, 0x5f, 0x78, 0x75, 0x6e, 0x69, 0x6f, 0x6e, //
+            0x2e, 0x63, 0x6d, 0x78, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      EncodeSuccessCase.run(
+          Encoders.v1,
+          'CreateComponentRequest_v1',
+          CreateComponentRequest(
+              launchInfo: LaunchInfo(
+                  url:
+                      'fuchsia-pkg://fuchsia.com/fidl_compatibility_test_server_rust_write_xunion#meta/fidl_compatibility_test_server_rust_write_xunion.cmx',
+                  directoryRequest: 0xffffffff),
+              controller: 0xffffffff),
+          kCreateComponentRequest_Type,
+          Uint8List.fromList([
+            0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x66, 0x75, 0x63, 0x68, 0x73, 0x69, 0x61, 0x2d, //
+            0x70, 0x6b, 0x67, 0x3a, 0x2f, 0x2f, 0x66, 0x75, //
+            0x63, 0x68, 0x73, 0x69, 0x61, 0x2e, 0x63, 0x6f, //
+            0x6d, 0x2f, 0x66, 0x69, 0x64, 0x6c, 0x5f, 0x63, //
+            0x6f, 0x6d, 0x70, 0x61, 0x74, 0x69, 0x62, 0x69, //
+            0x6c, 0x69, 0x74, 0x79, 0x5f, 0x74, 0x65, 0x73, //
+            0x74, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, //
+            0x5f, 0x72, 0x75, 0x73, 0x74, 0x5f, 0x77, 0x72, //
+            0x69, 0x74, 0x65, 0x5f, 0x78, 0x75, 0x6e, 0x69, //
+            0x6f, 0x6e, 0x23, 0x6d, 0x65, 0x74, 0x61, 0x2f, //
+            0x66, 0x69, 0x64, 0x6c, 0x5f, 0x63, 0x6f, 0x6d, //
+            0x70, 0x61, 0x74, 0x69, 0x62, 0x69, 0x6c, 0x69, //
+            0x74, 0x79, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, //
+            0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x72, //
+            0x75, 0x73, 0x74, 0x5f, 0x77, 0x72, 0x69, 0x74, //
+            0x65, 0x5f, 0x78, 0x75, 0x6e, 0x69, 0x6f, 0x6e, //
+            0x2e, 0x63, 0x6d, 0x78, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      EncodeSuccessCase.run(
+          Encoders.old,
+          'UnionWithBoundString_old',
           UnionWithBoundStringStruct(
               v: UnionWithBoundString.withBoundFiveStr('abcd')),
           kUnionWithBoundStringStruct_Type,
@@ -3198,8 +3345,23 @@ void main() {
           ]));
 
       EncodeSuccessCase.run(
+          Encoders.v1,
+          'UnionWithBoundString_v1',
+          UnionWithBoundStringStruct(
+              v: UnionWithBoundString.withBoundFiveStr('abcd')),
+          kUnionWithBoundStringStruct_Type,
+          Uint8List.fromList([
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x61, 0x62, 0x63, 0x64, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      EncodeSuccessCase.run(
           Encoders.old,
-          'UnionMigration_SingleVariant',
+          'UnionMigration_SingleVariant_old',
           SingleVariantUnionStruct(u: SingleVariantUnion.withX(0x2a)),
           kSingleVariantUnionStruct_Type,
           Uint8List.fromList([
@@ -3213,6 +3375,28 @@ void main() {
           kSingleVariantUnionStruct_Type,
           Uint8List.fromList([
             0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      EncodeSuccessCase.run(
+          Encoders.old,
+          'ReverseOrdinalUnion_old',
+          ReverseOrdinalUnionStruct(u: ReverseOrdinalUnion.withX(0x2a)),
+          kReverseOrdinalUnionStruct_Type,
+          Uint8List.fromList([
+            0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      EncodeSuccessCase.run(
+          Encoders.v1,
+          'ReverseOrdinalUnion_v1',
+          ReverseOrdinalUnionStruct(u: ReverseOrdinalUnion.withX(0x2a)),
+          kReverseOrdinalUnionStruct_Type,
+          Uint8List.fromList([
+            0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
             0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
             0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
@@ -3222,7 +3406,7 @@ void main() {
     group('decode success cases', () {
       DecodeSuccessCase.run(
           Decoders.old,
-          '3ByteObjectAlignmentInStruct',
+          '3ByteObjectAlignmentInStruct_old',
           ThreeByteInStruct(
               elem1: ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
               elem2: ThreeByte(elem1: 0x4, elem2: 0x5, elem3: 0x6),
@@ -3235,7 +3419,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          '5ByteObjectAlignmentInStruct',
+          '5ByteObjectAlignmentInStruct_old',
           FiveByteInStruct(
               elem1: FiveByte(elem1: 0x1020304, elem2: 0x5),
               elem2: FiveByte(elem1: 0x6070809, elem2: 0xa),
@@ -3249,7 +3433,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          '3ByteObjectAlignmentInVector',
+          '3ByteObjectAlignmentInVector_old',
           ThreeByteInVector(elems: [
             ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
             ThreeByte(elem1: 0x4, elem2: 0x5, elem3: 0x6),
@@ -3265,7 +3449,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          '5ByteObjectAlignmentInVector',
+          '5ByteObjectAlignmentInVector_old',
           FiveByteInVector(elems: [
             FiveByte(elem1: 0x1020304, elem2: 0x5),
             FiveByte(elem1: 0x6070809, elem2: 0xa),
@@ -3282,7 +3466,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          '3ByteObjectAlignmentInArray',
+          '3ByteObjectAlignmentInArray_old',
           ThreeByteInArray(elems: [
             ThreeByte(elem1: 0x1, elem2: 0x2, elem3: 0x3),
             ThreeByte(elem1: 0x4, elem2: 0x5, elem3: 0x6),
@@ -3296,7 +3480,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          '5ByteObjectAlignmentInArray',
+          '5ByteObjectAlignmentInArray_old',
           FiveByteInArray(elems: [
             FiveByte(elem1: 0x1020304, elem2: 0x5),
             FiveByte(elem1: 0x6070809, elem2: 0xa),
@@ -3311,7 +3495,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'EmptyStruct',
+          'EmptyStruct_old',
           EmptyStruct(),
           kEmptyStruct_Type,
           Uint8List.fromList([
@@ -3320,7 +3504,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'EmptyStructSandwich',
+          'EmptyStructSandwich_old',
           EmptyStructSandwich(
               before: 'before', es: EmptyStruct(), after: 'after'),
           kEmptyStructSandwich_Type,
@@ -3336,7 +3520,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint8Uint16Uint32Uint64',
+          'Uint8Uint16Uint32Uint64_old',
           Uint8Uint16Uint32Uint64(
               f1: 0x1, f2: 0x203, f3: 0x4050607, f4: 0x8090a0b0c0d0e0f),
           kUint8Uint16Uint32Uint64_Type,
@@ -3347,7 +3531,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint64Uint32Uint16Uint8',
+          'Uint64Uint32Uint16Uint8_old',
           Uint64Uint32Uint16Uint8(
               f1: 0x8090a0b0c0d0e0f, f2: 0x4050607, f3: 0x203, f4: 0x1),
           kUint64Uint32Uint16Uint8_Type,
@@ -3358,7 +3542,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'SimpleTableEmpty',
+          'SimpleTableEmpty_old',
           StructOfSimpleTable(table: SimpleTable()),
           kStructOfSimpleTable_Type,
           Uint8List.fromList([
@@ -3368,7 +3552,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'SimpleTableXAndY',
+          'SimpleTableXAndY_old',
           StructOfSimpleTable(table: SimpleTable(x: 0x2a, y: 0x43)),
           kStructOfSimpleTable_Type,
           Uint8List.fromList([
@@ -3390,7 +3574,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'SimpleTableJustY',
+          'SimpleTableJustY_old',
           StructOfSimpleTable(table: SimpleTable(y: 0x43)),
           kStructOfSimpleTable_Type,
           Uint8List.fromList([
@@ -3411,7 +3595,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'TableWithStringAndVectorNoVectorContent',
+          'TableWithStringAndVectorNoVectorContent_old',
           StructOfTableWithStringAndVector(
               table: TableWithStringAndVector(foo: 'hello', bar: 0x1b)),
           kStructOfTableWithStringAndVector_Type,
@@ -3430,7 +3614,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'SimpleTableThenUint64',
+          'SimpleTableThenUint64_old',
           SimpleTableThenUint64(
               table: SimpleTable(x: 0x2a, y: 0x43), number: 0xdeadbeefdeadbeef),
           kSimpleTableThenUint64_Type,
@@ -3454,7 +3638,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'InlineXUnionInStruct',
+          'InlineXUnionInStruct_old',
           TestInlineXUnionInStruct(
               before: 'before',
               xu: SampleXUnion.withU(0xdeadbeef),
@@ -3475,7 +3659,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'OptionalXUnionInStructAbsent',
+          'OptionalXUnionInStructAbsent_old',
           TestOptionalXUnionInStruct(before: 'before', after: 'after'),
           kTestOptionalXUnionInStruct_Type,
           Uint8List.fromList([
@@ -3492,7 +3676,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'OptionalXUnionInStructPresent',
+          'OptionalXUnionInStructPresent_old',
           TestOptionalXUnionInStruct(
               before: 'before',
               xu: SampleXUnion.withU(0xdeadbeef),
@@ -3513,7 +3697,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'XUnionInTableXUnionAbsent',
+          'XUnionInTableXUnionAbsent_old',
           TestXUnionInTable(
               value: XUnionInTable(before: 'before', after: 'after')),
           kTestXUnionInTable_Type,
@@ -3536,7 +3720,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'XUnionInTableXUnionPresent',
+          'XUnionInTableXUnionPresent_old',
           TestXUnionInTable(
               value: XUnionInTable(
                   before: 'before',
@@ -3566,7 +3750,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'StrictXUnion',
+          'StrictXUnion_old',
           TestStrictXUnionInStruct(xu: SampleStrictXUnion.withU(0xdeadbeef)),
           kTestStrictXUnionInStruct_Type,
           Uint8List.fromList([
@@ -3578,7 +3762,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'AddEthernetDeviceRequest',
+          'AddEthernetDeviceRequest_old',
           TestAddEthernetDeviceRequest(
               topologicalPath: '@/dev/sys/pci/00:03.0/e1000/ethernet',
               config: InterfaceConfig(
@@ -3605,8 +3789,36 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          Decoders.v1,
+          'AddEthernetDeviceRequest_v1',
+          TestAddEthernetDeviceRequest(
+              topologicalPath: '@/dev/sys/pci/00:03.0/e1000/ethernet',
+              config: InterfaceConfig(
+                  name: 'ethp0003',
+                  ipAddressConfig: IpAddressConfig.withDhcp(true)),
+              thisShouldBeAHandle: 0xffffffff),
+          kTestAddEthernetDeviceRequest_Type,
+          Uint8List.fromList([
+            0x24, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x40, 0x2f, 0x64, 0x65, 0x76, 0x2f, 0x73, 0x79, //
+            0x73, 0x2f, 0x70, 0x63, 0x69, 0x2f, 0x30, 0x30, //
+            0x3a, 0x30, 0x33, 0x2e, 0x30, 0x2f, 0x65, 0x31, //
+            0x30, 0x30, 0x30, 0x2f, 0x65, 0x74, 0x68, 0x65, //
+            0x72, 0x6e, 0x65, 0x74, 0x00, 0x00, 0x00, 0x00, //
+            0x65, 0x74, 0x68, 0x70, 0x30, 0x30, 0x30, 0x33, //
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      DecodeSuccessCase.run(
           Decoders.old,
-          'FileGetAttrResponse',
+          'FileGetAttrResponse_old',
           FileGetAttrResponse(
               s: 0x7eadbeaf,
               attributes: NodeAttributes(
@@ -3631,7 +3843,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Optionals',
+          'Optionals_old',
           StructWithOptionals(
               s: EmptyStruct(),
               s2: EmptyStruct(),
@@ -3666,8 +3878,47 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          Decoders.v1,
+          'Optionals_v1',
+          StructWithOptionals(
+              s: EmptyStruct(),
+              s2: EmptyStruct(),
+              t: TableWithEmptyStruct(s: EmptyStruct()),
+              xu: XUnionWithEmptyStruct.withS(EmptyStruct()),
+              xu2: XUnionWithEmptyStruct.withS(EmptyStruct()),
+              u: UnionWithEmptyStruct.withS(EmptyStruct()),
+              u2: UnionWithEmptyStruct.withS(EmptyStruct())),
+          kStructWithOptionals_Type,
+          Uint8List.fromList([
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0xfe, 0xe0, 0x99, 0x74, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0xfe, 0xe0, 0x99, 0x74, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      DecodeSuccessCase.run(
           Decoders.old,
-          'Arrays',
+          'Arrays_old',
           StructWithArrays(arrInt: Int32List.fromList([0x1, 0x2]), arrString: [
             'a',
             'b'
@@ -3709,7 +3960,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Vectors',
+          'Vectors_old',
           StructWithVectors(
               vecEmpty: Int32List.fromList([]),
               vecInt: Int32List.fromList([0x1, 0x2]),
@@ -3779,7 +4030,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'BoolTrue',
+          'BoolTrue_old',
           MyBool(value: true),
           kMyBool_Type,
           Uint8List.fromList([
@@ -3788,7 +4039,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'BoolFalse',
+          'BoolFalse_old',
           MyBool(value: false),
           kMyBool_Type,
           Uint8List.fromList([
@@ -3797,7 +4048,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'ByteZero',
+          'ByteZero_old',
           MyByte(value: 0x0),
           kMyByte_Type,
           Uint8List.fromList([
@@ -3806,7 +4057,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Byte255',
+          'Byte255_old',
           MyByte(value: 0xff),
           kMyByte_Type,
           Uint8List.fromList([
@@ -3815,7 +4066,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int8Min',
+          'Int8Min_old',
           MyInt8(value: -128),
           kMyInt8_Type,
           Uint8List.fromList([
@@ -3824,7 +4075,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int8Zero',
+          'Int8Zero_old',
           MyInt8(value: 0x0),
           kMyInt8_Type,
           Uint8List.fromList([
@@ -3833,7 +4084,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int8Max',
+          'Int8Max_old',
           MyInt8(value: 0x7f),
           kMyInt8_Type,
           Uint8List.fromList([
@@ -3842,7 +4093,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int16Min',
+          'Int16Min_old',
           MyInt16(value: -32768),
           kMyInt16_Type,
           Uint8List.fromList([
@@ -3851,7 +4102,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int16Zero',
+          'Int16Zero_old',
           MyInt16(value: 0x0),
           kMyInt16_Type,
           Uint8List.fromList([
@@ -3860,7 +4111,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int16Max',
+          'Int16Max_old',
           MyInt16(value: 0x7fff),
           kMyInt16_Type,
           Uint8List.fromList([
@@ -3869,7 +4120,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int32Min',
+          'Int32Min_old',
           MyInt32(value: -2147483648),
           kMyInt32_Type,
           Uint8List.fromList([
@@ -3878,7 +4129,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int32Zero',
+          'Int32Zero_old',
           MyInt32(value: 0x0),
           kMyInt32_Type,
           Uint8List.fromList([
@@ -3887,7 +4138,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int32Max',
+          'Int32Max_old',
           MyInt32(value: 0x7fffffff),
           kMyInt32_Type,
           Uint8List.fromList([
@@ -3896,7 +4147,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int64Min',
+          'Int64Min_old',
           MyInt64(value: -9223372036854775808),
           kMyInt64_Type,
           Uint8List.fromList([
@@ -3905,7 +4156,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int64Zero',
+          'Int64Zero_old',
           MyInt64(value: 0x0),
           kMyInt64_Type,
           Uint8List.fromList([
@@ -3914,7 +4165,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Int64Max',
+          'Int64Max_old',
           MyInt64(value: 0x7fffffffffffffff),
           kMyInt64_Type,
           Uint8List.fromList([
@@ -3923,7 +4174,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint8Zero',
+          'Uint8Zero_old',
           MyUint8(value: 0x0),
           kMyUint8_Type,
           Uint8List.fromList([
@@ -3932,7 +4183,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint8Max',
+          'Uint8Max_old',
           MyUint8(value: 0xff),
           kMyUint8_Type,
           Uint8List.fromList([
@@ -3941,7 +4192,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint16Zero',
+          'Uint16Zero_old',
           MyUint16(value: 0x0),
           kMyUint16_Type,
           Uint8List.fromList([
@@ -3950,7 +4201,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint16Max',
+          'Uint16Max_old',
           MyUint16(value: 0xffff),
           kMyUint16_Type,
           Uint8List.fromList([
@@ -3959,7 +4210,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint32Zero',
+          'Uint32Zero_old',
           MyUint32(value: 0x0),
           kMyUint32_Type,
           Uint8List.fromList([
@@ -3968,7 +4219,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint32Max',
+          'Uint32Max_old',
           MyUint32(value: 0xffffffff),
           kMyUint32_Type,
           Uint8List.fromList([
@@ -3977,7 +4228,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint64Zero',
+          'Uint64Zero_old',
           MyUint64(value: 0x0),
           kMyUint64_Type,
           Uint8List.fromList([
@@ -3986,7 +4237,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Uint64Max',
+          'Uint64Max_old',
           MyUint64(value: 0xffffffffffffffff),
           kMyUint64_Type,
           Uint8List.fromList([
@@ -3995,7 +4246,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Float32Zero',
+          'Float32Zero_old',
           MyFloat32(value: 0),
           kMyFloat32_Type,
           Uint8List.fromList([
@@ -4004,7 +4255,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Float32One',
+          'Float32One_old',
           MyFloat32(value: 1),
           kMyFloat32_Type,
           Uint8List.fromList([
@@ -4013,7 +4264,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Float32MinusOne',
+          'Float32MinusOne_old',
           MyFloat32(value: -1),
           kMyFloat32_Type,
           Uint8List.fromList([
@@ -4022,7 +4273,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Float32Max',
+          'Float32Max_old',
           MyFloat32(value: 3.4028234663852886e+38),
           kMyFloat32_Type,
           Uint8List.fromList([
@@ -4031,7 +4282,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Float64Zero',
+          'Float64Zero_old',
           MyFloat64(value: 0),
           kMyFloat64_Type,
           Uint8List.fromList([
@@ -4040,7 +4291,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Float64One',
+          'Float64One_old',
           MyFloat64(value: 1),
           kMyFloat64_Type,
           Uint8List.fromList([
@@ -4049,7 +4300,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Float64MinusOne',
+          'Float64MinusOne_old',
           MyFloat64(value: -1),
           kMyFloat64_Type,
           Uint8List.fromList([
@@ -4058,7 +4309,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Float64Max',
+          'Float64Max_old',
           MyFloat64(value: 1.7976931348623157e+308),
           kMyFloat64_Type,
           Uint8List.fromList([
@@ -4067,7 +4318,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich1Case1',
+          'Sandwich1Case1_old',
           Sandwich1(
               before: 0x4030201,
               theUnion: UnionSize8Align4.withVariant(0xc0b0a09),
@@ -4097,7 +4348,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich1WithOptUnionPresent',
+          'Sandwich1WithOptUnionPresent_old',
           Sandwich1WithOptUnion(
               before: 0x4030201,
               optUnion: UnionSize8Align4.withVariant(0xc0b0a09),
@@ -4129,7 +4380,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich1WithOptUnionAbsent',
+          'Sandwich1WithOptUnionAbsent_old',
           Sandwich1WithOptUnion(before: 0x4030201, after: 0x8070605),
           kSandwich1WithOptUnion_Type,
           Uint8List.fromList([
@@ -4153,7 +4404,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich2Case1',
+          'Sandwich2Case1_old',
           Sandwich2(
               before: 0x4030201,
               theUnion: UnionSize12Align4.withVariant(
@@ -4186,7 +4437,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich3Case1',
+          'Sandwich3Case1_old',
           Sandwich3(
               before: 0x4030201,
               theUnion: UnionSize24Align8.withVariant(StructSize16Align8(
@@ -4222,7 +4473,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich4Case1',
+          'Sandwich4Case1_old',
           Sandwich4(
               before: 0x4030201,
               theUnion: UnionSize36Align4.withVariant(Uint8List.fromList([
@@ -4325,7 +4576,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich5Case1',
+          'Sandwich5Case1_old',
           Sandwich5(
               before: 0x4030201,
               unionOfUnion: UnionOfUnion.withSize8align4(
@@ -4364,7 +4615,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich5Case2',
+          'Sandwich5Case2_old',
           Sandwich5(
               before: 0x4030201,
               unionOfUnion: UnionOfUnion.withSize24align8(
@@ -4406,7 +4657,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case1',
+          'Sandwich6Case1_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withVectorOfUint8(
@@ -4444,7 +4695,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case1AbsentVector',
+          'Sandwich6Case1AbsentVector_old',
           Sandwich6(
               before: 0x4030201,
               theUnion:
@@ -4480,7 +4731,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case2',
+          'Sandwich6Case2_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withS('soft migrations rock!'),
@@ -4520,7 +4771,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case3',
+          'Sandwich6Case3_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withVectorS3A1([
@@ -4572,7 +4823,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case4',
+          'Sandwich6Case4_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withVectorS3A2([
@@ -4618,7 +4869,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case5',
+          'Sandwich6Case5_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withHandles(
@@ -4658,7 +4909,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case6',
+          'Sandwich6Case6_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withArrayS3A1([
@@ -4701,7 +4952,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case7',
+          'Sandwich6Case7_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withArrayS3A2([
@@ -4740,7 +4991,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich6Case8',
+          'Sandwich6Case8_old',
           Sandwich6(
               before: 0x4030201,
               theUnion: UnionWithVector.withVectorUnion(
@@ -4781,7 +5032,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich7Case1',
+          'Sandwich7Case1_old',
           Sandwich7(
               before: 0x14131211,
               optSandwich1: Sandwich1(
@@ -4823,7 +5074,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich7Case2',
+          'Sandwich7Case2_old',
           Sandwich7(before: 0x14131211, after: 0x24232221),
           kSandwich7_Type,
           Uint8List.fromList([
@@ -4845,7 +5096,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Regression1',
+          'Regression1_old',
           Regression1(f1: 0x1, f2: 0x2, f3: 0x3, f4: 0x4, f5: 0x5, f6: 0x6),
           kRegression1_Type,
           Uint8List.fromList([
@@ -4869,7 +5120,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Regression2',
+          'Regression2_old',
           Regression2(
               head: Regression1(
                   f1: 0x1, f2: 0x2, f3: 0x3, f4: 0x4, f5: 0x5, f6: 0x6),
@@ -4901,7 +5152,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Regression3Absent',
+          'Regression3Absent_old',
           Regression3(),
           kRegression3_Type,
           Uint8List.fromList([
@@ -4919,7 +5170,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Regression3Present',
+          'Regression3Present_old',
           Regression3(
               optValue: Regression2(
                   head: Regression1(
@@ -4955,7 +5206,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Size5Alignment1Array',
+          'Size5Alignment1Array_old',
           Size5Alignment1Array(a: [
             Size5Alignment1(
                 data: Uint8List.fromList([0x1, 0x2, 0x3, 0x4, 0x5])),
@@ -4987,7 +5238,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Size5Alignment4Array',
+          'Size5Alignment4Array_old',
           Size5Alignment4Array(a: [
             Size5Alignment4(four: 0x4030201, one: 0x5),
             Size5Alignment4(four: 0x9080706, one: 0xa),
@@ -5017,7 +5268,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Size5Alignment1Vector',
+          'Size5Alignment1Vector_old',
           Size5Alignment1Vector(v: [
             Size5Alignment1(
                 data: Uint8List.fromList([0x1, 0x2, 0x3, 0x4, 0x5])),
@@ -5049,7 +5300,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Size5Alignment4Vector',
+          'Size5Alignment4Vector_old',
           Size5Alignment4Vector(v: [
             Size5Alignment4(four: 0x4030201, one: 0x5),
             Size5Alignment4(four: 0x9080706, one: 0xa)
@@ -5079,7 +5330,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Table_StructWithReservedSandwich',
+          'Table_StructWithReservedSandwich_old',
           TableStructWithReservedSandwichStruct(
               table: TableStructWithReservedSandwich(
                   s1: StructSize3Align1(
@@ -5125,7 +5376,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Table_StructWithUint32Sandwich',
+          'Table_StructWithUint32Sandwich_old',
           TableStructWithUint32SandwichStruct(
               table: TableStructWithUint32Sandwich(
                   i: 0x4030201,
@@ -5183,7 +5434,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Table_UnionWithVector_ReservedSandwich',
+          'Table_UnionWithVector_ReservedSandwich_old',
           TableUnionWithVectorReservedSandwichStruct(
               table: TableUnionWithVectorReservedSandwich(
                   uv: UnionWithVector.withS('hello'))),
@@ -5225,7 +5476,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Table_UnionWithVector_StructSandwich',
+          'Table_UnionWithVector_StructSandwich_old',
           TableUnionWithVectorStructSandwichStruct(
               table: TableUnionWithVectorStructSandwich(
                   s1: StructSize3Align1(
@@ -5283,7 +5534,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'XUnionWithStruct',
+          'XUnionWithStruct_old',
           XUnionWithStructStruct(
               xu: XUnionWithStruct.withS(StructSize3Align1(
                   threeBytes: Uint8List.fromList([0x1, 0x2, 0x3])))),
@@ -5311,7 +5562,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'ArrayStruct',
+          'ArrayStruct_old',
           ArrayStruct(unions: [
             StringUnion.withS('one'),
             StringUnion.withS('two'),
@@ -5406,7 +5657,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'TransformerEmptyStruct',
+          'TransformerEmptyStruct_old',
           TransformerEmptyStruct(),
           kTransformerEmptyStruct_Type,
           Uint8List.fromList([
@@ -5424,7 +5675,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'EmptyStructUnion',
+          'EmptyStructUnion_old',
           EmptyStructUnionStruct(
               u: EmptyStructUnion.withEs(TransformerEmptyStruct())),
           kEmptyStructUnionStruct_Type,
@@ -5447,7 +5698,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'NoCodingTablesStressor',
+          'NoCodingTablesStressor_old',
           NoCodingTablesStressor(
               f1: 0x1111111111111111,
               f2: 0x2222222222222222,
@@ -5751,7 +6002,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'OutOfLineSandwich1Case1',
+          'OutOfLineSandwich1Case1_old',
           OutOfLineSandwich1(
               before: 'soft migrations rock!',
               v: [
@@ -5815,7 +6066,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'OutOfLineSandwich1WithOptUnionPresent',
+          'OutOfLineSandwich1WithOptUnionPresent_old',
           OutOfLineSandwich1WithOptUnion(
               before: 'soft migrations rock!',
               v: [
@@ -5881,7 +6132,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'OutOfLineSandwich1WithOptUnionAbsent',
+          'OutOfLineSandwich1WithOptUnionAbsent_old',
           OutOfLineSandwich1WithOptUnion(
               before: 'soft migrations rock!',
               v: [Sandwich1WithOptUnion(before: 0x4030201, after: 0x8070605)],
@@ -5935,7 +6186,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Regression4',
+          'Regression4_old',
           Regression4(
               f1: 0x1,
               f2: 0x2,
@@ -5975,7 +6226,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich4Align8',
+          'Sandwich4Align8_old',
           Sandwich4Align8(
               sandwich4: Sandwich4(
                   before: 0x4030201,
@@ -6084,7 +6335,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich4Align8WithPointer',
+          'Sandwich4Align8WithPointer_old',
           Sandwich4Align8WithPointer(
               sandwich4: Sandwich4(
                   before: 0x4030201,
@@ -6195,7 +6446,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich8Case1',
+          'Sandwich8Case1_old',
           Sandwich8(
               before: 0x4030201,
               unionOfUnion: UnionOfUnion.withSize8align4(
@@ -6234,7 +6485,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'Sandwich9Case1',
+          'Sandwich9Case1_old',
           Sandwich9(
               before: 0x201,
               theUnion: UnionWithVectorOfVectors.withV([
@@ -6294,7 +6545,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'SimpleTableArrayStruct',
+          'SimpleTableArrayStruct_old',
           SimpleTableArrayStruct(theArray: [
             TransformerSimpleTable(value: 0xa3a2a1a0),
             TransformerSimpleTable(value: 0xb3b2b1b0)
@@ -6336,7 +6587,7 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'StringUnionVector',
+          'StringUnionVector_old',
           StringUnionVector(theVector: [
             StringUnion.withS('hello'),
             StringUnion.withU8(0xaa),
@@ -6391,7 +6642,87 @@ void main() {
 
       DecodeSuccessCase.run(
           Decoders.old,
-          'UnionWithBoundString',
+          'CreateComponentRequest_old',
+          CreateComponentRequest(
+              launchInfo: LaunchInfo(
+                  url:
+                      'fuchsia-pkg://fuchsia.com/fidl_compatibility_test_server_rust_write_xunion#meta/fidl_compatibility_test_server_rust_write_xunion.cmx',
+                  directoryRequest: 0xffffffff),
+              controller: 0xffffffff),
+          kCreateComponentRequest_Type,
+          Uint8List.fromList([
+            0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x66, 0x75, 0x63, 0x68, 0x73, 0x69, 0x61, 0x2d, //
+            0x70, 0x6b, 0x67, 0x3a, 0x2f, 0x2f, 0x66, 0x75, //
+            0x63, 0x68, 0x73, 0x69, 0x61, 0x2e, 0x63, 0x6f, //
+            0x6d, 0x2f, 0x66, 0x69, 0x64, 0x6c, 0x5f, 0x63, //
+            0x6f, 0x6d, 0x70, 0x61, 0x74, 0x69, 0x62, 0x69, //
+            0x6c, 0x69, 0x74, 0x79, 0x5f, 0x74, 0x65, 0x73, //
+            0x74, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, //
+            0x5f, 0x72, 0x75, 0x73, 0x74, 0x5f, 0x77, 0x72, //
+            0x69, 0x74, 0x65, 0x5f, 0x78, 0x75, 0x6e, 0x69, //
+            0x6f, 0x6e, 0x23, 0x6d, 0x65, 0x74, 0x61, 0x2f, //
+            0x66, 0x69, 0x64, 0x6c, 0x5f, 0x63, 0x6f, 0x6d, //
+            0x70, 0x61, 0x74, 0x69, 0x62, 0x69, 0x6c, 0x69, //
+            0x74, 0x79, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, //
+            0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x72, //
+            0x75, 0x73, 0x74, 0x5f, 0x77, 0x72, 0x69, 0x74, //
+            0x65, 0x5f, 0x78, 0x75, 0x6e, 0x69, 0x6f, 0x6e, //
+            0x2e, 0x63, 0x6d, 0x78, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      DecodeSuccessCase.run(
+          Decoders.v1,
+          'CreateComponentRequest_v1',
+          CreateComponentRequest(
+              launchInfo: LaunchInfo(
+                  url:
+                      'fuchsia-pkg://fuchsia.com/fidl_compatibility_test_server_rust_write_xunion#meta/fidl_compatibility_test_server_rust_write_xunion.cmx',
+                  directoryRequest: 0xffffffff),
+              controller: 0xffffffff),
+          kCreateComponentRequest_Type,
+          Uint8List.fromList([
+            0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0x00, //
+            0x66, 0x75, 0x63, 0x68, 0x73, 0x69, 0x61, 0x2d, //
+            0x70, 0x6b, 0x67, 0x3a, 0x2f, 0x2f, 0x66, 0x75, //
+            0x63, 0x68, 0x73, 0x69, 0x61, 0x2e, 0x63, 0x6f, //
+            0x6d, 0x2f, 0x66, 0x69, 0x64, 0x6c, 0x5f, 0x63, //
+            0x6f, 0x6d, 0x70, 0x61, 0x74, 0x69, 0x62, 0x69, //
+            0x6c, 0x69, 0x74, 0x79, 0x5f, 0x74, 0x65, 0x73, //
+            0x74, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, //
+            0x5f, 0x72, 0x75, 0x73, 0x74, 0x5f, 0x77, 0x72, //
+            0x69, 0x74, 0x65, 0x5f, 0x78, 0x75, 0x6e, 0x69, //
+            0x6f, 0x6e, 0x23, 0x6d, 0x65, 0x74, 0x61, 0x2f, //
+            0x66, 0x69, 0x64, 0x6c, 0x5f, 0x63, 0x6f, 0x6d, //
+            0x70, 0x61, 0x74, 0x69, 0x62, 0x69, 0x6c, 0x69, //
+            0x74, 0x79, 0x5f, 0x74, 0x65, 0x73, 0x74, 0x5f, //
+            0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x72, //
+            0x75, 0x73, 0x74, 0x5f, 0x77, 0x72, 0x69, 0x74, //
+            0x65, 0x5f, 0x78, 0x75, 0x6e, 0x69, 0x6f, 0x6e, //
+            0x2e, 0x63, 0x6d, 0x78, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      DecodeSuccessCase.run(
+          Decoders.old,
+          'UnionWithBoundString_old',
           UnionWithBoundStringStruct(
               v: UnionWithBoundString.withBoundFiveStr('abcd')),
           kUnionWithBoundStringStruct_Type,
@@ -6403,8 +6734,23 @@ void main() {
           ]));
 
       DecodeSuccessCase.run(
+          Decoders.v1,
+          'UnionWithBoundString_v1',
+          UnionWithBoundStringStruct(
+              v: UnionWithBoundString.withBoundFiveStr('abcd')),
+          kUnionWithBoundStringStruct_Type,
+          Uint8List.fromList([
+            0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x18, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x61, 0x62, 0x63, 0x64, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      DecodeSuccessCase.run(
           Decoders.old,
-          'UnionMigration_SingleVariant',
+          'UnionMigration_SingleVariant_old',
           SingleVariantUnionStruct(u: SingleVariantUnion.withX(0x2a)),
           kSingleVariantUnionStruct_Type,
           Uint8List.fromList([
@@ -6422,19 +6768,56 @@ void main() {
             0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
             0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
           ]));
+
+      DecodeSuccessCase.run(
+          Decoders.old,
+          'ReverseOrdinalUnion_old',
+          ReverseOrdinalUnionStruct(u: ReverseOrdinalUnion.withX(0x2a)),
+          kReverseOrdinalUnionStruct_Type,
+          Uint8List.fromList([
+            0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+          ]));
+
+      DecodeSuccessCase.run(
+          Decoders.v1,
+          'ReverseOrdinalUnion_v1',
+          ReverseOrdinalUnionStruct(u: ReverseOrdinalUnion.withX(0x2a)),
+          kReverseOrdinalUnionStruct_Type,
+          Uint8List.fromList([
+            0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+            0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, //
+            0x2a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //
+          ]));
     });
 
     group('encode failure cases', () {
       EncodeFailureCase.run(
           Encoders.old,
-          'StringExceedsLimit',
+          'StringExceedsLimit_old',
+          Length2StringWrapper(length2String: 'abc'),
+          kLength2StringWrapper_Type,
+          fidl.FidlErrorCode.fidlStringTooLong);
+
+      EncodeFailureCase.run(
+          Encoders.v1,
+          'StringExceedsLimit_v1',
           Length2StringWrapper(length2String: 'abc'),
           kLength2StringWrapper_Type,
           fidl.FidlErrorCode.fidlStringTooLong);
 
       EncodeFailureCase.run(
           Encoders.old,
-          'UnionWithBoundString_ExceedsBounds',
+          'UnionWithBoundString_ExceedsBounds_old',
+          UnionWithBoundStringStruct(
+              v: UnionWithBoundString.withBoundFiveStr('abcdef')),
+          kUnionWithBoundStringStruct_Type,
+          fidl.FidlErrorCode.fidlStringTooLong);
+
+      EncodeFailureCase.run(
+          Encoders.v1,
+          'UnionWithBoundString_ExceedsBounds_v1',
           UnionWithBoundStringStruct(
               v: UnionWithBoundString.withBoundFiveStr('abcdef')),
           kUnionWithBoundStringStruct_Type,
@@ -6444,7 +6827,7 @@ void main() {
     group('decode failure cases', () {
       DecodeFailureCase.run(
           Decoders.old,
-          'StrictXUnion Field Unknown',
+          'StrictXUnion Field Unknown_old',
           kTestStrictXUnionInStruct_Type,
           Uint8List.fromList([
             0x11, 0xba, 0x5e, 0xba, 0x00, 0x00, 0x00, 0x00, //
@@ -6456,7 +6839,7 @@ void main() {
 
       DecodeFailureCase.run(
           Decoders.old,
-          'NonEmptyStringWithNullPtrBody',
+          'NonEmptyStringWithNullPtrBody_old',
           kStringWrapper_Type,
           Uint8List.fromList([
             0x03, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, //

@@ -284,6 +284,86 @@ const $fidl.UnionType<ExplicitUnion> kExplicitUnion_Type =
   },
 );
 
+enum ReverseOrdinalUnionTag {
+  first,
+  second,
+}
+
+class ReverseOrdinalUnion extends $fidl.Union {
+  const ReverseOrdinalUnion.withFirst(int value)
+      : _data = value,
+        _tag = ReverseOrdinalUnionTag.first;
+
+  const ReverseOrdinalUnion.withSecond(int value)
+      : _data = value,
+        _tag = ReverseOrdinalUnionTag.second;
+
+  ReverseOrdinalUnion._(ReverseOrdinalUnionTag tag, Object data)
+      : _tag = tag,
+        _data = data;
+
+  final ReverseOrdinalUnionTag _tag;
+  final _data;
+  int get first {
+    if (_tag != ReverseOrdinalUnionTag.first) {
+      return null;
+    }
+    return _data;
+  }
+
+  int get second {
+    if (_tag != ReverseOrdinalUnionTag.second) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_tag) {
+      case ReverseOrdinalUnionTag.first:
+        return r'ReverseOrdinalUnion.first($first)';
+      case ReverseOrdinalUnionTag.second:
+        return r'ReverseOrdinalUnion.second($second)';
+      default:
+        return null;
+    }
+  }
+
+  ReverseOrdinalUnionTag get $tag => _tag;
+  // TODO: remove, see: FIDL-587
+  ReverseOrdinalUnionTag get tag => _tag;
+
+  @override
+  int get $index => _tag.index;
+
+  @override
+  Object get $data => _data;
+
+  static ReverseOrdinalUnion _ctor(int index, Object data) {
+    return ReverseOrdinalUnion._(ReverseOrdinalUnionTag.values[index], data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.UnionType<ReverseOrdinalUnion> kReverseOrdinalUnion_Type =
+    $fidl.UnionType<ReverseOrdinalUnion>(
+  inlineSizeOld: 8,
+  inlineSizeV1: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
+  ],
+  ctor: ReverseOrdinalUnion._ctor,
+  ordinalToIndex: <int, int>{
+    1: 0,
+    2: 1,
+  },
+);
+
 class NullableUnionStruct extends $fidl.Struct {
   const NullableUnionStruct({
     this.theUnion,
