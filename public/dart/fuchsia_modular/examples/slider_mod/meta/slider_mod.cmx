@@ -13,7 +13,6 @@
         "services": [
             "fuchsia.fonts.Provider",
             "fuchsia.logger.LogSink",
-            "fuchsia.modular.Clipboard",
             "fuchsia.modular.ComponentContext",
             "fuchsia.modular.ModuleContext",
             "fuchsia.sys.Launcher",
