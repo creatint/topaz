@@ -62,9 +62,6 @@ sdk_atom("kernel_compiler_sdk") {
   dart_target_gen_dir =
       get_label_info(":bogus($host_toolchain)", "target_gen_dir")
   kernel_compiler_path = "$dart_target_gen_dir/kernel_compiler.snapshot"
-  frontend_server_tool_gen_dir = get_label_info(
-          "//third_party/flutter/flutter_frontend_server:frontend_server_tool_snapshot($host_toolchain)",
-          "target_gen_dir")
 
   files = [
     {
@@ -84,14 +81,14 @@ sdk_atom("kernel_compiler_sdk") {
       dest = "tools/dart_prebuilts/flutter_runner/platform_strong.dill"
     },
     {
-      source = "$frontend_server_tool_gen_dir/frontend_server_tool.snapshot"
+      source = rebase_path(
+              "//prebuilt/third_party/flutter/${host_cpu}/debug/jit/dart_binaries/flutter_frontend_server.snapshot")
       dest = "tools/dart_prebuilts/frontend_server_tool.snapshot"
     },
   ]
 
   non_sdk_deps = [
     ":kernel_compiler_snapshot($host_toolchain)",
-    "//third_party/flutter/flutter_frontend_server:frontend_server_tool_snapshot($host_toolchain)",
     "//topaz/runtime/dart_runner/kernel:kernel_platform_files",
     "//topaz/runtime/flutter_runner/kernel:kernel_platform_files",
   ]
