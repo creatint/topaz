@@ -19,6 +19,7 @@ import 'package:test_core/src/runner/plugin/environment.dart';
 import 'package:test_core/src/runner/reporter/expanded.dart';
 import 'package:test_core/src/util/exit_codes.dart' as exit_codes;
 import 'package:test_core/src/util/io.dart';
+import 'package:test_core/src/util/print_sink.dart';
 
 typedef MainFunction = void Function();
 
@@ -101,7 +102,7 @@ Future<int> runFuchsiaTests(
     final engine = Engine();
     engine.suiteSink.add(suite);
     engine.suiteSink.close();
-    ExpandedReporter.watch(engine,
+    ExpandedReporter.watch(engine, PrintSink(),
         color: false, printPath: false, printPlatform: false);
 
     return await engine.run() ? 0 : 1;
