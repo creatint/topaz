@@ -8,6 +8,7 @@
             "system-temp"
         ],
         "services": [
+            "fuchsia.deprecatedtimezone.Timezone",
             "fuchsia.net.NameLookup",
             "fuchsia.netstack.Netstack",
             "fuchsia.posix.socket.Provider",
