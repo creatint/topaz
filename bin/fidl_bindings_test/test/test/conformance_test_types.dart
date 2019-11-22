@@ -3428,6 +3428,51 @@ const $fidl.StructType<StructOfTableWithStringAndVector>
   ctor: StructOfTableWithStringAndVector._ctor,
 );
 
+class StructOfReverseOrdinalTable extends $fidl.Struct {
+  const StructOfReverseOrdinalTable({
+    @required this.table,
+  });
+  StructOfReverseOrdinalTable.clone(
+    StructOfReverseOrdinalTable $orig, {
+    ReverseOrdinalTable table,
+  }) : this(
+          table: table ?? $orig.table,
+        );
+
+  StructOfReverseOrdinalTable._(List<Object> argv) : table = argv[0];
+  final ReverseOrdinalTable table;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      table,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructOfReverseOrdinalTable' r'(table: ' + table.toString() + r')';
+  }
+
+  static StructOfReverseOrdinalTable _ctor(List<Object> argv) =>
+      StructOfReverseOrdinalTable._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructOfReverseOrdinalTable>
+    kStructOfReverseOrdinalTable_Type =
+    $fidl.StructType<StructOfReverseOrdinalTable>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<ReverseOrdinalTable>(
+        type: kReverseOrdinalTable_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: StructOfReverseOrdinalTable._ctor,
+);
+
 class ThreeByte extends $fidl.Struct {
   const ThreeByte({
     @required this.elem1,
@@ -7552,6 +7597,48 @@ const $fidl.TableType<TableWithStringAndVector> kTableWithStringAndVector_Type =
         element: $fidl.Uint8Type(), maybeElementCount: null, nullable: false),
   },
   ctor: TableWithStringAndVector._ctor,
+);
+
+class ReverseOrdinalTable extends $fidl.Table {
+  const ReverseOrdinalTable({
+    this.x,
+    this.y,
+    this.z,
+  });
+
+  ReverseOrdinalTable._(Map<int, dynamic> argv)
+      : x = argv[4],
+        y = argv[2],
+        z = argv[1];
+  final int x;
+  final int y;
+  final int z;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      4: x,
+      2: y,
+      1: z,
+    };
+  }
+
+  static ReverseOrdinalTable _ctor(Map<int, dynamic> argv) =>
+      ReverseOrdinalTable._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<ReverseOrdinalTable> kReverseOrdinalTable_Type =
+    $fidl.TableType<ReverseOrdinalTable>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    4: $fidl.Int64Type(),
+    2: $fidl.Int64Type(),
+    1: $fidl.Int64Type(),
+  },
+  ctor: ReverseOrdinalTable._ctor,
 );
 
 class TableWithEmptyStruct extends $fidl.Table {

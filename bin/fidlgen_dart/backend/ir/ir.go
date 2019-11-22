@@ -530,7 +530,7 @@ func libraryPrefix(library types.LibraryIdentifier) string {
 }
 
 type compiler struct {
-	decls     *types.DeclMap
+	decls     types.DeclMap
 	library   types.LibraryIdentifier
 	typesRoot types.Root
 }
@@ -747,7 +747,7 @@ func (c *compiler) compileType(val types.Type) Type {
 	case types.IdentifierType:
 		compound := types.ParseCompoundIdentifier(val.Identifier)
 		t := c.compileUpperCamelCompoundIdentifier(compound, "", declarationContext)
-		declType, ok := (*c.decls)[val.Identifier]
+		declType, ok := c.decls[val.Identifier]
 		if !ok {
 			log.Fatal("Unknown identifier: ", val.Identifier)
 		}
@@ -1130,10 +1130,8 @@ func (c *compiler) compileTable(val types.Table) Table {
 		Documented: docString(val),
 	}
 
-	for _, v := range val.Members {
-		if !v.Reserved {
-			r.Members = append(r.Members, c.compileTableMember(v))
-		}
+	for _, v := range val.SortedMembersNoReserved() {
+		r.Members = append(r.Members, c.compileTableMember(v))
 	}
 
 	r.TypeExpr = fmt.Sprintf(`$fidl.TableType<%s>(
@@ -1236,7 +1234,7 @@ flexible: %t,
 func Compile(r types.Root) Root {
 	root := Root{}
 	c := compiler{
-		decls:     &r.Decls,
+		decls:     r.DeclsWithDependencies(),
 		library:   types.ParseLibraryName(r.Name),
 		typesRoot: r,
 	}
