@@ -7601,25 +7601,25 @@ const $fidl.TableType<TableWithStringAndVector> kTableWithStringAndVector_Type =
 
 class ReverseOrdinalTable extends $fidl.Table {
   const ReverseOrdinalTable({
-    this.x,
-    this.y,
     this.z,
+    this.y,
+    this.x,
   });
 
   ReverseOrdinalTable._(Map<int, dynamic> argv)
-      : x = argv[4],
+      : z = argv[1],
         y = argv[2],
-        z = argv[1];
-  final int x;
-  final int y;
+        x = argv[4];
   final int z;
+  final int y;
+  final int x;
 
   @override
   Map<int, dynamic> get $fields {
     return {
-      4: x,
-      2: y,
       1: z,
+      2: y,
+      4: x,
     };
   }
 
@@ -7634,9 +7634,9 @@ const $fidl.TableType<ReverseOrdinalTable> kReverseOrdinalTable_Type =
   inlineSizeOld: 16,
   inlineSizeV1: 16,
   members: <int, $fidl.FidlType>{
-    4: $fidl.Int64Type(),
-    2: $fidl.Int64Type(),
     1: $fidl.Int64Type(),
+    2: $fidl.Int64Type(),
+    4: $fidl.Int64Type(),
   },
   ctor: ReverseOrdinalTable._ctor,
 );
