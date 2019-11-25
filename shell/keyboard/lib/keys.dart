@@ -216,7 +216,8 @@ class SpaceBarKey extends _KeyboardKey {
 
 bool _debugCheckHasRow(BuildContext context) {
   assert(
-      context.widget is Row || context.ancestorWidgetOfExactType(Row) != null,
+      context.widget is Row ||
+          context.findAncestorWidgetOfExactType<Row>() != null,
       '${context.widget.runtimeType} widgets require a Row widget ancestor.');
   return true;
 }

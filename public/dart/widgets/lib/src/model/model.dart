@@ -73,10 +73,9 @@ class ModelFinder<T extends Model> {
   /// whenever there's a change to the returned model.
   T of(BuildContext context, {bool rebuildOnChange = false}) {
     // ignore: prefer_const_constructors
-    final type = _InheritedModel<T>.forRuntimeType().runtimeType;
     final widget = rebuildOnChange
-        ? context.inheritFromWidgetOfExactType(type)
-        : context.ancestorWidgetOfExactType(type);
+        ? context.dependOnInheritedWidgetOfExactType<_InheritedModel<T>>()
+        : context.findAncestorWidgetOfExactType<_InheritedModel<T>>();
     return (widget is _InheritedModel<T>) ? widget.model : null;
   }
 }
@@ -97,9 +96,9 @@ class ScopedModel<T extends Model> extends StatelessWidget {
   Widget build(BuildContext context) => _ModelListener(
         model: model,
         builder: (BuildContext context) => _InheritedModel<T>(
-              model: model,
-              child: child,
-            ),
+          model: model,
+          child: child,
+        ),
       );
 }
 
@@ -144,8 +143,8 @@ class _ModelListenerState extends State<_ModelListener> {
 
 /// Provides [model] to its [child] [Widget] tree via [InheritedWidget].  When
 /// [version] changes, all descendants who request (via
-/// [BuildContext.inheritFromWidgetOfExactType]) to be rebuilt when the model
-/// changes will do so.
+/// [BuildContext.dependOnInheritedWidgetOfExactType]) to be rebuilt when the
+/// model changes will do so.
 class _InheritedModel<T extends Model> extends InheritedWidget {
   final T model;
   final int version;
@@ -192,8 +191,7 @@ class ScopedModelDescendant<T extends Model> extends StatelessWidget {
 }
 
 /// Mixin to enable a model to provide tickers for animations.
-mixin TickerProviderModelMixin on Model
-    implements TickerProvider {
+mixin TickerProviderModelMixin on Model implements TickerProvider {
   final _tickers = <Ticker>{};
 
   /// Creates a ticker with the given callback.

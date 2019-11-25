@@ -440,7 +440,7 @@ class _StreamProvider<T> extends ChangeNotifier with TypedProvider<T> {
 
 /// Put in the widget tree through [ProviderNode].
 ///
-/// Used to be able to find through inheritFromWidgetOfExactType.
+/// Used to be able to find through dependOnInheritedWidgetOfExactType.
 class _InheritedProviders extends InheritedWidget {
   /// The next _InheritedProvider up in the widget tree.
   /// The topmost one will always be null.
@@ -453,7 +453,8 @@ class _InheritedProviders extends InheritedWidget {
 
   /// Finds the closest _InheritedProviders widget abocve the current widget.
   static _InheritedProviders of(BuildContext context) {
-    final widget = context.inheritFromWidgetOfExactType(_InheritedProviders);
+    final widget =
+        context.dependOnInheritedWidgetOfExactType<_InheritedProviders>();
     return widget is _InheritedProviders ? widget : null;
   }
 
