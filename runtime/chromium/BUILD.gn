@@ -7,10 +7,12 @@ import("//build/packages/prebuilt_test_manifest.gni")
 
 prebuilt_package("chromium") {
   archive = "//topaz/third_party/chromium/arch/$target_cpu/chromium.far"
+  visibility = [ "//src/chromium:web_engine" ]
 }
 
 prebuilt_package("web_runner") {
   archive = "//topaz/third_party/chromium/arch/$target_cpu/web_runner.far"
+  visibility = [ "//src/chromium:web_runner" ]
 }
 
 # Prebuilt FAR tests
@@ -26,4 +28,5 @@ prebuilt_test_manifest("chromium_tests") {
   archive_dir = "//prebuilt/third_party/chromium_tests/arch/x64"
   package_name_prefix = "chromium_tests"
   environments = test_env
+  visibility = [ "//src/chromium:chromium_tests" ]
 }

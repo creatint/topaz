@@ -6,4 +6,5 @@ import("//build/packages/prebuilt_package.gni")
 
 prebuilt_package("cast_runner") {
   archive = "//topaz/third_party/cast_runner/arch/$target_cpu/cast_runner.far"
+  visibility = [ "//src/cast:cast_runner" ]
 }
