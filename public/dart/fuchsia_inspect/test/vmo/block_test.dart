@@ -92,18 +92,15 @@ void main() {
     test('can read, including payload bits', () {
       final vmo = FakeVmoHolder(32);
       vmo.bytes
-        ..setUint8(0, 0x01 | (BlockType.propertyValue.value << 4))
-        ..setUint8(1, 0x14) // Parent index should be 0x14
-        ..setUint8(4, 0x20) // Name index should be 0x32. 4..7 bits of
-        ..setUint8(5, 0x03) //   byte 4 + (0..3 bits of byte 5) << 4
+        ..setUint8(0, 0x01)
+        ..setUint8(1, BlockType.propertyValue.value)
+        ..setUint8(2, 0x14) // Parent index should be 0x14
+        ..setUint8(5, 0x32) // Name index should be 0x32
         ..setUint8(8, 0x7f) // Length should be 0x7f
         ..setUint8(12, 0x0a) // Extent
         ..setUint8(15, 0xb0); // Flags 0xb
-      compare(
-          vmo,
-          0,
-          '${hexChar(BlockType.propertyValue.value)} 1'
-          '14 00 00  20 03 00 00  7f00 0000 0a00 00b0');
+      final p = hexChar(BlockType.propertyValue.value);
+      compare(vmo, 0, '01 0$p 14 00  00 32 00 00  7f00 0000 0a00 00b0');
       final block = Block.read(vmo, 0);
       expect(block.size, 32);
       expect(block.type.value, BlockType.propertyValue.value);
@@ -117,15 +114,13 @@ void main() {
     test('can read, including payload bytes', () {
       final vmo = FakeVmoHolder(32);
       vmo.bytes
-        ..setUint8(0, 0x01 | (BlockType.nameUtf8.value << 4))
-        ..setUint8(1, 0x02) // Set length to 2
+        ..setUint8(0, 0x01)
+        ..setUint8(1, BlockType.nameUtf8.value)
+        ..setUint8(2, 0x02) // Set length to 2
         ..setUint8(8, 0x41) // 'a'
         ..setUint8(9, 0x42); // 'b'
-      compare(
-          vmo,
-          0,
-          '${hexChar(BlockType.nameUtf8.value)} 1'
-          '02 00 00 0000 0000  4142 0000 0000 0000 0000');
+      final n = hexChar(BlockType.nameUtf8.value);
+      compare(vmo, 0, '01 0$n 02 00 0000 0000  4142 0000 0000 0000 0000');
       final block = Block.read(vmo, 0);
       expect(block.size, 32);
       expect(block.type.value, BlockType.nameUtf8.value);
@@ -138,41 +133,30 @@ void main() {
     test('Creating, locking, and unlocking the VMO header', () {
       final vmo = FakeVmoHolder(32);
       final block = Block.create(vmo, 0)..becomeHeader();
-      compare(
-          vmo,
-          0,
-          '${hexChar(BlockType.header.value)} 0'
-          '00 0000 49 4E 53 50  0000 0000 0000 0000');
+      final h = hexChar(BlockType.header.value);
+      compare(vmo, 0, '00 0$h 0100 49 4E 53 50  0000 0000 0000 0000');
       block.lock();
-      compare(
-          vmo,
-          0,
-          '${hexChar(BlockType.header.value)} 0'
-          '00 0000 49 4E 53 50  0100 0000 0000 0000');
+      compare(vmo, 0, '00 0$h 0100 49 4E 53 50  0100 0000 0000 0000');
       block.unlock();
-      compare(
-          vmo,
-          0,
-          '${hexChar(BlockType.header.value)} 0'
-          '00 0000 49 4E 53 50  0200 0000 0000 0000');
+      compare(vmo, 0, '00 0$h 0100 49 4E 53 50  0200 0000 0000 0000');
     });
 
     test('Becoming and modifying an intValue via free, reserved, anyValue', () {
       final vmo = FakeVmoHolder(64);
       final block = Block.create(vmo, 2)..becomeFree(5);
-      compare(vmo, 32, '${hexChar(BlockType.free.value)} 1 05 00 00 0000 0000');
+      final f = hexChar(BlockType.free.value);
+      compare(vmo, 32, '01 0$f 05 00 0000 0000');
       expect(block.nextFree, 5);
       block.becomeReserved();
-      compare(vmo, 32, '${hexChar(BlockType.reserved.value)} 1');
+      compare(vmo, 32, '01 0${hexChar(BlockType.reserved.value)}');
       block.becomeValue(parentIndex: 0xbc, nameIndex: 0x7d);
-      compare(vmo, 32,
-          '${hexChar(BlockType.anyValue.value)} 1 bc 00 00 d0 07 00 00');
+      final a = hexChar(BlockType.anyValue.value);
+      final i = hexChar(BlockType.intValue.value);
+      compare(vmo, 32, '01 0$a bc 00 00 7d 00 00');
       block.becomeIntMetric(0xbeef);
-      compare(vmo, 32,
-          '${hexChar(BlockType.intValue.value)} 1 bc 00 00 d0 07 00 00 efbe');
+      compare(vmo, 32, '01 0$i bc 00 00 7d 00 00 efbe');
       block.intValue += 1;
-      compare(vmo, 32,
-          '${hexChar(BlockType.intValue.value)} 1 bc 00 00 d0 07 00 00 f0be');
+      compare(vmo, 32, '01 0$i bc 00 00 7d 00 00 f0be');
     });
 
     test('Becoming a nodeValue and then a tombstone', () {
@@ -182,14 +166,13 @@ void main() {
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
         ..becomeNode();
-      compare(vmo, 32,
-          '${hexChar(BlockType.nodeValue.value)} 1 bc 00 00 d0 07 00 00 0000');
+      final n = hexChar(BlockType.nodeValue.value);
+      compare(vmo, 32, '01 0$n bc 00 00 7d 00 00 0000');
       block.childCount += 1;
-      compare(vmo, 32,
-          '${hexChar(BlockType.nodeValue.value)} 1 bc 00 00 d0 07 00 00 0100');
+      compare(vmo, 32, '01 0$n bc 00 00 7d 00 00 0100');
       block.becomeTombstone();
-      compare(vmo, 32,
-          '${hexChar(BlockType.tombstone.value)} 1 bc 00 00 d0 07 00 00 0100');
+      final t = hexChar(BlockType.tombstone.value);
+      compare(vmo, 32, '01 0$t bc 00 00 7d 00 00 0100');
     });
 
     test('Becoming and modifying doubleValue', () {
@@ -199,8 +182,8 @@ void main() {
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
         ..becomeDoubleMetric(1.0);
-      compare(vmo, 32,
-          '${hexChar(BlockType.doubleValue.value)} 1 bc 00 00 d0 07 00 00 ');
+      final d = hexChar(BlockType.doubleValue.value);
+      compare(vmo, 32, '01 0$d bc 00 00 7d 00 00');
       expect(vmo.bytes.getFloat64(40, Endian.little), 1.0);
       block.doubleValue++;
       expect(vmo.bytes.getFloat64(40, Endian.little), 2.0);
@@ -213,20 +196,13 @@ void main() {
         ..becomeReserved()
         ..becomeValue(parentIndex: 0xbc, nameIndex: 0x7d)
         ..becomeProperty();
-      compare(
-          vmo,
-          32,
-          '${hexChar(BlockType.propertyValue.value)} 1 bc 00 00 d0 07 00 00 '
-          '00 00 00 00  00 00 00 00');
+      final p = hexChar(BlockType.propertyValue.value);
+      compare(vmo, 32, '01 0$p bc 00 00 7d 00 00 00 00 00 00  00 00 00 00');
       block
         ..propertyExtentIndex = 0x35
         ..propertyTotalLength = 0x17b
         ..propertyFlags = 0xa;
-      compare(
-          vmo,
-          32,
-          '${hexChar(BlockType.propertyValue.value)} 1 bc 00 00 d0 07 00 00 '
-          '7b 01 00 00  35 00 00 a0');
+      compare(vmo, 32, '01 0$p bc 00 00 7d 00 00 7b 01 00 00  35 00 00 a0');
       expect(block.propertyTotalLength, 0x17b);
       expect(block.propertyExtentIndex, 0x35);
       expect(block.propertyFlags, 0xa);
@@ -235,8 +211,8 @@ void main() {
     test('Becoming a name', () {
       final vmo = FakeVmoHolder(64);
       final block = Block.create(vmo, 2)..becomeName('abc');
-      compare(vmo, 32,
-          '${hexChar(BlockType.nameUtf8.value)} 1 03 0000 0000 0000 61 62 63');
+      final n = hexChar(BlockType.nameUtf8.value);
+      compare(vmo, 32, '01 0$n 03 00 0000 0000 61 62 63');
       expect(
           Uint8List.view(
               block.nameUtf8.buffer, 0, block.nameUtf8.lengthInBytes),
@@ -250,8 +226,8 @@ void main() {
         ..becomeReserved()
         ..becomeExtent(0x42)
         ..setExtentPayload(toByteData('abc'));
-      compare(vmo, 32,
-          '${hexChar(BlockType.extent.value)} 1 42 0000 0000 0000 61 62 63');
+      final e = hexChar(BlockType.extent.value);
+      compare(vmo, 32, '01 0$e 42 00 0000 0000 61 62 63');
       expect(block.nextExtent, 0x42);
       expect(block.payloadSpaceBytes, block.size - headerSizeBytes);
     });

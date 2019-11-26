@@ -33,9 +33,9 @@ void main() {
       var f = hexChar(BlockType.free.value);
       compare(vmo, 0x00, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x10, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x20, '$f 1 000000 00000000  00000000 00000000');
+      compare(vmo, 0x20, '01 0$f 0000 00000000  00000000 00000000');
       compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x40, '$f 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x40, '01 0$f 0_00 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
     });
 
@@ -45,9 +45,9 @@ void main() {
       var blocks = _allocateEverything(heap);
       expect(blocks, hasLength(2));
       var r = hexChar(BlockType.reserved.value);
-      compare(vmo, 0x20, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x20, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x40, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x40, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
     });
 

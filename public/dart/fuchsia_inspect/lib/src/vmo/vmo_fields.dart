@@ -22,7 +22,7 @@ const int headerMagicNumber = 0x50534e49;
 const int bytesPerIndex = 16;
 
 /// Version for HEADER block.
-const int headerVersionNumber = 0;
+const int headerVersionNumber = 1;
 
 /// First index available for the heap.
 const int heapStartIndex = 2;
@@ -114,22 +114,22 @@ class BlockType {
 final BitRange orderBits = BitRange(0, 3);
 
 /// Type is one of the BlockType values.
-final BitRange typeBits = BitRange(4, 7);
+final BitRange typeBits = BitRange(8, 15);
 
 /// Version field of HEADER-type blocks.
-final BitRange headerVersionBits = BitRange(8, 31);
+final BitRange headerVersionBits = BitRange(16, 31);
 
 /// "Magic" field of HEADER-type blocks.
 final BitRange headerMagicBits = BitRange(32, 63);
 
 /// NextFreeBlock field of FREE-type blocks.
-final BitRange nextFreeBits = BitRange(8, 35);
+final BitRange nextFreeBits = BitRange(16, 39);
 
 /// Parent Index field of *_VALUE blocks.
-final BitRange parentIndexBits = BitRange(8, 35);
+final BitRange parentIndexBits = BitRange(16, 39);
 
 /// Name Index field of *_VALUE blocks.
-final BitRange nameIndexBits = BitRange(36, 63);
+final BitRange nameIndexBits = BitRange(40, 63);
 
 /// Total Length field of PROPERTY_VALUE blocks payload bits.
 final BitRange propertyTotalLengthBits = BitRange(0, 31);
@@ -141,7 +141,7 @@ final BitRange propertyExtentIndexBits = BitRange(32, 59);
 final BitRange propertyFlagsBits = BitRange(60, 63);
 
 /// Next Extent field of EXTENT blocks.
-final BitRange nextExtentBits = BitRange(8, 35);
+final BitRange nextExtentBits = BitRange(16, 39);
 
 /// Length field of NAME blocks.
-final BitRange nameLengthBits = BitRange(8, 19);
+final BitRange nameLengthBits = BitRange(16, 27);

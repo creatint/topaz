@@ -89,8 +89,8 @@ String dumpBlocks(FakeVmoHolder vmo, {int startIndex = 0, int howMany32 = -1}) {
     ..writeln('  |   ,------- index')
     ..writeln('  |   |   ,--- order (0:16 bytes; 1:32 bytes; etc.)')
     ..writeln(
-        '  |   |   | ,- type (0: free; 1:reserved; 2:header; 3:object value; 8:extent, 9:name; 10:tombstone)')
-    ..writeln('  v   v   v v');
+        '  |   |   |   ,- type (0: free; 1:reserved; 2:header; 3:object value; 8:extent, 9:name; 10:tombstone)')
+    ..writeln('  v   v   v   v');
   for (int index = startIndex; index <= lastIndex;) {
     String lowNybble(int offset) => hexChar(vmo.bytes.getUint8(offset) & 15);
     String highNybble(int offset) => hexChar(vmo.bytes.getUint8(offset) >> 4);

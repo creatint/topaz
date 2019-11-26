@@ -27,11 +27,11 @@ void main() {
       var f = hexChar(BlockType.free.value);
       compare(vmo, 0x00, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x10, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x20, '$f 1 000000 00000000  00000000 00000000');
+      compare(vmo, 0x20, '01 0$f 0000 00000000  00000000 00000000');
       compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x40, '$f 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x40, '01 0$f 0_00 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x60, '$f 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x60, '01 0$f 0_00 00000000  00000000 00000000');
       compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
     });
 
@@ -44,9 +44,9 @@ void main() {
           _allocateEverything(heap, allocatedIndexes: _allocatedIndexes);
       expect(blocks, hasLength(3));
       var r = hexChar(BlockType.reserved.value);
-      compare(vmo, 0x40, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x40, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x60, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x60, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
     });
 
@@ -86,7 +86,7 @@ void main() {
           sizeHint: 128, allocatedIndexes: _allocatedIndexes);
       expect(blocks, hasLength(2));
       var r = hexChar(BlockType.reserved.value);
-      compare(vmo, 0x40, '$r 2 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x40, '02 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
       compare(vmo, 0x60, '0  0 0_0000 00000000  00000000 00000000');
       compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
@@ -106,19 +106,19 @@ void main() {
           sizeHint: 16, allocatedIndexes: _allocatedIndexes);
       expect(blocks, hasLength(_allocatedIndexes.length));
       var r = hexChar(BlockType.reserved.value);
-      compare(vmo, 0x20, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x20, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x40, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x40, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x60, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x60, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0x80, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0x80, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0x90, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0xa0, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0xa0, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0xb0, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0xc0, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0xc0, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0xd0, '0  0 000000 00000000  00000000 00000000');
-      compare(vmo, 0xe0, '$r 1 0_0000 00000000  00000000 00000000');
+      compare(vmo, 0xe0, '01 0$r 0_00 00000000  00000000 00000000');
       compare(vmo, 0xf0, '0  0 000000 00000000  00000000 00000000');
     });
 

@@ -33,19 +33,19 @@ void main() {
         createWriter(vmo);
         final f = hexChar(BlockType.free.value);
         final h = hexChar(BlockType.header.value);
-        compare(vmo, 0x00, '$h 0 000000 494E5350  00000000 00000000');
+        compare(vmo, 0x00, '00 0$h 0100 494E5350  00000000 00000000');
         compare(vmo, 0x10, '0  0 000000 00000000  00000000 00000000');
-        compare(vmo, 0x20, '$f 1 0_0000 00000000  00000000 00000000');
+        compare(vmo, 0x20, '01 0$f 0_00 00000000  00000000 00000000');
         compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
-        compare(vmo, 0x40, '$f 2 0_0000 00000000  00000000 00000000');
+        compare(vmo, 0x40, '02 0$f 0_00 00000000  00000000 00000000');
         compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
         compare(vmo, 0x60, '0  0 000000 00000000  00000000 00000000');
         compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
-        compare(vmo, 0x80, '$f 2 0_0000 00000000  00000000 00000000');
+        compare(vmo, 0x80, '02 0$f 0_00 00000000  00000000 00000000');
         compare(vmo, 0x90, '0  0 000000 00000000  00000000 00000000');
         compare(vmo, 0xa0, '0  0 000000 00000000  00000000 00000000');
         compare(vmo, 0xb0, '0  0 000000 00000000  00000000 00000000');
-        compare(vmo, 0xc0, '$f 2 0_0000 00000000  00000000 00000000');
+        compare(vmo, 0xc0, '02 0$f 0_00 00000000  00000000 00000000');
         // Number of free blocks has been verified manually here.
         expect(countFreeBlocks(vmo), 5, reason: dumpBlocks(vmo));
       });
@@ -55,7 +55,7 @@ void main() {
         final writer = createWriter(vmo);
         final h = hexChar(BlockType.header.value);
         writer.createNode(writer.rootNode, 'child');
-        compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+        compare(vmo, 0x00, '00 0$h 0100 494E5350  02000000 00000000');
         writer.createProperty(writer.rootNode, 'property');
       });
 
@@ -65,7 +65,7 @@ void main() {
         final writer = VmoWriter(vmo, Slab32.create);
         final h = hexChar(BlockType.header.value);
         writer.createProperty(writer.rootNode, 'property');
-        compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+        compare(vmo, 0x00, '00 0$h 0100 494E5350  02000000 00000000');
       });
 
       test('failed createMetric leaves VMO sequence number even (valid VMO)',
@@ -74,7 +74,7 @@ void main() {
         final writer = createWriter(vmo);
         final h = hexChar(BlockType.header.value);
         writer.createMetric(writer.rootNode, 'metric', 0);
-        compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+        compare(vmo, 0x00, '00 0$h 0100 494E5350  02000000 00000000');
       });
 
       test('make, modify, and free Node', () {
@@ -289,13 +289,13 @@ void main() {
         createWriter(vmo);
         final f = hexChar(BlockType.free.value);
         final h = hexChar(BlockType.header.value);
-        compare(vmo, 0x00, '$h 0 000000 494E5350  00000000 00000000');
+        compare(vmo, 0x00, '00 0$h 0100 494E5350  00000000 00000000');
         compare(vmo, 0x10, '0  0 000000 00000000  00000000 00000000');
-        compare(vmo, 0x20, '$f 1 0_0000 00000000  00000000 00000000');
+        compare(vmo, 0x20, '01 0$f 0_00 00000000  00000000 00000000');
         compare(vmo, 0x30, '0  0 000000 00000000  00000000 00000000');
-        compare(vmo, 0x40, '$f 1 0_0000 00000000  00000000 00000000');
+        compare(vmo, 0x40, '01 0$f 0_00 00000000  00000000 00000000');
         compare(vmo, 0x50, '0  0 000000 00000000  00000000 00000000');
-        compare(vmo, 0x60, '$f 1 0_0000 00000000  00000000 00000000');
+        compare(vmo, 0x60, '01 0$f 0_00 00000000  00000000 00000000');
         compare(vmo, 0x70, '0  0 000000 00000000  00000000 00000000');
         expect(countFreeBlocks(vmo), 8, reason: dumpBlocks(vmo));
       });
@@ -305,7 +305,7 @@ void main() {
         final writer = createWriter(vmo);
         final h = hexChar(BlockType.header.value);
         writer.createNode(writer.rootNode, 'child');
-        compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+        compare(vmo, 0x00, '00 0$h 0100 494E5350  02000000 00000000');
         writer.createProperty(writer.rootNode, 'property');
       });
 
@@ -315,7 +315,7 @@ void main() {
         final writer = VmoWriter(vmo, Slab32.create);
         final h = hexChar(BlockType.header.value);
         writer.createProperty(writer.rootNode, 'property');
-        compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+        compare(vmo, 0x00, '00 0$h 0100 494E5350  02000000 00000000');
       });
 
       test('failed createMetric leaves VMO sequence number even (valid VMO)',
@@ -324,7 +324,7 @@ void main() {
         final writer = createWriter(vmo);
         final h = hexChar(BlockType.header.value);
         writer.createMetric(writer.rootNode, 'metric', 0);
-        compare(vmo, 0x00, '$h 0 000000 494E5350  02000000 00000000');
+        compare(vmo, 0x00, '00 0$h 0100 494E5350  02000000 00000000');
       });
 
       test('make, modify, and free Node', () {
