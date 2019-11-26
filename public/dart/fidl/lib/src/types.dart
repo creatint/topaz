@@ -1065,7 +1065,7 @@ class XUnionType<T extends XUnion> extends NullableFidlType<T> {
       if (!nullable) {
         _throwIfNotNullable(nullable);
       }
-      encoder.encodeUint32(0, offset);
+      encoder.encodeUint64(0, offset);
       _encodeEnvelopeAbsent(encoder, envelopeOffset);
     } else {
       final int ordinal = value.$ordinal;
@@ -1079,7 +1079,7 @@ class XUnionType<T extends XUnion> extends NullableFidlType<T> {
         throw FidlError('Bad xunion ordinal: $ordinal',
             FidlErrorCode.fidlStrictXUnionUnknownField);
 
-      encoder.encodeUint32(ordinal, offset);
+      encoder.encodeUint64(ordinal, offset);
       _encodeEnvelopePresent(encoder, envelopeOffset, value.$data, fieldType);
     }
   }
@@ -1087,7 +1087,7 @@ class XUnionType<T extends XUnion> extends NullableFidlType<T> {
   @override
   T decode(Decoder decoder, int offset) {
     final int envelopeOffset = offset + 8;
-    final int ordinal = decoder.decodeUint32(offset);
+    final int ordinal = decoder.decodeUint64(offset);
     if (ordinal == 0) {
       if (!nullable) {
         throw FidlError('Zero xunion ordinal on non-nullable');
