@@ -17,7 +17,7 @@ import 'message.dart';
 // Switches default union encoding from legacy union bytes to xunion
 // bytes -- this value is referenced by the generated bindings only.
 // This is part of the union to xunion migration.
-bool defaultEnableWriteXUnionBytesForUnion = false;
+bool defaultEnableWriteXUnionBytesForUnion = true;
 
 const int _kAlignment = 8;
 const int _kAlignmentMask = 0x7;
