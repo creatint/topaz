@@ -60,7 +60,6 @@ group("tests") {
       "//topaz/public/dart/fuchsia_webview_flutter:fuchsia_webview_flutter_unittests($host_toolchain)",
       "//topaz/public/dart/sledge:dart_sledge_tests($host_toolchain)",
       "//topaz/public/dart/widgets:dart_widget_tests($host_toolchain)",
-      "//topaz/public/lib/display/flutter:display_test($host_toolchain)",
       "//topaz/examples/test/flutter_widget_test($host_toolchain)",
       "//topaz/public/dart/fuchsia_internationalization_flutter:tests($host_toolchain)",
       "//topaz/public/dart/fuchsia_modular_flutter:fuchsia_modular_flutter_unittests($host_toolchain)",

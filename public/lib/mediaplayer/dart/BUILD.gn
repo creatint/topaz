@@ -15,7 +15,6 @@ dart_library("dart") {
   source_dir = "."
 
   deps = [
-    "//sdk/fidl/fuchsia.device.display",
     "//sdk/fidl/fuchsia.math",
     "//sdk/fidl/fuchsia.media",
     "//sdk/fidl/fuchsia.media.audio",
