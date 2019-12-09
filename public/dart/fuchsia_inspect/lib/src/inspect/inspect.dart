@@ -58,8 +58,8 @@ abstract class Inspect {
     if (_singleton == null) {
       var context = StartupContext.fromStartupInfo();
       var writer = VmoWriter.withSize(vmoSize);
-      _singleton =
-          InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
+      _singleton = InspectImpl(
+          context.outgoing.diagnosticsDir(), 'root.inspect', writer);
     }
     return _singleton;
   }
@@ -76,7 +76,7 @@ abstract class Inspect {
     var context = StartupContext.fromStartupInfo();
     var writer = VmoWriter.withSize(vmoSize);
     var fileName = _nextInstanceWithName(name);
-    return InspectImpl(context.outgoing.debugDir(), fileName, writer);
+    return InspectImpl(context.outgoing.diagnosticsDir(), fileName, writer);
   }
 
   /// Mounts an [Inspect] file at <name>.inspect whose contents are
@@ -86,7 +86,7 @@ abstract class Inspect {
   /// name, a unique number will be appended to the name.
   static void onDemand(String name, OnDemandRootFn rootNodeCallback) {
     var context = StartupContext.fromStartupInfo();
-    var directory = context.outgoing.debugDir();
+    var directory = context.outgoing.diagnosticsDir();
     var fileName = _nextInstanceWithName(name);
     var pseudoVmoNode = PseudoVmoFile.readOnly(() {
       var writer = VmoWriter.withSize(vmoSize);
