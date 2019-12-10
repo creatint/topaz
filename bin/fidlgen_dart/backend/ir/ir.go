@@ -776,11 +776,10 @@ func (c *compiler) compileType(val types.Type) Type {
 			r.AsyncDecl = r.SyncDecl
 			if val.Nullable {
 				switch r.declType {
+				case types.UnionDeclType:
+					fallthrough
 				case types.XUnionDeclType:
 					r.typeExpr = c.optTypeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier))
-				case types.UnionDeclType:
-					r.typeExpr = fmt.Sprintf("$fidl.OptUnionType<%s>(element: %s)",
-						t, c.typeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier)))
 				default:
 					r.typeExpr = fmt.Sprintf("$fidl.PointerType<%s>(element: %s)",
 						t, c.typeSymbolForCompoundIdentifier(types.ParseCompoundIdentifier(val.Identifier)))
@@ -1266,7 +1265,8 @@ func Compile(r types.Root) Root {
 	}
 
 	for _, v := range r.Unions {
-		root.Unions = append(root.Unions, c.compileUnion(v))
+		vConverted := types.ConvertUnionToXUnion(v)
+		root.XUnions = append(root.XUnions, c.compileXUnion(vConverted))
 	}
 
 	for _, v := range r.XUnions {

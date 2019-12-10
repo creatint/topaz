@@ -37,46 +37,55 @@ import 'package:zircon/zircon.dart' as $zx;
 // ignore_for_file: avoid_unused_constructor_parameters
 
 enum UnionTag {
-  primitive,
-  stringNeedsConstructor,
-  vectorStringAlsoNeedsConstructor,
+  primitive, // 0x1
+  stringNeedsConstructor, // 0x2
+  vectorStringAlsoNeedsConstructor, // 0x3
 }
 
-class Union extends $fidl.Union {
+const Map<int, UnionTag> _UnionTag_map = {
+  1: UnionTag.primitive,
+  2: UnionTag.stringNeedsConstructor,
+  3: UnionTag.vectorStringAlsoNeedsConstructor,
+};
+
+class Union extends $fidl.XUnion {
   const Union.withPrimitive(int value)
-      : _data = value,
-        _tag = UnionTag.primitive;
+      : _ordinal = 1,
+        _data = value;
 
   const Union.withStringNeedsConstructor(String value)
-      : _data = value,
-        _tag = UnionTag.stringNeedsConstructor;
+      : _ordinal = 2,
+        _data = value;
 
   const Union.withVectorStringAlsoNeedsConstructor(List<String> value)
-      : _data = value,
-        _tag = UnionTag.vectorStringAlsoNeedsConstructor;
+      : _ordinal = 3,
+        _data = value;
 
-  Union._(UnionTag tag, Object data)
-      : _tag = tag,
+  Union._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final UnionTag _tag;
+  final int _ordinal;
   final _data;
+
+  UnionTag get $tag => _UnionTag_map[_ordinal];
+
   int get primitive {
-    if (_tag != UnionTag.primitive) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   String get stringNeedsConstructor {
-    if (_tag != UnionTag.stringNeedsConstructor) {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
   }
 
   List<String> get vectorStringAlsoNeedsConstructor {
-    if (_tag != UnionTag.vectorStringAlsoNeedsConstructor) {
+    if (_ordinal != 3) {
       return null;
     }
     return _data;
@@ -84,78 +93,84 @@ class Union extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case UnionTag.primitive:
-        return r'Union.primitive($primitive)';
-      case UnionTag.stringNeedsConstructor:
-        return r'Union.stringNeedsConstructor($stringNeedsConstructor)';
-      case UnionTag.vectorStringAlsoNeedsConstructor:
-        return r'Union.vectorStringAlsoNeedsConstructor($vectorStringAlsoNeedsConstructor)';
+    switch (_ordinal) {
+      case 1:
+        return 'Union.primitive($primitive)';
+      case 2:
+        return 'Union.stringNeedsConstructor($stringNeedsConstructor)';
+      case 3:
+        return 'Union.vectorStringAlsoNeedsConstructor($vectorStringAlsoNeedsConstructor)';
       default:
         return null;
     }
   }
 
-  UnionTag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  UnionTag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static Union _ctor(int index, Object data) {
-    return Union._(UnionTag.values[index], data);
+  static Union _ctor(int ordinal, Object data) {
+    return Union._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 8, offsetV1: -1 /* unused */),
-    $fidl.MemberType<String>(
-        type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 8,
-        offsetV1: -1 /* unused */),
-    $fidl.MemberType<List<String>>(
-        type: $fidl.VectorType<List<String>>(
-            element: $fidl.StringType(maybeElementCount: null, nullable: false),
-            maybeElementCount: null,
-            nullable: false),
-        offsetOld: 8,
-        offsetV1: -1 /* unused */),
-  ],
-  ctor: Union._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
-    2: 1,
-    3: 2,
+const $fidl.XUnionType<Union> kUnion_Type = $fidl.XUnionType<Union>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    2: $fidl.StringType(maybeElementCount: null, nullable: false),
+    3: $fidl.VectorType<List<String>>(
+        element: $fidl.StringType(maybeElementCount: null, nullable: false),
+        maybeElementCount: null,
+        nullable: false),
   },
+  ctor: Union._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<Union> kUnion_OptType = $fidl.XUnionType<Union>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    2: $fidl.StringType(maybeElementCount: null, nullable: false),
+    3: $fidl.VectorType<List<String>>(
+        element: $fidl.StringType(maybeElementCount: null, nullable: false),
+        maybeElementCount: null,
+        nullable: false),
+  },
+  ctor: Union._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 enum FieldCollisionTag {
-  fieldCollisionTag,
+  fieldCollisionTag, // 0x1
 }
 
-class FieldCollision extends $fidl.Union {
-  const FieldCollision.withFieldCollisionTag(int value)
-      : _data = value,
-        _tag = FieldCollisionTag.fieldCollisionTag;
+const Map<int, FieldCollisionTag> _FieldCollisionTag_map = {
+  1: FieldCollisionTag.fieldCollisionTag,
+};
 
-  FieldCollision._(FieldCollisionTag tag, Object data)
-      : _tag = tag,
+class FieldCollision extends $fidl.XUnion {
+  const FieldCollision.withFieldCollisionTag(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  FieldCollision._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final FieldCollisionTag _tag;
+  final int _ordinal;
   final _data;
+
+  FieldCollisionTag get $tag => _FieldCollisionTag_map[_ordinal];
+
   int get fieldCollisionTag {
-    if (_tag != FieldCollisionTag.fieldCollisionTag) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
@@ -163,74 +178,85 @@ class FieldCollision extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case FieldCollisionTag.fieldCollisionTag:
-        return r'FieldCollision.fieldCollisionTag($fieldCollisionTag)';
+    switch (_ordinal) {
+      case 1:
+        return 'FieldCollision.fieldCollisionTag($fieldCollisionTag)';
       default:
         return null;
     }
   }
 
-  FieldCollisionTag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  FieldCollisionTag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static FieldCollision _ctor(int index, Object data) {
-    return FieldCollision._(FieldCollisionTag.values[index], data);
+  static FieldCollision _ctor(int ordinal, Object data) {
+    return FieldCollision._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<FieldCollision> kFieldCollision_Type =
-    $fidl.UnionType<FieldCollision>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
-  ],
-  ctor: FieldCollision._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
+const $fidl.XUnionType<FieldCollision> kFieldCollision_Type =
+    $fidl.XUnionType<FieldCollision>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
   },
+  ctor: FieldCollision._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<FieldCollision> kFieldCollision_OptType =
+    $fidl.XUnionType<FieldCollision>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+  },
+  ctor: FieldCollision._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 enum ExplicitUnionTag {
-  primitive,
-  stringNeedsConstructor,
+  primitive, // 0x1
+  stringNeedsConstructor, // 0x3
 }
 
-class ExplicitUnion extends $fidl.Union {
+const Map<int, ExplicitUnionTag> _ExplicitUnionTag_map = {
+  1: ExplicitUnionTag.primitive,
+  3: ExplicitUnionTag.stringNeedsConstructor,
+};
+
+class ExplicitUnion extends $fidl.XUnion {
   const ExplicitUnion.withPrimitive(int value)
-      : _data = value,
-        _tag = ExplicitUnionTag.primitive;
+      : _ordinal = 1,
+        _data = value;
 
   const ExplicitUnion.withStringNeedsConstructor(String value)
-      : _data = value,
-        _tag = ExplicitUnionTag.stringNeedsConstructor;
+      : _ordinal = 3,
+        _data = value;
 
-  ExplicitUnion._(ExplicitUnionTag tag, Object data)
-      : _tag = tag,
+  ExplicitUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final ExplicitUnionTag _tag;
+  final int _ordinal;
   final _data;
+
+  ExplicitUnionTag get $tag => _ExplicitUnionTag_map[_ordinal];
+
   int get primitive {
-    if (_tag != ExplicitUnionTag.primitive) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   String get stringNeedsConstructor {
-    if (_tag != ExplicitUnionTag.stringNeedsConstructor) {
+    if (_ordinal != 3) {
       return null;
     }
     return _data;
@@ -238,81 +264,89 @@ class ExplicitUnion extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case ExplicitUnionTag.primitive:
-        return r'ExplicitUnion.primitive($primitive)';
-      case ExplicitUnionTag.stringNeedsConstructor:
-        return r'ExplicitUnion.stringNeedsConstructor($stringNeedsConstructor)';
+    switch (_ordinal) {
+      case 1:
+        return 'ExplicitUnion.primitive($primitive)';
+      case 3:
+        return 'ExplicitUnion.stringNeedsConstructor($stringNeedsConstructor)';
       default:
         return null;
     }
   }
 
-  ExplicitUnionTag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  ExplicitUnionTag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static ExplicitUnion _ctor(int index, Object data) {
-    return ExplicitUnion._(ExplicitUnionTag.values[index], data);
+  static ExplicitUnion _ctor(int ordinal, Object data) {
+    return ExplicitUnion._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<ExplicitUnion> kExplicitUnion_Type =
-    $fidl.UnionType<ExplicitUnion>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 8, offsetV1: -1 /* unused */),
-    $fidl.MemberType<String>(
-        type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 8,
-        offsetV1: -1 /* unused */),
-  ],
-  ctor: ExplicitUnion._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
-    3: 1,
+const $fidl.XUnionType<ExplicitUnion> kExplicitUnion_Type =
+    $fidl.XUnionType<ExplicitUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    3: $fidl.StringType(maybeElementCount: null, nullable: false),
   },
+  ctor: ExplicitUnion._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<ExplicitUnion> kExplicitUnion_OptType =
+    $fidl.XUnionType<ExplicitUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    3: $fidl.StringType(maybeElementCount: null, nullable: false),
+  },
+  ctor: ExplicitUnion._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 enum ReverseOrdinalUnionTag {
-  first,
-  second,
+  first, // 0x1
+  second, // 0x2
 }
 
-class ReverseOrdinalUnion extends $fidl.Union {
+const Map<int, ReverseOrdinalUnionTag> _ReverseOrdinalUnionTag_map = {
+  1: ReverseOrdinalUnionTag.first,
+  2: ReverseOrdinalUnionTag.second,
+};
+
+class ReverseOrdinalUnion extends $fidl.XUnion {
   const ReverseOrdinalUnion.withFirst(int value)
-      : _data = value,
-        _tag = ReverseOrdinalUnionTag.first;
+      : _ordinal = 1,
+        _data = value;
 
   const ReverseOrdinalUnion.withSecond(int value)
-      : _data = value,
-        _tag = ReverseOrdinalUnionTag.second;
+      : _ordinal = 2,
+        _data = value;
 
-  ReverseOrdinalUnion._(ReverseOrdinalUnionTag tag, Object data)
-      : _tag = tag,
+  ReverseOrdinalUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final ReverseOrdinalUnionTag _tag;
+  final int _ordinal;
   final _data;
+
+  ReverseOrdinalUnionTag get $tag => _ReverseOrdinalUnionTag_map[_ordinal];
+
   int get first {
-    if (_tag != ReverseOrdinalUnionTag.first) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   int get second {
-    if (_tag != ReverseOrdinalUnionTag.second) {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
@@ -320,48 +354,50 @@ class ReverseOrdinalUnion extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case ReverseOrdinalUnionTag.first:
-        return r'ReverseOrdinalUnion.first($first)';
-      case ReverseOrdinalUnionTag.second:
-        return r'ReverseOrdinalUnion.second($second)';
+    switch (_ordinal) {
+      case 1:
+        return 'ReverseOrdinalUnion.first($first)';
+      case 2:
+        return 'ReverseOrdinalUnion.second($second)';
       default:
         return null;
     }
   }
 
-  ReverseOrdinalUnionTag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  ReverseOrdinalUnionTag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static ReverseOrdinalUnion _ctor(int index, Object data) {
-    return ReverseOrdinalUnion._(ReverseOrdinalUnionTag.values[index], data);
+  static ReverseOrdinalUnion _ctor(int ordinal, Object data) {
+    return ReverseOrdinalUnion._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<ReverseOrdinalUnion> kReverseOrdinalUnion_Type =
-    $fidl.UnionType<ReverseOrdinalUnion>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
-  ],
-  ctor: ReverseOrdinalUnion._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
-    2: 1,
+const $fidl.XUnionType<ReverseOrdinalUnion> kReverseOrdinalUnion_Type =
+    $fidl.XUnionType<ReverseOrdinalUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint32Type(),
+    2: $fidl.Uint32Type(),
   },
+  ctor: ReverseOrdinalUnion._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<ReverseOrdinalUnion> kReverseOrdinalUnion_OptType =
+    $fidl.XUnionType<ReverseOrdinalUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint32Type(),
+    2: $fidl.Uint32Type(),
+  },
+  ctor: ReverseOrdinalUnion._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 class NullableUnionStruct extends $fidl.Struct {
@@ -409,10 +445,7 @@ const $fidl.StructType<NullableUnionStruct> kNullableUnionStruct_Type =
   inlineSizeOld: 8,
   inlineSizeV1: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<Union>(
-        type: $fidl.OptUnionType<Union>(element: kUnion_Type),
-        offsetOld: 0,
-        offsetV1: 0),
+    $fidl.MemberType<Union>(type: kUnion_OptType, offsetOld: 0, offsetV1: 0),
   ],
   ctor: NullableUnionStruct._ctor,
 );

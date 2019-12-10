@@ -89,36 +89,45 @@ const $fidl.EnumType<ErrorEnun> kErrorEnun_Type =
     $fidl.EnumType<ErrorEnun>(type: $fidl.Uint32Type(), ctor: ErrorEnun._ctor);
 
 enum WithErrorSyntaxResponseAsStructResultTag {
-  response,
-  err,
+  response, // 0x1
+  err, // 0x2
 }
 
-class WithErrorSyntaxResponseAsStructResult extends $fidl.Union {
+const Map<int, WithErrorSyntaxResponseAsStructResultTag>
+    _WithErrorSyntaxResponseAsStructResultTag_map = {
+  1: WithErrorSyntaxResponseAsStructResultTag.response,
+  2: WithErrorSyntaxResponseAsStructResultTag.err,
+};
+
+class WithErrorSyntaxResponseAsStructResult extends $fidl.XUnion {
   const WithErrorSyntaxResponseAsStructResult.withResponse(
       WithErrorSyntaxResponseAsStructResponse value)
-      : _data = value,
-        _tag = WithErrorSyntaxResponseAsStructResultTag.response;
+      : _ordinal = 1,
+        _data = value;
 
   const WithErrorSyntaxResponseAsStructResult.withErr(int value)
-      : _data = value,
-        _tag = WithErrorSyntaxResponseAsStructResultTag.err;
+      : _ordinal = 2,
+        _data = value;
 
-  WithErrorSyntaxResponseAsStructResult._(
-      WithErrorSyntaxResponseAsStructResultTag tag, Object data)
-      : _tag = tag,
+  WithErrorSyntaxResponseAsStructResult._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final WithErrorSyntaxResponseAsStructResultTag _tag;
+  final int _ordinal;
   final _data;
+
+  WithErrorSyntaxResponseAsStructResultTag get $tag =>
+      _WithErrorSyntaxResponseAsStructResultTag_map[_ordinal];
+
   WithErrorSyntaxResponseAsStructResponse get response {
-    if (_tag != WithErrorSyntaxResponseAsStructResultTag.response) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   int get err {
-    if (_tag != WithErrorSyntaxResponseAsStructResultTag.err) {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
@@ -126,85 +135,94 @@ class WithErrorSyntaxResponseAsStructResult extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case WithErrorSyntaxResponseAsStructResultTag.response:
-        return r'WithErrorSyntaxResponseAsStructResult.response($response)';
-      case WithErrorSyntaxResponseAsStructResultTag.err:
-        return r'WithErrorSyntaxResponseAsStructResult.err($err)';
+    switch (_ordinal) {
+      case 1:
+        return 'WithErrorSyntaxResponseAsStructResult.response($response)';
+      case 2:
+        return 'WithErrorSyntaxResponseAsStructResult.err($err)';
       default:
         return null;
     }
   }
 
-  WithErrorSyntaxResponseAsStructResultTag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  WithErrorSyntaxResponseAsStructResultTag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static WithErrorSyntaxResponseAsStructResult _ctor(int index, Object data) {
-    return WithErrorSyntaxResponseAsStructResult._(
-        WithErrorSyntaxResponseAsStructResultTag.values[index], data);
+  static WithErrorSyntaxResponseAsStructResult _ctor(int ordinal, Object data) {
+    return WithErrorSyntaxResponseAsStructResult._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<WithErrorSyntaxResponseAsStructResult>
+const $fidl.XUnionType<WithErrorSyntaxResponseAsStructResult>
     kWithErrorSyntax_ResponseAsStruct_Result_Type =
-    $fidl.UnionType<WithErrorSyntaxResponseAsStructResult>(
-  inlineSizeOld: 32,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<WithErrorSyntaxResponseAsStructResponse>(
-        type: kWithErrorSyntax_ResponseAsStruct_Response_Type,
-        offsetOld: 8,
-        offsetV1: -1 /* unused */),
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 8, offsetV1: -1 /* unused */),
-  ],
-  ctor: WithErrorSyntaxResponseAsStructResult._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
-    2: 1,
+    $fidl.XUnionType<WithErrorSyntaxResponseAsStructResult>(
+  members: <int, $fidl.FidlType>{
+    1: kWithErrorSyntax_ResponseAsStruct_Response_Type,
+    2: $fidl.Uint32Type(),
   },
+  ctor: WithErrorSyntaxResponseAsStructResult._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<WithErrorSyntaxResponseAsStructResult>
+    kWithErrorSyntax_ResponseAsStruct_Result_OptType =
+    $fidl.XUnionType<WithErrorSyntaxResponseAsStructResult>(
+  members: <int, $fidl.FidlType>{
+    1: kWithErrorSyntax_ResponseAsStruct_Response_Type,
+    2: $fidl.Uint32Type(),
+  },
+  ctor: WithErrorSyntaxResponseAsStructResult._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 enum WithErrorSyntaxErrorAsPrimitiveResultTag {
-  response,
-  err,
+  response, // 0x1
+  err, // 0x2
 }
 
-class WithErrorSyntaxErrorAsPrimitiveResult extends $fidl.Union {
+const Map<int, WithErrorSyntaxErrorAsPrimitiveResultTag>
+    _WithErrorSyntaxErrorAsPrimitiveResultTag_map = {
+  1: WithErrorSyntaxErrorAsPrimitiveResultTag.response,
+  2: WithErrorSyntaxErrorAsPrimitiveResultTag.err,
+};
+
+class WithErrorSyntaxErrorAsPrimitiveResult extends $fidl.XUnion {
   const WithErrorSyntaxErrorAsPrimitiveResult.withResponse(
       WithErrorSyntaxErrorAsPrimitiveResponse value)
-      : _data = value,
-        _tag = WithErrorSyntaxErrorAsPrimitiveResultTag.response;
+      : _ordinal = 1,
+        _data = value;
 
   const WithErrorSyntaxErrorAsPrimitiveResult.withErr(int value)
-      : _data = value,
-        _tag = WithErrorSyntaxErrorAsPrimitiveResultTag.err;
+      : _ordinal = 2,
+        _data = value;
 
-  WithErrorSyntaxErrorAsPrimitiveResult._(
-      WithErrorSyntaxErrorAsPrimitiveResultTag tag, Object data)
-      : _tag = tag,
+  WithErrorSyntaxErrorAsPrimitiveResult._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final WithErrorSyntaxErrorAsPrimitiveResultTag _tag;
+  final int _ordinal;
   final _data;
+
+  WithErrorSyntaxErrorAsPrimitiveResultTag get $tag =>
+      _WithErrorSyntaxErrorAsPrimitiveResultTag_map[_ordinal];
+
   WithErrorSyntaxErrorAsPrimitiveResponse get response {
-    if (_tag != WithErrorSyntaxErrorAsPrimitiveResultTag.response) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   int get err {
-    if (_tag != WithErrorSyntaxErrorAsPrimitiveResultTag.err) {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
@@ -212,85 +230,94 @@ class WithErrorSyntaxErrorAsPrimitiveResult extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case WithErrorSyntaxErrorAsPrimitiveResultTag.response:
-        return r'WithErrorSyntaxErrorAsPrimitiveResult.response($response)';
-      case WithErrorSyntaxErrorAsPrimitiveResultTag.err:
-        return r'WithErrorSyntaxErrorAsPrimitiveResult.err($err)';
+    switch (_ordinal) {
+      case 1:
+        return 'WithErrorSyntaxErrorAsPrimitiveResult.response($response)';
+      case 2:
+        return 'WithErrorSyntaxErrorAsPrimitiveResult.err($err)';
       default:
         return null;
     }
   }
 
-  WithErrorSyntaxErrorAsPrimitiveResultTag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  WithErrorSyntaxErrorAsPrimitiveResultTag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static WithErrorSyntaxErrorAsPrimitiveResult _ctor(int index, Object data) {
-    return WithErrorSyntaxErrorAsPrimitiveResult._(
-        WithErrorSyntaxErrorAsPrimitiveResultTag.values[index], data);
+  static WithErrorSyntaxErrorAsPrimitiveResult _ctor(int ordinal, Object data) {
+    return WithErrorSyntaxErrorAsPrimitiveResult._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>
+const $fidl.XUnionType<WithErrorSyntaxErrorAsPrimitiveResult>
     kWithErrorSyntax_ErrorAsPrimitive_Result_Type =
-    $fidl.UnionType<WithErrorSyntaxErrorAsPrimitiveResult>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResponse>(
-        type: kWithErrorSyntax_ErrorAsPrimitive_Response_Type,
-        offsetOld: 4,
-        offsetV1: -1 /* unused */),
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
-  ],
-  ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
-    2: 1,
+    $fidl.XUnionType<WithErrorSyntaxErrorAsPrimitiveResult>(
+  members: <int, $fidl.FidlType>{
+    1: kWithErrorSyntax_ErrorAsPrimitive_Response_Type,
+    2: $fidl.Uint32Type(),
   },
+  ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<WithErrorSyntaxErrorAsPrimitiveResult>
+    kWithErrorSyntax_ErrorAsPrimitive_Result_OptType =
+    $fidl.XUnionType<WithErrorSyntaxErrorAsPrimitiveResult>(
+  members: <int, $fidl.FidlType>{
+    1: kWithErrorSyntax_ErrorAsPrimitive_Response_Type,
+    2: $fidl.Uint32Type(),
+  },
+  ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 enum WithErrorSyntaxErrorAsEnumResultTag {
-  response,
-  err,
+  response, // 0x1
+  err, // 0x2
 }
 
-class WithErrorSyntaxErrorAsEnumResult extends $fidl.Union {
+const Map<int, WithErrorSyntaxErrorAsEnumResultTag>
+    _WithErrorSyntaxErrorAsEnumResultTag_map = {
+  1: WithErrorSyntaxErrorAsEnumResultTag.response,
+  2: WithErrorSyntaxErrorAsEnumResultTag.err,
+};
+
+class WithErrorSyntaxErrorAsEnumResult extends $fidl.XUnion {
   const WithErrorSyntaxErrorAsEnumResult.withResponse(
       WithErrorSyntaxErrorAsEnumResponse value)
-      : _data = value,
-        _tag = WithErrorSyntaxErrorAsEnumResultTag.response;
+      : _ordinal = 1,
+        _data = value;
 
   const WithErrorSyntaxErrorAsEnumResult.withErr(ErrorEnun value)
-      : _data = value,
-        _tag = WithErrorSyntaxErrorAsEnumResultTag.err;
+      : _ordinal = 2,
+        _data = value;
 
-  WithErrorSyntaxErrorAsEnumResult._(
-      WithErrorSyntaxErrorAsEnumResultTag tag, Object data)
-      : _tag = tag,
+  WithErrorSyntaxErrorAsEnumResult._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final WithErrorSyntaxErrorAsEnumResultTag _tag;
+  final int _ordinal;
   final _data;
+
+  WithErrorSyntaxErrorAsEnumResultTag get $tag =>
+      _WithErrorSyntaxErrorAsEnumResultTag_map[_ordinal];
+
   WithErrorSyntaxErrorAsEnumResponse get response {
-    if (_tag != WithErrorSyntaxErrorAsEnumResultTag.response) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   ErrorEnun get err {
-    if (_tag != WithErrorSyntaxErrorAsEnumResultTag.err) {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
@@ -298,52 +325,52 @@ class WithErrorSyntaxErrorAsEnumResult extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case WithErrorSyntaxErrorAsEnumResultTag.response:
-        return r'WithErrorSyntaxErrorAsEnumResult.response($response)';
-      case WithErrorSyntaxErrorAsEnumResultTag.err:
-        return r'WithErrorSyntaxErrorAsEnumResult.err($err)';
+    switch (_ordinal) {
+      case 1:
+        return 'WithErrorSyntaxErrorAsEnumResult.response($response)';
+      case 2:
+        return 'WithErrorSyntaxErrorAsEnumResult.err($err)';
       default:
         return null;
     }
   }
 
-  WithErrorSyntaxErrorAsEnumResultTag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  WithErrorSyntaxErrorAsEnumResultTag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static WithErrorSyntaxErrorAsEnumResult _ctor(int index, Object data) {
-    return WithErrorSyntaxErrorAsEnumResult._(
-        WithErrorSyntaxErrorAsEnumResultTag.values[index], data);
+  static WithErrorSyntaxErrorAsEnumResult _ctor(int ordinal, Object data) {
+    return WithErrorSyntaxErrorAsEnumResult._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>
+const $fidl.XUnionType<WithErrorSyntaxErrorAsEnumResult>
     kWithErrorSyntax_ErrorAsEnum_Result_Type =
-    $fidl.UnionType<WithErrorSyntaxErrorAsEnumResult>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<WithErrorSyntaxErrorAsEnumResponse>(
-        type: kWithErrorSyntax_ErrorAsEnum_Response_Type,
-        offsetOld: 4,
-        offsetV1: -1 /* unused */),
-    $fidl.MemberType<ErrorEnun>(
-        type: kErrorEnun_Type, offsetOld: 4, offsetV1: -1 /* unused */),
-  ],
-  ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
-    2: 1,
+    $fidl.XUnionType<WithErrorSyntaxErrorAsEnumResult>(
+  members: <int, $fidl.FidlType>{
+    1: kWithErrorSyntax_ErrorAsEnum_Response_Type,
+    2: kErrorEnun_Type,
   },
+  ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<WithErrorSyntaxErrorAsEnumResult>
+    kWithErrorSyntax_ErrorAsEnum_Result_OptType =
+    $fidl.XUnionType<WithErrorSyntaxErrorAsEnumResult>(
+  members: <int, $fidl.FidlType>{
+    1: kWithErrorSyntax_ErrorAsEnum_Response_Type,
+    2: kErrorEnun_Type,
+  },
+  ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 class WithErrorSyntaxResponseAsStructResponse extends $fidl.Struct {
@@ -1423,7 +1450,7 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
           // ignore: prefer_const_declarations
           final $response = $types[0].decode($decoder, 0);
 
-          if ($response.tag ==
+          if ($response.$tag ==
               WithErrorSyntaxResponseAsStructResultTag.response) {
             $completer.complete(WithErrorSyntax$ResponseAsStruct$Response(
               $response.response.a,
@@ -1456,7 +1483,7 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
           // ignore: prefer_const_declarations
           final $response = $types[0].decode($decoder, 0);
 
-          if ($response.tag ==
+          if ($response.$tag ==
               WithErrorSyntaxErrorAsPrimitiveResultTag.response) {
             $completer.complete(null);
           } else {
@@ -1485,7 +1512,7 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
           // ignore: prefer_const_declarations
           final $response = $types[0].decode($decoder, 0);
 
-          if ($response.tag == WithErrorSyntaxErrorAsEnumResultTag.response) {
+          if ($response.$tag == WithErrorSyntaxErrorAsEnumResultTag.response) {
             $completer.complete(null);
           } else {
             $completer.completeError($fidl.MethodException($response.err));

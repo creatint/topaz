@@ -101,7 +101,7 @@ func TestCompileUnion(t *testing.T) {
 	cases := []struct {
 		name     string
 		input    types.Union
-		expected Union
+		expected XUnion
 	}{
 		{
 			name: "SingleInt64",
@@ -137,10 +137,10 @@ func TestCompileUnion(t *testing.T) {
 				MaxHandles:   0,
 				MaxOutOfLine: 4294967295,
 			},
-			expected: Union{
+			expected: XUnion{
 				Name:    "Test",
 				TagName: "TestTag",
-				Members: []UnionMember{
+				Members: []XUnionMember{
 					{
 						Type: Type{
 							Decl:          "int",
@@ -149,15 +149,17 @@ func TestCompileUnion(t *testing.T) {
 							typedDataDecl: "Int64List",
 							typeExpr:      "$fidl.Int64Type()",
 						},
-						Name:          "i",
-						XUnionOrdinal: 0xdeadbeef,
-						CtorName:      "I",
-						Tag:           "i",
-						typeExpr:      "$fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 0, offsetV1: -1 /* unused */)",
+						Name:     "i",
+						Ordinal:  0xdeadbeef,
+						CtorName: "I",
+						Tag:      "i",
 					},
 				},
-				TypeSymbol: "kTest_Type",
-				TypeExpr:   "$fidl.UnionType<Test>(\n  inlineSizeOld: 0,\n  inlineSizeV1: 0,\n  members: <$fidl.MemberType>[\n    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 0, offsetV1: -1 /* unused */),\n  ],\n  ctor: Test._ctor,\n  ordinalToIndex: <int, int>{\n    3735928559: 0,\n  },\n)",
+				TypeSymbol:    "kTest_Type",
+				TypeExpr:      "$fidl.XUnionType<Test>(\n  members: <int, $fidl.FidlType>{\n    3735928559: $fidl.Int64Type(),\n  },\n  ctor: Test._ctor,\n  nullable: false,\n  flexible: false,\n)",
+				OptTypeSymbol: "kTest_OptType",
+				OptTypeExpr:   "$fidl.XUnionType<Test>(\nmembers: <int, $fidl.FidlType>{\n    3735928559: $fidl.Int64Type(),\n  },\nctor: Test._ctor,\nnullable: true,\nflexible: false,\n)",
+				Strictness:    true,
 			},
 		},
 	}
@@ -170,9 +172,9 @@ func TestCompileUnion(t *testing.T) {
 				},
 			}
 			result := Compile(root)
-			actual := result.Unions[0]
+			actual := result.XUnions[0]
 
-			if diff := cmp.Diff(ex.expected, actual, cmp.AllowUnexported(UnionMember{}, Type{})); diff != "" {
+			if diff := cmp.Diff(ex.expected, actual, cmp.AllowUnexported(XUnionMember{}, Type{})); diff != "" {
 				t.Errorf("expected != actual (-want +got)\n%s", diff)
 			}
 		})

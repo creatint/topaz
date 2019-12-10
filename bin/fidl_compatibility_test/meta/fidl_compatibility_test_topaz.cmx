@@ -1,7 +1,6 @@
 {
     "program": {
         "args": [
-            "fuchsia-pkg://fuchsia.com/fidl_dart_compatibility_test_server#meta/fidl_dart_compatibility_test_server.cmx",
             "fuchsia-pkg://fuchsia.com/fidl_dart_write_xunion_compatibility_test_server#meta/fidl_dart_write_xunion_compatibility_test_server.cmx"
         ],
         "binary": "test/fidl_compatibility_test_topaz"

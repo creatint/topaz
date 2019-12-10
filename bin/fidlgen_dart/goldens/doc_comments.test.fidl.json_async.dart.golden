@@ -42,25 +42,32 @@ import 'package:zircon/zircon.dart' as $zx;
 const int c = 0x4;
 
 enum UnionTag {
-  field,
+  field, // 0x1
 }
+
+const Map<int, UnionTag> _UnionTag_map = {
+  1: UnionTag.field,
+};
 
 /// union comment #1
 ///
 /// union comment #3
-class Union extends $fidl.Union {
+class Union extends $fidl.XUnion {
   const Union.withField(int value)
-      : _data = value,
-        _tag = UnionTag.field;
+      : _ordinal = 1,
+        _data = value;
 
-  Union._(UnionTag tag, Object data)
-      : _tag = tag,
+  Union._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final UnionTag _tag;
+  final int _ordinal;
   final _data;
+
+  UnionTag get $tag => _UnionTag_map[_ordinal];
+
   int get field {
-    if (_tag != UnionTag.field) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
@@ -68,46 +75,44 @@ class Union extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case UnionTag.field:
-        return r'Union.field($field)';
+    switch (_ordinal) {
+      case 1:
+        return 'Union.field($field)';
       default:
         return null;
     }
   }
 
-  /// union comment #1
-  ///
-  /// union comment #3
-
-  UnionTag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  UnionTag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static Union _ctor(int index, Object data) {
-    return Union._(UnionTag.values[index], data);
+  static Union _ctor(int ordinal, Object data) {
+    return Union._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<Union> kUnion_Type = $fidl.UnionType<Union>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Int32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
-  ],
-  ctor: Union._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
+const $fidl.XUnionType<Union> kUnion_Type = $fidl.XUnionType<Union>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
   },
+  ctor: Union._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<Union> kUnion_OptType = $fidl.XUnionType<Union>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+  },
+  ctor: Union._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 /// struct comment #1

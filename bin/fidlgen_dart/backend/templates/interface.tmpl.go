@@ -557,7 +557,7 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
           // ignore: prefer_const_declarations
           final $response = {{- template "DecodeResponse" . -}};
           {{ if .Response.HasError }}
-            if ($response.tag == {{ .Response.ResultType.TagName }}.response) {
+            if ($response.$tag == {{ .Response.ResultType.TagName }}.response) {
               {{ if .AsyncResponseClass }}
                 $completer.complete(
                   {{ .AsyncResponseClass }}(

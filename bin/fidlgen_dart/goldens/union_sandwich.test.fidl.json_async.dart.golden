@@ -37,22 +37,29 @@ import 'package:zircon/zircon.dart' as $zx;
 // ignore_for_file: avoid_unused_constructor_parameters
 
 enum UnionSize8Alignment4Tag {
-  variant,
+  variant, // 0x1
 }
 
-class UnionSize8Alignment4 extends $fidl.Union {
-  const UnionSize8Alignment4.withVariant(int value)
-      : _data = value,
-        _tag = UnionSize8Alignment4Tag.variant;
+const Map<int, UnionSize8Alignment4Tag> _UnionSize8Alignment4Tag_map = {
+  1: UnionSize8Alignment4Tag.variant,
+};
 
-  UnionSize8Alignment4._(UnionSize8Alignment4Tag tag, Object data)
-      : _tag = tag,
+class UnionSize8Alignment4 extends $fidl.XUnion {
+  const UnionSize8Alignment4.withVariant(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  UnionSize8Alignment4._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final UnionSize8Alignment4Tag _tag;
+  final int _ordinal;
   final _data;
+
+  UnionSize8Alignment4Tag get $tag => _UnionSize8Alignment4Tag_map[_ordinal];
+
   int get variant {
-    if (_tag != UnionSize8Alignment4Tag.variant) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
@@ -60,62 +67,72 @@ class UnionSize8Alignment4 extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case UnionSize8Alignment4Tag.variant:
-        return r'UnionSize8Alignment4.variant($variant)';
+    switch (_ordinal) {
+      case 1:
+        return 'UnionSize8Alignment4.variant($variant)';
       default:
         return null;
     }
   }
 
-  UnionSize8Alignment4Tag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  UnionSize8Alignment4Tag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static UnionSize8Alignment4 _ctor(int index, Object data) {
-    return UnionSize8Alignment4._(UnionSize8Alignment4Tag.values[index], data);
+  static UnionSize8Alignment4 _ctor(int ordinal, Object data) {
+    return UnionSize8Alignment4._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<UnionSize8Alignment4> kUnionSize8Alignment4_Type =
-    $fidl.UnionType<UnionSize8Alignment4>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: -1 /* unused */),
-  ],
-  ctor: UnionSize8Alignment4._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
+const $fidl.XUnionType<UnionSize8Alignment4> kUnionSize8Alignment4_Type =
+    $fidl.XUnionType<UnionSize8Alignment4>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint32Type(),
   },
+  ctor: UnionSize8Alignment4._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionSize8Alignment4> kUnionSize8Alignment4_OptType =
+    $fidl.XUnionType<UnionSize8Alignment4>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint32Type(),
+  },
+  ctor: UnionSize8Alignment4._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 enum UnionSize12Alignment4Tag {
-  variant,
+  variant, // 0x1
 }
 
-class UnionSize12Alignment4 extends $fidl.Union {
-  const UnionSize12Alignment4.withVariant(Uint8List value)
-      : _data = value,
-        _tag = UnionSize12Alignment4Tag.variant;
+const Map<int, UnionSize12Alignment4Tag> _UnionSize12Alignment4Tag_map = {
+  1: UnionSize12Alignment4Tag.variant,
+};
 
-  UnionSize12Alignment4._(UnionSize12Alignment4Tag tag, Object data)
-      : _tag = tag,
+class UnionSize12Alignment4 extends $fidl.XUnion {
+  const UnionSize12Alignment4.withVariant(Uint8List value)
+      : _ordinal = 1,
+        _data = value;
+
+  UnionSize12Alignment4._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final UnionSize12Alignment4Tag _tag;
+  final int _ordinal;
   final _data;
+
+  UnionSize12Alignment4Tag get $tag => _UnionSize12Alignment4Tag_map[_ordinal];
+
   Uint8List get variant {
-    if (_tag != UnionSize12Alignment4Tag.variant) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
@@ -123,66 +140,72 @@ class UnionSize12Alignment4 extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case UnionSize12Alignment4Tag.variant:
-        return r'UnionSize12Alignment4.variant($variant)';
+    switch (_ordinal) {
+      case 1:
+        return 'UnionSize12Alignment4.variant($variant)';
       default:
         return null;
     }
   }
 
-  UnionSize12Alignment4Tag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  UnionSize12Alignment4Tag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static UnionSize12Alignment4 _ctor(int index, Object data) {
-    return UnionSize12Alignment4._(
-        UnionSize12Alignment4Tag.values[index], data);
+  static UnionSize12Alignment4 _ctor(int ordinal, Object data) {
+    return UnionSize12Alignment4._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<UnionSize12Alignment4> kUnionSize12Alignment4_Type =
-    $fidl.UnionType<UnionSize12Alignment4>(
-  inlineSizeOld: 12,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<Uint8List>(
-        type: $fidl.ArrayType<Uint8List>(
-            element: $fidl.Uint8Type(), elementCount: 6),
-        offsetOld: 4,
-        offsetV1: -1 /* unused */),
-  ],
-  ctor: UnionSize12Alignment4._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
+const $fidl.XUnionType<UnionSize12Alignment4> kUnionSize12Alignment4_Type =
+    $fidl.XUnionType<UnionSize12Alignment4>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 6),
   },
+  ctor: UnionSize12Alignment4._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionSize12Alignment4> kUnionSize12Alignment4_OptType =
+    $fidl.XUnionType<UnionSize12Alignment4>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 6),
+  },
+  ctor: UnionSize12Alignment4._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 enum UnionSize24Alignment8Tag {
-  variant,
+  variant, // 0x1
 }
 
-class UnionSize24Alignment8 extends $fidl.Union {
-  const UnionSize24Alignment8.withVariant(StructSize16Alignment8 value)
-      : _data = value,
-        _tag = UnionSize24Alignment8Tag.variant;
+const Map<int, UnionSize24Alignment8Tag> _UnionSize24Alignment8Tag_map = {
+  1: UnionSize24Alignment8Tag.variant,
+};
 
-  UnionSize24Alignment8._(UnionSize24Alignment8Tag tag, Object data)
-      : _tag = tag,
+class UnionSize24Alignment8 extends $fidl.XUnion {
+  const UnionSize24Alignment8.withVariant(StructSize16Alignment8 value)
+      : _ordinal = 1,
+        _data = value;
+
+  UnionSize24Alignment8._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final UnionSize24Alignment8Tag _tag;
+  final int _ordinal;
   final _data;
+
+  UnionSize24Alignment8Tag get $tag => _UnionSize24Alignment8Tag_map[_ordinal];
+
   StructSize16Alignment8 get variant {
-    if (_tag != UnionSize24Alignment8Tag.variant) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
@@ -190,65 +213,72 @@ class UnionSize24Alignment8 extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case UnionSize24Alignment8Tag.variant:
-        return r'UnionSize24Alignment8.variant($variant)';
+    switch (_ordinal) {
+      case 1:
+        return 'UnionSize24Alignment8.variant($variant)';
       default:
         return null;
     }
   }
 
-  UnionSize24Alignment8Tag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  UnionSize24Alignment8Tag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static UnionSize24Alignment8 _ctor(int index, Object data) {
-    return UnionSize24Alignment8._(
-        UnionSize24Alignment8Tag.values[index], data);
+  static UnionSize24Alignment8 _ctor(int ordinal, Object data) {
+    return UnionSize24Alignment8._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<UnionSize24Alignment8> kUnionSize24Alignment8_Type =
-    $fidl.UnionType<UnionSize24Alignment8>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<StructSize16Alignment8>(
-        type: kStructSize16Alignment8_Type,
-        offsetOld: 8,
-        offsetV1: -1 /* unused */),
-  ],
-  ctor: UnionSize24Alignment8._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
+const $fidl.XUnionType<UnionSize24Alignment8> kUnionSize24Alignment8_Type =
+    $fidl.XUnionType<UnionSize24Alignment8>(
+  members: <int, $fidl.FidlType>{
+    1: kStructSize16Alignment8_Type,
   },
+  ctor: UnionSize24Alignment8._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionSize24Alignment8> kUnionSize24Alignment8_OptType =
+    $fidl.XUnionType<UnionSize24Alignment8>(
+  members: <int, $fidl.FidlType>{
+    1: kStructSize16Alignment8_Type,
+  },
+  ctor: UnionSize24Alignment8._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 enum UnionSize36Alignment4Tag {
-  variant,
+  variant, // 0x1
 }
 
-class UnionSize36Alignment4 extends $fidl.Union {
-  const UnionSize36Alignment4.withVariant(Uint8List value)
-      : _data = value,
-        _tag = UnionSize36Alignment4Tag.variant;
+const Map<int, UnionSize36Alignment4Tag> _UnionSize36Alignment4Tag_map = {
+  1: UnionSize36Alignment4Tag.variant,
+};
 
-  UnionSize36Alignment4._(UnionSize36Alignment4Tag tag, Object data)
-      : _tag = tag,
+class UnionSize36Alignment4 extends $fidl.XUnion {
+  const UnionSize36Alignment4.withVariant(Uint8List value)
+      : _ordinal = 1,
+        _data = value;
+
+  UnionSize36Alignment4._(int ordinal, Object data)
+      : _ordinal = ordinal,
         _data = data;
 
-  final UnionSize36Alignment4Tag _tag;
+  final int _ordinal;
   final _data;
+
+  UnionSize36Alignment4Tag get $tag => _UnionSize36Alignment4Tag_map[_ordinal];
+
   Uint8List get variant {
-    if (_tag != UnionSize36Alignment4Tag.variant) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
@@ -256,47 +286,46 @@ class UnionSize36Alignment4 extends $fidl.Union {
 
   @override
   String toString() {
-    switch (_tag) {
-      case UnionSize36Alignment4Tag.variant:
-        return r'UnionSize36Alignment4.variant($variant)';
+    switch (_ordinal) {
+      case 1:
+        return 'UnionSize36Alignment4.variant($variant)';
       default:
         return null;
     }
   }
 
-  UnionSize36Alignment4Tag get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  UnionSize36Alignment4Tag get tag => _tag;
-
   @override
-  int get $index => _tag.index;
+  int get $ordinal => _ordinal;
 
   @override
   Object get $data => _data;
 
-  static UnionSize36Alignment4 _ctor(int index, Object data) {
-    return UnionSize36Alignment4._(
-        UnionSize36Alignment4Tag.values[index], data);
+  static UnionSize36Alignment4 _ctor(int ordinal, Object data) {
+    return UnionSize36Alignment4._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.UnionType<UnionSize36Alignment4> kUnionSize36Alignment4_Type =
-    $fidl.UnionType<UnionSize36Alignment4>(
-  inlineSizeOld: 36,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<Uint8List>(
-        type: $fidl.ArrayType<Uint8List>(
-            element: $fidl.Uint8Type(), elementCount: 32),
-        offsetOld: 4,
-        offsetV1: -1 /* unused */),
-  ],
-  ctor: UnionSize36Alignment4._ctor,
-  ordinalToIndex: <int, int>{
-    1: 0,
+const $fidl.XUnionType<UnionSize36Alignment4> kUnionSize36Alignment4_Type =
+    $fidl.XUnionType<UnionSize36Alignment4>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 32),
   },
+  ctor: UnionSize36Alignment4._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionSize36Alignment4> kUnionSize36Alignment4_OptType =
+    $fidl.XUnionType<UnionSize36Alignment4>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 32),
+  },
+  ctor: UnionSize36Alignment4._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 class SandwichUnionSize8Alignment4 extends $fidl.Struct {

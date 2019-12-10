@@ -54,11 +54,6 @@ class {{ .Name }} extends $fidl.Union {
   {{- end }}
 
   {{ .TagName }} get $tag => _tag;
-  // TODO: remove, see: FIDL-587
-  {{ .TagName }} get tag => _tag;
-
-  @override
-  int get $index => _tag.index;
 
   @override
   Object get $data => _data;
