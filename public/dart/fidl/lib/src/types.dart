@@ -14,7 +14,6 @@ import 'error.dart';
 import 'interface.dart';
 import 'struct.dart';
 import 'table.dart';
-import 'union.dart';
 import 'xunion.dart';
 
 // ignore_for_file: public_member_api_docs
@@ -694,39 +693,6 @@ class PointerType<T> extends FidlType<T> {
   }
 }
 
-class OptUnionType<T extends Union> extends FidlType<T> {
-  const OptUnionType({
-    this.element,
-  }) : super(inlineSizeOld: 8, inlineSizeV1: 24);
-
-  final FidlType element;
-
-  @override
-  void encode(Encoder encoder, T value, int offset) {
-    if (encoder.encodeUnionAsXUnionBytes) {
-      if (value == null) {
-        final int envelopeOffset = offset + 8;
-        encoder.encodeUint32(0, offset);
-        _encodeEnvelopeAbsent(encoder, envelopeOffset);
-      } else {
-        element.encode(encoder, value, offset);
-      }
-    } else {
-      PointerType(element: element).encode(encoder, value, offset);
-    }
-  }
-
-  @override
-  T decode(Decoder decoder, int offset) {
-    if (decoder.decodeUnionFromXUnionBytes) {
-      UnionType<T> uElement = element;
-      return uElement.decodeFromXUnionBytes(decoder, offset, nullable: true);
-    } else {
-      return PointerType(element: element).decode(decoder, offset);
-    }
-  }
-}
-
 class MemberType<T> extends FidlType<T> {
   const MemberType({
     this.type,
@@ -973,76 +939,6 @@ class TableType<T extends Table> extends FidlType<T> {
     }
 
     return ctor(argv);
-  }
-}
-
-class UnionType<T extends Union> extends FidlType<T> {
-  const UnionType({
-    int inlineSizeOld,
-    int inlineSizeV1,
-    this.members,
-    this.ordinalToIndex,
-    this.ctor,
-  }) : super(inlineSizeOld: inlineSizeOld, inlineSizeV1: inlineSizeV1);
-
-  final List<MemberType> members;
-  final Map<int, int> ordinalToIndex;
-  final UnionFactory<T> ctor;
-
-  @override
-  void encode(Encoder encoder, T value, int offset) {
-    if (encoder.encodeUnionAsXUnionBytes) {
-      encodeAsXUnionBytes(encoder, value, offset);
-      return;
-    }
-    final int index = value.$index;
-    if (index < 0 || index >= members.length)
-      throw FidlError('Bad union tag index: $index');
-    encoder.encodeUint32(index, offset);
-    members[index].encode(encoder, value.$data, offset);
-  }
-
-  void encodeAsXUnionBytes(Encoder encoder, T value, int offset) {
-    final int envelopeOffset = offset + 8;
-    final FidlType fieldType = members[value.$index].type;
-    final int ordinal = ordinalToIndex.entries
-        .singleWhere((v) => (v.value == value.$index))
-        .key;
-    encoder.encodeUint32(ordinal, offset);
-    _encodeEnvelopePresent(encoder, envelopeOffset, value.$data, fieldType);
-  }
-
-  @override
-  T decode(Decoder decoder, int offset) {
-    if (decoder.decodeUnionFromXUnionBytes) {
-      return decodeFromXUnionBytes(decoder, offset, nullable: false);
-    }
-    final int index = decoder.decodeUint32(offset);
-    if (index < 0 || index >= members.length)
-      throw FidlError('Bad union tag index: $index');
-    return ctor(index, members[index].decode(decoder, offset));
-  }
-
-  T decodeFromXUnionBytes(Decoder decoder, int offset, {bool nullable}) {
-    final int envelopeOffset = offset + 8;
-    final int ordinal = decoder.decodeUint32(offset);
-    if (ordinal == 0) {
-      if (!nullable) {
-        throw FidlError('Zero xunion ordinal on non-nullable');
-      }
-      _decodeEnvelope(
-          decoder, envelopeOffset, _envelopeMode.kMustBeAbsent, null);
-      return null;
-    } else {
-      final index = ordinalToIndex[ordinal];
-      if (index == null) throw FidlError('Bad xunion ordinal: $ordinal');
-      if (index < 0 || index >= members.length)
-        throw FidlError('Bad union tag index: $index');
-      final field = _decodeEnvelope(decoder, envelopeOffset,
-          _envelopeMode.kDisallowUnknown, members[index].type);
-      if (field == null) throw FidlError('Bad xunion: missing content');
-      return ctor(index, field);
-    }
   }
 }
 

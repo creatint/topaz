@@ -21,7 +21,6 @@ dart_fuchsia_test("fidl_bindings_test") {
     "state_test.dart",
     "tostring_test.dart",
     "twoway_test.dart",
-    "union_to_xunion_migration_test.dart",
   ]
 
   meta = [
