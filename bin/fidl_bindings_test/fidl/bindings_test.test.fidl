@@ -29,17 +29,17 @@ table ExampleTable {
 };
 
 xunion ExampleXunion {
-    string foo;
-    int32 bar;
-    vector<uint8> baz;
-    NumberHandleNumber with_handle;
+    1: string foo;
+    2: int32 bar;
+    3: vector<uint8> baz;
+    4: NumberHandleNumber with_handle;
 };
 
 strict xunion ExampleStrictXunion {
-    string foo;
-    int32 bar;
-    vector<uint8> baz;
-    NumberHandleNumber with_handle;
+    1: string foo;
+    2: int32 bar;
+    3: vector<uint8> baz;
+    4: NumberHandleNumber with_handle;
 };
 
 bits ExampleBits {

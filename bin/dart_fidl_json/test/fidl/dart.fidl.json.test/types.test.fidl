@@ -18,9 +18,9 @@ union ExampleUnion {
 };
 
 xunion ExampleXUnion {
-  ExampleStruct struct1;
-  ExampleStruct2 struct2;
-  int32 bar;
+  1: ExampleStruct struct1;
+  2: ExampleStruct2 struct2;
+  3: int32 bar;
 };
 
 enum ExampleEnum {
