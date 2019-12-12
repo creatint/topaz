@@ -137,8 +137,8 @@ void main() {
     // TODO(fxb/38305): Address and/or update above TODO, and reenable test in //topaz/BUILD.gn.
     //   CL should have landed so stories reuse session envs. This breaks hardcoded inspect paths.
     var globs = [
-      '/hub/r/modular_test_harness_*/*/r/session-*/*/r/*/*/c/flutter*/*/c/$_testAppName/*/out/diagnostics/*',
-      '/hub/r/mth_*/*/r/session-*/*/r/*/*/c/flutter*/*/c/$_testAppName/*/out/diagnostics/*'
+      '/hub/r/modular_test_harness_*/*/r/session-*/*/r/*/*/c/flutter*/*/c/$_testAppName/*/out/debug/*',
+      '/hub/r/mth_*/*/r/session-*/*/r/*/*/c/flutter*/*/c/$_testAppName/*/out/debug/*'
     ];
     for (final globString in globs) {
       var fileEntity = await Glob(globString).list().toList();

@@ -17,7 +17,7 @@ void main() {
     var writer = VmoWriter.withVmo(vmo);
 
     var inspect =
-        InspectImpl(context.outgoing.diagnosticsDir(), 'root.inspect', writer);
+        InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     expect(inspect.root, isNotNull);
   });
 }

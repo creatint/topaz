@@ -22,7 +22,7 @@ void main() {
     vmo = FakeVmoHolder(512);
     var writer = VmoWriter.withVmo(vmo);
     Inspect inspect =
-        InspectImpl(context.outgoing.diagnosticsDir(), 'root.inspect', writer);
+        InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     node = inspect.root;
   });
 
@@ -203,8 +203,8 @@ void main() {
       var tinyVmo = FakeVmoHolder(64);
       var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
-      Inspect inspect = InspectImpl(
-          context.outgoing.diagnosticsDir(), 'root.inspect', writer);
+      Inspect inspect =
+          InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
       var tinyRoot = inspect.root;
       var missingProperty = tinyRoot.stringProperty('missing');
       expect(() => missingProperty.setValue('something'), returnsNormally);
@@ -215,8 +215,8 @@ void main() {
       var tinyVmo = FakeVmoHolder(64);
       var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
-      Inspect inspect = InspectImpl(
-          context.outgoing.diagnosticsDir(), 'root.inspect', writer);
+      Inspect inspect =
+          InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
       var tinyRoot = inspect.root;
       var bytes = toByteData('this will not set');
       var missingProperty = tinyRoot.byteDataProperty('missing');
@@ -425,8 +425,8 @@ void main() {
       var tinyVmo = FakeVmoHolder(64);
       var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
-      Inspect inspect = InspectImpl(
-          context.outgoing.diagnosticsDir(), 'root.inspect', writer);
+      Inspect inspect =
+          InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
       var tinyRoot = inspect.root;
       var missingProperty = tinyRoot.intProperty('missing');
       expect(() => missingProperty.setValue(1), returnsNormally);
@@ -437,8 +437,8 @@ void main() {
       var tinyVmo = FakeVmoHolder(64);
       var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
-      Inspect inspect = InspectImpl(
-          context.outgoing.diagnosticsDir(), 'root.inspect', writer);
+      Inspect inspect =
+          InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
       var tinyRoot = inspect.root;
       var missingProperty = tinyRoot.doubleProperty('missing');
       expect(() => missingProperty.setValue(1.0), returnsNormally);
@@ -453,9 +453,9 @@ void main() {
     var writer2 = VmoWriter.withVmo(tinyVmo2);
     var context = StartupContext.fromStartupInfo();
     Inspect inspect =
-        InspectImpl(context.outgoing.diagnosticsDir(), 'root.inspect', writer);
+        InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     Inspect inspect2 =
-        InspectImpl(context.outgoing.diagnosticsDir(), 'test.inspect', writer2);
+        InspectImpl(context.outgoing.debugDir(), 'test.inspect', writer2);
     expect(() => inspect, isNotNull);
     expect(() => inspect2, isNotNull);
   });

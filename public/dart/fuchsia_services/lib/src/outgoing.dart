@@ -12,7 +12,6 @@ class Outgoing {
   final vfs.PseudoDir _root = vfs.PseudoDir();
   final vfs.PseudoDir _public = vfs.PseudoDir();
   final vfs.PseudoDir _debug = vfs.PseudoDir();
-  final vfs.PseudoDir _diagnostics = vfs.PseudoDir();
   final vfs.PseudoDir _ctrl = vfs.PseudoDir();
   bool _isClosed = false;
 
@@ -27,7 +26,6 @@ class Outgoing {
       ..addNode('public', _public)
       ..addNode('svc', _public)
       ..addNode('debug', _debug)
-      ..addNode('diagnostics', _diagnostics)
       ..addNode('ctrl', _ctrl);
   }
 
@@ -64,12 +62,6 @@ class Outgoing {
   vfs.PseudoDir debugDir() {
     _ensureNotClosed();
     return _debug;
-  }
-
-  /// return diagnostics directory which can be used to publish debug info to /hub
-  vfs.PseudoDir diagnosticsDir() {
-    _ensureNotClosed();
-    return _diagnostics;
   }
 
   /// return public directory which usually contains all published services.
