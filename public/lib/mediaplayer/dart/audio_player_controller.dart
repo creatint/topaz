@@ -6,7 +6,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:fidl_fuchsia_media_playback/fidl_async.dart';
-import 'package:fidl_fuchsia_net_oldhttp/fidl_async.dart';
 import 'package:fidl_fuchsia_math/fidl_async.dart' as geom;
 import 'package:fuchsia_services/services.dart';
 import 'package:lib.mediaplayer.dart/timeline.dart' as tl;
@@ -132,29 +131,9 @@ class AudioPlayerController {
 
   // Sets the source uri on the media player.
   void _setSource(Uri uri, HttpHeaders headers) {
-    if (uri.isScheme('FILE')) {
-      _player
-          .setFileSource(Channel.fromFile(uri.toFilePath()))
-          .catchError(_handleConnectionError);
-    } else {
-      _player
-          .setHttpSource(uri.toString(), _convertHeaders(headers))
-          .catchError(_handleConnectionError);
-    }
-  }
-
-  List<HttpHeader> _convertHeaders(HttpHeaders headers) {
-    List<HttpHeader> result = [];
-    if (headers != null) {
-      headers.forEach((name, values) {
-        for (String value in values) {
-          HttpHeader header = HttpHeader(name: name, value: value);
-          result.add(header);
-        }
-      });
-    }
-
-    return result;
+    _player
+        .setFileSource(Channel.fromFile(uri.toFilePath()))
+        .catchError(_handleConnectionError);
   }
 
   /// Indicates whether the player open or connected (as opposed to closed).
