@@ -3,8 +3,6 @@
 .DS_Store
 *.sublime-project
 *.sublime-workspace
-.cipd/
-/third_party/
 **/Cargo.lock
 **/Cargo.toml
 *.swp
