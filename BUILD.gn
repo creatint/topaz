@@ -58,7 +58,6 @@ group("tests") {
   if (host_os != "mac") {
     _flutter_tester_tests += [
       "//topaz/public/dart/fuchsia_webview_flutter:fuchsia_webview_flutter_unittests($host_toolchain)",
-      "//topaz/public/dart/sledge:dart_sledge_tests($host_toolchain)",
       "//topaz/public/dart/widgets:dart_widget_tests($host_toolchain)",
       "//topaz/examples/test/flutter_widget_test($host_toolchain)",
       "//topaz/public/dart/fuchsia_internationalization_flutter:tests($host_toolchain)",
@@ -126,7 +125,6 @@ group("tests") {
                   "//topaz/public/dart/fuchsia_services:fuchsia_services_foo_test_server",
                   "//topaz/public/dart/fuchsia_services:fuchsia_services_package_integration_tests",
                   "//topaz/public/dart/fuchsia_vfs:fuchsia_vfs_package_unittests",
-                  "//topaz/public/dart/sledge:sledge_integration_tests",
                   "//topaz/public/dart/zircon:test_extract_zircon_constants($host_toolchain)",
                   "//topaz/runtime/dart/utils:run_vmservice_object_tests",
                   "//topaz/runtime/dart_runner/examples/goodbye_dart:goodbye_dart_test",
