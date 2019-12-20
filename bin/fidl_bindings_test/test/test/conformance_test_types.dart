@@ -295,6 +295,10 @@ const $fidl.XUnionType<IpAddressConfig> kIpAddressConfig_Type =
         element: $fidl.Uint32Type(), elementCount: 6),
     2: $fidl.BoolType(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+  },
   ctor: IpAddressConfig._ctor,
   nullable: false,
   flexible: false,
@@ -307,6 +311,10 @@ const $fidl.XUnionType<IpAddressConfig> kIpAddressConfig_OptType =
     1: $fidl.ArrayType<Uint32List>(
         element: $fidl.Uint32Type(), elementCount: 6),
     2: $fidl.BoolType(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
   },
   ctor: IpAddressConfig._ctor,
   nullable: true,
@@ -418,6 +426,12 @@ const $fidl.XUnionType<SimpleUnion> kSimpleUnion_Type =
     3: kInt64Struct_Type,
     4: $fidl.StringType(maybeElementCount: null, nullable: false),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+  },
   ctor: SimpleUnion._ctor,
   nullable: false,
   flexible: false,
@@ -431,6 +445,12 @@ const $fidl.XUnionType<SimpleUnion> kSimpleUnion_OptType =
     2: $fidl.Int64Type(),
     3: kInt64Struct_Type,
     4: $fidl.StringType(maybeElementCount: null, nullable: false),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
   },
   ctor: SimpleUnion._ctor,
   nullable: true,
@@ -494,6 +514,9 @@ const $fidl.XUnionType<UnionWithBoundString> kUnionWithBoundString_Type =
   members: <int, $fidl.FidlType>{
     1: $fidl.StringType(maybeElementCount: 5, nullable: false),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+  },
   ctor: UnionWithBoundString._ctor,
   nullable: false,
   flexible: false,
@@ -504,6 +527,9 @@ const $fidl.XUnionType<UnionWithBoundString> kUnionWithBoundString_OptType =
     $fidl.XUnionType<UnionWithBoundString>(
   members: <int, $fidl.FidlType>{
     1: $fidl.StringType(maybeElementCount: 5, nullable: false),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
   },
   ctor: UnionWithBoundString._ctor,
   nullable: true,
@@ -567,6 +593,9 @@ const $fidl.XUnionType<SingleVariantUnion> kSingleVariantUnion_Type =
   members: <int, $fidl.FidlType>{
     1: $fidl.Uint32Type(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+  },
   ctor: SingleVariantUnion._ctor,
   nullable: false,
   flexible: false,
@@ -577,6 +606,9 @@ const $fidl.XUnionType<SingleVariantUnion> kSingleVariantUnion_OptType =
     $fidl.XUnionType<SingleVariantUnion>(
   members: <int, $fidl.FidlType>{
     1: $fidl.Uint32Type(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
   },
   ctor: SingleVariantUnion._ctor,
   nullable: true,
@@ -672,6 +704,11 @@ const $fidl.XUnionType<ReverseOrdinalUnion> kReverseOrdinalUnion_Type =
     2: $fidl.BoolType(),
     4: $fidl.Int64Type(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    4: 4,
+  },
   ctor: ReverseOrdinalUnion._ctor,
   nullable: false,
   flexible: false,
@@ -684,6 +721,11 @@ const $fidl.XUnionType<ReverseOrdinalUnion> kReverseOrdinalUnion_OptType =
     1: $fidl.Uint32Type(),
     2: $fidl.BoolType(),
     4: $fidl.Int64Type(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    4: 4,
   },
   ctor: ReverseOrdinalUnion._ctor,
   nullable: true,
@@ -763,6 +805,10 @@ const $fidl.XUnionType<UnionWithEmptyStruct> kUnionWithEmptyStruct_Type =
     1: kEmptyStruct_Type,
     2: $fidl.Uint64Type(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+  },
   ctor: UnionWithEmptyStruct._ctor,
   nullable: false,
   flexible: false,
@@ -774,6 +820,10 @@ const $fidl.XUnionType<UnionWithEmptyStruct> kUnionWithEmptyStruct_OptType =
   members: <int, $fidl.FidlType>{
     1: kEmptyStruct_Type,
     2: $fidl.Uint64Type(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
   },
   ctor: UnionWithEmptyStruct._ctor,
   nullable: true,
@@ -869,6 +919,11 @@ const $fidl.XUnionType<UnionSize8Align4> kUnionSize8Align4_Type =
     2: $fidl.Uint8Type(),
     3: $fidl.Uint32Type(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+  },
   ctor: UnionSize8Align4._ctor,
   nullable: false,
   flexible: false,
@@ -881,6 +936,11 @@ const $fidl.XUnionType<UnionSize8Align4> kUnionSize8Align4_OptType =
     1: $fidl.Uint8Type(),
     2: $fidl.Uint8Type(),
     3: $fidl.Uint32Type(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
   },
   ctor: UnionSize8Align4._ctor,
   nullable: true,
@@ -992,6 +1052,12 @@ const $fidl.XUnionType<UnionSize12Align4> kUnionSize12Align4_Type =
     3: $fidl.Uint8Type(),
     4: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 6),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+  },
   ctor: UnionSize12Align4._ctor,
   nullable: false,
   flexible: false,
@@ -1005,6 +1071,12 @@ const $fidl.XUnionType<UnionSize12Align4> kUnionSize12Align4_OptType =
     2: $fidl.Uint8Type(),
     3: $fidl.Uint8Type(),
     4: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 6),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
   },
   ctor: UnionSize12Align4._ctor,
   nullable: true,
@@ -1116,6 +1188,12 @@ const $fidl.XUnionType<UnionSize24Align8> kUnionSize24Align8_Type =
     3: $fidl.Uint8Type(),
     4: kStructSize16Align8_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+  },
   ctor: UnionSize24Align8._ctor,
   nullable: false,
   flexible: false,
@@ -1129,6 +1207,12 @@ const $fidl.XUnionType<UnionSize24Align8> kUnionSize24Align8_OptType =
     2: $fidl.Uint8Type(),
     3: $fidl.Uint8Type(),
     4: kStructSize16Align8_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
   },
   ctor: UnionSize24Align8._ctor,
   nullable: true,
@@ -1240,6 +1324,12 @@ const $fidl.XUnionType<UnionSize36Align4> kUnionSize36Align4_Type =
     3: $fidl.Uint8Type(),
     4: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 32),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+  },
   ctor: UnionSize36Align4._ctor,
   nullable: false,
   flexible: false,
@@ -1253,6 +1343,12 @@ const $fidl.XUnionType<UnionSize36Align4> kUnionSize36Align4_OptType =
     2: $fidl.Uint8Type(),
     3: $fidl.Uint8Type(),
     4: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 32),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
   },
   ctor: UnionSize36Align4._ctor,
   nullable: true,
@@ -1380,6 +1476,13 @@ const $fidl.XUnionType<UnionOfUnion> kUnionOfUnion_Type =
     4: $fidl.Uint8Type(),
     5: kUnionSize24Align8_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+  },
   ctor: UnionOfUnion._ctor,
   nullable: false,
   flexible: false,
@@ -1394,6 +1497,13 @@ const $fidl.XUnionType<UnionOfUnion> kUnionOfUnion_OptType =
     3: kUnionSize12Align4_Type,
     4: $fidl.Uint8Type(),
     5: kUnionSize24Align8_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
   },
   ctor: UnionOfUnion._ctor,
   nullable: true,
@@ -1598,6 +1708,17 @@ const $fidl.XUnionType<UnionWithVector> kUnionWithVector_Type =
         maybeElementCount: null,
         nullable: false),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
+  },
   ctor: UnionWithVector._ctor,
   nullable: false,
   flexible: false,
@@ -1629,6 +1750,17 @@ const $fidl.XUnionType<UnionWithVector> kUnionWithVector_OptType =
         element: kUnionSize8Align4_Type,
         maybeElementCount: null,
         nullable: false),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+    4: 4,
+    5: 5,
+    6: 6,
+    7: 7,
+    8: 8,
+    9: 9,
   },
   ctor: UnionWithVector._ctor,
   nullable: true,
@@ -1724,6 +1856,11 @@ const $fidl.XUnionType<StringUnion> kStringUnion_Type =
     2: $fidl.StringType(maybeElementCount: null, nullable: false),
     3: $fidl.Uint8Type(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+  },
   ctor: StringUnion._ctor,
   nullable: false,
   flexible: false,
@@ -1736,6 +1873,11 @@ const $fidl.XUnionType<StringUnion> kStringUnion_OptType =
     1: $fidl.Uint8Type(),
     2: $fidl.StringType(maybeElementCount: null, nullable: false),
     3: $fidl.Uint8Type(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
   },
   ctor: StringUnion._ctor,
   nullable: true,
@@ -1815,6 +1957,10 @@ const $fidl.XUnionType<EmptyStructUnion> kEmptyStructUnion_Type =
     1: $fidl.Uint8Type(),
     2: kTransformerEmptyStruct_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+  },
   ctor: EmptyStructUnion._ctor,
   nullable: false,
   flexible: false,
@@ -1826,6 +1972,10 @@ const $fidl.XUnionType<EmptyStructUnion> kEmptyStructUnion_OptType =
   members: <int, $fidl.FidlType>{
     1: $fidl.Uint8Type(),
     2: kTransformerEmptyStruct_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
   },
   ctor: EmptyStructUnion._ctor,
   nullable: true,
@@ -1921,6 +2071,11 @@ const $fidl.XUnionType<UnionAtTheBottom> kUnionAtTheBottom_Type =
     2: $fidl.Uint8Type(),
     3: $fidl.Uint8Type(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
+  },
   ctor: UnionAtTheBottom._ctor,
   nullable: false,
   flexible: false,
@@ -1933,6 +2088,11 @@ const $fidl.XUnionType<UnionAtTheBottom> kUnionAtTheBottom_OptType =
     1: $fidl.Uint8Type(),
     2: $fidl.Uint8Type(),
     3: $fidl.Uint8Type(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+    3: 3,
   },
   ctor: UnionAtTheBottom._ctor,
   nullable: true,
@@ -2017,6 +2177,10 @@ const $fidl.XUnionType<UnionOfXUnionThenTableThenXUnionThenUnion>
     1: $fidl.Uint8Type(),
     3: kXUnionOfTableThenXUnionThenUnion_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    3: 3,
+  },
   ctor: UnionOfXUnionThenTableThenXUnionThenUnion._ctor,
   nullable: false,
   flexible: false,
@@ -2029,6 +2193,10 @@ const $fidl.XUnionType<UnionOfXUnionThenTableThenXUnionThenUnion>
   members: <int, $fidl.FidlType>{
     1: $fidl.Uint8Type(),
     3: kXUnionOfTableThenXUnionThenUnion_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    3: 3,
   },
   ctor: UnionOfXUnionThenTableThenXUnionThenUnion._ctor,
   nullable: true,
@@ -2108,6 +2276,10 @@ const $fidl.XUnionType<StringBoolUnion> kStringBoolUnion_Type =
     1: $fidl.StringType(maybeElementCount: null, nullable: false),
     2: $fidl.BoolType(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+  },
   ctor: StringBoolUnion._ctor,
   nullable: false,
   flexible: false,
@@ -2119,6 +2291,10 @@ const $fidl.XUnionType<StringBoolUnion> kStringBoolUnion_OptType =
   members: <int, $fidl.FidlType>{
     1: $fidl.StringType(maybeElementCount: null, nullable: false),
     2: $fidl.BoolType(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
   },
   ctor: StringBoolUnion._ctor,
   nullable: true,
@@ -2198,6 +2374,10 @@ const $fidl.XUnionType<Regression9Result> kRegression9Result_Type =
     1: kRegression9Value_Type,
     2: $fidl.Uint32Type(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+  },
   ctor: Regression9Result._ctor,
   nullable: false,
   flexible: false,
@@ -2209,6 +2389,10 @@ const $fidl.XUnionType<Regression9Result> kRegression9Result_OptType =
   members: <int, $fidl.FidlType>{
     1: kRegression9Value_Type,
     2: $fidl.Uint32Type(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
   },
   ctor: Regression9Result._ctor,
   nullable: true,
@@ -2291,6 +2475,10 @@ const $fidl.XUnionType<UnionWithRegression10Table>
     1: $fidl.Uint8Type(),
     3: kRegression10TableV2_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    3: 3,
+  },
   ctor: UnionWithRegression10Table._ctor,
   nullable: false,
   flexible: false,
@@ -2303,6 +2491,10 @@ const $fidl.XUnionType<UnionWithRegression10Table>
   members: <int, $fidl.FidlType>{
     1: $fidl.Uint8Type(),
     3: kRegression10TableV2_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    3: 3,
   },
   ctor: UnionWithRegression10Table._ctor,
   nullable: true,
@@ -2374,6 +2566,9 @@ const $fidl.XUnionType<UnionWithVectorOfVectors>
         maybeElementCount: null,
         nullable: false),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+  },
   ctor: UnionWithVectorOfVectors._ctor,
   nullable: false,
   flexible: false,
@@ -2392,6 +2587,9 @@ const $fidl.XUnionType<UnionWithVectorOfVectors>
             nullable: false),
         maybeElementCount: null,
         nullable: false),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
   },
   ctor: UnionWithVectorOfVectors._ctor,
   nullable: true,
@@ -2471,6 +2669,10 @@ const $fidl.XUnionType<CompatUnion> kCompatUnion_Type =
     1: $fidl.StringType(maybeElementCount: null, nullable: false),
     2: $fidl.BoolType(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
+  },
   ctor: CompatUnion._ctor,
   nullable: false,
   flexible: false,
@@ -2482,6 +2684,10 @@ const $fidl.XUnionType<CompatUnion> kCompatUnion_OptType =
   members: <int, $fidl.FidlType>{
     1: $fidl.StringType(maybeElementCount: null, nullable: false),
     2: $fidl.BoolType(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+    2: 2,
   },
   ctor: CompatUnion._ctor,
   nullable: true,
@@ -2581,6 +2787,14 @@ const $fidl.XUnionType<SampleXUnion> kSampleXUnion_Type =
     2033143581: kSimpleUnion_Type,
     35514581: kSimpleTable_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 949769906,
+    949769906: 949769906,
+    2: 2033143581,
+    2033143581: 2033143581,
+    3: 35514581,
+    35514581: 35514581,
+  },
   ctor: SampleXUnion._ctor,
   nullable: false,
   flexible: true,
@@ -2593,6 +2807,14 @@ const $fidl.XUnionType<SampleXUnion> kSampleXUnion_OptType =
     949769906: $fidl.Uint32Type(),
     2033143581: kSimpleUnion_Type,
     35514581: kSimpleTable_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 949769906,
+    949769906: 949769906,
+    2: 2033143581,
+    2033143581: 2033143581,
+    3: 35514581,
+    35514581: 35514581,
   },
   ctor: SampleXUnion._ctor,
   nullable: true,
@@ -2688,6 +2910,14 @@ const $fidl.XUnionType<SampleStrictXUnion> kSampleStrictXUnion_Type =
     670279483: kSimpleUnion_Type,
     925062383: kSimpleTable_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 149088882,
+    149088882: 149088882,
+    2: 670279483,
+    670279483: 670279483,
+    3: 925062383,
+    925062383: 925062383,
+  },
   ctor: SampleStrictXUnion._ctor,
   nullable: false,
   flexible: false,
@@ -2700,6 +2930,14 @@ const $fidl.XUnionType<SampleStrictXUnion> kSampleStrictXUnion_OptType =
     149088882: $fidl.Uint32Type(),
     670279483: kSimpleUnion_Type,
     925062383: kSimpleTable_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 149088882,
+    149088882: 149088882,
+    2: 670279483,
+    670279483: 670279483,
+    3: 925062383,
+    925062383: 925062383,
   },
   ctor: SampleStrictXUnion._ctor,
   nullable: true,
@@ -2768,6 +3006,10 @@ const $fidl.XUnionType<XUnionWithEmptyStruct> kXUnionWithEmptyStruct_Type =
   members: <int, $fidl.FidlType>{
     1956241662: kEmptyStruct_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1956241662,
+    1956241662: 1956241662,
+  },
   ctor: XUnionWithEmptyStruct._ctor,
   nullable: false,
   flexible: true,
@@ -2778,6 +3020,10 @@ const $fidl.XUnionType<XUnionWithEmptyStruct> kXUnionWithEmptyStruct_OptType =
     $fidl.XUnionType<XUnionWithEmptyStruct>(
   members: <int, $fidl.FidlType>{
     1956241662: kEmptyStruct_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1956241662,
+    1956241662: 1956241662,
   },
   ctor: XUnionWithEmptyStruct._ctor,
   nullable: true,
@@ -2845,6 +3091,10 @@ const $fidl.XUnionType<XUnionWithStruct> kXUnionWithStruct_Type =
   members: <int, $fidl.FidlType>{
     423517204: kStructSize3Align1_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 423517204,
+    423517204: 423517204,
+  },
   ctor: XUnionWithStruct._ctor,
   nullable: false,
   flexible: true,
@@ -2855,6 +3105,10 @@ const $fidl.XUnionType<XUnionWithStruct> kXUnionWithStruct_OptType =
     $fidl.XUnionType<XUnionWithStruct>(
   members: <int, $fidl.FidlType>{
     423517204: kStructSize3Align1_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 423517204,
+    423517204: 423517204,
   },
   ctor: XUnionWithStruct._ctor,
   nullable: true,
@@ -2922,6 +3176,10 @@ const $fidl.XUnionType<XUnionWithXUnion> kXUnionWithXUnion_Type =
   members: <int, $fidl.FidlType>{
     1812359455: kXUnionWithStruct_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1812359455,
+    1812359455: 1812359455,
+  },
   ctor: XUnionWithXUnion._ctor,
   nullable: false,
   flexible: true,
@@ -2932,6 +3190,10 @@ const $fidl.XUnionType<XUnionWithXUnion> kXUnionWithXUnion_OptType =
     $fidl.XUnionType<XUnionWithXUnion>(
   members: <int, $fidl.FidlType>{
     1812359455: kXUnionWithStruct_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1812359455,
+    1812359455: 1812359455,
   },
   ctor: XUnionWithXUnion._ctor,
   nullable: true,
@@ -3015,6 +3277,12 @@ const $fidl.XUnionType<XUnionWithUnions> kXUnionWithUnions_Type =
     684009751: kUnionSize8Align4_Type,
     1971727256: kUnionSize12Align4_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 684009751,
+    684009751: 684009751,
+    2: 1971727256,
+    1971727256: 1971727256,
+  },
   ctor: XUnionWithUnions._ctor,
   nullable: false,
   flexible: true,
@@ -3026,6 +3294,12 @@ const $fidl.XUnionType<XUnionWithUnions> kXUnionWithUnions_OptType =
   members: <int, $fidl.FidlType>{
     684009751: kUnionSize8Align4_Type,
     1971727256: kUnionSize12Align4_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 684009751,
+    684009751: 684009751,
+    2: 1971727256,
+    1971727256: 1971727256,
   },
   ctor: XUnionWithUnions._ctor,
   nullable: true,
@@ -3093,6 +3367,10 @@ const $fidl.XUnionType<XUnionOfUnion> kXUnionOfUnion_Type =
   members: <int, $fidl.FidlType>{
     941753748: kUnionAtTheBottom_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 941753748,
+    941753748: 941753748,
+  },
   ctor: XUnionOfUnion._ctor,
   nullable: false,
   flexible: true,
@@ -3103,6 +3381,10 @@ const $fidl.XUnionType<XUnionOfUnion> kXUnionOfUnion_OptType =
     $fidl.XUnionType<XUnionOfUnion>(
   members: <int, $fidl.FidlType>{
     941753748: kUnionAtTheBottom_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 941753748,
+    941753748: 941753748,
   },
   ctor: XUnionOfUnion._ctor,
   nullable: true,
@@ -3176,6 +3458,10 @@ const $fidl.XUnionType<XUnionOfTableThenXUnionThenUnion>
   members: <int, $fidl.FidlType>{
     582508878: kTableOfXUnionThenUnion_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 582508878,
+    582508878: 582508878,
+  },
   ctor: XUnionOfTableThenXUnionThenUnion._ctor,
   nullable: false,
   flexible: true,
@@ -3187,6 +3473,10 @@ const $fidl.XUnionType<XUnionOfTableThenXUnionThenUnion>
     $fidl.XUnionType<XUnionOfTableThenXUnionThenUnion>(
   members: <int, $fidl.FidlType>{
     582508878: kTableOfXUnionThenUnion_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 582508878,
+    582508878: 582508878,
   },
   ctor: XUnionOfTableThenXUnionThenUnion._ctor,
   nullable: true,
@@ -3270,6 +3560,12 @@ const $fidl.XUnionType<CompatXUnion> kCompatXUnion_Type =
     1526263720: $fidl.StringType(maybeElementCount: null, nullable: false),
     1399571856: $fidl.BoolType(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1526263720,
+    1526263720: 1526263720,
+    2: 1399571856,
+    1399571856: 1399571856,
+  },
   ctor: CompatXUnion._ctor,
   nullable: false,
   flexible: true,
@@ -3281,6 +3577,12 @@ const $fidl.XUnionType<CompatXUnion> kCompatXUnion_OptType =
   members: <int, $fidl.FidlType>{
     1526263720: $fidl.StringType(maybeElementCount: null, nullable: false),
     1399571856: $fidl.BoolType(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1526263720,
+    1526263720: 1526263720,
+    2: 1399571856,
+    1399571856: 1399571856,
   },
   ctor: CompatXUnion._ctor,
   nullable: true,

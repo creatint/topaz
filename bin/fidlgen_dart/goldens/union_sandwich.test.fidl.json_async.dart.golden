@@ -93,6 +93,9 @@ const $fidl.XUnionType<UnionSize8Alignment4> kUnionSize8Alignment4_Type =
   members: <int, $fidl.FidlType>{
     1: $fidl.Uint32Type(),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+  },
   ctor: UnionSize8Alignment4._ctor,
   nullable: false,
   flexible: false,
@@ -103,6 +106,9 @@ const $fidl.XUnionType<UnionSize8Alignment4> kUnionSize8Alignment4_OptType =
     $fidl.XUnionType<UnionSize8Alignment4>(
   members: <int, $fidl.FidlType>{
     1: $fidl.Uint32Type(),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
   },
   ctor: UnionSize8Alignment4._ctor,
   nullable: true,
@@ -166,6 +172,9 @@ const $fidl.XUnionType<UnionSize12Alignment4> kUnionSize12Alignment4_Type =
   members: <int, $fidl.FidlType>{
     1: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 6),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+  },
   ctor: UnionSize12Alignment4._ctor,
   nullable: false,
   flexible: false,
@@ -176,6 +185,9 @@ const $fidl.XUnionType<UnionSize12Alignment4> kUnionSize12Alignment4_OptType =
     $fidl.XUnionType<UnionSize12Alignment4>(
   members: <int, $fidl.FidlType>{
     1: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 6),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
   },
   ctor: UnionSize12Alignment4._ctor,
   nullable: true,
@@ -239,6 +251,9 @@ const $fidl.XUnionType<UnionSize24Alignment8> kUnionSize24Alignment8_Type =
   members: <int, $fidl.FidlType>{
     1: kStructSize16Alignment8_Type,
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+  },
   ctor: UnionSize24Alignment8._ctor,
   nullable: false,
   flexible: false,
@@ -249,6 +264,9 @@ const $fidl.XUnionType<UnionSize24Alignment8> kUnionSize24Alignment8_OptType =
     $fidl.XUnionType<UnionSize24Alignment8>(
   members: <int, $fidl.FidlType>{
     1: kStructSize16Alignment8_Type,
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
   },
   ctor: UnionSize24Alignment8._ctor,
   nullable: true,
@@ -312,6 +330,9 @@ const $fidl.XUnionType<UnionSize36Alignment4> kUnionSize36Alignment4_Type =
   members: <int, $fidl.FidlType>{
     1: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 32),
   },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
+  },
   ctor: UnionSize36Alignment4._ctor,
   nullable: false,
   flexible: false,
@@ -322,6 +343,9 @@ const $fidl.XUnionType<UnionSize36Alignment4> kUnionSize36Alignment4_OptType =
     $fidl.XUnionType<UnionSize36Alignment4>(
   members: <int, $fidl.FidlType>{
     1: $fidl.ArrayType<Uint8List>(element: $fidl.Uint8Type(), elementCount: 32),
+  },
+  readToWriteOrdinals: <int, int>{
+    1: 1,
   },
   ctor: UnionSize36Alignment4._ctor,
   nullable: true,
