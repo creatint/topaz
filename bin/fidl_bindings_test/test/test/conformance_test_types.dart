@@ -41,6 +41,186 @@ import 'package:zircon/zircon.dart' as $zx;
 // ignore_for_file: comment_references
 // ignore_for_file: avoid_unused_constructor_parameters
 
+class EnumUint32 extends $fidl.Enum {
+  factory EnumUint32(int _v) {
+    switch (_v) {
+      case 0x3231302f:
+        return member;
+      default:
+        return null;
+    }
+  }
+  static const EnumUint32 member = EnumUint32._(0x3231302f);
+
+  const EnumUint32._(this.$value);
+
+  @override
+  final int $value;
+
+  static const Map<String, EnumUint32> $valuesMap = {
+    r'member': member,
+  };
+
+  static const List<EnumUint32> $values = [
+    member,
+  ];
+
+  // TODO: remove, see: FIDL-587
+  static const List<EnumUint32> values = EnumUint32.$values;
+
+  static EnumUint32 $valueOf(String name) => $valuesMap[name];
+
+  @override
+  String toString() {
+    switch ($value) {
+      case 0x3231302f:
+        return r'EnumUint32.member';
+      default:
+        return null;
+    }
+  }
+
+  static EnumUint32 _ctor(int v) => EnumUint32(v);
+}
+
+const $fidl.EnumType<EnumUint32> kEnumUint32_Type = $fidl.EnumType<EnumUint32>(
+    type: $fidl.Uint32Type(), ctor: EnumUint32._ctor);
+
+class EnumUint8 extends $fidl.Enum {
+  factory EnumUint8(int _v) {
+    switch (_v) {
+      case 0x8:
+        return member;
+      default:
+        return null;
+    }
+  }
+  static const EnumUint8 member = EnumUint8._(0x8);
+
+  const EnumUint8._(this.$value);
+
+  @override
+  final int $value;
+
+  static const Map<String, EnumUint8> $valuesMap = {
+    r'member': member,
+  };
+
+  static const List<EnumUint8> $values = [
+    member,
+  ];
+
+  // TODO: remove, see: FIDL-587
+  static const List<EnumUint8> values = EnumUint8.$values;
+
+  static EnumUint8 $valueOf(String name) => $valuesMap[name];
+
+  @override
+  String toString() {
+    switch ($value) {
+      case 0x8:
+        return r'EnumUint8.member';
+      default:
+        return null;
+    }
+  }
+
+  static EnumUint8 _ctor(int v) => EnumUint8(v);
+}
+
+const $fidl.EnumType<EnumUint8> kEnumUint8_Type =
+    $fidl.EnumType<EnumUint8>(type: $fidl.Uint8Type(), ctor: EnumUint8._ctor);
+
+class BitsUint32 extends $fidl.Bits {
+  static const BitsUint32 memberLow1 = BitsUint32._(0x1);
+  static const BitsUint32 memberLow2 = BitsUint32._(0x2);
+  static const BitsUint32 memberHig1 = BitsUint32._(0x10000000);
+  static const BitsUint32 memberHig2 = BitsUint32._(0x20000000);
+  static const BitsUint32 $none = BitsUint32._(0);
+
+  const BitsUint32._(this.$value);
+
+  BitsUint32 operator |(BitsUint32 other) {
+    return BitsUint32._($value | other.$value);
+  }
+
+  BitsUint32 operator &(BitsUint32 other) {
+    return BitsUint32._($value & other.$value);
+  }
+
+  @override
+  final int $value;
+
+  @override
+  String toString() {
+    if ($value == null) {
+      return null;
+    }
+    List<String> parts = [];
+    if ($value & 0x1 != 0) {
+      parts.add(r'BitsUint32.memberLow1');
+    }
+    if ($value & 0x2 != 0) {
+      parts.add(r'BitsUint32.memberLow2');
+    }
+    if ($value & 0x10000000 != 0) {
+      parts.add(r'BitsUint32.memberHig1');
+    }
+    if ($value & 0x20000000 != 0) {
+      parts.add(r'BitsUint32.memberHig2');
+    }
+    if (parts.isEmpty) {
+      return r'BitsUint32.$none';
+    } else {
+      return parts.join(" | ");
+    }
+  }
+
+  static BitsUint32 _ctor(int v) => BitsUint32._(v);
+}
+
+const $fidl.BitsType<BitsUint32> kBitsUint32_Type = $fidl.BitsType<BitsUint32>(
+    type: $fidl.Uint32Type(), ctor: BitsUint32._ctor);
+
+class BitsUint8 extends $fidl.Bits {
+  static const BitsUint8 member = BitsUint8._(0x8);
+  static const BitsUint8 $none = BitsUint8._(0);
+
+  const BitsUint8._(this.$value);
+
+  BitsUint8 operator |(BitsUint8 other) {
+    return BitsUint8._($value | other.$value);
+  }
+
+  BitsUint8 operator &(BitsUint8 other) {
+    return BitsUint8._($value & other.$value);
+  }
+
+  @override
+  final int $value;
+
+  @override
+  String toString() {
+    if ($value == null) {
+      return null;
+    }
+    List<String> parts = [];
+    if ($value & 0x8 != 0) {
+      parts.add(r'BitsUint8.member');
+    }
+    if (parts.isEmpty) {
+      return r'BitsUint8.$none';
+    } else {
+      return parts.join(" | ");
+    }
+  }
+
+  static BitsUint8 _ctor(int v) => BitsUint8._(v);
+}
+
+const $fidl.BitsType<BitsUint8> kBitsUint8_Type =
+    $fidl.BitsType<BitsUint8>(type: $fidl.Uint8Type(), ctor: BitsUint8._ctor);
+
 enum IpAddressConfigTag {
   paddingSize24Align4, // 0x1
   dhcp, // 0x2
@@ -129,130 +309,6 @@ const $fidl.XUnionType<IpAddressConfig> kIpAddressConfig_OptType =
     2: $fidl.BoolType(),
   },
   ctor: IpAddressConfig._ctor,
-  nullable: true,
-  flexible: false,
-);
-
-enum SimpleUnionTag {
-  i32, // 0x1
-  i64, // 0x2
-  s, // 0x3
-  str, // 0x4
-}
-
-const Map<int, SimpleUnionTag> _SimpleUnionTag_map = {
-  1: SimpleUnionTag.i32,
-  2: SimpleUnionTag.i64,
-  3: SimpleUnionTag.s,
-  4: SimpleUnionTag.str,
-};
-
-class SimpleUnion extends $fidl.XUnion {
-  const SimpleUnion.withI32(int value)
-      : _ordinal = 1,
-        _data = value;
-
-  const SimpleUnion.withI64(int value)
-      : _ordinal = 2,
-        _data = value;
-
-  const SimpleUnion.withS(Int64Struct value)
-      : _ordinal = 3,
-        _data = value;
-
-  const SimpleUnion.withStr(String value)
-      : _ordinal = 4,
-        _data = value;
-
-  SimpleUnion._(int ordinal, Object data)
-      : _ordinal = ordinal,
-        _data = data;
-
-  final int _ordinal;
-  final _data;
-
-  SimpleUnionTag get $tag => _SimpleUnionTag_map[_ordinal];
-
-  int get i32 {
-    if (_ordinal != 1) {
-      return null;
-    }
-    return _data;
-  }
-
-  int get i64 {
-    if (_ordinal != 2) {
-      return null;
-    }
-    return _data;
-  }
-
-  Int64Struct get s {
-    if (_ordinal != 3) {
-      return null;
-    }
-    return _data;
-  }
-
-  String get str {
-    if (_ordinal != 4) {
-      return null;
-    }
-    return _data;
-  }
-
-  @override
-  String toString() {
-    switch (_ordinal) {
-      case 1:
-        return 'SimpleUnion.i32($i32)';
-      case 2:
-        return 'SimpleUnion.i64($i64)';
-      case 3:
-        return 'SimpleUnion.s($s)';
-      case 4:
-        return 'SimpleUnion.str($str)';
-      default:
-        return null;
-    }
-  }
-
-  @override
-  int get $ordinal => _ordinal;
-
-  @override
-  Object get $data => _data;
-
-  static SimpleUnion _ctor(int ordinal, Object data) {
-    return SimpleUnion._(ordinal, data);
-  }
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.XUnionType<SimpleUnion> kSimpleUnion_Type =
-    $fidl.XUnionType<SimpleUnion>(
-  members: <int, $fidl.FidlType>{
-    1: $fidl.Int32Type(),
-    2: $fidl.Int64Type(),
-    3: kInt64Struct_Type,
-    4: $fidl.StringType(maybeElementCount: null, nullable: false),
-  },
-  ctor: SimpleUnion._ctor,
-  nullable: false,
-  flexible: false,
-);
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.XUnionType<SimpleUnion> kSimpleUnion_OptType =
-    $fidl.XUnionType<SimpleUnion>(
-  members: <int, $fidl.FidlType>{
-    1: $fidl.Int32Type(),
-    2: $fidl.Int64Type(),
-    3: kInt64Struct_Type,
-    4: $fidl.StringType(maybeElementCount: null, nullable: false),
-  },
-  ctor: SimpleUnion._ctor,
   nullable: true,
   flexible: false,
 );
@@ -1652,6 +1708,483 @@ const $fidl.XUnionType<EmptyStructUnion> kEmptyStructUnion_OptType =
   flexible: false,
 );
 
+enum UnionAtTheBottomTag {
+  unused1, // 0x1
+  unused2, // 0x2
+  tiny, // 0x3
+}
+
+const Map<int, UnionAtTheBottomTag> _UnionAtTheBottomTag_map = {
+  1: UnionAtTheBottomTag.unused1,
+  2: UnionAtTheBottomTag.unused2,
+  3: UnionAtTheBottomTag.tiny,
+};
+
+class UnionAtTheBottom extends $fidl.XUnion {
+  const UnionAtTheBottom.withUnused1(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  const UnionAtTheBottom.withUnused2(int value)
+      : _ordinal = 2,
+        _data = value;
+
+  const UnionAtTheBottom.withTiny(int value)
+      : _ordinal = 3,
+        _data = value;
+
+  UnionAtTheBottom._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  UnionAtTheBottomTag get $tag => _UnionAtTheBottomTag_map[_ordinal];
+
+  int get unused1 {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  int get unused2 {
+    if (_ordinal != 2) {
+      return null;
+    }
+    return _data;
+  }
+
+  int get tiny {
+    if (_ordinal != 3) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'UnionAtTheBottom.unused1($unused1)';
+      case 2:
+        return 'UnionAtTheBottom.unused2($unused2)';
+      case 3:
+        return 'UnionAtTheBottom.tiny($tiny)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static UnionAtTheBottom _ctor(int ordinal, Object data) {
+    return UnionAtTheBottom._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionAtTheBottom> kUnionAtTheBottom_Type =
+    $fidl.XUnionType<UnionAtTheBottom>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint8Type(),
+    2: $fidl.Uint8Type(),
+    3: $fidl.Uint8Type(),
+  },
+  ctor: UnionAtTheBottom._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionAtTheBottom> kUnionAtTheBottom_OptType =
+    $fidl.XUnionType<UnionAtTheBottom>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint8Type(),
+    2: $fidl.Uint8Type(),
+    3: $fidl.Uint8Type(),
+  },
+  ctor: UnionAtTheBottom._ctor,
+  nullable: true,
+  flexible: false,
+);
+
+enum UnionOfXUnionThenTableThenXUnionThenUnionTag {
+  unused1, // 0x1
+  variant, // 0x3
+}
+
+const Map<int, UnionOfXUnionThenTableThenXUnionThenUnionTag>
+    _UnionOfXUnionThenTableThenXUnionThenUnionTag_map = {
+  1: UnionOfXUnionThenTableThenXUnionThenUnionTag.unused1,
+  3: UnionOfXUnionThenTableThenXUnionThenUnionTag.variant,
+};
+
+class UnionOfXUnionThenTableThenXUnionThenUnion extends $fidl.XUnion {
+  const UnionOfXUnionThenTableThenXUnionThenUnion.withUnused1(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  const UnionOfXUnionThenTableThenXUnionThenUnion.withVariant(
+      XUnionOfTableThenXUnionThenUnion value)
+      : _ordinal = 3,
+        _data = value;
+
+  UnionOfXUnionThenTableThenXUnionThenUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  UnionOfXUnionThenTableThenXUnionThenUnionTag get $tag =>
+      _UnionOfXUnionThenTableThenXUnionThenUnionTag_map[_ordinal];
+
+  int get unused1 {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  XUnionOfTableThenXUnionThenUnion get variant {
+    if (_ordinal != 3) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'UnionOfXUnionThenTableThenXUnionThenUnion.unused1($unused1)';
+      case 3:
+        return 'UnionOfXUnionThenTableThenXUnionThenUnion.variant($variant)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static UnionOfXUnionThenTableThenXUnionThenUnion _ctor(
+      int ordinal, Object data) {
+    return UnionOfXUnionThenTableThenXUnionThenUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionOfXUnionThenTableThenXUnionThenUnion>
+    kUnionOfXUnionThenTableThenXUnionThenUnion_Type =
+    $fidl.XUnionType<UnionOfXUnionThenTableThenXUnionThenUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint8Type(),
+    3: kXUnionOfTableThenXUnionThenUnion_Type,
+  },
+  ctor: UnionOfXUnionThenTableThenXUnionThenUnion._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionOfXUnionThenTableThenXUnionThenUnion>
+    kUnionOfXUnionThenTableThenXUnionThenUnion_OptType =
+    $fidl.XUnionType<UnionOfXUnionThenTableThenXUnionThenUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint8Type(),
+    3: kXUnionOfTableThenXUnionThenUnion_Type,
+  },
+  ctor: UnionOfXUnionThenTableThenXUnionThenUnion._ctor,
+  nullable: true,
+  flexible: false,
+);
+
+enum StringBoolUnionTag {
+  s, // 0x1
+  b, // 0x2
+}
+
+const Map<int, StringBoolUnionTag> _StringBoolUnionTag_map = {
+  1: StringBoolUnionTag.s,
+  2: StringBoolUnionTag.b,
+};
+
+class StringBoolUnion extends $fidl.XUnion {
+  const StringBoolUnion.withS(String value)
+      : _ordinal = 1,
+        _data = value;
+
+  const StringBoolUnion.withB(bool value)
+      : _ordinal = 2,
+        _data = value;
+
+  StringBoolUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  StringBoolUnionTag get $tag => _StringBoolUnionTag_map[_ordinal];
+
+  String get s {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  bool get b {
+    if (_ordinal != 2) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'StringBoolUnion.s($s)';
+      case 2:
+        return 'StringBoolUnion.b($b)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static StringBoolUnion _ctor(int ordinal, Object data) {
+    return StringBoolUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<StringBoolUnion> kStringBoolUnion_Type =
+    $fidl.XUnionType<StringBoolUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.StringType(maybeElementCount: null, nullable: false),
+    2: $fidl.BoolType(),
+  },
+  ctor: StringBoolUnion._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<StringBoolUnion> kStringBoolUnion_OptType =
+    $fidl.XUnionType<StringBoolUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.StringType(maybeElementCount: null, nullable: false),
+    2: $fidl.BoolType(),
+  },
+  ctor: StringBoolUnion._ctor,
+  nullable: true,
+  flexible: false,
+);
+
+enum Regression9ResultTag {
+  ok, // 0x1
+  error, // 0x2
+}
+
+const Map<int, Regression9ResultTag> _Regression9ResultTag_map = {
+  1: Regression9ResultTag.ok,
+  2: Regression9ResultTag.error,
+};
+
+class Regression9Result extends $fidl.XUnion {
+  const Regression9Result.withOk(Regression9Value value)
+      : _ordinal = 1,
+        _data = value;
+
+  const Regression9Result.withError(int value)
+      : _ordinal = 2,
+        _data = value;
+
+  Regression9Result._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  Regression9ResultTag get $tag => _Regression9ResultTag_map[_ordinal];
+
+  Regression9Value get ok {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  int get error {
+    if (_ordinal != 2) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'Regression9Result.ok($ok)';
+      case 2:
+        return 'Regression9Result.error($error)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static Regression9Result _ctor(int ordinal, Object data) {
+    return Regression9Result._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<Regression9Result> kRegression9Result_Type =
+    $fidl.XUnionType<Regression9Result>(
+  members: <int, $fidl.FidlType>{
+    1: kRegression9Value_Type,
+    2: $fidl.Uint32Type(),
+  },
+  ctor: Regression9Result._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<Regression9Result> kRegression9Result_OptType =
+    $fidl.XUnionType<Regression9Result>(
+  members: <int, $fidl.FidlType>{
+    1: kRegression9Value_Type,
+    2: $fidl.Uint32Type(),
+  },
+  ctor: Regression9Result._ctor,
+  nullable: true,
+  flexible: false,
+);
+
+enum UnionWithRegression10TableTag {
+  unused, // 0x1
+  atV2, // 0x3
+}
+
+const Map<int, UnionWithRegression10TableTag>
+    _UnionWithRegression10TableTag_map = {
+  1: UnionWithRegression10TableTag.unused,
+  3: UnionWithRegression10TableTag.atV2,
+};
+
+class UnionWithRegression10Table extends $fidl.XUnion {
+  const UnionWithRegression10Table.withUnused(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  const UnionWithRegression10Table.withAtV2(Regression10TableV2 value)
+      : _ordinal = 3,
+        _data = value;
+
+  UnionWithRegression10Table._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  UnionWithRegression10TableTag get $tag =>
+      _UnionWithRegression10TableTag_map[_ordinal];
+
+  int get unused {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  Regression10TableV2 get atV2 {
+    if (_ordinal != 3) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'UnionWithRegression10Table.unused($unused)';
+      case 3:
+        return 'UnionWithRegression10Table.atV2($atV2)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static UnionWithRegression10Table _ctor(int ordinal, Object data) {
+    return UnionWithRegression10Table._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionWithRegression10Table>
+    kUnionWithRegression10Table_Type =
+    $fidl.XUnionType<UnionWithRegression10Table>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint8Type(),
+    3: kRegression10TableV2_Type,
+  },
+  ctor: UnionWithRegression10Table._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<UnionWithRegression10Table>
+    kUnionWithRegression10Table_OptType =
+    $fidl.XUnionType<UnionWithRegression10Table>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint8Type(),
+    3: kRegression10TableV2_Type,
+  },
+  ctor: UnionWithRegression10Table._ctor,
+  nullable: true,
+  flexible: false,
+);
+
 enum UnionWithVectorOfVectorsTag {
   v, // 0x1
 }
@@ -1741,60 +2274,43 @@ const $fidl.XUnionType<UnionWithVectorOfVectors>
   flexible: false,
 );
 
-enum SampleXUnionTag {
-  $unknown,
-  u, // 0x389c56b2
-  su, // 0x792f4f1d
-  st, // 0x21de8d5
+enum CompatUnionTag {
+  s, // 0x1
+  b, // 0x2
 }
 
-const Map<int, SampleXUnionTag> _SampleXUnionTag_map = {
-  949769906: SampleXUnionTag.u,
-  2033143581: SampleXUnionTag.su,
-  35514581: SampleXUnionTag.st,
+const Map<int, CompatUnionTag> _CompatUnionTag_map = {
+  1: CompatUnionTag.s,
+  2: CompatUnionTag.b,
 };
 
-class SampleXUnion extends $fidl.XUnion {
-  const SampleXUnion.withU(int value)
-      : _ordinal = 949769906,
+class CompatUnion extends $fidl.XUnion {
+  const CompatUnion.withS(String value)
+      : _ordinal = 1,
         _data = value;
 
-  const SampleXUnion.withSu(SimpleUnion value)
-      : _ordinal = 2033143581,
+  const CompatUnion.withB(bool value)
+      : _ordinal = 2,
         _data = value;
 
-  const SampleXUnion.withSt(SimpleTable value)
-      : _ordinal = 35514581,
-        _data = value;
-
-  SampleXUnion._(int ordinal, Object data)
+  CompatUnion._(int ordinal, Object data)
       : _ordinal = ordinal,
         _data = data;
 
   final int _ordinal;
   final _data;
 
-  SampleXUnionTag get $tag {
-    final SampleXUnionTag $rawtag = _SampleXUnionTag_map[_ordinal];
-    return $rawtag == null ? SampleXUnionTag.$unknown : $rawtag;
-  }
+  CompatUnionTag get $tag => _CompatUnionTag_map[_ordinal];
 
-  int get u {
-    if (_ordinal != 949769906) {
+  String get s {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
-  SimpleUnion get su {
-    if (_ordinal != 2033143581) {
-      return null;
-    }
-    return _data;
-  }
-
-  SimpleTable get st {
-    if (_ordinal != 35514581) {
+  bool get b {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
@@ -1803,119 +2319,10 @@ class SampleXUnion extends $fidl.XUnion {
   @override
   String toString() {
     switch (_ordinal) {
-      case 949769906:
-        return 'SampleXUnion.u($u)';
-      case 2033143581:
-        return 'SampleXUnion.su($su)';
-      case 35514581:
-        return 'SampleXUnion.st($st)';
-      default:
-        return 'SampleXUnion.<UNKNOWN>';
-    }
-  }
-
-  @override
-  int get $ordinal => _ordinal;
-
-  @override
-  Object get $data => _data;
-
-  static SampleXUnion _ctor(int ordinal, Object data) {
-    return SampleXUnion._(ordinal, data);
-  }
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.XUnionType<SampleXUnion> kSampleXUnion_Type =
-    $fidl.XUnionType<SampleXUnion>(
-  members: <int, $fidl.FidlType>{
-    949769906: $fidl.Uint32Type(),
-    2033143581: kSimpleUnion_Type,
-    35514581: kSimpleTable_Type,
-  },
-  ctor: SampleXUnion._ctor,
-  nullable: false,
-  flexible: true,
-);
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.XUnionType<SampleXUnion> kSampleXUnion_OptType =
-    $fidl.XUnionType<SampleXUnion>(
-  members: <int, $fidl.FidlType>{
-    949769906: $fidl.Uint32Type(),
-    2033143581: kSimpleUnion_Type,
-    35514581: kSimpleTable_Type,
-  },
-  ctor: SampleXUnion._ctor,
-  nullable: true,
-  flexible: true,
-);
-
-enum SampleStrictXUnionTag {
-  u, // 0x8e2ea72
-  su, // 0x27f3a73b
-  st, // 0x372354ef
-}
-
-const Map<int, SampleStrictXUnionTag> _SampleStrictXUnionTag_map = {
-  149088882: SampleStrictXUnionTag.u,
-  670279483: SampleStrictXUnionTag.su,
-  925062383: SampleStrictXUnionTag.st,
-};
-
-class SampleStrictXUnion extends $fidl.XUnion {
-  const SampleStrictXUnion.withU(int value)
-      : _ordinal = 149088882,
-        _data = value;
-
-  const SampleStrictXUnion.withSu(SimpleUnion value)
-      : _ordinal = 670279483,
-        _data = value;
-
-  const SampleStrictXUnion.withSt(SimpleTable value)
-      : _ordinal = 925062383,
-        _data = value;
-
-  SampleStrictXUnion._(int ordinal, Object data)
-      : _ordinal = ordinal,
-        _data = data;
-
-  final int _ordinal;
-  final _data;
-
-  SampleStrictXUnionTag get $tag => _SampleStrictXUnionTag_map[_ordinal];
-
-  int get u {
-    if (_ordinal != 149088882) {
-      return null;
-    }
-    return _data;
-  }
-
-  SimpleUnion get su {
-    if (_ordinal != 670279483) {
-      return null;
-    }
-    return _data;
-  }
-
-  SimpleTable get st {
-    if (_ordinal != 925062383) {
-      return null;
-    }
-    return _data;
-  }
-
-  @override
-  String toString() {
-    switch (_ordinal) {
-      case 149088882:
-        return 'SampleStrictXUnion.u($u)';
-      case 670279483:
-        return 'SampleStrictXUnion.su($su)';
-      case 925062383:
-        return 'SampleStrictXUnion.st($st)';
+      case 1:
+        return 'CompatUnion.s($s)';
+      case 2:
+        return 'CompatUnion.b($b)';
       default:
         return null;
     }
@@ -1927,34 +2334,156 @@ class SampleStrictXUnion extends $fidl.XUnion {
   @override
   Object get $data => _data;
 
-  static SampleStrictXUnion _ctor(int ordinal, Object data) {
-    return SampleStrictXUnion._(ordinal, data);
+  static CompatUnion _ctor(int ordinal, Object data) {
+    return CompatUnion._(ordinal, data);
   }
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.XUnionType<SampleStrictXUnion> kSampleStrictXUnion_Type =
-    $fidl.XUnionType<SampleStrictXUnion>(
+const $fidl.XUnionType<CompatUnion> kCompatUnion_Type =
+    $fidl.XUnionType<CompatUnion>(
   members: <int, $fidl.FidlType>{
-    149088882: $fidl.Uint32Type(),
-    670279483: kSimpleUnion_Type,
-    925062383: kSimpleTable_Type,
+    1: $fidl.StringType(maybeElementCount: null, nullable: false),
+    2: $fidl.BoolType(),
   },
-  ctor: SampleStrictXUnion._ctor,
+  ctor: CompatUnion._ctor,
   nullable: false,
   flexible: false,
 );
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.XUnionType<SampleStrictXUnion> kSampleStrictXUnion_OptType =
-    $fidl.XUnionType<SampleStrictXUnion>(
+const $fidl.XUnionType<CompatUnion> kCompatUnion_OptType =
+    $fidl.XUnionType<CompatUnion>(
   members: <int, $fidl.FidlType>{
-    149088882: $fidl.Uint32Type(),
-    670279483: kSimpleUnion_Type,
-    925062383: kSimpleTable_Type,
+    1: $fidl.StringType(maybeElementCount: null, nullable: false),
+    2: $fidl.BoolType(),
   },
-  ctor: SampleStrictXUnion._ctor,
+  ctor: CompatUnion._ctor,
+  nullable: true,
+  flexible: false,
+);
+
+enum SimpleUnionTag {
+  i32, // 0x1
+  i64, // 0x2
+  s, // 0x3
+  str, // 0x4
+}
+
+const Map<int, SimpleUnionTag> _SimpleUnionTag_map = {
+  1: SimpleUnionTag.i32,
+  2: SimpleUnionTag.i64,
+  3: SimpleUnionTag.s,
+  4: SimpleUnionTag.str,
+};
+
+class SimpleUnion extends $fidl.XUnion {
+  const SimpleUnion.withI32(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  const SimpleUnion.withI64(int value)
+      : _ordinal = 2,
+        _data = value;
+
+  const SimpleUnion.withS(Int64Struct value)
+      : _ordinal = 3,
+        _data = value;
+
+  const SimpleUnion.withStr(String value)
+      : _ordinal = 4,
+        _data = value;
+
+  SimpleUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  SimpleUnionTag get $tag => _SimpleUnionTag_map[_ordinal];
+
+  int get i32 {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  int get i64 {
+    if (_ordinal != 2) {
+      return null;
+    }
+    return _data;
+  }
+
+  Int64Struct get s {
+    if (_ordinal != 3) {
+      return null;
+    }
+    return _data;
+  }
+
+  String get str {
+    if (_ordinal != 4) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'SimpleUnion.i32($i32)';
+      case 2:
+        return 'SimpleUnion.i64($i64)';
+      case 3:
+        return 'SimpleUnion.s($s)';
+      case 4:
+        return 'SimpleUnion.str($str)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static SimpleUnion _ctor(int ordinal, Object data) {
+    return SimpleUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<SimpleUnion> kSimpleUnion_Type =
+    $fidl.XUnionType<SimpleUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    2: $fidl.Int64Type(),
+    3: kInt64Struct_Type,
+    4: $fidl.StringType(maybeElementCount: null, nullable: false),
+  },
+  ctor: SimpleUnion._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<SimpleUnion> kSimpleUnion_OptType =
+    $fidl.XUnionType<SimpleUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    2: $fidl.Int64Type(),
+    3: kInt64Struct_Type,
+    4: $fidl.StringType(maybeElementCount: null, nullable: false),
+  },
+  ctor: SimpleUnion._ctor,
   nullable: true,
   flexible: false,
 );
@@ -2283,6 +2812,479 @@ const $fidl.XUnionType<XUnionWithUnions> kXUnionWithUnions_OptType =
   ctor: XUnionWithUnions._ctor,
   nullable: true,
   flexible: true,
+);
+
+enum XUnionOfUnionTag {
+  $unknown,
+  variant, // 0x38220594
+}
+
+const Map<int, XUnionOfUnionTag> _XUnionOfUnionTag_map = {
+  941753748: XUnionOfUnionTag.variant,
+};
+
+class XUnionOfUnion extends $fidl.XUnion {
+  const XUnionOfUnion.withVariant(UnionAtTheBottom value)
+      : _ordinal = 941753748,
+        _data = value;
+
+  XUnionOfUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  XUnionOfUnionTag get $tag {
+    final XUnionOfUnionTag $rawtag = _XUnionOfUnionTag_map[_ordinal];
+    return $rawtag == null ? XUnionOfUnionTag.$unknown : $rawtag;
+  }
+
+  UnionAtTheBottom get variant {
+    if (_ordinal != 941753748) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 941753748:
+        return 'XUnionOfUnion.variant($variant)';
+      default:
+        return 'XUnionOfUnion.<UNKNOWN>';
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static XUnionOfUnion _ctor(int ordinal, Object data) {
+    return XUnionOfUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<XUnionOfUnion> kXUnionOfUnion_Type =
+    $fidl.XUnionType<XUnionOfUnion>(
+  members: <int, $fidl.FidlType>{
+    941753748: kUnionAtTheBottom_Type,
+  },
+  ctor: XUnionOfUnion._ctor,
+  nullable: false,
+  flexible: true,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<XUnionOfUnion> kXUnionOfUnion_OptType =
+    $fidl.XUnionType<XUnionOfUnion>(
+  members: <int, $fidl.FidlType>{
+    941753748: kUnionAtTheBottom_Type,
+  },
+  ctor: XUnionOfUnion._ctor,
+  nullable: true,
+  flexible: true,
+);
+
+enum XUnionOfTableThenXUnionThenUnionTag {
+  $unknown,
+  variant, // 0x22b8614e
+}
+
+const Map<int, XUnionOfTableThenXUnionThenUnionTag>
+    _XUnionOfTableThenXUnionThenUnionTag_map = {
+  582508878: XUnionOfTableThenXUnionThenUnionTag.variant,
+};
+
+class XUnionOfTableThenXUnionThenUnion extends $fidl.XUnion {
+  const XUnionOfTableThenXUnionThenUnion.withVariant(
+      TableOfXUnionThenUnion value)
+      : _ordinal = 582508878,
+        _data = value;
+
+  XUnionOfTableThenXUnionThenUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  XUnionOfTableThenXUnionThenUnionTag get $tag {
+    final XUnionOfTableThenXUnionThenUnionTag $rawtag =
+        _XUnionOfTableThenXUnionThenUnionTag_map[_ordinal];
+    return $rawtag == null
+        ? XUnionOfTableThenXUnionThenUnionTag.$unknown
+        : $rawtag;
+  }
+
+  TableOfXUnionThenUnion get variant {
+    if (_ordinal != 582508878) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 582508878:
+        return 'XUnionOfTableThenXUnionThenUnion.variant($variant)';
+      default:
+        return 'XUnionOfTableThenXUnionThenUnion.<UNKNOWN>';
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static XUnionOfTableThenXUnionThenUnion _ctor(int ordinal, Object data) {
+    return XUnionOfTableThenXUnionThenUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<XUnionOfTableThenXUnionThenUnion>
+    kXUnionOfTableThenXUnionThenUnion_Type =
+    $fidl.XUnionType<XUnionOfTableThenXUnionThenUnion>(
+  members: <int, $fidl.FidlType>{
+    582508878: kTableOfXUnionThenUnion_Type,
+  },
+  ctor: XUnionOfTableThenXUnionThenUnion._ctor,
+  nullable: false,
+  flexible: true,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<XUnionOfTableThenXUnionThenUnion>
+    kXUnionOfTableThenXUnionThenUnion_OptType =
+    $fidl.XUnionType<XUnionOfTableThenXUnionThenUnion>(
+  members: <int, $fidl.FidlType>{
+    582508878: kTableOfXUnionThenUnion_Type,
+  },
+  ctor: XUnionOfTableThenXUnionThenUnion._ctor,
+  nullable: true,
+  flexible: true,
+);
+
+enum CompatXUnionTag {
+  $unknown,
+  s, // 0x5af8efa8
+  b, // 0x536bc590
+}
+
+const Map<int, CompatXUnionTag> _CompatXUnionTag_map = {
+  1526263720: CompatXUnionTag.s,
+  1399571856: CompatXUnionTag.b,
+};
+
+class CompatXUnion extends $fidl.XUnion {
+  const CompatXUnion.withS(String value)
+      : _ordinal = 1526263720,
+        _data = value;
+
+  const CompatXUnion.withB(bool value)
+      : _ordinal = 1399571856,
+        _data = value;
+
+  CompatXUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  CompatXUnionTag get $tag {
+    final CompatXUnionTag $rawtag = _CompatXUnionTag_map[_ordinal];
+    return $rawtag == null ? CompatXUnionTag.$unknown : $rawtag;
+  }
+
+  String get s {
+    if (_ordinal != 1526263720) {
+      return null;
+    }
+    return _data;
+  }
+
+  bool get b {
+    if (_ordinal != 1399571856) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1526263720:
+        return 'CompatXUnion.s($s)';
+      case 1399571856:
+        return 'CompatXUnion.b($b)';
+      default:
+        return 'CompatXUnion.<UNKNOWN>';
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static CompatXUnion _ctor(int ordinal, Object data) {
+    return CompatXUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<CompatXUnion> kCompatXUnion_Type =
+    $fidl.XUnionType<CompatXUnion>(
+  members: <int, $fidl.FidlType>{
+    1526263720: $fidl.StringType(maybeElementCount: null, nullable: false),
+    1399571856: $fidl.BoolType(),
+  },
+  ctor: CompatXUnion._ctor,
+  nullable: false,
+  flexible: true,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<CompatXUnion> kCompatXUnion_OptType =
+    $fidl.XUnionType<CompatXUnion>(
+  members: <int, $fidl.FidlType>{
+    1526263720: $fidl.StringType(maybeElementCount: null, nullable: false),
+    1399571856: $fidl.BoolType(),
+  },
+  ctor: CompatXUnion._ctor,
+  nullable: true,
+  flexible: true,
+);
+
+enum SampleXUnionTag {
+  $unknown,
+  u, // 0x389c56b2
+  su, // 0x792f4f1d
+  st, // 0x21de8d5
+}
+
+const Map<int, SampleXUnionTag> _SampleXUnionTag_map = {
+  949769906: SampleXUnionTag.u,
+  2033143581: SampleXUnionTag.su,
+  35514581: SampleXUnionTag.st,
+};
+
+class SampleXUnion extends $fidl.XUnion {
+  const SampleXUnion.withU(int value)
+      : _ordinal = 949769906,
+        _data = value;
+
+  const SampleXUnion.withSu(SimpleUnion value)
+      : _ordinal = 2033143581,
+        _data = value;
+
+  const SampleXUnion.withSt(SimpleTable value)
+      : _ordinal = 35514581,
+        _data = value;
+
+  SampleXUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  SampleXUnionTag get $tag {
+    final SampleXUnionTag $rawtag = _SampleXUnionTag_map[_ordinal];
+    return $rawtag == null ? SampleXUnionTag.$unknown : $rawtag;
+  }
+
+  int get u {
+    if (_ordinal != 949769906) {
+      return null;
+    }
+    return _data;
+  }
+
+  SimpleUnion get su {
+    if (_ordinal != 2033143581) {
+      return null;
+    }
+    return _data;
+  }
+
+  SimpleTable get st {
+    if (_ordinal != 35514581) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 949769906:
+        return 'SampleXUnion.u($u)';
+      case 2033143581:
+        return 'SampleXUnion.su($su)';
+      case 35514581:
+        return 'SampleXUnion.st($st)';
+      default:
+        return 'SampleXUnion.<UNKNOWN>';
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static SampleXUnion _ctor(int ordinal, Object data) {
+    return SampleXUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<SampleXUnion> kSampleXUnion_Type =
+    $fidl.XUnionType<SampleXUnion>(
+  members: <int, $fidl.FidlType>{
+    949769906: $fidl.Uint32Type(),
+    2033143581: kSimpleUnion_Type,
+    35514581: kSimpleTable_Type,
+  },
+  ctor: SampleXUnion._ctor,
+  nullable: false,
+  flexible: true,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<SampleXUnion> kSampleXUnion_OptType =
+    $fidl.XUnionType<SampleXUnion>(
+  members: <int, $fidl.FidlType>{
+    949769906: $fidl.Uint32Type(),
+    2033143581: kSimpleUnion_Type,
+    35514581: kSimpleTable_Type,
+  },
+  ctor: SampleXUnion._ctor,
+  nullable: true,
+  flexible: true,
+);
+
+enum SampleStrictXUnionTag {
+  u, // 0x8e2ea72
+  su, // 0x27f3a73b
+  st, // 0x372354ef
+}
+
+const Map<int, SampleStrictXUnionTag> _SampleStrictXUnionTag_map = {
+  149088882: SampleStrictXUnionTag.u,
+  670279483: SampleStrictXUnionTag.su,
+  925062383: SampleStrictXUnionTag.st,
+};
+
+class SampleStrictXUnion extends $fidl.XUnion {
+  const SampleStrictXUnion.withU(int value)
+      : _ordinal = 149088882,
+        _data = value;
+
+  const SampleStrictXUnion.withSu(SimpleUnion value)
+      : _ordinal = 670279483,
+        _data = value;
+
+  const SampleStrictXUnion.withSt(SimpleTable value)
+      : _ordinal = 925062383,
+        _data = value;
+
+  SampleStrictXUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  SampleStrictXUnionTag get $tag => _SampleStrictXUnionTag_map[_ordinal];
+
+  int get u {
+    if (_ordinal != 149088882) {
+      return null;
+    }
+    return _data;
+  }
+
+  SimpleUnion get su {
+    if (_ordinal != 670279483) {
+      return null;
+    }
+    return _data;
+  }
+
+  SimpleTable get st {
+    if (_ordinal != 925062383) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 149088882:
+        return 'SampleStrictXUnion.u($u)';
+      case 670279483:
+        return 'SampleStrictXUnion.su($su)';
+      case 925062383:
+        return 'SampleStrictXUnion.st($st)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static SampleStrictXUnion _ctor(int ordinal, Object data) {
+    return SampleStrictXUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<SampleStrictXUnion> kSampleStrictXUnion_Type =
+    $fidl.XUnionType<SampleStrictXUnion>(
+  members: <int, $fidl.FidlType>{
+    149088882: $fidl.Uint32Type(),
+    670279483: kSimpleUnion_Type,
+    925062383: kSimpleTable_Type,
+  },
+  ctor: SampleStrictXUnion._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<SampleStrictXUnion> kSampleStrictXUnion_OptType =
+    $fidl.XUnionType<SampleStrictXUnion>(
+  members: <int, $fidl.FidlType>{
+    149088882: $fidl.Uint32Type(),
+    670279483: kSimpleUnion_Type,
+    925062383: kSimpleTable_Type,
+  },
+  ctor: SampleStrictXUnion._ctor,
+  nullable: true,
+  flexible: false,
 );
 
 class TestXUnionInTable extends $fidl.Struct {
@@ -2615,482 +3617,6 @@ const $fidl.StructType<FileGetAttrResponse> kFileGetAttrResponse_Type =
         type: kNodeAttributes_Type, offsetOld: 8, offsetV1: 8),
   ],
   ctor: FileGetAttrResponse._ctor,
-);
-
-class StructOfSimpleTable extends $fidl.Struct {
-  const StructOfSimpleTable({
-    @required this.table,
-  });
-  StructOfSimpleTable.clone(
-    StructOfSimpleTable $orig, {
-    SimpleTable table,
-  }) : this(
-          table: table ?? $orig.table,
-        );
-
-  StructOfSimpleTable._(List<Object> argv) : table = argv[0];
-  final SimpleTable table;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      table,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'StructOfSimpleTable' r'(table: ' + table.toString() + r')';
-  }
-
-  static StructOfSimpleTable _ctor(List<Object> argv) =>
-      StructOfSimpleTable._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<StructOfSimpleTable> kStructOfSimpleTable_Type =
-    $fidl.StructType<StructOfSimpleTable>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<SimpleTable>(
-        type: kSimpleTable_Type, offsetOld: 0, offsetV1: 0),
-  ],
-  ctor: StructOfSimpleTable._ctor,
-);
-
-class SimpleTableThenUint64 extends $fidl.Struct {
-  const SimpleTableThenUint64({
-    @required this.table,
-    @required this.number,
-  });
-  SimpleTableThenUint64.clone(
-    SimpleTableThenUint64 $orig, {
-    SimpleTable table,
-    int number,
-  }) : this(
-          table: table ?? $orig.table,
-          number: number ?? $orig.number,
-        );
-
-  SimpleTableThenUint64._(List<Object> argv)
-      : table = argv[0],
-        number = argv[1];
-  final SimpleTable table;
-  final int number;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      table,
-      number,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'SimpleTableThenUint64' r'(table: ' +
-        table.toString() +
-        r', number: ' +
-        number.toString() +
-        r')';
-  }
-
-  static SimpleTableThenUint64 _ctor(List<Object> argv) =>
-      SimpleTableThenUint64._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<SimpleTableThenUint64> kSimpleTableThenUint64_Type =
-    $fidl.StructType<SimpleTableThenUint64>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<SimpleTable>(
-        type: kSimpleTable_Type, offsetOld: 0, offsetV1: 0),
-    $fidl.MemberType<int>(
-        type: $fidl.Uint64Type(), offsetOld: 16, offsetV1: 16),
-  ],
-  ctor: SimpleTableThenUint64._ctor,
-);
-
-class StructOfTableWithStringAndVector extends $fidl.Struct {
-  const StructOfTableWithStringAndVector({
-    @required this.table,
-  });
-  StructOfTableWithStringAndVector.clone(
-    StructOfTableWithStringAndVector $orig, {
-    TableWithStringAndVector table,
-  }) : this(
-          table: table ?? $orig.table,
-        );
-
-  StructOfTableWithStringAndVector._(List<Object> argv) : table = argv[0];
-  final TableWithStringAndVector table;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      table,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'StructOfTableWithStringAndVector' r'(table: ' +
-        table.toString() +
-        r')';
-  }
-
-  static StructOfTableWithStringAndVector _ctor(List<Object> argv) =>
-      StructOfTableWithStringAndVector._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<StructOfTableWithStringAndVector>
-    kStructOfTableWithStringAndVector_Type =
-    $fidl.StructType<StructOfTableWithStringAndVector>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<TableWithStringAndVector>(
-        type: kTableWithStringAndVector_Type, offsetOld: 0, offsetV1: 0),
-  ],
-  ctor: StructOfTableWithStringAndVector._ctor,
-);
-
-class StructOfReverseOrdinalTable extends $fidl.Struct {
-  const StructOfReverseOrdinalTable({
-    @required this.table,
-  });
-  StructOfReverseOrdinalTable.clone(
-    StructOfReverseOrdinalTable $orig, {
-    ReverseOrdinalTable table,
-  }) : this(
-          table: table ?? $orig.table,
-        );
-
-  StructOfReverseOrdinalTable._(List<Object> argv) : table = argv[0];
-  final ReverseOrdinalTable table;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      table,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'StructOfReverseOrdinalTable' r'(table: ' + table.toString() + r')';
-  }
-
-  static StructOfReverseOrdinalTable _ctor(List<Object> argv) =>
-      StructOfReverseOrdinalTable._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<StructOfReverseOrdinalTable>
-    kStructOfReverseOrdinalTable_Type =
-    $fidl.StructType<StructOfReverseOrdinalTable>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<ReverseOrdinalTable>(
-        type: kReverseOrdinalTable_Type, offsetOld: 0, offsetV1: 0),
-  ],
-  ctor: StructOfReverseOrdinalTable._ctor,
-);
-
-class Int64Struct extends $fidl.Struct {
-  const Int64Struct({
-    @required this.x,
-  });
-  Int64Struct.clone(
-    Int64Struct $orig, {
-    int x,
-  }) : this(
-          x: x ?? $orig.x,
-        );
-
-  Int64Struct._(List<Object> argv) : x = argv[0];
-  final int x;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      x,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'Int64Struct' r'(x: ' + x.toString() + r')';
-  }
-
-  static Int64Struct _ctor(List<Object> argv) => Int64Struct._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<Int64Struct> kInt64Struct_Type =
-    $fidl.StructType<Int64Struct>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 8,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 0, offsetV1: 0),
-  ],
-  ctor: Int64Struct._ctor,
-);
-
-class TestInlineXUnionInStruct extends $fidl.Struct {
-  const TestInlineXUnionInStruct({
-    @required this.before,
-    @required this.xu,
-    @required this.after,
-  });
-  TestInlineXUnionInStruct.clone(
-    TestInlineXUnionInStruct $orig, {
-    String before,
-    SampleXUnion xu,
-    String after,
-  }) : this(
-          before: before ?? $orig.before,
-          xu: xu ?? $orig.xu,
-          after: after ?? $orig.after,
-        );
-
-  TestInlineXUnionInStruct._(List<Object> argv)
-      : before = argv[0],
-        xu = argv[1],
-        after = argv[2];
-  final String before;
-  final SampleXUnion xu;
-  final String after;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      before,
-      xu,
-      after,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'TestInlineXUnionInStruct' r'(before: ' +
-        before.toString() +
-        r', xu: ' +
-        xu.toString() +
-        r', after: ' +
-        after.toString() +
-        r')';
-  }
-
-  static TestInlineXUnionInStruct _ctor(List<Object> argv) =>
-      TestInlineXUnionInStruct._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<TestInlineXUnionInStruct>
-    kTestInlineXUnionInStruct_Type = $fidl.StructType<TestInlineXUnionInStruct>(
-  inlineSizeOld: 56,
-  inlineSizeV1: 56,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<String>(
-        type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 0,
-        offsetV1: 0),
-    $fidl.MemberType<SampleXUnion>(
-        type: kSampleXUnion_Type, offsetOld: 16, offsetV1: 16),
-    $fidl.MemberType<String>(
-        type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 40,
-        offsetV1: 40),
-  ],
-  ctor: TestInlineXUnionInStruct._ctor,
-);
-
-class TestOptionalXUnionInStruct extends $fidl.Struct {
-  const TestOptionalXUnionInStruct({
-    @required this.before,
-    this.xu,
-    @required this.after,
-  });
-  TestOptionalXUnionInStruct.clone(
-    TestOptionalXUnionInStruct $orig, {
-    String before,
-    SampleXUnion xu,
-    String after,
-  }) : this(
-          before: before ?? $orig.before,
-          xu: xu ?? $orig.xu,
-          after: after ?? $orig.after,
-        );
-
-  TestOptionalXUnionInStruct.cloneWithout(
-    TestOptionalXUnionInStruct $orig, {
-    bool xu,
-  }) : this(
-          before: $orig.before,
-          xu: xu ? null : $orig.xu,
-          after: $orig.after,
-        );
-
-  TestOptionalXUnionInStruct._(List<Object> argv)
-      : before = argv[0],
-        xu = argv[1],
-        after = argv[2];
-  final String before;
-  final SampleXUnion xu;
-  final String after;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      before,
-      xu,
-      after,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'TestOptionalXUnionInStruct' r'(before: ' +
-        before.toString() +
-        r', xu: ' +
-        xu.toString() +
-        r', after: ' +
-        after.toString() +
-        r')';
-  }
-
-  static TestOptionalXUnionInStruct _ctor(List<Object> argv) =>
-      TestOptionalXUnionInStruct._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<TestOptionalXUnionInStruct>
-    kTestOptionalXUnionInStruct_Type =
-    $fidl.StructType<TestOptionalXUnionInStruct>(
-  inlineSizeOld: 56,
-  inlineSizeV1: 56,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<String>(
-        type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 0,
-        offsetV1: 0),
-    $fidl.MemberType<SampleXUnion>(
-        type: kSampleXUnion_OptType, offsetOld: 16, offsetV1: 16),
-    $fidl.MemberType<String>(
-        type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 40,
-        offsetV1: 40),
-  ],
-  ctor: TestOptionalXUnionInStruct._ctor,
-);
-
-class TestStrictXUnionInStruct extends $fidl.Struct {
-  const TestStrictXUnionInStruct({
-    @required this.xu,
-  });
-  TestStrictXUnionInStruct.clone(
-    TestStrictXUnionInStruct $orig, {
-    SampleStrictXUnion xu,
-  }) : this(
-          xu: xu ?? $orig.xu,
-        );
-
-  TestStrictXUnionInStruct._(List<Object> argv) : xu = argv[0];
-  final SampleStrictXUnion xu;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      xu,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'TestStrictXUnionInStruct' r'(xu: ' + xu.toString() + r')';
-  }
-
-  static TestStrictXUnionInStruct _ctor(List<Object> argv) =>
-      TestStrictXUnionInStruct._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<TestStrictXUnionInStruct>
-    kTestStrictXUnionInStruct_Type = $fidl.StructType<TestStrictXUnionInStruct>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<SampleStrictXUnion>(
-        type: kSampleStrictXUnion_Type, offsetOld: 0, offsetV1: 0),
-  ],
-  ctor: TestStrictXUnionInStruct._ctor,
-);
-
-class TestFlexibleXUnionInStruct extends $fidl.Struct {
-  const TestFlexibleXUnionInStruct({
-    @required this.xu,
-  });
-  TestFlexibleXUnionInStruct.clone(
-    TestFlexibleXUnionInStruct $orig, {
-    SampleXUnion xu,
-  }) : this(
-          xu: xu ?? $orig.xu,
-        );
-
-  TestFlexibleXUnionInStruct._(List<Object> argv) : xu = argv[0];
-  final SampleXUnion xu;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      xu,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'TestFlexibleXUnionInStruct' r'(xu: ' + xu.toString() + r')';
-  }
-
-  static TestFlexibleXUnionInStruct _ctor(List<Object> argv) =>
-      TestFlexibleXUnionInStruct._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<TestFlexibleXUnionInStruct>
-    kTestFlexibleXUnionInStruct_Type =
-    $fidl.StructType<TestFlexibleXUnionInStruct>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<SampleXUnion>(
-        type: kSampleXUnion_Type, offsetOld: 0, offsetV1: 0),
-  ],
-  ctor: TestFlexibleXUnionInStruct._ctor,
 );
 
 class UnionWithBoundStringStruct extends $fidl.Struct {
@@ -3888,128 +4414,628 @@ const $fidl.StructType<StringWrapper> kStringWrapper_Type =
   ctor: StringWrapper._ctor,
 );
 
-class StructWithOptionals extends $fidl.Struct {
-  const StructWithOptionals({
-    @required this.s,
-    this.s2,
-    @required this.t,
-    @required this.xu,
-    this.xu2,
-    @required this.u,
-    this.u2,
+class StructOfSimpleTable extends $fidl.Struct {
+  const StructOfSimpleTable({
+    @required this.table,
   });
-  StructWithOptionals.clone(
-    StructWithOptionals $orig, {
-    EmptyStruct s,
-    EmptyStruct s2,
-    TableWithEmptyStruct t,
-    XUnionWithEmptyStruct xu,
-    XUnionWithEmptyStruct xu2,
-    UnionWithEmptyStruct u,
-    UnionWithEmptyStruct u2,
+  StructOfSimpleTable.clone(
+    StructOfSimpleTable $orig, {
+    SimpleTable table,
   }) : this(
-          s: s ?? $orig.s,
-          s2: s2 ?? $orig.s2,
-          t: t ?? $orig.t,
-          xu: xu ?? $orig.xu,
-          xu2: xu2 ?? $orig.xu2,
-          u: u ?? $orig.u,
-          u2: u2 ?? $orig.u2,
+          table: table ?? $orig.table,
         );
 
-  StructWithOptionals.cloneWithout(
-    StructWithOptionals $orig, {
-    bool s2,
-    bool xu2,
-    bool u2,
-  }) : this(
-          s: $orig.s,
-          s2: s2 ? null : $orig.s2,
-          t: $orig.t,
-          xu: $orig.xu,
-          xu2: xu2 ? null : $orig.xu2,
-          u: $orig.u,
-          u2: u2 ? null : $orig.u2,
-        );
-
-  StructWithOptionals._(List<Object> argv)
-      : s = argv[0],
-        s2 = argv[1],
-        t = argv[2],
-        xu = argv[3],
-        xu2 = argv[4],
-        u = argv[5],
-        u2 = argv[6];
-  final EmptyStruct s;
-  final EmptyStruct s2;
-  final TableWithEmptyStruct t;
-  final XUnionWithEmptyStruct xu;
-  final XUnionWithEmptyStruct xu2;
-  final UnionWithEmptyStruct u;
-  final UnionWithEmptyStruct u2;
+  StructOfSimpleTable._(List<Object> argv) : table = argv[0];
+  final SimpleTable table;
 
   @override
   List<Object> get $fields {
     return <Object>[
-      s,
-      s2,
-      t,
-      xu,
-      xu2,
-      u,
-      u2,
+      table,
     ];
   }
 
   @override
   String toString() {
     // ignore: prefer_interpolation_to_compose_strings
-    return r'StructWithOptionals' r'(s: ' +
-        s.toString() +
-        r', s2: ' +
-        s2.toString() +
-        r', t: ' +
-        t.toString() +
-        r', xu: ' +
-        xu.toString() +
-        r', xu2: ' +
-        xu2.toString() +
-        r', u: ' +
-        u.toString() +
-        r', u2: ' +
-        u2.toString() +
-        r')';
+    return r'StructOfSimpleTable' r'(table: ' + table.toString() + r')';
   }
 
-  static StructWithOptionals _ctor(List<Object> argv) =>
-      StructWithOptionals._(argv);
+  static StructOfSimpleTable _ctor(List<Object> argv) =>
+      StructOfSimpleTable._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.StructType<StructWithOptionals> kStructWithOptionals_Type =
-    $fidl.StructType<StructWithOptionals>(
-  inlineSizeOld: 104,
-  inlineSizeV1: 128,
+const $fidl.StructType<StructOfSimpleTable> kStructOfSimpleTable_Type =
+    $fidl.StructType<StructOfSimpleTable>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<EmptyStruct>(
-        type: kEmptyStruct_Type, offsetOld: 0, offsetV1: 0),
-    $fidl.MemberType<EmptyStruct>(
-        type: $fidl.PointerType<EmptyStruct>(element: kEmptyStruct_Type),
-        offsetOld: 8,
-        offsetV1: 8),
-    $fidl.MemberType<TableWithEmptyStruct>(
-        type: kTableWithEmptyStruct_Type, offsetOld: 16, offsetV1: 16),
-    $fidl.MemberType<XUnionWithEmptyStruct>(
-        type: kXUnionWithEmptyStruct_Type, offsetOld: 32, offsetV1: 32),
-    $fidl.MemberType<XUnionWithEmptyStruct>(
-        type: kXUnionWithEmptyStruct_OptType, offsetOld: 56, offsetV1: 56),
-    $fidl.MemberType<UnionWithEmptyStruct>(
-        type: kUnionWithEmptyStruct_Type, offsetOld: 80, offsetV1: 80),
-    $fidl.MemberType<UnionWithEmptyStruct>(
-        type: kUnionWithEmptyStruct_OptType, offsetOld: 96, offsetV1: 104),
+    $fidl.MemberType<SimpleTable>(
+        type: kSimpleTable_Type, offsetOld: 0, offsetV1: 0),
   ],
-  ctor: StructWithOptionals._ctor,
+  ctor: StructOfSimpleTable._ctor,
+);
+
+class SimpleTableThenUint64 extends $fidl.Struct {
+  const SimpleTableThenUint64({
+    @required this.table,
+    @required this.number,
+  });
+  SimpleTableThenUint64.clone(
+    SimpleTableThenUint64 $orig, {
+    SimpleTable table,
+    int number,
+  }) : this(
+          table: table ?? $orig.table,
+          number: number ?? $orig.number,
+        );
+
+  SimpleTableThenUint64._(List<Object> argv)
+      : table = argv[0],
+        number = argv[1];
+  final SimpleTable table;
+  final int number;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      table,
+      number,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'SimpleTableThenUint64' r'(table: ' +
+        table.toString() +
+        r', number: ' +
+        number.toString() +
+        r')';
+  }
+
+  static SimpleTableThenUint64 _ctor(List<Object> argv) =>
+      SimpleTableThenUint64._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<SimpleTableThenUint64> kSimpleTableThenUint64_Type =
+    $fidl.StructType<SimpleTableThenUint64>(
+  inlineSizeOld: 24,
+  inlineSizeV1: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<SimpleTable>(
+        type: kSimpleTable_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: SimpleTableThenUint64._ctor,
+);
+
+class StructOfTableWithStringAndVector extends $fidl.Struct {
+  const StructOfTableWithStringAndVector({
+    @required this.table,
+  });
+  StructOfTableWithStringAndVector.clone(
+    StructOfTableWithStringAndVector $orig, {
+    TableWithStringAndVector table,
+  }) : this(
+          table: table ?? $orig.table,
+        );
+
+  StructOfTableWithStringAndVector._(List<Object> argv) : table = argv[0];
+  final TableWithStringAndVector table;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      table,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructOfTableWithStringAndVector' r'(table: ' +
+        table.toString() +
+        r')';
+  }
+
+  static StructOfTableWithStringAndVector _ctor(List<Object> argv) =>
+      StructOfTableWithStringAndVector._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructOfTableWithStringAndVector>
+    kStructOfTableWithStringAndVector_Type =
+    $fidl.StructType<StructOfTableWithStringAndVector>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TableWithStringAndVector>(
+        type: kTableWithStringAndVector_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: StructOfTableWithStringAndVector._ctor,
+);
+
+class StructOfReverseOrdinalTable extends $fidl.Struct {
+  const StructOfReverseOrdinalTable({
+    @required this.table,
+  });
+  StructOfReverseOrdinalTable.clone(
+    StructOfReverseOrdinalTable $orig, {
+    ReverseOrdinalTable table,
+  }) : this(
+          table: table ?? $orig.table,
+        );
+
+  StructOfReverseOrdinalTable._(List<Object> argv) : table = argv[0];
+  final ReverseOrdinalTable table;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      table,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructOfReverseOrdinalTable' r'(table: ' + table.toString() + r')';
+  }
+
+  static StructOfReverseOrdinalTable _ctor(List<Object> argv) =>
+      StructOfReverseOrdinalTable._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructOfReverseOrdinalTable>
+    kStructOfReverseOrdinalTable_Type =
+    $fidl.StructType<StructOfReverseOrdinalTable>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<ReverseOrdinalTable>(
+        type: kReverseOrdinalTable_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: StructOfReverseOrdinalTable._ctor,
+);
+
+class ThreeByte extends $fidl.Struct {
+  const ThreeByte({
+    @required this.elem1,
+    @required this.elem2,
+    @required this.elem3,
+  });
+  ThreeByte.clone(
+    ThreeByte $orig, {
+    int elem1,
+    int elem2,
+    int elem3,
+  }) : this(
+          elem1: elem1 ?? $orig.elem1,
+          elem2: elem2 ?? $orig.elem2,
+          elem3: elem3 ?? $orig.elem3,
+        );
+
+  ThreeByte._(List<Object> argv)
+      : elem1 = argv[0],
+        elem2 = argv[1],
+        elem3 = argv[2];
+  final int elem1;
+  final int elem2;
+  final int elem3;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      elem1,
+      elem2,
+      elem3,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'ThreeByte' r'(elem1: ' +
+        elem1.toString() +
+        r', elem2: ' +
+        elem2.toString() +
+        r', elem3: ' +
+        elem3.toString() +
+        r')';
+  }
+
+  static ThreeByte _ctor(List<Object> argv) => ThreeByte._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<ThreeByte> kThreeByte_Type = $fidl.StructType<ThreeByte>(
+  inlineSizeOld: 3,
+  inlineSizeV1: 3,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 1, offsetV1: 1),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 2, offsetV1: 2),
+  ],
+  ctor: ThreeByte._ctor,
+);
+
+class FiveByte extends $fidl.Struct {
+  const FiveByte({
+    @required this.elem1,
+    @required this.elem2,
+  });
+  FiveByte.clone(
+    FiveByte $orig, {
+    int elem1,
+    int elem2,
+  }) : this(
+          elem1: elem1 ?? $orig.elem1,
+          elem2: elem2 ?? $orig.elem2,
+        );
+
+  FiveByte._(List<Object> argv)
+      : elem1 = argv[0],
+        elem2 = argv[1];
+  final int elem1;
+  final int elem2;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      elem1,
+      elem2,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'FiveByte' r'(elem1: ' +
+        elem1.toString() +
+        r', elem2: ' +
+        elem2.toString() +
+        r')';
+  }
+
+  static FiveByte _ctor(List<Object> argv) => FiveByte._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<FiveByte> kFiveByte_Type = $fidl.StructType<FiveByte>(
+  inlineSizeOld: 8,
+  inlineSizeV1: 8,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 4, offsetV1: 4),
+  ],
+  ctor: FiveByte._ctor,
+);
+
+class ThreeByteInStruct extends $fidl.Struct {
+  const ThreeByteInStruct({
+    @required this.elem1,
+    @required this.elem2,
+    @required this.elem3,
+  });
+  ThreeByteInStruct.clone(
+    ThreeByteInStruct $orig, {
+    ThreeByte elem1,
+    ThreeByte elem2,
+    ThreeByte elem3,
+  }) : this(
+          elem1: elem1 ?? $orig.elem1,
+          elem2: elem2 ?? $orig.elem2,
+          elem3: elem3 ?? $orig.elem3,
+        );
+
+  ThreeByteInStruct._(List<Object> argv)
+      : elem1 = argv[0],
+        elem2 = argv[1],
+        elem3 = argv[2];
+  final ThreeByte elem1;
+  final ThreeByte elem2;
+  final ThreeByte elem3;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      elem1,
+      elem2,
+      elem3,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'ThreeByteInStruct' r'(elem1: ' +
+        elem1.toString() +
+        r', elem2: ' +
+        elem2.toString() +
+        r', elem3: ' +
+        elem3.toString() +
+        r')';
+  }
+
+  static ThreeByteInStruct _ctor(List<Object> argv) =>
+      ThreeByteInStruct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<ThreeByteInStruct> kThreeByteInStruct_Type =
+    $fidl.StructType<ThreeByteInStruct>(
+  inlineSizeOld: 9,
+  inlineSizeV1: 9,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<ThreeByte>(
+        type: kThreeByte_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<ThreeByte>(
+        type: kThreeByte_Type, offsetOld: 3, offsetV1: 3),
+    $fidl.MemberType<ThreeByte>(
+        type: kThreeByte_Type, offsetOld: 6, offsetV1: 6),
+  ],
+  ctor: ThreeByteInStruct._ctor,
+);
+
+class FiveByteInStruct extends $fidl.Struct {
+  const FiveByteInStruct({
+    @required this.elem1,
+    @required this.elem2,
+    @required this.elem3,
+  });
+  FiveByteInStruct.clone(
+    FiveByteInStruct $orig, {
+    FiveByte elem1,
+    FiveByte elem2,
+    FiveByte elem3,
+  }) : this(
+          elem1: elem1 ?? $orig.elem1,
+          elem2: elem2 ?? $orig.elem2,
+          elem3: elem3 ?? $orig.elem3,
+        );
+
+  FiveByteInStruct._(List<Object> argv)
+      : elem1 = argv[0],
+        elem2 = argv[1],
+        elem3 = argv[2];
+  final FiveByte elem1;
+  final FiveByte elem2;
+  final FiveByte elem3;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      elem1,
+      elem2,
+      elem3,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'FiveByteInStruct' r'(elem1: ' +
+        elem1.toString() +
+        r', elem2: ' +
+        elem2.toString() +
+        r', elem3: ' +
+        elem3.toString() +
+        r')';
+  }
+
+  static FiveByteInStruct _ctor(List<Object> argv) => FiveByteInStruct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<FiveByteInStruct> kFiveByteInStruct_Type =
+    $fidl.StructType<FiveByteInStruct>(
+  inlineSizeOld: 24,
+  inlineSizeV1: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<FiveByte>(type: kFiveByte_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<FiveByte>(type: kFiveByte_Type, offsetOld: 8, offsetV1: 8),
+    $fidl.MemberType<FiveByte>(
+        type: kFiveByte_Type, offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: FiveByteInStruct._ctor,
+);
+
+class ThreeByteInVector extends $fidl.Struct {
+  const ThreeByteInVector({
+    @required this.elems,
+  });
+  ThreeByteInVector.clone(
+    ThreeByteInVector $orig, {
+    List<ThreeByte> elems,
+  }) : this(
+          elems: elems ?? $orig.elems,
+        );
+
+  ThreeByteInVector._(List<Object> argv) : elems = argv[0];
+  final List<ThreeByte> elems;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      elems,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'ThreeByteInVector' r'(elems: ' + elems.toString() + r')';
+  }
+
+  static ThreeByteInVector _ctor(List<Object> argv) =>
+      ThreeByteInVector._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<ThreeByteInVector> kThreeByteInVector_Type =
+    $fidl.StructType<ThreeByteInVector>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<List<ThreeByte>>(
+        type: $fidl.VectorType<List<ThreeByte>>(
+            element: kThreeByte_Type, maybeElementCount: null, nullable: false),
+        offsetOld: 0,
+        offsetV1: 0),
+  ],
+  ctor: ThreeByteInVector._ctor,
+);
+
+class FiveByteInVector extends $fidl.Struct {
+  const FiveByteInVector({
+    @required this.elems,
+  });
+  FiveByteInVector.clone(
+    FiveByteInVector $orig, {
+    List<FiveByte> elems,
+  }) : this(
+          elems: elems ?? $orig.elems,
+        );
+
+  FiveByteInVector._(List<Object> argv) : elems = argv[0];
+  final List<FiveByte> elems;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      elems,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'FiveByteInVector' r'(elems: ' + elems.toString() + r')';
+  }
+
+  static FiveByteInVector _ctor(List<Object> argv) => FiveByteInVector._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<FiveByteInVector> kFiveByteInVector_Type =
+    $fidl.StructType<FiveByteInVector>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<List<FiveByte>>(
+        type: $fidl.VectorType<List<FiveByte>>(
+            element: kFiveByte_Type, maybeElementCount: null, nullable: false),
+        offsetOld: 0,
+        offsetV1: 0),
+  ],
+  ctor: FiveByteInVector._ctor,
+);
+
+class ThreeByteInArray extends $fidl.Struct {
+  const ThreeByteInArray({
+    @required this.elems,
+  });
+  ThreeByteInArray.clone(
+    ThreeByteInArray $orig, {
+    List<ThreeByte> elems,
+  }) : this(
+          elems: elems ?? $orig.elems,
+        );
+
+  ThreeByteInArray._(List<Object> argv) : elems = argv[0];
+  final List<ThreeByte> elems;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      elems,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'ThreeByteInArray' r'(elems: ' + elems.toString() + r')';
+  }
+
+  static ThreeByteInArray _ctor(List<Object> argv) => ThreeByteInArray._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<ThreeByteInArray> kThreeByteInArray_Type =
+    $fidl.StructType<ThreeByteInArray>(
+  inlineSizeOld: 9,
+  inlineSizeV1: 9,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<List<ThreeByte>>(
+        type: $fidl.ArrayType<List<ThreeByte>>(
+            element: kThreeByte_Type, elementCount: 3),
+        offsetOld: 0,
+        offsetV1: 0),
+  ],
+  ctor: ThreeByteInArray._ctor,
+);
+
+class FiveByteInArray extends $fidl.Struct {
+  const FiveByteInArray({
+    @required this.elems,
+  });
+  FiveByteInArray.clone(
+    FiveByteInArray $orig, {
+    List<FiveByte> elems,
+  }) : this(
+          elems: elems ?? $orig.elems,
+        );
+
+  FiveByteInArray._(List<Object> argv) : elems = argv[0];
+  final List<FiveByte> elems;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      elems,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'FiveByteInArray' r'(elems: ' + elems.toString() + r')';
+  }
+
+  static FiveByteInArray _ctor(List<Object> argv) => FiveByteInArray._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<FiveByteInArray> kFiveByteInArray_Type =
+    $fidl.StructType<FiveByteInArray>(
+  inlineSizeOld: 24,
+  inlineSizeV1: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<List<FiveByte>>(
+        type: $fidl.ArrayType<List<FiveByte>>(
+            element: kFiveByte_Type, elementCount: 3),
+        offsetOld: 0,
+        offsetV1: 0),
+  ],
+  ctor: FiveByteInArray._ctor,
 );
 
 class MyBool extends $fidl.Struct {
@@ -4506,435 +5532,205 @@ const $fidl.StructType<MyFloat64> kMyFloat64_Type = $fidl.StructType<MyFloat64>(
   ctor: MyFloat64._ctor,
 );
 
-class ThreeByte extends $fidl.Struct {
-  const ThreeByte({
-    @required this.elem1,
-    @required this.elem2,
-    @required this.elem3,
+class StructWithOptionals extends $fidl.Struct {
+  const StructWithOptionals({
+    @required this.s,
+    this.s2,
+    @required this.t,
+    @required this.xu,
+    this.xu2,
+    @required this.u,
+    this.u2,
   });
-  ThreeByte.clone(
-    ThreeByte $orig, {
-    int elem1,
-    int elem2,
-    int elem3,
+  StructWithOptionals.clone(
+    StructWithOptionals $orig, {
+    EmptyStruct s,
+    EmptyStruct s2,
+    TableWithEmptyStruct t,
+    XUnionWithEmptyStruct xu,
+    XUnionWithEmptyStruct xu2,
+    UnionWithEmptyStruct u,
+    UnionWithEmptyStruct u2,
   }) : this(
-          elem1: elem1 ?? $orig.elem1,
-          elem2: elem2 ?? $orig.elem2,
-          elem3: elem3 ?? $orig.elem3,
+          s: s ?? $orig.s,
+          s2: s2 ?? $orig.s2,
+          t: t ?? $orig.t,
+          xu: xu ?? $orig.xu,
+          xu2: xu2 ?? $orig.xu2,
+          u: u ?? $orig.u,
+          u2: u2 ?? $orig.u2,
         );
 
-  ThreeByte._(List<Object> argv)
-      : elem1 = argv[0],
-        elem2 = argv[1],
-        elem3 = argv[2];
-  final int elem1;
-  final int elem2;
-  final int elem3;
+  StructWithOptionals.cloneWithout(
+    StructWithOptionals $orig, {
+    bool s2,
+    bool xu2,
+    bool u2,
+  }) : this(
+          s: $orig.s,
+          s2: s2 ? null : $orig.s2,
+          t: $orig.t,
+          xu: $orig.xu,
+          xu2: xu2 ? null : $orig.xu2,
+          u: $orig.u,
+          u2: u2 ? null : $orig.u2,
+        );
+
+  StructWithOptionals._(List<Object> argv)
+      : s = argv[0],
+        s2 = argv[1],
+        t = argv[2],
+        xu = argv[3],
+        xu2 = argv[4],
+        u = argv[5],
+        u2 = argv[6];
+  final EmptyStruct s;
+  final EmptyStruct s2;
+  final TableWithEmptyStruct t;
+  final XUnionWithEmptyStruct xu;
+  final XUnionWithEmptyStruct xu2;
+  final UnionWithEmptyStruct u;
+  final UnionWithEmptyStruct u2;
 
   @override
   List<Object> get $fields {
     return <Object>[
-      elem1,
-      elem2,
-      elem3,
+      s,
+      s2,
+      t,
+      xu,
+      xu2,
+      u,
+      u2,
     ];
   }
 
   @override
   String toString() {
     // ignore: prefer_interpolation_to_compose_strings
-    return r'ThreeByte' r'(elem1: ' +
-        elem1.toString() +
-        r', elem2: ' +
-        elem2.toString() +
-        r', elem3: ' +
-        elem3.toString() +
+    return r'StructWithOptionals' r'(s: ' +
+        s.toString() +
+        r', s2: ' +
+        s2.toString() +
+        r', t: ' +
+        t.toString() +
+        r', xu: ' +
+        xu.toString() +
+        r', xu2: ' +
+        xu2.toString() +
+        r', u: ' +
+        u.toString() +
+        r', u2: ' +
+        u2.toString() +
         r')';
   }
 
-  static ThreeByte _ctor(List<Object> argv) => ThreeByte._(argv);
+  static StructWithOptionals _ctor(List<Object> argv) =>
+      StructWithOptionals._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.StructType<ThreeByte> kThreeByte_Type = $fidl.StructType<ThreeByte>(
-  inlineSizeOld: 3,
-  inlineSizeV1: 3,
+const $fidl.StructType<StructWithOptionals> kStructWithOptionals_Type =
+    $fidl.StructType<StructWithOptionals>(
+  inlineSizeOld: 104,
+  inlineSizeV1: 128,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 0, offsetV1: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 1, offsetV1: 1),
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 2, offsetV1: 2),
+    $fidl.MemberType<EmptyStruct>(
+        type: kEmptyStruct_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<EmptyStruct>(
+        type: $fidl.PointerType<EmptyStruct>(element: kEmptyStruct_Type),
+        offsetOld: 8,
+        offsetV1: 8),
+    $fidl.MemberType<TableWithEmptyStruct>(
+        type: kTableWithEmptyStruct_Type, offsetOld: 16, offsetV1: 16),
+    $fidl.MemberType<XUnionWithEmptyStruct>(
+        type: kXUnionWithEmptyStruct_Type, offsetOld: 32, offsetV1: 32),
+    $fidl.MemberType<XUnionWithEmptyStruct>(
+        type: kXUnionWithEmptyStruct_OptType, offsetOld: 56, offsetV1: 56),
+    $fidl.MemberType<UnionWithEmptyStruct>(
+        type: kUnionWithEmptyStruct_Type, offsetOld: 80, offsetV1: 80),
+    $fidl.MemberType<UnionWithEmptyStruct>(
+        type: kUnionWithEmptyStruct_OptType, offsetOld: 96, offsetV1: 104),
   ],
-  ctor: ThreeByte._ctor,
+  ctor: StructWithOptionals._ctor,
 );
 
-class FiveByte extends $fidl.Struct {
-  const FiveByte({
-    @required this.elem1,
-    @required this.elem2,
+class TransactionHeader extends $fidl.Struct {
+  const TransactionHeader({
+    @required this.txId,
+    @required this.flags,
+    @required this.magicNumber,
+    @required this.ordinal,
   });
-  FiveByte.clone(
-    FiveByte $orig, {
-    int elem1,
-    int elem2,
+  TransactionHeader.clone(
+    TransactionHeader $orig, {
+    int txId,
+    Uint8List flags,
+    int magicNumber,
+    int ordinal,
   }) : this(
-          elem1: elem1 ?? $orig.elem1,
-          elem2: elem2 ?? $orig.elem2,
+          txId: txId ?? $orig.txId,
+          flags: flags ?? $orig.flags,
+          magicNumber: magicNumber ?? $orig.magicNumber,
+          ordinal: ordinal ?? $orig.ordinal,
         );
 
-  FiveByte._(List<Object> argv)
-      : elem1 = argv[0],
-        elem2 = argv[1];
-  final int elem1;
-  final int elem2;
+  TransactionHeader._(List<Object> argv)
+      : txId = argv[0],
+        flags = argv[1],
+        magicNumber = argv[2],
+        ordinal = argv[3];
+  final int txId;
+  final Uint8List flags;
+  final int magicNumber;
+  final int ordinal;
 
   @override
   List<Object> get $fields {
     return <Object>[
-      elem1,
-      elem2,
+      txId,
+      flags,
+      magicNumber,
+      ordinal,
     ];
   }
 
   @override
   String toString() {
     // ignore: prefer_interpolation_to_compose_strings
-    return r'FiveByte' r'(elem1: ' +
-        elem1.toString() +
-        r', elem2: ' +
-        elem2.toString() +
+    return r'TransactionHeader' r'(txId: ' +
+        txId.toString() +
+        r', flags: ' +
+        flags.toString() +
+        r', magicNumber: ' +
+        magicNumber.toString() +
+        r', ordinal: ' +
+        ordinal.toString() +
         r')';
   }
 
-  static FiveByte _ctor(List<Object> argv) => FiveByte._(argv);
+  static TransactionHeader _ctor(List<Object> argv) =>
+      TransactionHeader._(argv);
 }
 
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
-const $fidl.StructType<FiveByte> kFiveByte_Type = $fidl.StructType<FiveByte>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 8,
+const $fidl.StructType<TransactionHeader> kTransactionHeader_Type =
+    $fidl.StructType<TransactionHeader>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
   members: <$fidl.MemberType>[
     $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 4, offsetV1: 4),
+    $fidl.MemberType<Uint8List>(
+        type: $fidl.ArrayType<Uint8List>(
+            element: $fidl.Uint8Type(), elementCount: 3),
+        offsetOld: 4,
+        offsetV1: 4),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 7, offsetV1: 7),
+    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offsetOld: 8, offsetV1: 8),
   ],
-  ctor: FiveByte._ctor,
-);
-
-class ThreeByteInStruct extends $fidl.Struct {
-  const ThreeByteInStruct({
-    @required this.elem1,
-    @required this.elem2,
-    @required this.elem3,
-  });
-  ThreeByteInStruct.clone(
-    ThreeByteInStruct $orig, {
-    ThreeByte elem1,
-    ThreeByte elem2,
-    ThreeByte elem3,
-  }) : this(
-          elem1: elem1 ?? $orig.elem1,
-          elem2: elem2 ?? $orig.elem2,
-          elem3: elem3 ?? $orig.elem3,
-        );
-
-  ThreeByteInStruct._(List<Object> argv)
-      : elem1 = argv[0],
-        elem2 = argv[1],
-        elem3 = argv[2];
-  final ThreeByte elem1;
-  final ThreeByte elem2;
-  final ThreeByte elem3;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      elem1,
-      elem2,
-      elem3,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'ThreeByteInStruct' r'(elem1: ' +
-        elem1.toString() +
-        r', elem2: ' +
-        elem2.toString() +
-        r', elem3: ' +
-        elem3.toString() +
-        r')';
-  }
-
-  static ThreeByteInStruct _ctor(List<Object> argv) =>
-      ThreeByteInStruct._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<ThreeByteInStruct> kThreeByteInStruct_Type =
-    $fidl.StructType<ThreeByteInStruct>(
-  inlineSizeOld: 9,
-  inlineSizeV1: 9,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<ThreeByte>(
-        type: kThreeByte_Type, offsetOld: 0, offsetV1: 0),
-    $fidl.MemberType<ThreeByte>(
-        type: kThreeByte_Type, offsetOld: 3, offsetV1: 3),
-    $fidl.MemberType<ThreeByte>(
-        type: kThreeByte_Type, offsetOld: 6, offsetV1: 6),
-  ],
-  ctor: ThreeByteInStruct._ctor,
-);
-
-class FiveByteInStruct extends $fidl.Struct {
-  const FiveByteInStruct({
-    @required this.elem1,
-    @required this.elem2,
-    @required this.elem3,
-  });
-  FiveByteInStruct.clone(
-    FiveByteInStruct $orig, {
-    FiveByte elem1,
-    FiveByte elem2,
-    FiveByte elem3,
-  }) : this(
-          elem1: elem1 ?? $orig.elem1,
-          elem2: elem2 ?? $orig.elem2,
-          elem3: elem3 ?? $orig.elem3,
-        );
-
-  FiveByteInStruct._(List<Object> argv)
-      : elem1 = argv[0],
-        elem2 = argv[1],
-        elem3 = argv[2];
-  final FiveByte elem1;
-  final FiveByte elem2;
-  final FiveByte elem3;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      elem1,
-      elem2,
-      elem3,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'FiveByteInStruct' r'(elem1: ' +
-        elem1.toString() +
-        r', elem2: ' +
-        elem2.toString() +
-        r', elem3: ' +
-        elem3.toString() +
-        r')';
-  }
-
-  static FiveByteInStruct _ctor(List<Object> argv) => FiveByteInStruct._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<FiveByteInStruct> kFiveByteInStruct_Type =
-    $fidl.StructType<FiveByteInStruct>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<FiveByte>(type: kFiveByte_Type, offsetOld: 0, offsetV1: 0),
-    $fidl.MemberType<FiveByte>(type: kFiveByte_Type, offsetOld: 8, offsetV1: 8),
-    $fidl.MemberType<FiveByte>(
-        type: kFiveByte_Type, offsetOld: 16, offsetV1: 16),
-  ],
-  ctor: FiveByteInStruct._ctor,
-);
-
-class ThreeByteInVector extends $fidl.Struct {
-  const ThreeByteInVector({
-    @required this.elems,
-  });
-  ThreeByteInVector.clone(
-    ThreeByteInVector $orig, {
-    List<ThreeByte> elems,
-  }) : this(
-          elems: elems ?? $orig.elems,
-        );
-
-  ThreeByteInVector._(List<Object> argv) : elems = argv[0];
-  final List<ThreeByte> elems;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      elems,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'ThreeByteInVector' r'(elems: ' + elems.toString() + r')';
-  }
-
-  static ThreeByteInVector _ctor(List<Object> argv) =>
-      ThreeByteInVector._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<ThreeByteInVector> kThreeByteInVector_Type =
-    $fidl.StructType<ThreeByteInVector>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<List<ThreeByte>>(
-        type: $fidl.VectorType<List<ThreeByte>>(
-            element: kThreeByte_Type, maybeElementCount: null, nullable: false),
-        offsetOld: 0,
-        offsetV1: 0),
-  ],
-  ctor: ThreeByteInVector._ctor,
-);
-
-class FiveByteInVector extends $fidl.Struct {
-  const FiveByteInVector({
-    @required this.elems,
-  });
-  FiveByteInVector.clone(
-    FiveByteInVector $orig, {
-    List<FiveByte> elems,
-  }) : this(
-          elems: elems ?? $orig.elems,
-        );
-
-  FiveByteInVector._(List<Object> argv) : elems = argv[0];
-  final List<FiveByte> elems;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      elems,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'FiveByteInVector' r'(elems: ' + elems.toString() + r')';
-  }
-
-  static FiveByteInVector _ctor(List<Object> argv) => FiveByteInVector._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<FiveByteInVector> kFiveByteInVector_Type =
-    $fidl.StructType<FiveByteInVector>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<List<FiveByte>>(
-        type: $fidl.VectorType<List<FiveByte>>(
-            element: kFiveByte_Type, maybeElementCount: null, nullable: false),
-        offsetOld: 0,
-        offsetV1: 0),
-  ],
-  ctor: FiveByteInVector._ctor,
-);
-
-class ThreeByteInArray extends $fidl.Struct {
-  const ThreeByteInArray({
-    @required this.elems,
-  });
-  ThreeByteInArray.clone(
-    ThreeByteInArray $orig, {
-    List<ThreeByte> elems,
-  }) : this(
-          elems: elems ?? $orig.elems,
-        );
-
-  ThreeByteInArray._(List<Object> argv) : elems = argv[0];
-  final List<ThreeByte> elems;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      elems,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'ThreeByteInArray' r'(elems: ' + elems.toString() + r')';
-  }
-
-  static ThreeByteInArray _ctor(List<Object> argv) => ThreeByteInArray._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<ThreeByteInArray> kThreeByteInArray_Type =
-    $fidl.StructType<ThreeByteInArray>(
-  inlineSizeOld: 9,
-  inlineSizeV1: 9,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<List<ThreeByte>>(
-        type: $fidl.ArrayType<List<ThreeByte>>(
-            element: kThreeByte_Type, elementCount: 3),
-        offsetOld: 0,
-        offsetV1: 0),
-  ],
-  ctor: ThreeByteInArray._ctor,
-);
-
-class FiveByteInArray extends $fidl.Struct {
-  const FiveByteInArray({
-    @required this.elems,
-  });
-  FiveByteInArray.clone(
-    FiveByteInArray $orig, {
-    List<FiveByte> elems,
-  }) : this(
-          elems: elems ?? $orig.elems,
-        );
-
-  FiveByteInArray._(List<Object> argv) : elems = argv[0];
-  final List<FiveByte> elems;
-
-  @override
-  List<Object> get $fields {
-    return <Object>[
-      elems,
-    ];
-  }
-
-  @override
-  String toString() {
-    // ignore: prefer_interpolation_to_compose_strings
-    return r'FiveByteInArray' r'(elems: ' + elems.toString() + r')';
-  }
-
-  static FiveByteInArray _ctor(List<Object> argv) => FiveByteInArray._(argv);
-}
-
-// See FIDL-308:
-// ignore: recursive_compile_time_constant
-const $fidl.StructType<FiveByteInArray> kFiveByteInArray_Type =
-    $fidl.StructType<FiveByteInArray>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
-  members: <$fidl.MemberType>[
-    $fidl.MemberType<List<FiveByte>>(
-        type: $fidl.ArrayType<List<FiveByte>>(
-            element: kFiveByte_Type, elementCount: 3),
-        offsetOld: 0,
-        offsetV1: 0),
-  ],
-  ctor: FiveByteInArray._ctor,
+  ctor: TransactionHeader._ctor,
 );
 
 class StructSize16Align8 extends $fidl.Struct {
@@ -5054,6 +5850,62 @@ const $fidl.StructType<Sandwich1> kSandwich1_Type = $fidl.StructType<Sandwich1>(
         type: $fidl.Uint32Type(), offsetOld: 12, offsetV1: 32),
   ],
   ctor: Sandwich1._ctor,
+);
+
+class Sandwich1Message extends $fidl.Struct {
+  const Sandwich1Message({
+    @required this.header,
+    @required this.body,
+  });
+  Sandwich1Message.clone(
+    Sandwich1Message $orig, {
+    TransactionHeader header,
+    Sandwich1 body,
+  }) : this(
+          header: header ?? $orig.header,
+          body: body ?? $orig.body,
+        );
+
+  Sandwich1Message._(List<Object> argv)
+      : header = argv[0],
+        body = argv[1];
+  final TransactionHeader header;
+  final Sandwich1 body;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      header,
+      body,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Sandwich1Message' r'(header: ' +
+        header.toString() +
+        r', body: ' +
+        body.toString() +
+        r')';
+  }
+
+  static Sandwich1Message _ctor(List<Object> argv) => Sandwich1Message._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Sandwich1Message> kSandwich1Message_Type =
+    $fidl.StructType<Sandwich1Message>(
+  inlineSizeOld: 32,
+  inlineSizeV1: 56,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TransactionHeader>(
+        type: kTransactionHeader_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<Sandwich1>(
+        type: kSandwich1_Type, offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: Sandwich1Message._ctor,
 );
 
 class Sandwich1WithOptUnion extends $fidl.Struct {
@@ -5323,6 +6175,62 @@ const $fidl.StructType<Sandwich4> kSandwich4_Type = $fidl.StructType<Sandwich4>(
   ctor: Sandwich4._ctor,
 );
 
+class Sandwich4Message extends $fidl.Struct {
+  const Sandwich4Message({
+    @required this.header,
+    @required this.body,
+  });
+  Sandwich4Message.clone(
+    Sandwich4Message $orig, {
+    TransactionHeader header,
+    Sandwich4 body,
+  }) : this(
+          header: header ?? $orig.header,
+          body: body ?? $orig.body,
+        );
+
+  Sandwich4Message._(List<Object> argv)
+      : header = argv[0],
+        body = argv[1];
+  final TransactionHeader header;
+  final Sandwich4 body;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      header,
+      body,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Sandwich4Message' r'(header: ' +
+        header.toString() +
+        r', body: ' +
+        body.toString() +
+        r')';
+  }
+
+  static Sandwich4Message _ctor(List<Object> argv) => Sandwich4Message._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Sandwich4Message> kSandwich4Message_Type =
+    $fidl.StructType<Sandwich4Message>(
+  inlineSizeOld: 64,
+  inlineSizeV1: 56,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TransactionHeader>(
+        type: kTransactionHeader_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<Sandwich4>(
+        type: kSandwich4_Type, offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: Sandwich4Message._ctor,
+);
+
 class Sandwich5 extends $fidl.Struct {
   const Sandwich5({
     @required this.before,
@@ -5385,6 +6293,62 @@ const $fidl.StructType<Sandwich5> kSandwich5_Type = $fidl.StructType<Sandwich5>(
         type: $fidl.Uint32Type(), offsetOld: 40, offsetV1: 32),
   ],
   ctor: Sandwich5._ctor,
+);
+
+class Sandwich5Message extends $fidl.Struct {
+  const Sandwich5Message({
+    @required this.header,
+    @required this.body,
+  });
+  Sandwich5Message.clone(
+    Sandwich5Message $orig, {
+    TransactionHeader header,
+    Sandwich5 body,
+  }) : this(
+          header: header ?? $orig.header,
+          body: body ?? $orig.body,
+        );
+
+  Sandwich5Message._(List<Object> argv)
+      : header = argv[0],
+        body = argv[1];
+  final TransactionHeader header;
+  final Sandwich5 body;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      header,
+      body,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Sandwich5Message' r'(header: ' +
+        header.toString() +
+        r', body: ' +
+        body.toString() +
+        r')';
+  }
+
+  static Sandwich5Message _ctor(List<Object> argv) => Sandwich5Message._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Sandwich5Message> kSandwich5Message_Type =
+    $fidl.StructType<Sandwich5Message>(
+  inlineSizeOld: 64,
+  inlineSizeV1: 56,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TransactionHeader>(
+        type: kTransactionHeader_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<Sandwich5>(
+        type: kSandwich5_Type, offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: Sandwich5Message._ctor,
 );
 
 class StructSize3Align1 extends $fidl.Struct {
@@ -5626,6 +6590,62 @@ const $fidl.StructType<Sandwich7> kSandwich7_Type = $fidl.StructType<Sandwich7>(
         type: $fidl.Uint32Type(), offsetOld: 16, offsetV1: 16),
   ],
   ctor: Sandwich7._ctor,
+);
+
+class Sandwich7Message extends $fidl.Struct {
+  const Sandwich7Message({
+    @required this.header,
+    @required this.body,
+  });
+  Sandwich7Message.clone(
+    Sandwich7Message $orig, {
+    TransactionHeader header,
+    Sandwich7 body,
+  }) : this(
+          header: header ?? $orig.header,
+          body: body ?? $orig.body,
+        );
+
+  Sandwich7Message._(List<Object> argv)
+      : header = argv[0],
+        body = argv[1];
+  final TransactionHeader header;
+  final Sandwich7 body;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      header,
+      body,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Sandwich7Message' r'(header: ' +
+        header.toString() +
+        r', body: ' +
+        body.toString() +
+        r')';
+  }
+
+  static Sandwich7Message _ctor(List<Object> argv) => Sandwich7Message._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Sandwich7Message> kSandwich7Message_Type =
+    $fidl.StructType<Sandwich7Message>(
+  inlineSizeOld: 40,
+  inlineSizeV1: 40,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TransactionHeader>(
+        type: kTransactionHeader_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<Sandwich7>(
+        type: kSandwich7_Type, offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: Sandwich7Message._ctor,
 );
 
 class Sandwich8 extends $fidl.Struct {
@@ -5889,6 +6909,95 @@ const $fidl.StructType<Regression3> kRegression3_Type =
         offsetV1: 0),
   ],
   ctor: Regression3._ctor,
+);
+
+class StructTableNoFields extends $fidl.Struct {
+  const StructTableNoFields({
+    @required this.t,
+  });
+  StructTableNoFields.clone(
+    StructTableNoFields $orig, {
+    TableNoFields t,
+  }) : this(
+          t: t ?? $orig.t,
+        );
+
+  StructTableNoFields._(List<Object> argv) : t = argv[0];
+  final TableNoFields t;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      t,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructTableNoFields' r'(t: ' + t.toString() + r')';
+  }
+
+  static StructTableNoFields _ctor(List<Object> argv) =>
+      StructTableNoFields._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructTableNoFields> kStruct_Table_NoFields_Type =
+    $fidl.StructType<StructTableNoFields>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TableNoFields>(
+        type: kTable_NoFields_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: StructTableNoFields._ctor,
+);
+
+class StructTableTwoReservedFields extends $fidl.Struct {
+  const StructTableTwoReservedFields({
+    @required this.t,
+  });
+  StructTableTwoReservedFields.clone(
+    StructTableTwoReservedFields $orig, {
+    TableTwoReservedFields t,
+  }) : this(
+          t: t ?? $orig.t,
+        );
+
+  StructTableTwoReservedFields._(List<Object> argv) : t = argv[0];
+  final TableTwoReservedFields t;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      t,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructTableTwoReservedFields' r'(t: ' + t.toString() + r')';
+  }
+
+  static StructTableTwoReservedFields _ctor(List<Object> argv) =>
+      StructTableTwoReservedFields._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructTableTwoReservedFields>
+    kStruct_Table_TwoReservedFields_Type =
+    $fidl.StructType<StructTableTwoReservedFields>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TableTwoReservedFields>(
+        type: kTable_TwoReservedFields_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: StructTableTwoReservedFields._ctor,
 );
 
 class TableStructWithReservedSandwichStruct extends $fidl.Struct {
@@ -7113,6 +8222,876 @@ const $fidl.StructType<Regression4> kRegression4_Type =
   ctor: Regression4._ctor,
 );
 
+class Regression5 extends $fidl.Struct {
+  const Regression5({
+    @required this.f1,
+    @required this.f2,
+    @required this.f3,
+    @required this.f4,
+    @required this.f5,
+    @required this.f6,
+  });
+  Regression5.clone(
+    Regression5 $orig, {
+    int f1,
+    int f2,
+    int f3,
+    int f4,
+    int f5,
+    int f6,
+  }) : this(
+          f1: f1 ?? $orig.f1,
+          f2: f2 ?? $orig.f2,
+          f3: f3 ?? $orig.f3,
+          f4: f4 ?? $orig.f4,
+          f5: f5 ?? $orig.f5,
+          f6: f6 ?? $orig.f6,
+        );
+
+  Regression5._(List<Object> argv)
+      : f1 = argv[0],
+        f2 = argv[1],
+        f3 = argv[2],
+        f4 = argv[3],
+        f5 = argv[4],
+        f6 = argv[5];
+  final int f1;
+  final int f2;
+  final int f3;
+  final int f4;
+  final int f5;
+  final int f6;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      f1,
+      f2,
+      f3,
+      f4,
+      f5,
+      f6,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression5' r'(f1: ' +
+        f1.toString() +
+        r', f2: ' +
+        f2.toString() +
+        r', f3: ' +
+        f3.toString() +
+        r', f4: ' +
+        f4.toString() +
+        r', f5: ' +
+        f5.toString() +
+        r', f6: ' +
+        f6.toString() +
+        r')';
+  }
+
+  static Regression5 _ctor(List<Object> argv) => Regression5._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression5> kRegression5_Type =
+    $fidl.StructType<Regression5>(
+  inlineSizeOld: 32,
+  inlineSizeV1: 32,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: 4),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 8, offsetV1: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint16Type(), offsetOld: 10, offsetV1: 10),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 16, offsetV1: 16),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 24, offsetV1: 24),
+  ],
+  ctor: Regression5._ctor,
+);
+
+class Regression6 extends $fidl.Struct {
+  const Regression6({
+    @required this.f1,
+    @required this.f2,
+    @required this.f3,
+    @required this.f4,
+    @required this.f5,
+    @required this.f6,
+  });
+  Regression6.clone(
+    Regression6 $orig, {
+    int f1,
+    int f2,
+    int f3,
+    int f4,
+    int f5,
+    int f6,
+  }) : this(
+          f1: f1 ?? $orig.f1,
+          f2: f2 ?? $orig.f2,
+          f3: f3 ?? $orig.f3,
+          f4: f4 ?? $orig.f4,
+          f5: f5 ?? $orig.f5,
+          f6: f6 ?? $orig.f6,
+        );
+
+  Regression6._(List<Object> argv)
+      : f1 = argv[0],
+        f2 = argv[1],
+        f3 = argv[2],
+        f4 = argv[3],
+        f5 = argv[4],
+        f6 = argv[5];
+  final int f1;
+  final int f2;
+  final int f3;
+  final int f4;
+  final int f5;
+  final int f6;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      f1,
+      f2,
+      f3,
+      f4,
+      f5,
+      f6,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression6' r'(f1: ' +
+        f1.toString() +
+        r', f2: ' +
+        f2.toString() +
+        r', f3: ' +
+        f3.toString() +
+        r', f4: ' +
+        f4.toString() +
+        r', f5: ' +
+        f5.toString() +
+        r', f6: ' +
+        f6.toString() +
+        r')';
+  }
+
+  static Regression6 _ctor(List<Object> argv) => Regression6._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression6> kRegression6_Type =
+    $fidl.StructType<Regression6>(
+  inlineSizeOld: 32,
+  inlineSizeV1: 32,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 4, offsetV1: 4),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 8, offsetV1: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint16Type(), offsetOld: 10, offsetV1: 10),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 16, offsetV1: 16),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 24, offsetV1: 24),
+  ],
+  ctor: Regression6._ctor,
+);
+
+class Regression7TableUnionXUnion extends $fidl.Struct {
+  const Regression7TableUnionXUnion({
+    @required this.value,
+  });
+  Regression7TableUnionXUnion.clone(
+    Regression7TableUnionXUnion $orig, {
+    TableOfUnionThenXUnionThenTableThenXUnionThenUnion value,
+  }) : this(
+          value: value ?? $orig.value,
+        );
+
+  Regression7TableUnionXUnion._(List<Object> argv) : value = argv[0];
+  final TableOfUnionThenXUnionThenTableThenXUnionThenUnion value;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      value,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression7TableUnionXUnion' r'(value: ' + value.toString() + r')';
+  }
+
+  static Regression7TableUnionXUnion _ctor(List<Object> argv) =>
+      Regression7TableUnionXUnion._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression7TableUnionXUnion>
+    kRegression7TableUnionXUnion_Type =
+    $fidl.StructType<Regression7TableUnionXUnion>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TableOfUnionThenXUnionThenTableThenXUnionThenUnion>(
+        type: kTableOfUnionThenXUnionThenTableThenXUnionThenUnion_Type,
+        offsetOld: 0,
+        offsetV1: 0),
+  ],
+  ctor: Regression7TableUnionXUnion._ctor,
+);
+
+class Regression8OptUnionSize12Align4 extends $fidl.Struct {
+  const Regression8OptUnionSize12Align4({
+    this.optUnion1,
+    this.optUnion2,
+    this.optUnion3,
+  });
+  Regression8OptUnionSize12Align4.clone(
+    Regression8OptUnionSize12Align4 $orig, {
+    UnionSize12Align4 optUnion1,
+    UnionSize12Align4 optUnion2,
+    UnionSize12Align4 optUnion3,
+  }) : this(
+          optUnion1: optUnion1 ?? $orig.optUnion1,
+          optUnion2: optUnion2 ?? $orig.optUnion2,
+          optUnion3: optUnion3 ?? $orig.optUnion3,
+        );
+
+  Regression8OptUnionSize12Align4.cloneWithout(
+    Regression8OptUnionSize12Align4 $orig, {
+    bool optUnion1,
+    bool optUnion2,
+    bool optUnion3,
+  }) : this(
+          optUnion1: optUnion1 ? null : $orig.optUnion1,
+          optUnion2: optUnion2 ? null : $orig.optUnion2,
+          optUnion3: optUnion3 ? null : $orig.optUnion3,
+        );
+
+  Regression8OptUnionSize12Align4._(List<Object> argv)
+      : optUnion1 = argv[0],
+        optUnion2 = argv[1],
+        optUnion3 = argv[2];
+  final UnionSize12Align4 optUnion1;
+  final UnionSize12Align4 optUnion2;
+  final UnionSize12Align4 optUnion3;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      optUnion1,
+      optUnion2,
+      optUnion3,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression8OptUnionSize12Align4' r'(optUnion1: ' +
+        optUnion1.toString() +
+        r', optUnion2: ' +
+        optUnion2.toString() +
+        r', optUnion3: ' +
+        optUnion3.toString() +
+        r')';
+  }
+
+  static Regression8OptUnionSize12Align4 _ctor(List<Object> argv) =>
+      Regression8OptUnionSize12Align4._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression8OptUnionSize12Align4>
+    kRegression8OptUnionSize12Align4_Type =
+    $fidl.StructType<Regression8OptUnionSize12Align4>(
+  inlineSizeOld: 24,
+  inlineSizeV1: 72,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<UnionSize12Align4>(
+        type: kUnionSize12Align4_OptType, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<UnionSize12Align4>(
+        type: kUnionSize12Align4_OptType, offsetOld: 8, offsetV1: 24),
+    $fidl.MemberType<UnionSize12Align4>(
+        type: kUnionSize12Align4_OptType, offsetOld: 16, offsetV1: 48),
+  ],
+  ctor: Regression8OptUnionSize12Align4._ctor,
+);
+
+class Regression8VectorOfOptUnionSize12Align4 extends $fidl.Struct {
+  const Regression8VectorOfOptUnionSize12Align4({
+    @required this.value,
+  });
+  Regression8VectorOfOptUnionSize12Align4.clone(
+    Regression8VectorOfOptUnionSize12Align4 $orig, {
+    List<UnionSize12Align4> value,
+  }) : this(
+          value: value ?? $orig.value,
+        );
+
+  Regression8VectorOfOptUnionSize12Align4._(List<Object> argv)
+      : value = argv[0];
+  final List<UnionSize12Align4> value;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      value,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression8VectorOfOptUnionSize12Align4' r'(value: ' +
+        value.toString() +
+        r')';
+  }
+
+  static Regression8VectorOfOptUnionSize12Align4 _ctor(List<Object> argv) =>
+      Regression8VectorOfOptUnionSize12Align4._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression8VectorOfOptUnionSize12Align4>
+    kRegression8VectorOfOptUnionSize12Align4_Type =
+    $fidl.StructType<Regression8VectorOfOptUnionSize12Align4>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<List<UnionSize12Align4>>(
+        type: $fidl.VectorType<List<UnionSize12Align4>>(
+            element: kUnionSize12Align4_OptType,
+            maybeElementCount: null,
+            nullable: false),
+        offsetOld: 0,
+        offsetV1: 0),
+  ],
+  ctor: Regression8VectorOfOptUnionSize12Align4._ctor,
+);
+
+class Regression8TableWithUnionSize12Align4 extends $fidl.Struct {
+  const Regression8TableWithUnionSize12Align4({
+    @required this.value,
+  });
+  Regression8TableWithUnionSize12Align4.clone(
+    Regression8TableWithUnionSize12Align4 $orig, {
+    TableWithUnionSize12Align4 value,
+  }) : this(
+          value: value ?? $orig.value,
+        );
+
+  Regression8TableWithUnionSize12Align4._(List<Object> argv) : value = argv[0];
+  final TableWithUnionSize12Align4 value;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      value,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression8TableWithUnionSize12Align4' r'(value: ' +
+        value.toString() +
+        r')';
+  }
+
+  static Regression8TableWithUnionSize12Align4 _ctor(List<Object> argv) =>
+      Regression8TableWithUnionSize12Align4._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression8TableWithUnionSize12Align4>
+    kRegression8TableWithUnionSize12Align4_Type =
+    $fidl.StructType<Regression8TableWithUnionSize12Align4>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TableWithUnionSize12Align4>(
+        type: kTableWithUnionSize12Align4_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: Regression8TableWithUnionSize12Align4._ctor,
+);
+
+class StringUnionStruct extends $fidl.Struct {
+  const StringUnionStruct({
+    @required this.u,
+    this.nullableU,
+  });
+  StringUnionStruct.clone(
+    StringUnionStruct $orig, {
+    StringBoolUnion u,
+    StringBoolUnion nullableU,
+  }) : this(
+          u: u ?? $orig.u,
+          nullableU: nullableU ?? $orig.nullableU,
+        );
+
+  StringUnionStruct.cloneWithout(
+    StringUnionStruct $orig, {
+    bool nullableU,
+  }) : this(
+          u: $orig.u,
+          nullableU: nullableU ? null : $orig.nullableU,
+        );
+
+  StringUnionStruct._(List<Object> argv)
+      : u = argv[0],
+        nullableU = argv[1];
+  final StringBoolUnion u;
+  final StringBoolUnion nullableU;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      u,
+      nullableU,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StringUnionStruct' r'(u: ' +
+        u.toString() +
+        r', nullableU: ' +
+        nullableU.toString() +
+        r')';
+  }
+
+  static StringUnionStruct _ctor(List<Object> argv) =>
+      StringUnionStruct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StringUnionStruct> kStringUnionStruct_Type =
+    $fidl.StructType<StringUnionStruct>(
+  inlineSizeOld: 32,
+  inlineSizeV1: 48,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<StringBoolUnion>(
+        type: kStringBoolUnion_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<StringBoolUnion>(
+        type: kStringBoolUnion_OptType, offsetOld: 24, offsetV1: 24),
+  ],
+  ctor: StringUnionStruct._ctor,
+);
+
+class StringUnionStructWrapper extends $fidl.Struct {
+  const StringUnionStructWrapper({
+    @required this.sus,
+  });
+  StringUnionStructWrapper.clone(
+    StringUnionStructWrapper $orig, {
+    StringUnionStruct sus,
+  }) : this(
+          sus: sus ?? $orig.sus,
+        );
+
+  StringUnionStructWrapper._(List<Object> argv) : sus = argv[0];
+  final StringUnionStruct sus;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      sus,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StringUnionStructWrapper' r'(sus: ' + sus.toString() + r')';
+  }
+
+  static StringUnionStructWrapper _ctor(List<Object> argv) =>
+      StringUnionStructWrapper._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StringUnionStructWrapper>
+    kStringUnionStructWrapper_Type = $fidl.StructType<StringUnionStructWrapper>(
+  inlineSizeOld: 32,
+  inlineSizeV1: 48,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<StringUnionStruct>(
+        type: kStringUnionStruct_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: StringUnionStructWrapper._ctor,
+);
+
+class StringUnionStructWrapperResponse extends $fidl.Struct {
+  const StringUnionStructWrapperResponse({
+    @required this.header,
+    @required this.body,
+  });
+  StringUnionStructWrapperResponse.clone(
+    StringUnionStructWrapperResponse $orig, {
+    TransactionHeader header,
+    StringUnionStructWrapper body,
+  }) : this(
+          header: header ?? $orig.header,
+          body: body ?? $orig.body,
+        );
+
+  StringUnionStructWrapperResponse._(List<Object> argv)
+      : header = argv[0],
+        body = argv[1];
+  final TransactionHeader header;
+  final StringUnionStructWrapper body;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      header,
+      body,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StringUnionStructWrapperResponse' r'(header: ' +
+        header.toString() +
+        r', body: ' +
+        body.toString() +
+        r')';
+  }
+
+  static StringUnionStructWrapperResponse _ctor(List<Object> argv) =>
+      StringUnionStructWrapperResponse._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StringUnionStructWrapperResponse>
+    kStringUnionStructWrapperResponse_Type =
+    $fidl.StructType<StringUnionStructWrapperResponse>(
+  inlineSizeOld: 48,
+  inlineSizeV1: 64,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TransactionHeader>(
+        type: kTransactionHeader_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<StringUnionStructWrapper>(
+        type: kStringUnionStructWrapper_Type, offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: StringUnionStructWrapperResponse._ctor,
+);
+
+class Regression9Value extends $fidl.Struct {
+  const Regression9Value({
+    @required this.u,
+    this.nullableU,
+  });
+  Regression9Value.clone(
+    Regression9Value $orig, {
+    StringBoolUnion u,
+    StringBoolUnion nullableU,
+  }) : this(
+          u: u ?? $orig.u,
+          nullableU: nullableU ?? $orig.nullableU,
+        );
+
+  Regression9Value.cloneWithout(
+    Regression9Value $orig, {
+    bool nullableU,
+  }) : this(
+          u: $orig.u,
+          nullableU: nullableU ? null : $orig.nullableU,
+        );
+
+  Regression9Value._(List<Object> argv)
+      : u = argv[0],
+        nullableU = argv[1];
+  final StringBoolUnion u;
+  final StringBoolUnion nullableU;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      u,
+      nullableU,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression9Value' r'(u: ' +
+        u.toString() +
+        r', nullableU: ' +
+        nullableU.toString() +
+        r')';
+  }
+
+  static Regression9Value _ctor(List<Object> argv) => Regression9Value._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression9Value> kRegression9Value_Type =
+    $fidl.StructType<Regression9Value>(
+  inlineSizeOld: 32,
+  inlineSizeV1: 48,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<StringBoolUnion>(
+        type: kStringBoolUnion_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<StringBoolUnion>(
+        type: kStringBoolUnion_OptType, offsetOld: 24, offsetV1: 24),
+  ],
+  ctor: Regression9Value._ctor,
+);
+
+class Regression9Message extends $fidl.Struct {
+  const Regression9Message({
+    @required this.header,
+    @required this.body,
+  });
+  Regression9Message.clone(
+    Regression9Message $orig, {
+    TransactionHeader header,
+    Regression9Result body,
+  }) : this(
+          header: header ?? $orig.header,
+          body: body ?? $orig.body,
+        );
+
+  Regression9Message._(List<Object> argv)
+      : header = argv[0],
+        body = argv[1];
+  final TransactionHeader header;
+  final Regression9Result body;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      header,
+      body,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression9Message' r'(header: ' +
+        header.toString() +
+        r', body: ' +
+        body.toString() +
+        r')';
+  }
+
+  static Regression9Message _ctor(List<Object> argv) =>
+      Regression9Message._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression9Message> kRegression9Message_Type =
+    $fidl.StructType<Regression9Message>(
+  inlineSizeOld: 56,
+  inlineSizeV1: 40,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TransactionHeader>(
+        type: kTransactionHeader_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<Regression9Result>(
+        type: kRegression9Result_Type, offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: Regression9Message._ctor,
+);
+
+class Regression10V1 extends $fidl.Struct {
+  const Regression10V1({
+    @required this.table,
+  });
+  Regression10V1.clone(
+    Regression10V1 $orig, {
+    Regression10TableV1 table,
+  }) : this(
+          table: table ?? $orig.table,
+        );
+
+  Regression10V1._(List<Object> argv) : table = argv[0];
+  final Regression10TableV1 table;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      table,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression10V1' r'(table: ' + table.toString() + r')';
+  }
+
+  static Regression10V1 _ctor(List<Object> argv) => Regression10V1._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression10V1> kRegression10V1_Type =
+    $fidl.StructType<Regression10V1>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<Regression10TableV1>(
+        type: kRegression10TableV1_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: Regression10V1._ctor,
+);
+
+class Regression10V2 extends $fidl.Struct {
+  const Regression10V2({
+    @required this.table,
+  });
+  Regression10V2.clone(
+    Regression10V2 $orig, {
+    Regression10TableV2 table,
+  }) : this(
+          table: table ?? $orig.table,
+        );
+
+  Regression10V2._(List<Object> argv) : table = argv[0];
+  final Regression10TableV2 table;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      table,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression10V2' r'(table: ' + table.toString() + r')';
+  }
+
+  static Regression10V2 _ctor(List<Object> argv) => Regression10V2._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression10V2> kRegression10V2_Type =
+    $fidl.StructType<Regression10V2>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<Regression10TableV2>(
+        type: kRegression10TableV2_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: Regression10V2._ctor,
+);
+
+class Regression10V3 extends $fidl.Struct {
+  const Regression10V3({
+    @required this.table,
+  });
+  Regression10V3.clone(
+    Regression10V3 $orig, {
+    Regression10TableV3 table,
+  }) : this(
+          table: table ?? $orig.table,
+        );
+
+  Regression10V3._(List<Object> argv) : table = argv[0];
+  final Regression10TableV3 table;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      table,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression10V3' r'(table: ' + table.toString() + r')';
+  }
+
+  static Regression10V3 _ctor(List<Object> argv) => Regression10V3._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression10V3> kRegression10V3_Type =
+    $fidl.StructType<Regression10V3>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<Regression10TableV3>(
+        type: kRegression10TableV3_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: Regression10V3._ctor,
+);
+
+class Regression11 extends $fidl.Struct {
+  const Regression11({
+    @required this.tableOfTable,
+  });
+  Regression11.clone(
+    Regression11 $orig, {
+    UnionWithRegression10Table tableOfTable,
+  }) : this(
+          tableOfTable: tableOfTable ?? $orig.tableOfTable,
+        );
+
+  Regression11._(List<Object> argv) : tableOfTable = argv[0];
+  final UnionWithRegression10Table tableOfTable;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      tableOfTable,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Regression11' r'(tableOfTable: ' + tableOfTable.toString() + r')';
+  }
+
+  static Regression11 _ctor(List<Object> argv) => Regression11._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Regression11> kRegression11_Type =
+    $fidl.StructType<Regression11>(
+  inlineSizeOld: 24,
+  inlineSizeV1: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<UnionWithRegression10Table>(
+        type: kUnionWithRegression10Table_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: Regression11._ctor,
+);
+
 class Sandwich4Align8 extends $fidl.Struct {
   const Sandwich4Align8({
     @required this.sandwich4,
@@ -7602,6 +9581,543 @@ const $fidl.StructType<CreateComponentRequest> kCreateComponentRequest_Type =
   ctor: CreateComponentRequest._ctor,
 );
 
+class CompatTable extends $fidl.Struct {
+  const CompatTable({
+    @required this.value,
+    @required this.empty,
+  });
+  CompatTable.clone(
+    CompatTable $orig, {
+    CompatTableValue value,
+    String empty,
+  }) : this(
+          value: value ?? $orig.value,
+          empty: empty ?? $orig.empty,
+        );
+
+  CompatTable._(List<Object> argv)
+      : value = argv[0],
+        empty = argv[1];
+  final CompatTableValue value;
+  final String empty;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      value,
+      empty,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'CompatTable' r'(value: ' +
+        value.toString() +
+        r', empty: ' +
+        empty.toString() +
+        r')';
+  }
+
+  static CompatTable _ctor(List<Object> argv) => CompatTable._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<CompatTable> kCompatTable_Type =
+    $fidl.StructType<CompatTable>(
+  inlineSizeOld: 32,
+  inlineSizeV1: 32,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<CompatTableValue>(
+        type: kCompatTableValue_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
+        offsetOld: 16,
+        offsetV1: 16),
+  ],
+  ctor: CompatTable._ctor,
+);
+
+class MixedFieldsBody extends $fidl.Struct {
+  const MixedFieldsBody({
+    @required this.before,
+    @required this.firstUnion,
+    @required this.middleStart,
+    @required this.middleEnd,
+    @required this.secondUnion,
+    @required this.after,
+  });
+  MixedFieldsBody.clone(
+    MixedFieldsBody $orig, {
+    int before,
+    UnionSize8Align4 firstUnion,
+    int middleStart,
+    int middleEnd,
+    UnionSize8Align4 secondUnion,
+    int after,
+  }) : this(
+          before: before ?? $orig.before,
+          firstUnion: firstUnion ?? $orig.firstUnion,
+          middleStart: middleStart ?? $orig.middleStart,
+          middleEnd: middleEnd ?? $orig.middleEnd,
+          secondUnion: secondUnion ?? $orig.secondUnion,
+          after: after ?? $orig.after,
+        );
+
+  MixedFieldsBody._(List<Object> argv)
+      : before = argv[0],
+        firstUnion = argv[1],
+        middleStart = argv[2],
+        middleEnd = argv[3],
+        secondUnion = argv[4],
+        after = argv[5];
+  final int before;
+  final UnionSize8Align4 firstUnion;
+  final int middleStart;
+  final int middleEnd;
+  final UnionSize8Align4 secondUnion;
+  final int after;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      before,
+      firstUnion,
+      middleStart,
+      middleEnd,
+      secondUnion,
+      after,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'MixedFieldsBody' r'(before: ' +
+        before.toString() +
+        r', firstUnion: ' +
+        firstUnion.toString() +
+        r', middleStart: ' +
+        middleStart.toString() +
+        r', middleEnd: ' +
+        middleEnd.toString() +
+        r', secondUnion: ' +
+        secondUnion.toString() +
+        r', after: ' +
+        after.toString() +
+        r')';
+  }
+
+  static MixedFieldsBody _ctor(List<Object> argv) => MixedFieldsBody._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<MixedFieldsBody> kMixedFieldsBody_Type =
+    $fidl.StructType<MixedFieldsBody>(
+  inlineSizeOld: 40,
+  inlineSizeV1: 80,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<UnionSize8Align4>(
+        type: kUnionSize8Align4_Type, offsetOld: 4, offsetV1: 8),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint16Type(), offsetOld: 12, offsetV1: 32),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint64Type(), offsetOld: 16, offsetV1: 40),
+    $fidl.MemberType<UnionSize8Align4>(
+        type: kUnionSize8Align4_Type, offsetOld: 24, offsetV1: 48),
+    $fidl.MemberType<int>(
+        type: $fidl.Uint32Type(), offsetOld: 32, offsetV1: 72),
+  ],
+  ctor: MixedFieldsBody._ctor,
+);
+
+class MixedFieldsMessage extends $fidl.Struct {
+  const MixedFieldsMessage({
+    @required this.header,
+    @required this.body,
+  });
+  MixedFieldsMessage.clone(
+    MixedFieldsMessage $orig, {
+    TransactionHeader header,
+    MixedFieldsBody body,
+  }) : this(
+          header: header ?? $orig.header,
+          body: body ?? $orig.body,
+        );
+
+  MixedFieldsMessage._(List<Object> argv)
+      : header = argv[0],
+        body = argv[1];
+  final TransactionHeader header;
+  final MixedFieldsBody body;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      header,
+      body,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'MixedFieldsMessage' r'(header: ' +
+        header.toString() +
+        r', body: ' +
+        body.toString() +
+        r')';
+  }
+
+  static MixedFieldsMessage _ctor(List<Object> argv) =>
+      MixedFieldsMessage._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<MixedFieldsMessage> kMixedFieldsMessage_Type =
+    $fidl.StructType<MixedFieldsMessage>(
+  inlineSizeOld: 56,
+  inlineSizeV1: 96,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TransactionHeader>(
+        type: kTransactionHeader_Type, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<MixedFieldsBody>(
+        type: kMixedFieldsBody_Type, offsetOld: 16, offsetV1: 16),
+  ],
+  ctor: MixedFieldsMessage._ctor,
+);
+
+class StructOfTableWithXUnion extends $fidl.Struct {
+  const StructOfTableWithXUnion({
+    @required this.value,
+  });
+  StructOfTableWithXUnion.clone(
+    StructOfTableWithXUnion $orig, {
+    TableWithXUnion value,
+  }) : this(
+          value: value ?? $orig.value,
+        );
+
+  StructOfTableWithXUnion._(List<Object> argv) : value = argv[0];
+  final TableWithXUnion value;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      value,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'StructOfTableWithXUnion' r'(value: ' + value.toString() + r')';
+  }
+
+  static StructOfTableWithXUnion _ctor(List<Object> argv) =>
+      StructOfTableWithXUnion._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<StructOfTableWithXUnion> kStructOfTableWithXUnion_Type =
+    $fidl.StructType<StructOfTableWithXUnion>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<TableWithXUnion>(
+        type: kTableWithXUnion_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: StructOfTableWithXUnion._ctor,
+);
+
+class Int64Struct extends $fidl.Struct {
+  const Int64Struct({
+    @required this.x,
+  });
+  Int64Struct.clone(
+    Int64Struct $orig, {
+    int x,
+  }) : this(
+          x: x ?? $orig.x,
+        );
+
+  Int64Struct._(List<Object> argv) : x = argv[0];
+  final int x;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      x,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'Int64Struct' r'(x: ' + x.toString() + r')';
+  }
+
+  static Int64Struct _ctor(List<Object> argv) => Int64Struct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<Int64Struct> kInt64Struct_Type =
+    $fidl.StructType<Int64Struct>(
+  inlineSizeOld: 8,
+  inlineSizeV1: 8,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: Int64Struct._ctor,
+);
+
+class TestInlineXUnionInStruct extends $fidl.Struct {
+  const TestInlineXUnionInStruct({
+    @required this.before,
+    @required this.xu,
+    @required this.after,
+  });
+  TestInlineXUnionInStruct.clone(
+    TestInlineXUnionInStruct $orig, {
+    String before,
+    SampleXUnion xu,
+    String after,
+  }) : this(
+          before: before ?? $orig.before,
+          xu: xu ?? $orig.xu,
+          after: after ?? $orig.after,
+        );
+
+  TestInlineXUnionInStruct._(List<Object> argv)
+      : before = argv[0],
+        xu = argv[1],
+        after = argv[2];
+  final String before;
+  final SampleXUnion xu;
+  final String after;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      before,
+      xu,
+      after,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'TestInlineXUnionInStruct' r'(before: ' +
+        before.toString() +
+        r', xu: ' +
+        xu.toString() +
+        r', after: ' +
+        after.toString() +
+        r')';
+  }
+
+  static TestInlineXUnionInStruct _ctor(List<Object> argv) =>
+      TestInlineXUnionInStruct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<TestInlineXUnionInStruct>
+    kTestInlineXUnionInStruct_Type = $fidl.StructType<TestInlineXUnionInStruct>(
+  inlineSizeOld: 56,
+  inlineSizeV1: 56,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
+        offsetOld: 0,
+        offsetV1: 0),
+    $fidl.MemberType<SampleXUnion>(
+        type: kSampleXUnion_Type, offsetOld: 16, offsetV1: 16),
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
+        offsetOld: 40,
+        offsetV1: 40),
+  ],
+  ctor: TestInlineXUnionInStruct._ctor,
+);
+
+class TestOptionalXUnionInStruct extends $fidl.Struct {
+  const TestOptionalXUnionInStruct({
+    @required this.before,
+    this.xu,
+    @required this.after,
+  });
+  TestOptionalXUnionInStruct.clone(
+    TestOptionalXUnionInStruct $orig, {
+    String before,
+    SampleXUnion xu,
+    String after,
+  }) : this(
+          before: before ?? $orig.before,
+          xu: xu ?? $orig.xu,
+          after: after ?? $orig.after,
+        );
+
+  TestOptionalXUnionInStruct.cloneWithout(
+    TestOptionalXUnionInStruct $orig, {
+    bool xu,
+  }) : this(
+          before: $orig.before,
+          xu: xu ? null : $orig.xu,
+          after: $orig.after,
+        );
+
+  TestOptionalXUnionInStruct._(List<Object> argv)
+      : before = argv[0],
+        xu = argv[1],
+        after = argv[2];
+  final String before;
+  final SampleXUnion xu;
+  final String after;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      before,
+      xu,
+      after,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'TestOptionalXUnionInStruct' r'(before: ' +
+        before.toString() +
+        r', xu: ' +
+        xu.toString() +
+        r', after: ' +
+        after.toString() +
+        r')';
+  }
+
+  static TestOptionalXUnionInStruct _ctor(List<Object> argv) =>
+      TestOptionalXUnionInStruct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<TestOptionalXUnionInStruct>
+    kTestOptionalXUnionInStruct_Type =
+    $fidl.StructType<TestOptionalXUnionInStruct>(
+  inlineSizeOld: 56,
+  inlineSizeV1: 56,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
+        offsetOld: 0,
+        offsetV1: 0),
+    $fidl.MemberType<SampleXUnion>(
+        type: kSampleXUnion_OptType, offsetOld: 16, offsetV1: 16),
+    $fidl.MemberType<String>(
+        type: $fidl.StringType(maybeElementCount: null, nullable: false),
+        offsetOld: 40,
+        offsetV1: 40),
+  ],
+  ctor: TestOptionalXUnionInStruct._ctor,
+);
+
+class TestStrictXUnionInStruct extends $fidl.Struct {
+  const TestStrictXUnionInStruct({
+    @required this.xu,
+  });
+  TestStrictXUnionInStruct.clone(
+    TestStrictXUnionInStruct $orig, {
+    SampleStrictXUnion xu,
+  }) : this(
+          xu: xu ?? $orig.xu,
+        );
+
+  TestStrictXUnionInStruct._(List<Object> argv) : xu = argv[0];
+  final SampleStrictXUnion xu;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      xu,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'TestStrictXUnionInStruct' r'(xu: ' + xu.toString() + r')';
+  }
+
+  static TestStrictXUnionInStruct _ctor(List<Object> argv) =>
+      TestStrictXUnionInStruct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<TestStrictXUnionInStruct>
+    kTestStrictXUnionInStruct_Type = $fidl.StructType<TestStrictXUnionInStruct>(
+  inlineSizeOld: 24,
+  inlineSizeV1: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<SampleStrictXUnion>(
+        type: kSampleStrictXUnion_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: TestStrictXUnionInStruct._ctor,
+);
+
+class TestFlexibleXUnionInStruct extends $fidl.Struct {
+  const TestFlexibleXUnionInStruct({
+    @required this.xu,
+  });
+  TestFlexibleXUnionInStruct.clone(
+    TestFlexibleXUnionInStruct $orig, {
+    SampleXUnion xu,
+  }) : this(
+          xu: xu ?? $orig.xu,
+        );
+
+  TestFlexibleXUnionInStruct._(List<Object> argv) : xu = argv[0];
+  final SampleXUnion xu;
+
+  @override
+  List<Object> get $fields {
+    return <Object>[
+      xu,
+    ];
+  }
+
+  @override
+  String toString() {
+    // ignore: prefer_interpolation_to_compose_strings
+    return r'TestFlexibleXUnionInStruct' r'(xu: ' + xu.toString() + r')';
+  }
+
+  static TestFlexibleXUnionInStruct _ctor(List<Object> argv) =>
+      TestFlexibleXUnionInStruct._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.StructType<TestFlexibleXUnionInStruct>
+    kTestFlexibleXUnionInStruct_Type =
+    $fidl.StructType<TestFlexibleXUnionInStruct>(
+  inlineSizeOld: 24,
+  inlineSizeV1: 24,
+  members: <$fidl.MemberType>[
+    $fidl.MemberType<SampleXUnion>(
+        type: kSampleXUnion_Type, offsetOld: 0, offsetV1: 0),
+  ],
+  ctor: TestFlexibleXUnionInStruct._ctor,
+);
+
 class XUnionInTable extends $fidl.Table {
   const XUnionInTable({
     this.before,
@@ -7795,6 +10311,53 @@ const $fidl.TableType<TableWithEmptyStruct> kTableWithEmptyStruct_Type =
   ctor: TableWithEmptyStruct._ctor,
 );
 
+class TableNoFields extends $fidl.Table {
+  const TableNoFields();
+
+  TableNoFields._(Map<int, dynamic> argv);
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {};
+  }
+
+  static TableNoFields _ctor(Map<int, dynamic> argv) => TableNoFields._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<TableNoFields> kTable_NoFields_Type =
+    $fidl.TableType<TableNoFields>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{},
+  ctor: TableNoFields._ctor,
+);
+
+class TableTwoReservedFields extends $fidl.Table {
+  const TableTwoReservedFields();
+
+  TableTwoReservedFields._(Map<int, dynamic> argv);
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {};
+  }
+
+  static TableTwoReservedFields _ctor(Map<int, dynamic> argv) =>
+      TableTwoReservedFields._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<TableTwoReservedFields> kTable_TwoReservedFields_Type =
+    $fidl.TableType<TableTwoReservedFields>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{},
+  ctor: TableTwoReservedFields._ctor,
+);
+
 class TableStructWithReservedSandwich extends $fidl.Table {
   const TableStructWithReservedSandwich({
     this.s1,
@@ -7956,6 +10519,224 @@ const $fidl.TableType<TableUnionWithVectorStructSandwich>
   ctor: TableUnionWithVectorStructSandwich._ctor,
 );
 
+class TableOfXUnionThenUnion extends $fidl.Table {
+  const TableOfXUnionThenUnion({
+    this.member,
+  });
+
+  TableOfXUnionThenUnion._(Map<int, dynamic> argv) : member = argv[2];
+  final XUnionOfUnion member;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      2: member,
+    };
+  }
+
+  static TableOfXUnionThenUnion _ctor(Map<int, dynamic> argv) =>
+      TableOfXUnionThenUnion._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<TableOfXUnionThenUnion> kTableOfXUnionThenUnion_Type =
+    $fidl.TableType<TableOfXUnionThenUnion>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    2: kXUnionOfUnion_Type,
+  },
+  ctor: TableOfXUnionThenUnion._ctor,
+);
+
+class TableOfUnionThenXUnionThenTableThenXUnionThenUnion extends $fidl.Table {
+  const TableOfUnionThenXUnionThenTableThenXUnionThenUnion({
+    this.member,
+  });
+
+  TableOfUnionThenXUnionThenTableThenXUnionThenUnion._(Map<int, dynamic> argv)
+      : member = argv[3];
+  final UnionOfXUnionThenTableThenXUnionThenUnion member;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      3: member,
+    };
+  }
+
+  static TableOfUnionThenXUnionThenTableThenXUnionThenUnion _ctor(
+          Map<int, dynamic> argv) =>
+      TableOfUnionThenXUnionThenTableThenXUnionThenUnion._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<TableOfUnionThenXUnionThenTableThenXUnionThenUnion>
+    kTableOfUnionThenXUnionThenTableThenXUnionThenUnion_Type =
+    $fidl.TableType<TableOfUnionThenXUnionThenTableThenXUnionThenUnion>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    3: kUnionOfXUnionThenTableThenXUnionThenUnion_Type,
+  },
+  ctor: TableOfUnionThenXUnionThenTableThenXUnionThenUnion._ctor,
+);
+
+class TableWithUnionSize12Align4 extends $fidl.Table {
+  const TableWithUnionSize12Align4({
+    this.before,
+    this.member,
+    this.after,
+  });
+
+  TableWithUnionSize12Align4._(Map<int, dynamic> argv)
+      : before = argv[1],
+        member = argv[3],
+        after = argv[5];
+  final int before;
+  final UnionSize12Align4 member;
+  final int after;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      1: before,
+      3: member,
+      5: after,
+    };
+  }
+
+  static TableWithUnionSize12Align4 _ctor(Map<int, dynamic> argv) =>
+      TableWithUnionSize12Align4._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<TableWithUnionSize12Align4>
+    kTableWithUnionSize12Align4_Type =
+    $fidl.TableType<TableWithUnionSize12Align4>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint8Type(),
+    3: kUnionSize12Align4_Type,
+    5: $fidl.Uint8Type(),
+  },
+  ctor: TableWithUnionSize12Align4._ctor,
+);
+
+class Regression10TableV1 extends $fidl.Table {
+  const Regression10TableV1({
+    this.member1,
+  });
+
+  Regression10TableV1._(Map<int, dynamic> argv) : member1 = argv[1];
+  final int member1;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      1: member1,
+    };
+  }
+
+  static Regression10TableV1 _ctor(Map<int, dynamic> argv) =>
+      Regression10TableV1._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<Regression10TableV1> kRegression10TableV1_Type =
+    $fidl.TableType<Regression10TableV1>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint64Type(),
+  },
+  ctor: Regression10TableV1._ctor,
+);
+
+class Regression10TableV2 extends $fidl.Table {
+  const Regression10TableV2({
+    this.member1,
+    this.member2,
+  });
+
+  Regression10TableV2._(Map<int, dynamic> argv)
+      : member1 = argv[1],
+        member2 = argv[5];
+  final int member1;
+  final int member2;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      1: member1,
+      5: member2,
+    };
+  }
+
+  static Regression10TableV2 _ctor(Map<int, dynamic> argv) =>
+      Regression10TableV2._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<Regression10TableV2> kRegression10TableV2_Type =
+    $fidl.TableType<Regression10TableV2>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Uint64Type(),
+    5: $fidl.Uint64Type(),
+  },
+  ctor: Regression10TableV2._ctor,
+);
+
+class Regression10TableV3 extends $fidl.Table {
+  const Regression10TableV3({
+    this.x,
+    this.y,
+    this.z,
+  });
+
+  Regression10TableV3._(Map<int, dynamic> argv)
+      : x = argv[1],
+        y = argv[5],
+        z = argv[6];
+  final int x;
+  final int y;
+  final int z;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      1: x,
+      5: y,
+      6: z,
+    };
+  }
+
+  static Regression10TableV3 _ctor(Map<int, dynamic> argv) =>
+      Regression10TableV3._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<Regression10TableV3> kRegression10TableV3_Type =
+    $fidl.TableType<Regression10TableV3>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int64Type(),
+    5: $fidl.Int64Type(),
+    6: $fidl.Int64Type(),
+  },
+  ctor: Regression10TableV3._ctor,
+);
+
 class TransformerSimpleTable extends $fidl.Table {
   const TransformerSimpleTable({
     this.value,
@@ -7985,6 +10766,116 @@ const $fidl.TableType<TransformerSimpleTable> kTransformerSimpleTable_Type =
     1: $fidl.Uint32Type(),
   },
   ctor: TransformerSimpleTable._ctor,
+);
+
+class CompatTableString extends $fidl.Table {
+  const CompatTableString({
+    this.s,
+  });
+
+  CompatTableString._(Map<int, dynamic> argv) : s = argv[1];
+  final String s;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      1: s,
+    };
+  }
+
+  static CompatTableString _ctor(Map<int, dynamic> argv) =>
+      CompatTableString._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<CompatTableString> kCompatTableString_Type =
+    $fidl.TableType<CompatTableString>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    1: $fidl.StringType(maybeElementCount: null, nullable: false),
+  },
+  ctor: CompatTableString._ctor,
+);
+
+class CompatTableValue extends $fidl.Table {
+  const CompatTableValue({
+    this.unionMember,
+    this.arrayMember,
+    this.tableMember,
+    this.xunionMember,
+  });
+
+  CompatTableValue._(Map<int, dynamic> argv)
+      : unionMember = argv[1],
+        arrayMember = argv[2],
+        tableMember = argv[3],
+        xunionMember = argv[4];
+  final CompatUnion unionMember;
+  final Uint32List arrayMember;
+  final CompatTableString tableMember;
+  final CompatXUnion xunionMember;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      1: unionMember,
+      2: arrayMember,
+      3: tableMember,
+      4: xunionMember,
+    };
+  }
+
+  static CompatTableValue _ctor(Map<int, dynamic> argv) =>
+      CompatTableValue._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<CompatTableValue> kCompatTableValue_Type =
+    $fidl.TableType<CompatTableValue>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    1: kCompatUnion_Type,
+    2: $fidl.ArrayType<Uint32List>(
+        element: $fidl.Uint32Type(), elementCount: 3),
+    3: kCompatTableString_Type,
+    4: kCompatXUnion_Type,
+  },
+  ctor: CompatTableValue._ctor,
+);
+
+class TableWithXUnion extends $fidl.Table {
+  const TableWithXUnion({
+    this.member,
+  });
+
+  TableWithXUnion._(Map<int, dynamic> argv) : member = argv[1];
+  final CompatXUnion member;
+
+  @override
+  Map<int, dynamic> get $fields {
+    return {
+      1: member,
+    };
+  }
+
+  static TableWithXUnion _ctor(Map<int, dynamic> argv) =>
+      TableWithXUnion._(argv);
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.TableType<TableWithXUnion> kTableWithXUnion_Type =
+    $fidl.TableType<TableWithXUnion>(
+  inlineSizeOld: 16,
+  inlineSizeV1: 16,
+  members: <int, $fidl.FidlType>{
+    1: kCompatXUnion_Type,
+  },
+  ctor: TableWithXUnion._ctor,
 );
 
 // ignore: unused_element, avoid_private_typedef_functions
