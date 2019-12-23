@@ -46,10 +46,8 @@ const $fidl.MethodType _kFirstProtocol_MethodOnFirst_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"FirstProtocol.MethodOnFirst",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 0,
-  responseInlineSizeV1: 0,
+  requestInlineSize: 16,
+  responseInlineSize: 0,
 );
 
 abstract class FirstProtocol extends $fidl.Service {
@@ -124,8 +122,7 @@ class FirstProtocolProxy extends $fidl.AsyncProxy<FirstProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kFirstProtocol_MethodOnFirst_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
@@ -173,10 +170,8 @@ const $fidl.MethodType _kSecondProtocol_MethodOnSecond_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"SecondProtocol.MethodOnSecond",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 0,
-  responseInlineSizeV1: 0,
+  requestInlineSize: 16,
+  responseInlineSize: 0,
 );
 
 abstract class SecondProtocol extends $fidl.Service {
@@ -251,8 +246,7 @@ class SecondProtocolProxy extends $fidl.AsyncProxy<SecondProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kSecondProtocol_MethodOnSecond_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);

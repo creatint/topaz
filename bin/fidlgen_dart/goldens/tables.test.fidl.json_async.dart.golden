@@ -53,8 +53,7 @@ class EmptyTable extends $fidl.Table {
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<EmptyTable> kEmptyTable_Type =
     $fidl.TableType<EmptyTable>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
+  inlineSize: 16,
   members: <int, $fidl.FidlType>{},
   ctor: EmptyTable._ctor,
 );
@@ -86,8 +85,7 @@ class SimpleTable extends $fidl.Table {
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<SimpleTable> kSimpleTable_Type =
     $fidl.TableType<SimpleTable>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
+  inlineSize: 16,
   members: <int, $fidl.FidlType>{
     1: $fidl.Int64Type(),
     5: $fidl.Int64Type(),
@@ -118,8 +116,7 @@ class OlderSimpleTable extends $fidl.Table {
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<OlderSimpleTable> kOlderSimpleTable_Type =
     $fidl.TableType<OlderSimpleTable>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
+  inlineSize: 16,
   members: <int, $fidl.FidlType>{
     1: $fidl.Int64Type(),
   },
@@ -158,8 +155,7 @@ class NewerSimpleTable extends $fidl.Table {
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<NewerSimpleTable> kNewerSimpleTable_Type =
     $fidl.TableType<NewerSimpleTable>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
+  inlineSize: 16,
   members: <int, $fidl.FidlType>{
     1: $fidl.Int64Type(),
     5: $fidl.Int64Type(),
@@ -200,8 +196,7 @@ class ReverseOrdinalTable extends $fidl.Table {
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<ReverseOrdinalTable> kReverseOrdinalTable_Type =
     $fidl.TableType<ReverseOrdinalTable>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
+  inlineSize: 16,
   members: <int, $fidl.FidlType>{
     1: $fidl.Int64Type(),
     2: $fidl.Int64Type(),

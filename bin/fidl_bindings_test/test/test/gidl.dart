@@ -7,25 +7,27 @@ import 'dart:typed_data';
 import 'package:test/test.dart';
 import 'package:fidl/fidl.dart' as fidl;
 
+// TODO(fxb/42311) remove old wire format from gidl
 // ignore: avoid_classes_with_only_static_members
 abstract class Encoders {
   static fidl.Encoder get old {
-    return fidl.Encoder(encodeUnionAsXUnionBytes: false);
+    return fidl.Encoder();
   }
 
   static fidl.Encoder get v1 {
-    return fidl.Encoder(encodeUnionAsXUnionBytes: true);
+    return fidl.Encoder();
   }
 }
 
+// TODO(fxb/42311) remove old wire format from gidl
 // ignore: avoid_classes_with_only_static_members
 abstract class Decoders {
   static fidl.Decoder get old {
-    return fidl.Decoder.fromRawArgs(null, [], false);
+    return fidl.Decoder.fromRawArgs(null, []);
   }
 
   static fidl.Decoder get v1 {
-    return fidl.Decoder.fromRawArgs(null, [], true);
+    return fidl.Decoder.fromRawArgs(null, []);
   }
 }
 

@@ -428,12 +428,11 @@ class WithErrorSyntaxResponseAsStructResponse extends $fidl.Struct {
 const $fidl.StructType<WithErrorSyntaxResponseAsStructResponse>
     kWithErrorSyntax_ResponseAsStruct_Response_Type =
     $fidl.StructType<WithErrorSyntaxResponseAsStructResponse>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
+  inlineSize: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 0, offsetV1: 0),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 8, offsetV1: 8),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 16, offsetV1: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 0),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 8),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
   ],
   ctor: WithErrorSyntaxResponseAsStructResponse._ctor,
 );
@@ -477,10 +476,9 @@ class WithErrorSyntaxErrorAsPrimitiveResponse extends $fidl.Struct {
 const $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>
     kWithErrorSyntax_ErrorAsPrimitive_Response_Type =
     $fidl.StructType<WithErrorSyntaxErrorAsPrimitiveResponse>(
-  inlineSizeOld: 1,
-  inlineSizeV1: 1,
+  inlineSize: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
   ctor: WithErrorSyntaxErrorAsPrimitiveResponse._ctor,
 );
@@ -523,10 +521,9 @@ class WithErrorSyntaxErrorAsEnumResponse extends $fidl.Struct {
 const $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>
     kWithErrorSyntax_ErrorAsEnum_Response_Type =
     $fidl.StructType<WithErrorSyntaxErrorAsEnumResponse>(
-  inlineSizeOld: 1,
-  inlineSizeV1: 1,
+  inlineSize: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
   ctor: WithErrorSyntaxErrorAsEnumResponse._ctor,
 );
@@ -544,10 +541,8 @@ const $fidl.MethodType
   request: null,
   response: null,
   name: r"WithAndWithoutRequestResponse.NoRequestNoResponse",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 0,
-  responseInlineSizeV1: 0,
+  requestInlineSize: 16,
+  responseInlineSize: 0,
 );
 // noRequestEmptyResponse: () -> ()
 const int _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_Ordinal =
@@ -560,10 +555,8 @@ const $fidl.MethodType
   request: null,
   response: null,
   name: r"WithAndWithoutRequestResponse.NoRequestEmptyResponse",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 16,
-  responseInlineSizeV1: 16,
+  requestInlineSize: 16,
+  responseInlineSize: 16,
 );
 // noRequestWithResponse: () -> (String ret)
 const int _kWithAndWithoutRequestResponse_NoRequestWithResponse_Ordinal =
@@ -577,14 +570,11 @@ const $fidl.MethodType
   response: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 16,
-        offsetV1: 16),
+        offset: 16),
   ],
   name: r"WithAndWithoutRequestResponse.NoRequestWithResponse",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 32,
-  responseInlineSizeV1: 32,
+  requestInlineSize: 16,
+  responseInlineSize: 32,
 );
 // withRequestNoResponse: (String arg)
 const int _kWithAndWithoutRequestResponse_WithRequestNoResponse_Ordinal =
@@ -597,15 +587,12 @@ const $fidl.MethodType
   request: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 16,
-        offsetV1: 16),
+        offset: 16),
   ],
   response: null,
   name: r"WithAndWithoutRequestResponse.WithRequestNoResponse",
-  requestInlineSizeOld: 32,
-  requestInlineSizeV1: 32,
-  responseInlineSizeOld: 0,
-  responseInlineSizeV1: 0,
+  requestInlineSize: 32,
+  responseInlineSize: 0,
 );
 // withRequestEmptyResponse: (String arg) -> ()
 const int _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Ordinal =
@@ -618,15 +605,12 @@ const $fidl.MethodType
   request: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 16,
-        offsetV1: 16),
+        offset: 16),
   ],
   response: null,
   name: r"WithAndWithoutRequestResponse.WithRequestEmptyResponse",
-  requestInlineSizeOld: 32,
-  requestInlineSizeV1: 32,
-  responseInlineSizeOld: 16,
-  responseInlineSizeV1: 16,
+  requestInlineSize: 32,
+  responseInlineSize: 16,
 );
 // withRequestWithResponse: (String arg) -> (String ret)
 const int _kWithAndWithoutRequestResponse_WithRequestWithResponse_Ordinal =
@@ -639,20 +623,16 @@ const $fidl.MethodType
   request: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 16,
-        offsetV1: 16),
+        offset: 16),
   ],
   response: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 16,
-        offsetV1: 16),
+        offset: 16),
   ],
   name: r"WithAndWithoutRequestResponse.WithRequestWithResponse",
-  requestInlineSizeOld: 32,
-  requestInlineSizeV1: 32,
-  responseInlineSizeOld: 32,
-  responseInlineSizeV1: 32,
+  requestInlineSize: 32,
+  responseInlineSize: 32,
 );
 // onEmptyResponse:  -> ()
 const int _kWithAndWithoutRequestResponse_OnEmptyResponse_Ordinal =
@@ -664,10 +644,8 @@ const $fidl.MethodType _kWithAndWithoutRequestResponse_OnEmptyResponse_Type =
   request: null,
   response: null,
   name: r"WithAndWithoutRequestResponse.OnEmptyResponse",
-  requestInlineSizeOld: 0,
-  requestInlineSizeV1: 0,
-  responseInlineSizeOld: 16,
-  responseInlineSizeV1: 16,
+  requestInlineSize: 0,
+  responseInlineSize: 16,
 );
 // onWithResponse:  -> (String ret)
 const int _kWithAndWithoutRequestResponse_OnWithResponse_Ordinal =
@@ -680,14 +658,11 @@ const $fidl.MethodType _kWithAndWithoutRequestResponse_OnWithResponse_Type =
   response: <$fidl.MemberType>[
     $fidl.MemberType<String>(
         type: $fidl.StringType(maybeElementCount: null, nullable: false),
-        offsetOld: 16,
-        offsetV1: 16),
+        offset: 16),
   ],
   name: r"WithAndWithoutRequestResponse.OnWithResponse",
-  requestInlineSizeOld: 0,
-  requestInlineSizeV1: 0,
-  responseInlineSizeOld: 32,
-  responseInlineSizeV1: 32,
+  requestInlineSize: 0,
+  responseInlineSize: 32,
 );
 
 abstract class WithAndWithoutRequestResponse extends $fidl.Service {
@@ -929,8 +904,7 @@ class WithAndWithoutRequestResponseProxy
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_NoRequestNoResponse_GenOrdinal, 0);
     return $async.Future.sync(() {
@@ -946,8 +920,7 @@ class WithAndWithoutRequestResponseProxy
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_GenOrdinal, 0);
     final $completer = $async.Completer<void>();
@@ -963,8 +936,7 @@ class WithAndWithoutRequestResponseProxy
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_NoRequestWithResponse_GenOrdinal, 0);
     final $completer = $async.Completer<String>();
@@ -980,8 +952,7 @@ class WithAndWithoutRequestResponseProxy
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_WithRequestNoResponse_GenOrdinal, 0);
     $encoder.alloc(_kWithAndWithoutRequestResponse_WithRequestNoResponse_Type
@@ -1003,8 +974,7 @@ class WithAndWithoutRequestResponseProxy
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_GenOrdinal, 0);
     $encoder.alloc(_kWithAndWithoutRequestResponse_WithRequestEmptyResponse_Type
@@ -1026,8 +996,7 @@ class WithAndWithoutRequestResponseProxy
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithAndWithoutRequestResponse_WithRequestWithResponse_GenOrdinal, 0);
     $encoder.alloc(_kWithAndWithoutRequestResponse_WithRequestWithResponse_Type
@@ -1069,9 +1038,7 @@ class WithAndWithoutRequestResponseBinding
     whenBound.then((_) {
       if (impl.onEmptyResponse != null) {
         $subscriptions.add(impl.onEmptyResponse.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder(
-              encodeUnionAsXUnionBytes:
-                  $fidl.defaultEnableWriteXUnionBytesForUnion);
+          final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(
               _kWithAndWithoutRequestResponse_OnEmptyResponse_GenOrdinal, 0);
           $encoder.alloc(_kWithAndWithoutRequestResponse_OnEmptyResponse_Type
@@ -1085,9 +1052,7 @@ class WithAndWithoutRequestResponseBinding
       }
       if (impl.onWithResponse != null) {
         $subscriptions.add(impl.onWithResponse.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder(
-              encodeUnionAsXUnionBytes:
-                  $fidl.defaultEnableWriteXUnionBytesForUnion);
+          final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(
               _kWithAndWithoutRequestResponse_OnWithResponse_GenOrdinal, 0);
           $encoder.alloc(_kWithAndWithoutRequestResponse_OnWithResponse_Type
@@ -1142,9 +1107,7 @@ class WithAndWithoutRequestResponseBinding
                   .decodeRequestInlineSize($decoder));
           final $async.Future<void> $future = impl.noRequestEmptyResponse();
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kWithAndWithoutRequestResponse_NoRequestEmptyResponse_GenOrdinal,
                 $message.txid);
@@ -1176,9 +1139,7 @@ class WithAndWithoutRequestResponseBinding
                   .decodeRequestInlineSize($decoder));
           final $async.Future<String> $future = impl.noRequestWithResponse();
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kWithAndWithoutRequestResponse_NoRequestWithResponse_GenOrdinal,
                 $message.txid);
@@ -1244,9 +1205,7 @@ class WithAndWithoutRequestResponseBinding
             $types[0].decode($decoder, 0),
           );
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kWithAndWithoutRequestResponse_WithRequestEmptyResponse_GenOrdinal,
                 $message.txid);
@@ -1280,9 +1239,7 @@ class WithAndWithoutRequestResponseBinding
             $types[0].decode($decoder, 0),
           );
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kWithAndWithoutRequestResponse_WithRequestWithResponse_GenOrdinal,
                 $message.txid);
@@ -1323,15 +1280,11 @@ const $fidl.MethodType _kWithErrorSyntax_ResponseAsStruct_Type =
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxResponseAsStructResult>(
-        type: kWithErrorSyntax_ResponseAsStruct_Result_Type,
-        offsetOld: 16,
-        offsetV1: 16),
+        type: kWithErrorSyntax_ResponseAsStruct_Result_Type, offset: 16),
   ],
   name: r"WithErrorSyntax.ResponseAsStruct",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 48,
-  responseInlineSizeV1: 40,
+  requestInlineSize: 16,
+  responseInlineSize: 40,
 );
 // errorAsPrimitive: () -> ()
 const int _kWithErrorSyntax_ErrorAsPrimitive_Ordinal = 0x7b58113900000000;
@@ -1341,15 +1294,11 @@ const $fidl.MethodType _kWithErrorSyntax_ErrorAsPrimitive_Type =
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxErrorAsPrimitiveResult>(
-        type: kWithErrorSyntax_ErrorAsPrimitive_Result_Type,
-        offsetOld: 16,
-        offsetV1: 16),
+        type: kWithErrorSyntax_ErrorAsPrimitive_Result_Type, offset: 16),
   ],
   name: r"WithErrorSyntax.ErrorAsPrimitive",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 24,
-  responseInlineSizeV1: 40,
+  requestInlineSize: 16,
+  responseInlineSize: 40,
 );
 // errorAsEnum: () -> ()
 const int _kWithErrorSyntax_ErrorAsEnum_Ordinal = 0x4c95de1f00000000;
@@ -1358,15 +1307,11 @@ const $fidl.MethodType _kWithErrorSyntax_ErrorAsEnum_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<WithErrorSyntaxErrorAsEnumResult>(
-        type: kWithErrorSyntax_ErrorAsEnum_Result_Type,
-        offsetOld: 16,
-        offsetV1: 16),
+        type: kWithErrorSyntax_ErrorAsEnum_Result_Type, offset: 16),
   ],
   name: r"WithErrorSyntax.ErrorAsEnum",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 24,
-  responseInlineSizeV1: 40,
+  requestInlineSize: 16,
+  responseInlineSize: 40,
 );
 
 class WithErrorSyntax$ResponseAsStruct$Response {
@@ -1545,8 +1490,7 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithErrorSyntax_ResponseAsStruct_GenOrdinal, 0);
     final $completer =
@@ -1563,8 +1507,7 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kWithErrorSyntax_ErrorAsPrimitive_GenOrdinal, 0);
     final $completer = $async.Completer<void>();
@@ -1580,8 +1523,7 @@ class WithErrorSyntaxProxy extends $fidl.AsyncProxy<WithErrorSyntax>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kWithErrorSyntax_ErrorAsEnum_GenOrdinal, 0);
     final $completer = $async.Completer<void>();
     ctrl.sendMessageWithResponse($encoder.message, $completer);
@@ -1622,9 +1564,7 @@ class WithErrorSyntaxBinding extends $fidl.AsyncBinding<WithErrorSyntax> {
               return Future.error($error);
             }
           }).then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kWithErrorSyntax_ResponseAsStruct_GenOrdinal, $message.txid);
             $encoder.alloc(_kWithErrorSyntax_ResponseAsStruct_Type
@@ -1668,9 +1608,7 @@ class WithErrorSyntaxBinding extends $fidl.AsyncBinding<WithErrorSyntax> {
               return Future.error($error);
             }
           }).then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kWithErrorSyntax_ErrorAsPrimitive_GenOrdinal, $message.txid);
             $encoder.alloc(_kWithErrorSyntax_ErrorAsPrimitive_Type
@@ -1713,9 +1651,7 @@ class WithErrorSyntaxBinding extends $fidl.AsyncBinding<WithErrorSyntax> {
               return Future.error($error);
             }
           }).then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kWithErrorSyntax_ErrorAsEnum_GenOrdinal, $message.txid);
             $encoder.alloc(_kWithErrorSyntax_ErrorAsEnum_Type
@@ -1750,15 +1686,13 @@ const int _kChannelProtocol_MethodA_Ordinal = 0x556693d200000000;
 const int _kChannelProtocol_MethodA_GenOrdinal = 0x1b1e059b3f02bffc;
 const $fidl.MethodType _kChannelProtocol_MethodA_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 16, offsetV1: 16),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 24, offsetV1: 24),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   response: null,
   name: r"ChannelProtocol.MethodA",
-  requestInlineSizeOld: 32,
-  requestInlineSizeV1: 32,
-  responseInlineSizeOld: 0,
-  responseInlineSizeV1: 0,
+  requestInlineSize: 32,
+  responseInlineSize: 0,
 );
 // eventA:  -> (int a, int b)
 const int _kChannelProtocol_EventA_Ordinal = 0x1c78c20200000000;
@@ -1766,31 +1700,27 @@ const int _kChannelProtocol_EventA_GenOrdinal = 0x2558b206a254d8a0;
 const $fidl.MethodType _kChannelProtocol_EventA_Type = $fidl.MethodType(
   request: null,
   response: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 16, offsetV1: 16),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 24, offsetV1: 24),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   name: r"ChannelProtocol.EventA",
-  requestInlineSizeOld: 0,
-  requestInlineSizeV1: 0,
-  responseInlineSizeOld: 32,
-  responseInlineSizeV1: 32,
+  requestInlineSize: 0,
+  responseInlineSize: 32,
 );
 // methodB: (int a, int b) -> (int result)
 const int _kChannelProtocol_MethodB_Ordinal = 0xac6551b00000000;
 const int _kChannelProtocol_MethodB_GenOrdinal = 0x5db17a61464744a3;
 const $fidl.MethodType _kChannelProtocol_MethodB_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 16, offsetV1: 16),
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 24, offsetV1: 24),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 24),
   ],
   response: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int64Type(), offsetOld: 16, offsetV1: 16),
+    $fidl.MemberType<int>(type: $fidl.Int64Type(), offset: 16),
   ],
   name: r"ChannelProtocol.MethodB",
-  requestInlineSizeOld: 32,
-  requestInlineSizeV1: 32,
-  responseInlineSizeOld: 24,
-  responseInlineSizeV1: 24,
+  requestInlineSize: 32,
+  responseInlineSize: 24,
 );
 // mutateSocket: ($zx.Socket a) -> ($zx.Socket b)
 const int _kChannelProtocol_MutateSocket_Ordinal = 0x4b02e28600000000;
@@ -1798,17 +1728,15 @@ const int _kChannelProtocol_MutateSocket_GenOrdinal = 0x36caa6fff7569577;
 const $fidl.MethodType _kChannelProtocol_MutateSocket_Type = $fidl.MethodType(
   request: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Socket>(
-        type: $fidl.SocketType(nullable: false), offsetOld: 16, offsetV1: 16),
+        type: $fidl.SocketType(nullable: false), offset: 16),
   ],
   response: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Socket>(
-        type: $fidl.SocketType(nullable: false), offsetOld: 16, offsetV1: 16),
+        type: $fidl.SocketType(nullable: false), offset: 16),
   ],
   name: r"ChannelProtocol.MutateSocket",
-  requestInlineSizeOld: 24,
-  requestInlineSizeV1: 24,
-  responseInlineSizeOld: 24,
-  responseInlineSizeV1: 24,
+  requestInlineSize: 24,
+  responseInlineSize: 24,
 );
 
 class ChannelProtocol$EventA$Response {
@@ -1969,8 +1897,7 @@ class ChannelProtocolProxy extends $fidl.AsyncProxy<ChannelProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kChannelProtocol_MethodA_GenOrdinal, 0);
     $encoder.alloc(
         _kChannelProtocol_MethodA_Type.encodingRequestInlineSize($encoder) -
@@ -1998,8 +1925,7 @@ class ChannelProtocolProxy extends $fidl.AsyncProxy<ChannelProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kChannelProtocol_MethodB_GenOrdinal, 0);
     $encoder.alloc(
         _kChannelProtocol_MethodB_Type.encodingRequestInlineSize($encoder) -
@@ -2021,8 +1947,7 @@ class ChannelProtocolProxy extends $fidl.AsyncProxy<ChannelProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kChannelProtocol_MutateSocket_GenOrdinal, 0);
     $encoder.alloc(_kChannelProtocol_MutateSocket_Type
             .encodingRequestInlineSize($encoder) -
@@ -2049,9 +1974,7 @@ class ChannelProtocolBinding extends $fidl.AsyncBinding<ChannelProtocol> {
     whenBound.then((_) {
       if (impl.eventA != null) {
         $subscriptions.add(impl.eventA.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder(
-              encodeUnionAsXUnionBytes:
-                  $fidl.defaultEnableWriteXUnionBytesForUnion);
+          final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(_kChannelProtocol_EventA_GenOrdinal, 0);
           $encoder.alloc(_kChannelProtocol_EventA_Type
                   .encodingResponseInlineSize($encoder) -
@@ -2108,9 +2031,7 @@ class ChannelProtocolBinding extends $fidl.AsyncBinding<ChannelProtocol> {
             $types[1].decode($decoder, 0),
           );
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kChannelProtocol_MethodB_GenOrdinal, $message.txid);
             $encoder.alloc(_kChannelProtocol_MethodB_Type
@@ -2146,9 +2067,7 @@ class ChannelProtocolBinding extends $fidl.AsyncBinding<ChannelProtocol> {
             $types[0].decode($decoder, 0),
           );
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kChannelProtocol_MutateSocket_GenOrdinal, $message.txid);
             $encoder.alloc(_kChannelProtocol_MutateSocket_Type

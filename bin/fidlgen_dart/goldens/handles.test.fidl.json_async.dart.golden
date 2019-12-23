@@ -272,63 +272,60 @@ class Handles extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Handles> kHandles_Type = $fidl.StructType<Handles>(
-  inlineSizeOld: 104,
-  inlineSizeV1: 104,
+  inlineSize: 104,
   members: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 0, offsetV1: 0),
+        type: $fidl.HandleType(nullable: false), offset: 0),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 4, offsetV1: 4),
+        type: $fidl.HandleType(nullable: false), offset: 4),
     $fidl.MemberType<$zx.Channel>(
-        type: $fidl.ChannelType(nullable: false), offsetOld: 8, offsetV1: 8),
+        type: $fidl.ChannelType(nullable: false), offset: 8),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 12, offsetV1: 12),
+        type: $fidl.HandleType(nullable: false), offset: 12),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 16, offsetV1: 16),
+        type: $fidl.HandleType(nullable: false), offset: 16),
     $fidl.MemberType<$zx.EventPair>(
-        type: $fidl.EventPairType(nullable: false),
-        offsetOld: 20,
-        offsetV1: 20),
+        type: $fidl.EventPairType(nullable: false), offset: 20),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 24, offsetV1: 24),
+        type: $fidl.HandleType(nullable: false), offset: 24),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 28, offsetV1: 28),
+        type: $fidl.HandleType(nullable: false), offset: 28),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 32, offsetV1: 32),
+        type: $fidl.HandleType(nullable: false), offset: 32),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 36, offsetV1: 36),
+        type: $fidl.HandleType(nullable: false), offset: 36),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 40, offsetV1: 40),
+        type: $fidl.HandleType(nullable: false), offset: 40),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 44, offsetV1: 44),
+        type: $fidl.HandleType(nullable: false), offset: 44),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 48, offsetV1: 48),
+        type: $fidl.HandleType(nullable: false), offset: 48),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 52, offsetV1: 52),
+        type: $fidl.HandleType(nullable: false), offset: 52),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 56, offsetV1: 56),
+        type: $fidl.HandleType(nullable: false), offset: 56),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 60, offsetV1: 60),
+        type: $fidl.HandleType(nullable: false), offset: 60),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 64, offsetV1: 64),
+        type: $fidl.HandleType(nullable: false), offset: 64),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 68, offsetV1: 68),
+        type: $fidl.HandleType(nullable: false), offset: 68),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 72, offsetV1: 72),
+        type: $fidl.HandleType(nullable: false), offset: 72),
     $fidl.MemberType<$zx.Socket>(
-        type: $fidl.SocketType(nullable: false), offsetOld: 76, offsetV1: 76),
+        type: $fidl.SocketType(nullable: false), offset: 76),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 80, offsetV1: 80),
+        type: $fidl.HandleType(nullable: false), offset: 80),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 84, offsetV1: 84),
+        type: $fidl.HandleType(nullable: false), offset: 84),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 88, offsetV1: 88),
+        type: $fidl.HandleType(nullable: false), offset: 88),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 92, offsetV1: 92),
+        type: $fidl.HandleType(nullable: false), offset: 92),
     $fidl.MemberType<$zx.Handle>(
-        type: $fidl.HandleType(nullable: false), offsetOld: 96, offsetV1: 96),
+        type: $fidl.HandleType(nullable: false), offset: 96),
     $fidl.MemberType<$zx.Vmo>(
-        type: $fidl.VmoType(nullable: false), offsetOld: 100, offsetV1: 100),
+        type: $fidl.VmoType(nullable: false), offset: 100),
   ],
   ctor: Handles._ctor,
 );

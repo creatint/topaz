@@ -129,23 +129,16 @@ const int kHandleAbsent = 0;
 const int kHandlePresent = 0xFFFFFFFF;
 
 abstract class FidlType<T> {
-  const FidlType({this.inlineSizeOld, this.inlineSizeV1});
+  const FidlType({this.inlineSize});
 
-  final int inlineSizeOld;
-  final int inlineSizeV1;
+  final int inlineSize;
 
   int encodingInlineSize(Encoder encoder) {
-    if (encoder.encodeUnionAsXUnionBytes) {
-      return inlineSizeV1;
-    }
-    return inlineSizeOld;
+    return inlineSize;
   }
 
   int decodingInlineSize(Decoder decoder) {
-    if (decoder.decodeUnionFromXUnionBytes) {
-      return inlineSizeV1;
-    }
-    return inlineSizeOld;
+    return inlineSize;
   }
 
   void encode(Encoder encoder, T value, int offset);
@@ -169,8 +162,8 @@ abstract class FidlType<T> {
 }
 
 abstract class NullableFidlType<T> extends FidlType<T> {
-  const NullableFidlType({inlineSizeOld, inlineSizeV1, this.nullable})
-      : super(inlineSizeOld: inlineSizeOld, inlineSizeV1: inlineSizeV1);
+  const NullableFidlType({inlineSize, this.nullable})
+      : super(inlineSize: inlineSize);
 
   final bool nullable;
 }
@@ -185,7 +178,7 @@ class UnknownRawData {
 /// payload bytes followed directly by handles.
 class UnknownRawDataType extends FidlType<UnknownRawData> {
   const UnknownRawDataType(this.numBytes, this.numHandles)
-      : super(inlineSizeOld: numBytes, inlineSizeV1: numBytes);
+      : super(inlineSize: numBytes);
 
   final int numBytes;
   final int numHandles;
@@ -213,7 +206,7 @@ class UnknownRawDataType extends FidlType<UnknownRawData> {
 }
 
 class BoolType extends FidlType<bool> {
-  const BoolType() : super(inlineSizeOld: 1, inlineSizeV1: 1);
+  const BoolType() : super(inlineSize: 1);
 
   @override
   void encode(Encoder encoder, bool value, int offset) {
@@ -229,7 +222,7 @@ class StatusType extends Int32Type {
 }
 
 class Int8Type extends FidlType<int> {
-  const Int8Type() : super(inlineSizeOld: 1, inlineSizeV1: 1);
+  const Int8Type() : super(inlineSize: 1);
 
   @override
   void encode(Encoder encoder, int value, int offset) {
@@ -251,7 +244,7 @@ class Int8Type extends FidlType<int> {
 }
 
 class Int16Type extends FidlType<int> {
-  const Int16Type() : super(inlineSizeOld: 2, inlineSizeV1: 2);
+  const Int16Type() : super(inlineSize: 2);
 
   @override
   void encode(Encoder encoder, int value, int offset) {
@@ -273,7 +266,7 @@ class Int16Type extends FidlType<int> {
 }
 
 class Int32Type extends FidlType<int> {
-  const Int32Type() : super(inlineSizeOld: 4, inlineSizeV1: 4);
+  const Int32Type() : super(inlineSize: 4);
 
   @override
   void encode(Encoder encoder, int value, int offset) {
@@ -295,7 +288,7 @@ class Int32Type extends FidlType<int> {
 }
 
 class Int64Type extends FidlType<int> {
-  const Int64Type() : super(inlineSizeOld: 8, inlineSizeV1: 8);
+  const Int64Type() : super(inlineSize: 8);
 
   @override
   void encode(Encoder encoder, int value, int offset) {
@@ -317,7 +310,7 @@ class Int64Type extends FidlType<int> {
 }
 
 class Uint8Type extends FidlType<int> {
-  const Uint8Type() : super(inlineSizeOld: 1, inlineSizeV1: 1);
+  const Uint8Type() : super(inlineSize: 1);
 
   @override
   void encode(Encoder encoder, int value, int offset) {
@@ -339,7 +332,7 @@ class Uint8Type extends FidlType<int> {
 }
 
 class Uint16Type extends FidlType<int> {
-  const Uint16Type() : super(inlineSizeOld: 2, inlineSizeV1: 2);
+  const Uint16Type() : super(inlineSize: 2);
 
   @override
   void encode(Encoder encoder, int value, int offset) {
@@ -361,7 +354,7 @@ class Uint16Type extends FidlType<int> {
 }
 
 class Uint32Type extends FidlType<int> {
-  const Uint32Type() : super(inlineSizeOld: 4, inlineSizeV1: 4);
+  const Uint32Type() : super(inlineSize: 4);
 
   @override
   void encode(Encoder encoder, int value, int offset) {
@@ -383,7 +376,7 @@ class Uint32Type extends FidlType<int> {
 }
 
 class Uint64Type extends FidlType<int> {
-  const Uint64Type() : super(inlineSizeOld: 8, inlineSizeV1: 8);
+  const Uint64Type() : super(inlineSize: 8);
 
   @override
   void encode(Encoder encoder, int value, int offset) {
@@ -405,7 +398,7 @@ class Uint64Type extends FidlType<int> {
 }
 
 class Float32Type extends FidlType<double> {
-  const Float32Type() : super(inlineSizeOld: 4, inlineSizeV1: 4);
+  const Float32Type() : super(inlineSize: 4);
 
   @override
   void encode(Encoder encoder, double value, int offset) {
@@ -427,7 +420,7 @@ class Float32Type extends FidlType<double> {
 }
 
 class Float64Type extends FidlType<double> {
-  const Float64Type() : super(inlineSizeOld: 8, inlineSizeV1: 8);
+  const Float64Type() : super(inlineSize: 8);
 
   @override
   void encode(Encoder encoder, double value, int offset) {
@@ -486,7 +479,7 @@ Handle _decodeHandle(Decoder decoder, int offset, bool nullable) {
 class HandleType extends NullableFidlType<Handle> {
   const HandleType({
     bool nullable,
-  }) : super(inlineSizeOld: 4, inlineSizeV1: 4, nullable: nullable);
+  }) : super(inlineSize: 4, nullable: nullable);
 
   @override
   void encode(Encoder encoder, Handle value, int offset) {
@@ -501,7 +494,7 @@ class HandleType extends NullableFidlType<Handle> {
 class ChannelType extends NullableFidlType<Channel> {
   const ChannelType({
     bool nullable,
-  }) : super(inlineSizeOld: 4, inlineSizeV1: 4, nullable: nullable);
+  }) : super(inlineSize: 4, nullable: nullable);
 
   @override
   void encode(Encoder encoder, Channel value, int offset) {
@@ -516,7 +509,7 @@ class ChannelType extends NullableFidlType<Channel> {
 class EventPairType extends NullableFidlType<EventPair> {
   const EventPairType({
     bool nullable,
-  }) : super(inlineSizeOld: 4, inlineSizeV1: 4, nullable: nullable);
+  }) : super(inlineSize: 4, nullable: nullable);
 
   @override
   void encode(Encoder encoder, EventPair value, int offset) {
@@ -531,7 +524,7 @@ class EventPairType extends NullableFidlType<EventPair> {
 class SocketType extends NullableFidlType<Socket> {
   const SocketType({
     bool nullable,
-  }) : super(inlineSizeOld: 4, inlineSizeV1: 4, nullable: nullable);
+  }) : super(inlineSize: 4, nullable: nullable);
 
   @override
   void encode(Encoder encoder, Socket value, int offset) {
@@ -546,7 +539,7 @@ class SocketType extends NullableFidlType<Socket> {
 class VmoType extends NullableFidlType<Vmo> {
   const VmoType({
     bool nullable,
-  }) : super(inlineSizeOld: 4, inlineSizeV1: 4, nullable: nullable);
+  }) : super(inlineSize: 4, nullable: nullable);
 
   @override
   void encode(Encoder encoder, Vmo value, int offset) {
@@ -561,7 +554,7 @@ class VmoType extends NullableFidlType<Vmo> {
 class InterfaceHandleType<T> extends NullableFidlType<InterfaceHandle<T>> {
   const InterfaceHandleType({
     bool nullable,
-  }) : super(inlineSizeOld: 4, inlineSizeV1: 4, nullable: nullable);
+  }) : super(inlineSize: 4, nullable: nullable);
 
   @override
   void encode(Encoder encoder, InterfaceHandle<T> value, int offset) {
@@ -578,7 +571,7 @@ class InterfaceHandleType<T> extends NullableFidlType<InterfaceHandle<T>> {
 class InterfaceRequestType<T> extends NullableFidlType<InterfaceRequest<T>> {
   const InterfaceRequestType({
     bool nullable,
-  }) : super(inlineSizeOld: 4, inlineSizeV1: 4, nullable: nullable);
+  }) : super(inlineSize: 4, nullable: nullable);
 
   @override
   void encode(Encoder encoder, InterfaceRequest<T> value, int offset) {
@@ -596,7 +589,7 @@ class StringType extends NullableFidlType<String> {
   const StringType({
     this.maybeElementCount,
     bool nullable,
-  }) : super(inlineSizeOld: 16, inlineSizeV1: 16, nullable: nullable);
+  }) : super(inlineSize: 16, nullable: nullable);
 
   final int maybeElementCount;
 
@@ -660,7 +653,7 @@ class StringType extends NullableFidlType<String> {
 class PointerType<T> extends FidlType<T> {
   const PointerType({
     this.element,
-  }) : super(inlineSizeOld: 8, inlineSizeV1: 8);
+  }) : super(inlineSize: 8);
 
   final FidlType element;
 
@@ -696,40 +689,29 @@ class PointerType<T> extends FidlType<T> {
 class MemberType<T> extends FidlType<T> {
   const MemberType({
     this.type,
-    this.offsetOld,
-    this.offsetV1,
+    this.offset,
   });
 
   final FidlType type;
-  final int offsetOld;
-  final int offsetV1;
+  final int offset;
 
   @override
   void encode(Encoder encoder, T value, int base) {
-    int offset = offsetOld;
-    if (encoder.encodeUnionAsXUnionBytes) {
-      offset = offsetV1;
-    }
     type.encode(encoder, value, base + offset);
   }
 
   @override
   T decode(Decoder decoder, int base) {
-    int offset = offsetOld;
-    if (decoder.decodeUnionFromXUnionBytes) {
-      offset = offsetV1;
-    }
     return type.decode(decoder, base + offset);
   }
 }
 
 class StructType<T extends Struct> extends FidlType<T> {
   const StructType({
-    int inlineSizeOld,
-    int inlineSizeV1,
+    int inlineSize,
     this.members,
     this.ctor,
-  }) : super(inlineSizeOld: inlineSizeOld, inlineSizeV1: inlineSizeV1);
+  }) : super(inlineSize: inlineSize);
 
   final List<MemberType> members;
   final StructFactory<T> ctor;
@@ -854,11 +836,10 @@ T _decodeEnvelopeContent<T>(Decoder decoder, _envelopeMode mode,
 
 class TableType<T extends Table> extends FidlType<T> {
   const TableType({
-    int inlineSizeOld,
-    int inlineSizeV1,
+    int inlineSize,
     this.members,
     this.ctor,
-  }) : super(inlineSizeOld: inlineSizeOld, inlineSizeV1: inlineSizeV1);
+  }) : super(inlineSize: inlineSize);
 
   final Map<int, FidlType> members;
   final TableFactory<T> ctor;
@@ -948,7 +929,7 @@ class XUnionType<T extends XUnion> extends NullableFidlType<T> {
     this.ctor,
     bool nullable,
     this.flexible,
-  }) : super(inlineSizeOld: 24, inlineSizeV1: 24, nullable: nullable);
+  }) : super(inlineSize: 24, nullable: nullable);
 
   final Map<int, FidlType> members;
   final XUnionFactory<T> ctor;
@@ -1017,9 +998,7 @@ class EnumType<T extends Enum> extends FidlType<T> {
   final EnumFactory<T> ctor;
 
   @override
-  int get inlineSizeOld => type.inlineSizeOld;
-  @override
-  int get inlineSizeV1 => type.inlineSizeV1;
+  int get inlineSize => type.inlineSize;
 
   @override
   void encode(Encoder encoder, T value, int offset) {
@@ -1042,9 +1021,7 @@ class BitsType<T extends Bits> extends FidlType<T> {
   final BitsFactory<T> ctor;
 
   @override
-  int get inlineSizeOld => type.inlineSizeOld;
-  @override
-  int get inlineSizeV1 => type.inlineSizeV1;
+  int get inlineSize => type.inlineSize;
 
   @override
   void encode(Encoder encoder, T value, int offset) {
@@ -1062,46 +1039,30 @@ class MethodType extends FidlType<Null> {
     this.request,
     this.response,
     this.name,
-    this.requestInlineSizeOld,
-    this.requestInlineSizeV1,
-    this.responseInlineSizeOld,
-    this.responseInlineSizeV1,
+    this.requestInlineSize,
+    this.responseInlineSize,
   });
 
   final List<MemberType> request;
   final List<MemberType> response;
   final String name;
-  final int requestInlineSizeOld;
-  final int requestInlineSizeV1;
-  final int responseInlineSizeOld;
-  final int responseInlineSizeV1;
+  final int requestInlineSize;
+  final int responseInlineSize;
 
   int encodingRequestInlineSize(Encoder encoder) {
-    if (encoder.encodeUnionAsXUnionBytes) {
-      return requestInlineSizeV1;
-    }
-    return requestInlineSizeOld;
+    return requestInlineSize;
   }
 
   int encodingResponseInlineSize(Encoder encoder) {
-    if (encoder.encodeUnionAsXUnionBytes) {
-      return responseInlineSizeV1;
-    }
-    return responseInlineSizeOld;
+    return responseInlineSize;
   }
 
   int decodeRequestInlineSize(Decoder decoder) {
-    if (decoder.decodeUnionFromXUnionBytes) {
-      return requestInlineSizeV1;
-    }
-    return requestInlineSizeOld;
+    return requestInlineSize;
   }
 
   int decodeResponseInlineSize(Decoder decoder) {
-    if (decoder.decodeUnionFromXUnionBytes) {
-      return responseInlineSizeV1;
-    }
-    return responseInlineSizeOld;
+    return responseInlineSize;
   }
 
   @override
@@ -1120,7 +1081,7 @@ class VectorType<T extends List> extends NullableFidlType<T> {
     this.element,
     this.maybeElementCount,
     bool nullable,
-  }) : super(inlineSizeOld: 16, inlineSizeV1: 16, nullable: nullable);
+  }) : super(inlineSize: 16, nullable: nullable);
 
   final FidlType element;
   final int maybeElementCount;
@@ -1186,9 +1147,7 @@ class ArrayType<T extends List> extends FidlType<T> {
   final int elementCount;
 
   @override
-  int get inlineSizeOld => elementCount * element.inlineSizeOld;
-  @override
-  int get inlineSizeV1 => elementCount * element.inlineSizeV1;
+  int get inlineSize => elementCount * element.inlineSize;
 
   @override
   void encode(Encoder encoder, T value, int offset) {

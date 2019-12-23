@@ -46,10 +46,8 @@ const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OrdinalFive",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 0,
-  responseInlineSizeV1: 0,
+  requestInlineSize: 16,
+  responseInlineSize: 0,
 );
 // onlyGeneratedOrdinal: ()
 const int _kSwitchingOrdinals_OnlyGeneratedOrdinal_Ordinal = 0x27c9581f00000000;
@@ -60,10 +58,8 @@ const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OnlyGeneratedOrdinal",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 0,
-  responseInlineSizeV1: 0,
+  requestInlineSize: 16,
+  responseInlineSize: 0,
 );
 // eventOrdinalFifteen:  -> ()
 const int _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal = 0x577495a100000000;
@@ -74,10 +70,8 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
   request: null,
   response: null,
   name: r"SwitchingOrdinals.EventOrdinalFifteen",
-  requestInlineSizeOld: 0,
-  requestInlineSizeV1: 0,
-  responseInlineSizeOld: 16,
-  responseInlineSizeV1: 16,
+  requestInlineSize: 0,
+  responseInlineSize: 16,
 );
 // eventOnlyGeneratedOrdinal:  -> ()
 const int _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal =
@@ -89,10 +83,8 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type =
   request: null,
   response: null,
   name: r"SwitchingOrdinals.EventOnlyGeneratedOrdinal",
-  requestInlineSizeOld: 0,
-  requestInlineSizeV1: 0,
-  responseInlineSizeOld: 16,
-  responseInlineSizeV1: 16,
+  requestInlineSize: 0,
+  responseInlineSize: 16,
 );
 
 abstract class SwitchingOrdinals extends $fidl.Service {
@@ -216,8 +208,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kSwitchingOrdinals_OrdinalFive_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
@@ -232,8 +223,7 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kSwitchingOrdinals_OnlyGeneratedOrdinal_GenOrdinal, 0);
     return $async.Future.sync(() {
@@ -267,9 +257,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
     whenBound.then((_) {
       if (impl.eventOrdinalFifteen != null) {
         $subscriptions.add(impl.eventOrdinalFifteen.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder(
-              encodeUnionAsXUnionBytes:
-                  $fidl.defaultEnableWriteXUnionBytesForUnion);
+          final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(
               _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal, 0);
           $encoder.alloc(_kSwitchingOrdinals_EventOrdinalFifteen_Type
@@ -283,9 +271,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
       }
       if (impl.eventOnlyGeneratedOrdinal != null) {
         $subscriptions.add(impl.eventOnlyGeneratedOrdinal.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder(
-              encodeUnionAsXUnionBytes:
-                  $fidl.defaultEnableWriteXUnionBytesForUnion);
+          final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(
               _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_GenOrdinal, 0);
           $encoder.alloc(_kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type

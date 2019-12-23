@@ -9,9 +9,6 @@ import 'package:fidl_fidl_test_compatibility/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fuchsia_services/services.dart';
 
-// ignore: implementation_imports
-import 'package:fidl/src/codec.dart' as $fidl;
-
 class EchoImpl extends Echo {
   final StartupContext _context;
 
@@ -187,8 +184,6 @@ class EchoImpl extends Echo {
 }
 
 void main(List<String> args) {
-  $fidl.defaultEnableWriteXUnionBytesForUnion = args.contains('write_xunions');
-
   final StartupContext context = StartupContext.fromStartupInfo();
   final EchoImpl echoImpl = EchoImpl(context);
   context.outgoing.addPublicService(echoImpl.bind, Echo.$serviceName);

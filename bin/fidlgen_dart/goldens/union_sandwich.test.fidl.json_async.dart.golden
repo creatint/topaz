@@ -383,14 +383,12 @@ class SandwichUnionSize8Alignment4 extends $fidl.Struct {
 const $fidl.StructType<SandwichUnionSize8Alignment4>
     kSandwichUnionSize8Alignment4_Type =
     $fidl.StructType<SandwichUnionSize8Alignment4>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 40,
+  inlineSize: 40,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 0),
     $fidl.MemberType<UnionSize8Alignment4>(
-        type: kUnionSize8Alignment4_Type, offsetOld: 4, offsetV1: 8),
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 12, offsetV1: 32),
+        type: kUnionSize8Alignment4_Type, offset: 8),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 32),
   ],
   ctor: SandwichUnionSize8Alignment4._ctor,
 );
@@ -450,13 +448,12 @@ class SandwichUnionSize12Alignment4 extends $fidl.Struct {
 const $fidl.StructType<SandwichUnionSize12Alignment4>
     kSandwichUnionSize12Alignment4_Type =
     $fidl.StructType<SandwichUnionSize12Alignment4>(
-  inlineSizeOld: 20,
-  inlineSizeV1: 40,
+  inlineSize: 40,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 0),
     $fidl.MemberType<UnionSize12Alignment4>(
-        type: kUnionSize12Alignment4_Type, offsetOld: 4, offsetV1: 8),
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 16, offsetV1: 32),
+        type: kUnionSize12Alignment4_Type, offset: 8),
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 32),
   ],
   ctor: SandwichUnionSize12Alignment4._ctor,
 );
@@ -507,11 +504,10 @@ class StructSize16Alignment8 extends $fidl.Struct {
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<StructSize16Alignment8> kStructSize16Alignment8_Type =
     $fidl.StructType<StructSize16Alignment8>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
+  inlineSize: 16,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offsetOld: 0, offsetV1: 0),
-    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offsetOld: 8, offsetV1: 8),
+    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint64Type(), offset: 8),
   ],
   ctor: StructSize16Alignment8._ctor,
 );
@@ -571,14 +567,12 @@ class SandwichUnionSize24Alignment8 extends $fidl.Struct {
 const $fidl.StructType<SandwichUnionSize24Alignment8>
     kSandwichUnionSize24Alignment8_Type =
     $fidl.StructType<SandwichUnionSize24Alignment8>(
-  inlineSizeOld: 40,
-  inlineSizeV1: 40,
+  inlineSize: 40,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 0),
     $fidl.MemberType<UnionSize24Alignment8>(
-        type: kUnionSize24Alignment8_Type, offsetOld: 8, offsetV1: 8),
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 32, offsetV1: 32),
+        type: kUnionSize24Alignment8_Type, offset: 8),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 32),
   ],
   ctor: SandwichUnionSize24Alignment8._ctor,
 );
@@ -638,14 +632,12 @@ class SandwichUnionSize36Alignment4 extends $fidl.Struct {
 const $fidl.StructType<SandwichUnionSize36Alignment4>
     kSandwichUnionSize36Alignment4_Type =
     $fidl.StructType<SandwichUnionSize36Alignment4>(
-  inlineSizeOld: 44,
-  inlineSizeV1: 40,
+  inlineSize: 40,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 0),
     $fidl.MemberType<UnionSize36Alignment4>(
-        type: kUnionSize36Alignment4_Type, offsetOld: 4, offsetV1: 8),
-    $fidl.MemberType<int>(
-        type: $fidl.Uint32Type(), offsetOld: 40, offsetV1: 32),
+        type: kUnionSize36Alignment4_Type, offset: 8),
+    $fidl.MemberType<int>(type: $fidl.Uint32Type(), offset: 32),
   ],
   ctor: SandwichUnionSize36Alignment4._ctor,
 );

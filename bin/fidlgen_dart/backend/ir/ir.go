@@ -109,7 +109,6 @@ type StructMember struct {
 	Type         Type
 	Name         string
 	DefaultValue string
-	OffsetOld    int
 	OffsetV1     int
 	typeExpr     string
 	Documented
@@ -171,18 +170,15 @@ type Method struct {
 	TypeExpr           string
 	Transitional       bool
 	Documented
-
-	EncodeUnionAsXUnionBytes string
 }
 
 // Parameter represents an interface method parameter.
 type Parameter struct {
-	Type      Type
-	Name      string
-	OffsetOld int
-	OffsetV1  int
-	Convert   string
-	typeExpr  string
+	Type     Type
+	Name     string
+	OffsetV1 int
+	Convert  string
+	typeExpr string
 }
 
 // Import describes another FIDL library that will be imported.
@@ -459,13 +455,10 @@ func typeExprForMethod(val types.Method, request []Parameter, response []Paramet
 	    request: %s,
 		response: %s,
 		name: r"%s",
-		requestInlineSizeOld: %d,
-		requestInlineSizeV1: %d,
-		responseInlineSizeOld: %d,
-		responseInlineSizeV1: %d,
+		requestInlineSize: %d,
+		responseInlineSize: %d,
 	  )`, formatParameterList(request), formatParameterList(response), name,
-		val.RequestTypeShapeOld.InlineSize, val.RequestTypeShapeV1.InlineSize,
-		val.ResponseTypeShapeOld.InlineSize, val.ResponseTypeShapeV1.InlineSize)
+		val.RequestTypeShapeV1.InlineSize, val.ResponseTypeShapeV1.InlineSize)
 }
 
 func typeExprForPrimitiveSubtype(val types.PrimitiveSubtype) string {
@@ -822,12 +815,11 @@ func (c *compiler) compileBits(val types.Bits) Bits {
 
 func (c *compiler) compileParameter(paramName types.Identifier, paramType types.Type, offsetOld, offsetV1 int) Parameter {
 	var (
-		t            = c.compileType(paramType)
-		typeStr      = fmt.Sprintf("type: %s", t.typeExpr)
-		offsetOldStr = fmt.Sprintf("offsetOld: %v", offsetOld)
-		offsetV1Str  = fmt.Sprintf("offsetV1: %v", offsetV1)
-		name         = c.compileLowerCamelIdentifier(paramName, parameterContext)
-		convert      string
+		t         = c.compileType(paramType)
+		typeStr   = fmt.Sprintf("type: %s", t.typeExpr)
+		offsetStr = fmt.Sprintf("offset: %v", offsetV1)
+		name      = c.compileLowerCamelIdentifier(paramName, parameterContext)
+		convert   string
 	)
 	if t.declType == types.InterfaceDeclType {
 		convert = "$fidl.convertInterfaceHandle"
@@ -835,12 +827,11 @@ func (c *compiler) compileParameter(paramName types.Identifier, paramType types.
 		convert = "$fidl.convertInterfaceRequest"
 	}
 	return Parameter{
-		Type:      t,
-		Name:      name,
-		OffsetOld: offsetOld,
-		OffsetV1:  offsetV1,
-		Convert:   convert,
-		typeExpr:  fmt.Sprintf("$fidl.MemberType<%s>(%s, %s, %s)", t.Decl, typeStr, offsetOldStr, offsetV1Str),
+		Type:     t,
+		Name:     name,
+		OffsetV1: offsetV1,
+		Convert:  convert,
+		typeExpr: fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
 	}
 }
 
@@ -1007,15 +998,13 @@ func (c *compiler) compileStructMember(val types.StructMember) StructMember {
 	}
 
 	typeStr := fmt.Sprintf("type: %s", t.typeExpr)
-	offsetOldStr := fmt.Sprintf("offsetOld: %v", val.FieldShapeOld.Offset)
-	offsetV1Str := fmt.Sprintf("offsetV1: %v", val.FieldShapeV1.Offset)
+	offsetStr := fmt.Sprintf("offset: %v", val.FieldShapeV1.Offset)
 	return StructMember{
 		t,
 		c.compileLowerCamelIdentifier(val.Name, structMemberContext),
 		defaultValue,
-		val.FieldShapeOld.Offset,
 		val.FieldShapeV1.Offset,
-		fmt.Sprintf("$fidl.MemberType<%s>(%s, %s, %s)", t.Decl, typeStr, offsetOldStr, offsetV1Str),
+		fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
 		docString(val),
 	}
 }
@@ -1050,11 +1039,10 @@ func (c *compiler) compileStruct(val types.Struct) Struct {
 	r.HasNullableField = hasNullableField
 
 	r.TypeExpr = fmt.Sprintf(`$fidl.StructType<%s>(
-  inlineSizeOld: %v,
-  inlineSizeV1: %v,
+  inlineSize: %v,
   members: %s,
   ctor: %s._ctor,
-)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1.InlineSize, formatStructMemberList(r.Members), r.Name)
+)`, r.Name, val.TypeShapeV1.InlineSize, formatStructMemberList(r.Members), r.Name)
 	return r
 }
 
@@ -1088,11 +1076,10 @@ func (c *compiler) compileTable(val types.Table) Table {
 	}
 
 	r.TypeExpr = fmt.Sprintf(`$fidl.TableType<%s>(
-  inlineSizeOld: %v,
-  inlineSizeV1: %v,
+  inlineSize: %v,
   members: %s,
   ctor: %s._ctor,
-)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1.InlineSize, formatTableMemberList(r.Members), r.Name)
+)`, r.Name, val.TypeShapeV1.InlineSize, formatTableMemberList(r.Members), r.Name)
 	return r
 }
 

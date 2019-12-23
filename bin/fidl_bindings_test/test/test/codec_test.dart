@@ -8,12 +8,12 @@ import 'package:test/test.dart';
 import 'package:fidl_fidl_examples_bindingstest/fidl_async.dart';
 import 'package:zircon/zircon.dart';
 
-// TODO(8047) test this in gidl
+// TODO(fxb/8047) test this in gidl
 void main() async {
   group('encode/decode', () {
     test('unknown ordinal flexible', () async {
       final xunion = ExampleXunion.withBar(0x01020304);
-      var encoder = Encoder(encodeUnionAsXUnionBytes: false)..alloc(24);
+      var encoder = Encoder()..alloc(24);
       kExampleXunion_Type.encode(encoder, xunion, 0);
 
       // overwrite the ordinal to be unknown
@@ -28,7 +28,7 @@ void main() async {
       expect(actual.data, equals(expected.data));
       expect(actual.handles, equals(expected.handles));
 
-      encoder = Encoder(encodeUnionAsXUnionBytes: false)..alloc(24);
+      encoder = Encoder()..alloc(24);
       kExampleXunion_Type.encode(encoder, unknownXunion, 0);
       expect(encoder.message.data.lengthInBytes, 32);
       final bytes = encoder.message.data.buffer.asUint8List(0, 32);
@@ -50,7 +50,7 @@ void main() async {
 
       final xunion = ExampleXunion.withWithHandle(
           NumberHandleNumber(n1: 1, h: pair.first.handle, n2: 2));
-      var encoder = Encoder(encodeUnionAsXUnionBytes: false)..alloc(24);
+      var encoder = Encoder()..alloc(24);
       kExampleXunion_Type.encode(encoder, xunion, 0);
 
       // overwrite the ordinal to be unknown
@@ -68,7 +68,7 @@ void main() async {
       expect(actual.data, equals(expectedData));
       expect(actual.handles.length, equals(1));
 
-      encoder = Encoder(encodeUnionAsXUnionBytes: false)..alloc(24);
+      encoder = Encoder()..alloc(24);
       kExampleXunion_Type.encode(encoder, unknownXunion, 0);
       expect(encoder.message.data.lengthInBytes, 40);
       final bytes = encoder.message.data.buffer.asUint8List(0, 40);
@@ -87,7 +87,7 @@ void main() async {
 
     test('unknown ordinal strict', () async {
       final xunion = ExampleStrictXunion.withBar(15);
-      final encoder = Encoder(encodeUnionAsXUnionBytes: false)..alloc(24);
+      final encoder = Encoder()..alloc(24);
       kExampleStrictXunion_Type.encode(encoder, xunion, 0);
 
       // overwrite the ordinal to be unknown

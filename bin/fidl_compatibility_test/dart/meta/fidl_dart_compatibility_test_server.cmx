@@ -1,9 +1,6 @@
 {
     "program": {
-        "args": [
-            "write_xunions"
-        ],
-        "data": "data/fidl_dart_write_xunion_compatibility_test_server"
+        "data": "data/fidl_dart_compatibility_test_server"
     },
     "sandbox": {
         "services": [

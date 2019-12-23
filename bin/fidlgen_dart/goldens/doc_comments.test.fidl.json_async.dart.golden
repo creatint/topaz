@@ -155,10 +155,9 @@ class Struct extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Struct> kStruct_Type = $fidl.StructType<Struct>(
-  inlineSizeOld: 4,
-  inlineSizeV1: 4,
+  inlineSize: 4,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Int32Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Int32Type(), offset: 0),
   ],
   ctor: Struct._ctor,
 );
@@ -191,8 +190,7 @@ class Table extends $fidl.Table {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.TableType<Table> kTable_Type = $fidl.TableType<Table>(
-  inlineSizeOld: 16,
-  inlineSizeV1: 16,
+  inlineSize: 16,
   members: <int, $fidl.FidlType>{
     1: $fidl.Int32Type(),
   },
@@ -209,10 +207,8 @@ const $fidl.MethodType _kInterface_Method_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"Interface.Method",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 0,
-  responseInlineSizeV1: 0,
+  requestInlineSize: 16,
+  responseInlineSize: 0,
 );
 // onEvent:  -> ()
 const int _kInterface_OnEvent_Ordinal = 0x136d200d00000000;
@@ -221,10 +217,8 @@ const $fidl.MethodType _kInterface_OnEvent_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"Interface.OnEvent",
-  requestInlineSizeOld: 0,
-  requestInlineSizeV1: 0,
-  responseInlineSizeOld: 16,
-  responseInlineSizeV1: 16,
+  requestInlineSize: 0,
+  responseInlineSize: 16,
 );
 
 /// interface comment #1
@@ -339,8 +333,7 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(_kInterface_Method_GenOrdinal, 0);
     return $async.Future.sync(() {
       ctrl.sendMessage($encoder.message);
@@ -370,9 +363,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
     whenBound.then((_) {
       if (impl.onEvent != null) {
         $subscriptions.add(impl.onEvent.listen(($response) {
-          final $fidl.Encoder $encoder = $fidl.Encoder(
-              encodeUnionAsXUnionBytes:
-                  $fidl.defaultEnableWriteXUnionBytesForUnion);
+          final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(_kInterface_OnEvent_GenOrdinal, 0);
           $encoder.alloc(
               _kInterface_OnEvent_Type.encodingResponseInlineSize($encoder) -

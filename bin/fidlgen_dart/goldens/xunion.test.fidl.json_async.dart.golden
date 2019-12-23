@@ -512,22 +512,22 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_OptType =
 
 enum ExplicitXUnionTag {
   $unknown,
-  i, // 0x1
-  f, // 0x4
+  i, // 0x254890c9
+  f, // 0xae18981
 }
 
 const Map<int, ExplicitXUnionTag> _ExplicitXUnionTag_map = {
-  1: ExplicitXUnionTag.i,
-  4: ExplicitXUnionTag.f,
+  625512649: ExplicitXUnionTag.i,
+  182552961: ExplicitXUnionTag.f,
 };
 
 class ExplicitXUnion extends $fidl.XUnion {
   const ExplicitXUnion.withI(int value)
-      : _ordinal = 1,
+      : _ordinal = 625512649,
         _data = value;
 
   const ExplicitXUnion.withF(double value)
-      : _ordinal = 4,
+      : _ordinal = 182552961,
         _data = value;
 
   ExplicitXUnion._(int ordinal, Object data)
@@ -543,14 +543,14 @@ class ExplicitXUnion extends $fidl.XUnion {
   }
 
   int get i {
-    if (_ordinal != 1) {
+    if (_ordinal != 625512649) {
       return null;
     }
     return _data;
   }
 
   double get f {
-    if (_ordinal != 4) {
+    if (_ordinal != 182552961) {
       return null;
     }
     return _data;
@@ -559,9 +559,9 @@ class ExplicitXUnion extends $fidl.XUnion {
   @override
   String toString() {
     switch (_ordinal) {
-      case 1:
+      case 625512649:
         return 'ExplicitXUnion.i($i)';
-      case 4:
+      case 182552961:
         return 'ExplicitXUnion.f($f)';
       default:
         return 'ExplicitXUnion.<UNKNOWN>';
@@ -584,8 +584,8 @@ class ExplicitXUnion extends $fidl.XUnion {
 const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_Type =
     $fidl.XUnionType<ExplicitXUnion>(
   members: <int, $fidl.FidlType>{
-    1: $fidl.Int64Type(),
-    4: $fidl.Float32Type(),
+    625512649: $fidl.Int64Type(),
+    182552961: $fidl.Float32Type(),
   },
   ctor: ExplicitXUnion._ctor,
   nullable: false,
@@ -596,8 +596,8 @@ const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_Type =
 const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_OptType =
     $fidl.XUnionType<ExplicitXUnion>(
   members: <int, $fidl.FidlType>{
-    1: $fidl.Int64Type(),
-    4: $fidl.Float32Type(),
+    625512649: $fidl.Int64Type(),
+    182552961: $fidl.Float32Type(),
   },
   ctor: ExplicitXUnion._ctor,
   nullable: true,
@@ -637,10 +637,9 @@ class Empty extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Empty> kEmpty_Type = $fidl.StructType<Empty>(
-  inlineSizeOld: 1,
-  inlineSizeV1: 1,
+  inlineSize: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
   ctor: Empty._ctor,
 );
@@ -687,11 +686,10 @@ class StructWithNullableXUnion extends $fidl.Struct {
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<StructWithNullableXUnion>
     kStructWithNullableXUnion_Type = $fidl.StructType<StructWithNullableXUnion>(
-  inlineSizeOld: 24,
-  inlineSizeV1: 24,
+  inlineSize: 24,
   members: <$fidl.MemberType>[
     $fidl.MemberType<OlderSimpleUnion>(
-        type: kOlderSimpleUnion_OptType, offsetOld: 0, offsetV1: 0),
+        type: kOlderSimpleUnion_OptType, offset: 0),
   ],
   ctor: StructWithNullableXUnion._ctor,
 );
@@ -711,13 +709,11 @@ const $fidl.MethodType
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<StrictBoundedXUnion>(
-        type: kStrictBoundedXUnion_Type, offsetOld: 16, offsetV1: 16),
+        type: kStrictBoundedXUnion_Type, offset: 16),
   ],
   name: r"TestProtocol.StrictXUnionHenceResponseMayBeStackAllocated",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 40,
-  responseInlineSizeV1: 40,
+  requestInlineSize: 16,
+  responseInlineSize: 40,
 );
 // flexibleXUnionHenceResponseMustBeHeapAllocated: () -> (OlderSimpleUnion xu)
 const int
@@ -732,13 +728,11 @@ const $fidl.MethodType
   request: null,
   response: <$fidl.MemberType>[
     $fidl.MemberType<OlderSimpleUnion>(
-        type: kOlderSimpleUnion_Type, offsetOld: 16, offsetV1: 16),
+        type: kOlderSimpleUnion_Type, offset: 16),
   ],
   name: r"TestProtocol.FlexibleXUnionHenceResponseMustBeHeapAllocated",
-  requestInlineSizeOld: 16,
-  requestInlineSizeV1: 16,
-  responseInlineSizeOld: 40,
-  responseInlineSizeV1: 40,
+  requestInlineSize: 16,
+  responseInlineSize: 40,
 );
 
 abstract class TestProtocol extends $fidl.Service {
@@ -873,8 +867,7 @@ class TestProtocolProxy extends $fidl.AsyncProxy<TestProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal,
         0);
@@ -892,8 +885,7 @@ class TestProtocolProxy extends $fidl.AsyncProxy<TestProtocol>
           StackTrace.current);
     }
 
-    final $fidl.Encoder $encoder = $fidl.Encoder(
-        encodeUnionAsXUnionBytes: $fidl.defaultEnableWriteXUnionBytesForUnion);
+    final $fidl.Encoder $encoder = $fidl.Encoder();
     $encoder.encodeMessageHeader(
         _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal,
         0);
@@ -926,9 +918,7 @@ class TestProtocolBinding extends $fidl.AsyncBinding<TestProtocol> {
           final $async.Future<StrictBoundedXUnion> $future =
               impl.strictXUnionHenceResponseMayBeStackAllocated();
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kTestProtocol_StrictXUnionHenceResponseMayBeStackAllocated_GenOrdinal,
                 $message.txid);
@@ -970,9 +960,7 @@ class TestProtocolBinding extends $fidl.AsyncBinding<TestProtocol> {
           final $async.Future<OlderSimpleUnion> $future =
               impl.flexibleXUnionHenceResponseMustBeHeapAllocated();
           $future.then(($response) {
-            final $fidl.Encoder $encoder = $fidl.Encoder(
-                encodeUnionAsXUnionBytes:
-                    $fidl.defaultEnableWriteXUnionBytesForUnion);
+            final $fidl.Encoder $encoder = $fidl.Encoder();
             $encoder.encodeMessageHeader(
                 _kTestProtocol_FlexibleXUnionHenceResponseMustBeHeapAllocated_GenOrdinal,
                 $message.txid);

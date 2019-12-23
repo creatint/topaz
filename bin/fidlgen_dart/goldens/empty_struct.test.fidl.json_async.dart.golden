@@ -69,10 +69,9 @@ class Empty extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Empty> kEmpty_Type = $fidl.StructType<Empty>(
-  inlineSizeOld: 1,
-  inlineSizeV1: 1,
+  inlineSize: 1,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<int>(type: $fidl.Uint8Type(), offset: 0),
   ],
   ctor: Empty._ctor,
 );

@@ -442,10 +442,9 @@ class NullableUnionStruct extends $fidl.Struct {
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<NullableUnionStruct> kNullableUnionStruct_Type =
     $fidl.StructType<NullableUnionStruct>(
-  inlineSizeOld: 8,
-  inlineSizeV1: 24,
+  inlineSize: 24,
   members: <$fidl.MemberType>[
-    $fidl.MemberType<Union>(type: kUnion_OptType, offsetOld: 0, offsetV1: 0),
+    $fidl.MemberType<Union>(type: kUnion_OptType, offset: 0),
   ],
   ctor: NullableUnionStruct._ctor,
 );
