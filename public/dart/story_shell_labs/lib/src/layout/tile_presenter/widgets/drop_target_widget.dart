@@ -27,7 +27,7 @@ class DropTargetWidget extends StatefulWidget {
   final DragTargetWillAccept<TileModel> onWillAccept;
 
   /// Called when tile leaves the target area
-  final DragTargetLeave<TileModel> onLeave;
+  final DragTargetLeave onLeave;
 
   /// Base size
   final double baseSize;
