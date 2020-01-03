@@ -71,27 +71,6 @@ type BitsMember struct {
 	Documented
 }
 
-// Union represents a union declaration.
-type Union struct {
-	Name       string
-	TagName    string
-	Members    []UnionMember
-	TypeSymbol string
-	TypeExpr   string
-	Documented
-}
-
-// UnionMember represents a member of a union declaration.
-type UnionMember struct {
-	Type          Type
-	Name          string
-	XUnionOrdinal int
-	CtorName      string
-	Tag           string
-	typeExpr      string
-	Documented
-}
-
 // XUnion represents a union declaration.
 type XUnion struct {
 	Name          string
@@ -172,7 +151,7 @@ type MethodResponse struct {
 	WireParameters   []Parameter
 	MethodParameters []Parameter
 	HasError         bool
-	ResultType       Union
+	ResultType       XUnion
 	ValueType        Type
 	ErrorType        Type
 }
@@ -223,7 +202,6 @@ type Root struct {
 	Interfaces  []Interface
 	Structs     []Struct
 	Tables      []Table
-	Unions      []Union
 	XUnions     []XUnion
 }
 
@@ -453,33 +431,6 @@ func formatTableMemberList(members []TableMember) string {
 	}
 
 	return fmt.Sprintf("<int, $fidl.FidlType>{\n%s  }", strings.Join(lines, ""))
-}
-
-func formatUnionMemberList(members []UnionMember) string {
-	if len(members) == 0 {
-		return "<$fidl.MemberType>[]"
-	}
-
-	lines := []string{}
-
-	for _, v := range members {
-		lines = append(lines, fmt.Sprintf("    %s,\n", v.typeExpr))
-	}
-
-	return fmt.Sprintf("<$fidl.MemberType>[\n%s  ]", strings.Join(lines, ""))
-}
-
-func formatOrdinalToIndex(members []UnionMember) string {
-	if len(members) == 0 {
-		return "<int, int>{}"
-	}
-
-	var lines []string
-	for i, v := range members {
-		lines = append(lines, fmt.Sprintf("    %d: %d,\n", v.XUnionOrdinal, i))
-	}
-
-	return fmt.Sprintf("<int, int>{\n%s  }", strings.Join(lines, ""))
 }
 
 func formatXUnionMemberList(members []XUnionMember) string {
@@ -903,12 +854,13 @@ func (c *compiler) compileParameterArray(val []types.Parameter) []Parameter {
 
 func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
 	var (
-		resultUnion *types.Union
-		resultType  types.Type
-		valueStruct *types.Struct
-		valueType   types.Type
-		isResult    bool
-		parameters  []Parameter
+		resultUnion    types.XUnion
+		resultType     types.Type
+		valueStruct    *types.Struct
+		valueType      types.Type
+		isResult       bool
+		isReponseUnion bool
+		parameters     []Parameter
 	)
 
 	// Method needs to have exactly one response arg
@@ -921,13 +873,15 @@ func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
 		goto NotAResult
 	}
 	// That identifier is for a union
+	isReponseUnion = false
 	for _, union := range c.typesRoot.Unions {
 		if union.Name == resultType.Identifier {
-			resultUnion = &union
+			resultUnion = types.ConvertUnionToXUnion(union)
+			isReponseUnion = true
 			break
 		}
 	}
-	if resultUnion == nil {
+	if !isReponseUnion {
 		goto NotAResult
 	}
 	// Union needs the [Result] attribute, two members
@@ -957,7 +911,7 @@ func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
 		WireParameters:   c.compileParameterArray(method.Response),
 		MethodParameters: parameters,
 		HasError:         true,
-		ResultType:       c.compileUnion(*resultUnion),
+		ResultType:       c.compileXUnion(resultUnion),
 		ValueType:        c.compileType(resultUnion.Members[0].Type),
 		ErrorType:        c.compileType(resultUnion.Members[1].Type),
 	}
@@ -1139,50 +1093,6 @@ func (c *compiler) compileTable(val types.Table) Table {
   members: %s,
   ctor: %s._ctor,
 )`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1.InlineSize, formatTableMemberList(r.Members), r.Name)
-	return r
-}
-
-func (c *compiler) compileUnionMember(val types.UnionMember) UnionMember {
-	t := c.compileType(val.Type)
-	typeStr := fmt.Sprintf("type: %s", t.typeExpr)
-	offsetOldStr := fmt.Sprintf("offsetOld: %v", val.Offset)
-	offsetV1Str := "offsetV1: -1 /* unused */"
-	return UnionMember{
-		Type:          t,
-		Name:          c.compileLowerCamelIdentifier(val.Name, unionMemberContext),
-		XUnionOrdinal: val.XUnionOrdinal,
-		CtorName:      c.compileUpperCamelIdentifier(val.Name, unionMemberContext),
-		Tag:           c.compileLowerCamelIdentifier(val.Name, unionMemberTagContext),
-		typeExpr:      fmt.Sprintf("$fidl.MemberType<%s>(%s, %s, %s)", t.Decl, typeStr, offsetOldStr, offsetV1Str),
-		Documented:    docString(val),
-	}
-}
-
-func (c *compiler) compileUnion(val types.Union) Union {
-	ci := types.ParseCompoundIdentifier(val.Name)
-	r := Union{
-		Name:       c.compileUpperCamelCompoundIdentifier(ci, "", declarationContext),
-		TagName:    c.compileUpperCamelCompoundIdentifier(ci, "Tag", declarationContext),
-		Members:    []UnionMember{},
-		TypeSymbol: c.typeSymbolForCompoundIdentifier(ci),
-		TypeExpr:   "",
-		Documented: docString(val),
-	}
-
-	for _, v := range val.Members {
-		if v.Reserved {
-			continue
-		}
-		r.Members = append(r.Members, c.compileUnionMember(v))
-	}
-
-	r.TypeExpr = fmt.Sprintf(`$fidl.UnionType<%s>(
-  inlineSizeOld: %v,
-  inlineSizeV1: %v,
-  members: %s,
-  ctor: %s._ctor,
-  ordinalToIndex: %s,
-)`, r.Name, val.TypeShapeOld.InlineSize, val.TypeShapeV1.InlineSize, formatUnionMemberList(r.Members), r.Name, formatOrdinalToIndex(r.Members))
 	return r
 }
 

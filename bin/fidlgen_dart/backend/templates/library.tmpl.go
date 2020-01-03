@@ -58,9 +58,6 @@ import '{{ .AsyncURL }}' as {{ .LocalName }};
 {{ range $bits := .Bits -}}
 {{ template "BitsDeclaration" $bits }}
 {{ end -}}
-{{ range $union := .Unions -}}
-{{ template "UnionDeclaration" $union }}
-{{ end -}}
 {{ range $xunion := .XUnions -}}
 {{ template "XUnionDeclaration" $xunion }}
 {{ end -}}
