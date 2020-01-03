@@ -77,6 +77,7 @@ template("dart_kernel") {
   }
 
   dart_library_target_name = "${target_name}_dart_library"
+
   dart_library(dart_library_target_name) {
     forward_variables_from(invoker,
                            [
@@ -85,6 +86,7 @@ template("dart_kernel") {
                              "disable_analysis",
                              "non_dart_deps",
                              "source_dir",
+                             "testonly",
                            ])
 
     if (defined(invoker.package_name)) {

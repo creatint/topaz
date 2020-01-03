@@ -170,6 +170,8 @@ template("_flutter_jit_asset_manifest") {
     outputs = [
       invoker.asset_manifest,
     ]
+
+    forward_variables_from(invoker, [ "testonly" ])
   }
 }
 
@@ -390,6 +392,7 @@ template("flutter_dart_jit_component") {
                                "disable_analysis",
                                "gen_bytecode",
                                "source_dir",
+                               "testonly",
                              ])
       deps = component.deps
       sources = component.sources
@@ -440,6 +443,7 @@ template("flutter_dart_jit_component") {
                                  "asset_manifest",
                                  "dart_library_target_name",
                                  "dot_packages",
+                                 "testonly",
                                ])
       }
 
@@ -768,6 +772,7 @@ template("flutter_dart_aot_component") {
                                "disable_analysis",
                                "non_dart_deps",
                                "source_dir",
+                               "testonly",
                              ])
       deps = component.deps
       sources = component.sources

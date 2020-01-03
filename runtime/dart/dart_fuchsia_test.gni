@@ -91,6 +91,10 @@ template("dart_fuchsia_test") {
       args += [ "--source=" + rebase_path(source_path) ]
       inputs += [ source_path ]
     }
+    if (defined(invoker.non_dart_deps)) {
+      deps = invoker.non_dart_deps
+    }
+    testonly = true
   }
 
   if (!test_package_only) {

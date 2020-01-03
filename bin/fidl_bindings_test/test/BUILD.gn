@@ -3,15 +3,26 @@
 # found in the LICENSE file.
 
 import("//build/testing/environments.gni")
+import("//tools/fidl/gidl-conformance-suite/gidl-conformance-suite.gni")
+import("//tools/fidl/gidl/gidl.gni")
 import("//topaz/runtime/dart/dart_fuchsia_test.gni")
 import("//topaz/runtime/dart_runner/dart_app.gni")
+
+generated_source = "$target_gen_dir/conformance_test.dart"
+
+gidl("conformance_suite") {
+  testonly = true
+  language = "dart"
+  inputs = conformance_suite_gidl_files
+  fidl = conformance_suite_fidl_target
+  output = generated_source
+}
 
 dart_fuchsia_test("fidl_bindings_test") {
   sources = [
     "channel_close_test.dart",
     "clone_test.dart",
     "codec_test.dart",
-    "conformance_test.dart",
     "error_test.dart",
     "event_test.dart",
     "failure_test.dart",
@@ -21,6 +32,7 @@ dart_fuchsia_test("fidl_bindings_test") {
     "state_test.dart",
     "tostring_test.dart",
     "twoway_test.dart",
+    rebase_path(generated_source, get_label_info("fidl_bindings_test", "dir")),
   ]
 
   meta = [
@@ -33,8 +45,11 @@ dart_fuchsia_test("fidl_bindings_test") {
   deps = [
     "//third_party/dart-pkg/pub/collection",
     "//topaz/bin/fidl_bindings_test/fidl:bindings_test",
+    "//topaz/lib/gidl",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia_services",
+    conformance_suite_fidl_target,
   ]
+  non_dart_deps = [ ":conformance_suite" ]
   environments = basic_envs
 }
