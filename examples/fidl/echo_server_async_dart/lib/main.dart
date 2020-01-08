@@ -2,11 +2,17 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// NOTE: The comments that have [START/END ...] in them are used to identify
+// code snippets that appear in the documentation. Please be aware that
+// changes in these blocks will affect the documentation on fuchsia.dev.
+
+// [START imports]
 import 'dart:async';
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fidl_examples_echo/fidl_async.dart' as fidl_echo;
 import 'package:fuchsia_services/services.dart';
+// [END imports]
 
 bool _quiet = false;
 
@@ -32,6 +38,6 @@ void main(List<String> args) {
   final context = StartupContext.fromStartupInfo();
   final echo = _EchoImpl();
 
-  context.outgoing.addPublicService<fidl_echo.Echo>(
-      echo.bind, fidl_echo.Echo.$serviceName);
+  context.outgoing
+      .addPublicService<fidl_echo.Echo>(echo.bind, fidl_echo.Echo.$serviceName);
 }
