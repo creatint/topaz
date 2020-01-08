@@ -130,9 +130,9 @@
     {
       "name": "test.name/SomeLongAnonymousPrefix1",
       "location": {
-        "filename": "generated",
-        "line": 2,
-        "column": 1
+        "filename": "garnet/go/src/fidl/compiler/backend/typestest/xunion.test.fidl",
+        "line": 39,
+        "column": 55
       },
       "anonymous": true,
       "members": [
@@ -168,9 +168,9 @@
     {
       "name": "test.name/SomeLongAnonymousPrefix3",
       "location": {
-        "filename": "generated",
-        "line": 4,
-        "column": 1
+        "filename": "garnet/go/src/fidl/compiler/backend/typestest/xunion.test.fidl",
+        "line": 40,
+        "column": 57
       },
       "anonymous": true,
       "members": [
@@ -275,6 +275,8 @@
       "members": [
         {
           "ordinal": 1,
+          "explicit_ordinal": 1,
+          "hashed_ordinal": 1026732503,
           "reserved": false,
           "name": "i",
           "type": {
@@ -289,6 +291,8 @@
         },
         {
           "ordinal": 2,
+          "explicit_ordinal": 2,
+          "hashed_ordinal": 1362546558,
           "reserved": false,
           "name": "f",
           "type": {
@@ -324,6 +328,8 @@
       "members": [
         {
           "ordinal": 1,
+          "explicit_ordinal": 1,
+          "hashed_ordinal": 693944286,
           "reserved": false,
           "name": "i",
           "type": {
@@ -338,6 +344,8 @@
         },
         {
           "ordinal": 2,
+          "explicit_ordinal": 2,
+          "hashed_ordinal": 473666119,
           "reserved": false,
           "name": "s",
           "type": {
@@ -352,6 +360,8 @@
         },
         {
           "ordinal": 3,
+          "explicit_ordinal": 3,
+          "hashed_ordinal": 1815655055,
           "reserved": false,
           "name": "v",
           "type": {
@@ -391,6 +401,8 @@
       "members": [
         {
           "ordinal": 1,
+          "explicit_ordinal": 1,
+          "hashed_ordinal": 1851697276,
           "reserved": false,
           "name": "i",
           "type": {
@@ -405,6 +417,8 @@
         },
         {
           "ordinal": 2,
+          "explicit_ordinal": 2,
+          "hashed_ordinal": 855207063,
           "reserved": false,
           "name": "f",
           "type": {
@@ -419,6 +433,8 @@
         },
         {
           "ordinal": 3,
+          "explicit_ordinal": 3,
+          "hashed_ordinal": 850602487,
           "reserved": false,
           "name": "s",
           "type": {
@@ -454,6 +470,8 @@
       "members": [
         {
           "ordinal": 1,
+          "explicit_ordinal": 1,
+          "hashed_ordinal": 424858069,
           "reserved": false,
           "name": "empty",
           "type": {
@@ -490,6 +508,8 @@
       "members": [
         {
           "ordinal": 1,
+          "explicit_ordinal": 1,
+          "hashed_ordinal": 2024555624,
           "reserved": false,
           "name": "v",
           "type": {
@@ -530,6 +550,7 @@
       "members": [
         {
           "ordinal": 3,
+          "explicit_ordinal": 3,
           "reserved": true,
           "location": {
             "filename": "garnet/go/src/fidl/compiler/backend/typestest/xunion.test.fidl",
@@ -539,6 +560,7 @@
         },
         {
           "ordinal": 2,
+          "explicit_ordinal": 2,
           "reserved": true,
           "location": {
             "filename": "garnet/go/src/fidl/compiler/backend/typestest/xunion.test.fidl",
@@ -548,6 +570,8 @@
         },
         {
           "ordinal": 1,
+          "explicit_ordinal": 1,
+          "hashed_ordinal": 625512649,
           "reserved": false,
           "name": "i",
           "type": {
@@ -562,6 +586,8 @@
         },
         {
           "ordinal": 4,
+          "explicit_ordinal": 4,
+          "hashed_ordinal": 182552961,
           "reserved": false,
           "name": "f",
           "type": {

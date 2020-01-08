@@ -64,6 +64,8 @@ class Handles extends $fidl.Struct {
     @required this.vcpuHandle,
     @required this.vmarHandle,
     @required this.vmoHandle,
+    @required this.someProtocol,
+    @required this.requestSomeProtocol,
   });
   Handles.clone(
     Handles $orig, {
@@ -93,6 +95,8 @@ class Handles extends $fidl.Struct {
     $zx.Handle vcpuHandle,
     $zx.Handle vmarHandle,
     $zx.Vmo vmoHandle,
+    $fidl.InterfaceHandle<SomeProtocol> someProtocol,
+    $fidl.InterfaceRequest<SomeProtocol> requestSomeProtocol,
   }) : this(
           plainHandle: plainHandle ?? $orig.plainHandle,
           btiHandle: btiHandle ?? $orig.btiHandle,
@@ -120,6 +124,8 @@ class Handles extends $fidl.Struct {
           vcpuHandle: vcpuHandle ?? $orig.vcpuHandle,
           vmarHandle: vmarHandle ?? $orig.vmarHandle,
           vmoHandle: vmoHandle ?? $orig.vmoHandle,
+          someProtocol: someProtocol ?? $orig.someProtocol,
+          requestSomeProtocol: requestSomeProtocol ?? $orig.requestSomeProtocol,
         );
 
   Handles._(List<Object> argv)
@@ -148,7 +154,9 @@ class Handles extends $fidl.Struct {
         timerHandle = argv[22],
         vcpuHandle = argv[23],
         vmarHandle = argv[24],
-        vmoHandle = argv[25];
+        vmoHandle = argv[25],
+        someProtocol = argv[26],
+        requestSomeProtocol = argv[27];
   final $zx.Handle plainHandle;
   final $zx.Handle btiHandle;
   final $zx.Channel channelHandle;
@@ -175,6 +183,8 @@ class Handles extends $fidl.Struct {
   final $zx.Handle vcpuHandle;
   final $zx.Handle vmarHandle;
   final $zx.Vmo vmoHandle;
+  final $fidl.InterfaceHandle<SomeProtocol> someProtocol;
+  final $fidl.InterfaceRequest<SomeProtocol> requestSomeProtocol;
 
   @override
   List<Object> get $fields {
@@ -205,6 +215,8 @@ class Handles extends $fidl.Struct {
       vcpuHandle,
       vmarHandle,
       vmoHandle,
+      someProtocol,
+      requestSomeProtocol,
     ];
   }
 
@@ -263,6 +275,10 @@ class Handles extends $fidl.Struct {
         vmarHandle.toString() +
         r', vmoHandle: ' +
         vmoHandle.toString() +
+        r', someProtocol: ' +
+        someProtocol.toString() +
+        r', requestSomeProtocol: ' +
+        requestSomeProtocol.toString() +
         r')';
   }
 
@@ -272,7 +288,7 @@ class Handles extends $fidl.Struct {
 // See FIDL-308:
 // ignore: recursive_compile_time_constant
 const $fidl.StructType<Handles> kHandles_Type = $fidl.StructType<Handles>(
-  inlineSize: 104,
+  inlineSize: 112,
   members: <$fidl.MemberType>[
     $fidl.MemberType<$zx.Handle>(
         type: $fidl.HandleType(nullable: false), offset: 0),
@@ -326,9 +342,142 @@ const $fidl.StructType<Handles> kHandles_Type = $fidl.StructType<Handles>(
         type: $fidl.HandleType(nullable: false), offset: 96),
     $fidl.MemberType<$zx.Vmo>(
         type: $fidl.VmoType(nullable: false), offset: 100),
+    $fidl.MemberType<$fidl.InterfaceHandle<SomeProtocol>>(
+        type: $fidl.InterfaceHandleType<SomeProtocol>(nullable: false),
+        offset: 104),
+    $fidl.MemberType<$fidl.InterfaceRequest<SomeProtocol>>(
+        type: $fidl.InterfaceRequestType<SomeProtocol>(nullable: false),
+        offset: 108),
   ],
   ctor: Handles._ctor,
 );
 
 // ignore: unused_element, avoid_private_typedef_functions
 typedef _VoidCallback = void Function();
+
+// someMethod: ()
+const int _kSomeProtocol_SomeMethod_Ordinal = 0x1a5a7f0e00000000;
+const int _kSomeProtocol_SomeMethod_GenOrdinal = 0x770a27eb8815af1e;
+const $fidl.MethodType _kSomeProtocol_SomeMethod_Type = $fidl.MethodType(
+  request: null,
+  response: null,
+  name: r"SomeProtocol.SomeMethod",
+  requestInlineSize: 0,
+  responseInlineSize: 0,
+);
+
+abstract class SomeProtocol extends $fidl.Service {
+  static const String $serviceName = null;
+  @override
+  $fidl.ServiceData get $serviceData => SomeProtocolData();
+  $async.Future<void> someMethod();
+}
+
+class SomeProtocolData implements $fidl.ServiceData<SomeProtocol> {
+  const SomeProtocolData();
+
+  @override
+  String getName() {
+    return SomeProtocol.$serviceName;
+  }
+
+  @override
+  $fidl.AsyncBinding getBinding() {
+    return SomeProtocolBinding();
+  }
+}
+
+class SomeProtocolProxy extends $fidl.AsyncProxy<SomeProtocol>
+    implements SomeProtocol {
+  SomeProtocolProxy()
+      : super($fidl.AsyncProxyController<SomeProtocol>(
+            $serviceName: null, $interfaceName: r'SomeProtocol')) {
+    ctrl.onResponse = _handleResponse;
+  }
+
+  @override
+  $fidl.ServiceData get $serviceData => SomeProtocolData();
+
+  void _handleEvent($fidl.Message $message) {
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
+    switch ($message.ordinal) {
+      default:
+        ctrl.proxyError(
+            $fidl.FidlError('Unexpected message ordinal: ${$message.ordinal}'));
+        ctrl.close();
+        break;
+    }
+  }
+
+  void _handleResponse($fidl.Message $message) {
+    final int $txid = $message.txid;
+    if ($txid == 0) {
+      _handleEvent($message);
+      return;
+    }
+    final $async.Completer $completer = ctrl.getCompleter($txid);
+    if ($completer == null) {
+      $message.closeHandles();
+      return;
+    }
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
+    switch ($message.ordinal) {
+      default:
+        ctrl.proxyError(
+            $fidl.FidlError('Unexpected message ordinal: ${$message.ordinal}'));
+        ctrl.close();
+        break;
+    }
+  }
+
+  @override
+  $async.Future<void> someMethod() async {
+    if (!ctrl.isBound) {
+      return $async.Future.error(
+          $fidl.FidlStateException('Proxy<${ctrl.$interfaceName}> is closed.'),
+          StackTrace.current);
+    }
+
+    final $fidl.Encoder $encoder = $fidl.Encoder();
+    $encoder.encodeMessageHeader(_kSomeProtocol_SomeMethod_GenOrdinal, 0);
+    return $async.Future.sync(() {
+      ctrl.sendMessage($encoder.message);
+    });
+  }
+}
+
+class SomeProtocolBinding extends $fidl.AsyncBinding<SomeProtocol> {
+  SomeProtocolBinding() : super(r"SomeProtocol");
+
+  @override
+  void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
+    switch ($message.ordinal) {
+      case _kSomeProtocol_SomeMethod_Ordinal:
+      case _kSomeProtocol_SomeMethod_GenOrdinal:
+        final String _name = _kSomeProtocol_SomeMethod_Type.name;
+        try {
+          Timeline.startSync(_name);
+          final List<$fidl.MemberType> $types =
+              _kSomeProtocol_SomeMethod_Type.request;
+          $decoder.claimMemory(
+              _kSomeProtocol_SomeMethod_Type.decodeRequestInlineSize($decoder));
+          final $async.Future<void> $future = impl.someMethod();
+          // ignore: avoid_catches_without_on_clauses
+        } catch (_e) {
+          close();
+          print('Exception handling method call $_name: $_e');
+          rethrow;
+        } finally {
+          Timeline.finishSync();
+        }
+        break;
+      default:
+        throw $fidl.FidlError(
+            r'Unexpected message name for SomeProtocolBinding');
+    }
+  }
+}

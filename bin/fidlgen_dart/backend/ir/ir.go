@@ -147,8 +147,14 @@ type Interface struct {
 }
 
 type MethodResponse struct {
-	WireParameters   []Parameter
-	MethodParameters []Parameter
+	// WireParameters represent the parameters of the top level response struct
+	// that is sent on the wire
+	WireParameters []StructMember
+	// MethodParameters represent the parameters that the user interacts with
+	// when using generated methods. When HasError is false, this is the same as
+	// WireParameters. When HasError is true, MethodParameters corresponds to the
+	// fields of a succesful response.
+	MethodParameters []StructMember
 	HasError         bool
 	ResultType       XUnion
 	ValueType        Type
@@ -158,11 +164,13 @@ type MethodResponse struct {
 // Method represents a method declaration within an interface declaration.
 type Method struct {
 	types.Ordinals
-	Name               string
-	HasRequest         bool
-	Request            []Parameter
-	HasResponse        bool
-	Response           MethodResponse
+	Name        string
+	HasRequest  bool
+	Request     []StructMember
+	HasResponse bool
+	Response    MethodResponse
+	// AsyncResponseClass is a named tuple that wraps the MethodParameters of
+	// a response, and is only generated when there is more than one parameter
 	AsyncResponseClass string
 	AsyncResponseType  string
 	CallbackType       string
@@ -170,15 +178,6 @@ type Method struct {
 	TypeExpr           string
 	Transitional       bool
 	Documented
-}
-
-// Parameter represents an interface method parameter.
-type Parameter struct {
-	Type     Type
-	Name     string
-	OffsetV1 int
-	Convert  string
-	typeExpr string
 }
 
 // Import describes another FIDL library that will be imported.
@@ -222,8 +221,6 @@ var (
 	declarationContext = make(context)
 	// Name of a method
 	methodContext = make(context)
-	// Name of a method parameter
-	parameterContext = make(context)
 	// Everywhere
 )
 
@@ -231,8 +228,7 @@ func init() {
 	var allContexts = []context{
 		enumMemberContext, structMemberContext, tableMemberContext,
 		unionMemberContext, unionMemberTagContext, constantContext,
-		declarationContext, methodContext, parameterContext,
-		bitsMemberContext,
+		declarationContext, methodContext, bitsMemberContext,
 	}
 
 	var reservedWords = map[string][]context{
@@ -387,7 +383,7 @@ func formatInt(val *int) string {
 	return strconv.Itoa(*val)
 }
 
-func formatParameterList(params []Parameter) string {
+func formatParameterList(params []StructMember) string {
 	if len(params) == 0 {
 		return "null"
 	}
@@ -450,17 +446,6 @@ func formatLibraryName(library types.LibraryIdentifier) string {
 	return strings.Join(parts, "_")
 }
 
-func typeExprForMethod(val types.Method, request []Parameter, response []Parameter, name string) string {
-	return fmt.Sprintf(`$fidl.MethodType(
-	    request: %s,
-		response: %s,
-		name: r"%s",
-		requestInlineSize: %d,
-		responseInlineSize: %d,
-	  )`, formatParameterList(request), formatParameterList(response), name,
-		val.RequestTypeShapeV1.InlineSize, val.ResponseTypeShapeV1.InlineSize)
-}
-
 func typeExprForPrimitiveSubtype(val types.PrimitiveSubtype) string {
 	t, ok := typeForPrimitiveSubtype[val]
 	if !ok {
@@ -474,9 +459,45 @@ func libraryPrefix(library types.LibraryIdentifier) string {
 }
 
 type compiler struct {
-	decls     types.DeclMap
-	library   types.LibraryIdentifier
-	typesRoot types.Root
+	decls                  types.DeclMap
+	library                types.LibraryIdentifier
+	typesRoot              types.Root
+	requestResponsePayload map[types.EncodedCompoundIdentifier]types.Struct
+}
+
+func (c *compiler) getPayload(name types.EncodedCompoundIdentifier) types.Struct {
+	val, ok := c.requestResponsePayload[name]
+	if !ok {
+		panic(fmt.Sprintf("Unknown request/response struct: %s", name))
+	}
+	return val
+}
+
+func (c *compiler) typeExprForMethod(val types.Method, request []StructMember, response []StructMember, name string) string {
+	var (
+		requestSize  = 0
+		responseSize = 0
+	)
+	if val.RequestPayload != "" {
+		payload := c.getPayload(val.RequestPayload)
+		requestSize = payload.TypeShapeV1.InlineSize
+	}
+	if val.ResponsePayload != "" {
+		payload := c.getPayload(val.ResponsePayload)
+		responseSize = payload.TypeShapeV1.InlineSize
+	}
+
+	// request/response and requestInlineSize/responseInlineSize are null/0 for both empty
+	// payloads and when there are no request/responses. The HasRequest and HasResponse fields
+	// are used to distinguish between these two cases during codegen.
+	return fmt.Sprintf(`$fidl.MethodType(
+	    request: %s,
+		response: %s,
+		name: r"%s",
+		requestInlineSize: %d,
+		responseInlineSize: %d,
+	  )`, formatParameterList(request), formatParameterList(response), name,
+		requestSize, responseSize)
 }
 
 func (c *compiler) inExternalLibrary(ci types.CompoundIdentifier) bool {
@@ -813,34 +834,12 @@ func (c *compiler) compileBits(val types.Bits) Bits {
 	return b
 }
 
-func (c *compiler) compileParameter(paramName types.Identifier, paramType types.Type, offsetV1 int) Parameter {
-	var (
-		t         = c.compileType(paramType)
-		typeStr   = fmt.Sprintf("type: %s", t.typeExpr)
-		offsetStr = fmt.Sprintf("offset: %v", offsetV1)
-		name      = c.compileLowerCamelIdentifier(paramName, parameterContext)
-		convert   string
-	)
-	if t.declType == types.InterfaceDeclType {
-		convert = "$fidl.convertInterfaceHandle"
-	} else if paramType.Kind == types.RequestType {
-		convert = "$fidl.convertInterfaceRequest"
+func (c *compiler) compileParameterArray(payload types.EncodedCompoundIdentifier) []StructMember {
+	var parameters []StructMember
+	for _, v := range c.getPayload(payload).Members {
+		parameters = append(parameters, c.compileStructMember(v))
 	}
-	return Parameter{
-		Type:     t,
-		Name:     name,
-		OffsetV1: offsetV1,
-		Convert:  convert,
-		typeExpr: fmt.Sprintf("$fidl.MemberType<%s>(%s, %s)", t.Decl, typeStr, offsetStr),
-	}
-}
-
-func (c *compiler) compileParameterArray(val []types.Parameter) []Parameter {
-	r := []Parameter{}
-	for _, v := range val {
-		r = append(r, c.compileParameter(v.Name, v.Type, v.FieldShapeV1.Offset))
-	}
-	return r
+	return parameters
 }
 
 func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
@@ -851,15 +850,16 @@ func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
 		valueType      types.Type
 		isResult       bool
 		isReponseUnion bool
-		parameters     []Parameter
+		parameters     []StructMember
 	)
+	payload := c.getPayload(method.ResponsePayload).Members
 
 	// Method needs to have exactly one response arg
-	if !method.HasResponse || len(method.Response) != 1 {
+	if !method.HasResponse || len(payload) != 1 {
 		goto NotAResult
 	}
 	// That arg must be a non-nullable identifier
-	resultType = method.Response[0].Type
+	resultType = payload[0].Type
 	if resultType.Kind != types.IdentifierType || resultType.Nullable {
 		goto NotAResult
 	}
@@ -895,11 +895,11 @@ func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
 
 	// Turn the struct into a parameter array that will be used for function arguments.
 	for _, v := range valueStruct.Members {
-		parameters = append(parameters, c.compileParameter(v.Name, v.Type, v.FieldShapeV1.Offset))
+		parameters = append(parameters, c.compileStructMember(v))
 	}
 
 	return MethodResponse{
-		WireParameters:   c.compileParameterArray(method.Response),
+		WireParameters:   c.compileParameterArray(method.ResponsePayload),
 		MethodParameters: parameters,
 		HasError:         true,
 		ResultType:       c.compileXUnion(resultUnion),
@@ -908,7 +908,7 @@ func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
 	}
 
 NotAResult:
-	response := c.compileParameterArray(method.Response)
+	response := c.compileParameterArray(method.ResponsePayload)
 	return MethodResponse{
 		WireParameters:   response,
 		MethodParameters: response,
@@ -918,11 +918,18 @@ NotAResult:
 func (c *compiler) compileMethod(val types.Method, protocol Interface, fidlProtocol types.Interface) Method {
 	var (
 		name               = c.compileLowerCamelIdentifier(val.Name, methodContext)
-		request            = c.compileParameterArray(val.Request)
-		response           = c.compileMethodResponse(val)
+		request            []StructMember
+		response           MethodResponse
 		asyncResponseClass string
 		asyncResponseType  string
 	)
+	if val.HasRequest && val.RequestPayload != "" {
+		request = c.compileParameterArray(val.RequestPayload)
+	}
+	if val.HasResponse && val.ResponsePayload != "" {
+		response = c.compileMethodResponse(val)
+	}
+
 	if len(response.MethodParameters) > 1 {
 		asyncResponseClass = fmt.Sprintf("%s$%s$Response", protocol.Name, val.Name)
 	}
@@ -935,9 +942,9 @@ func (c *compiler) compileMethod(val types.Method, protocol Interface, fidlProto
 			asyncResponseType = responseType.Decl
 		default:
 			asyncResponseType = asyncResponseClass
-
 		}
 	}
+
 	_, transitional := val.LookupAttribute("Transitional")
 	return Method{
 		Ordinals: types.NewOrdinalsStep7(
@@ -954,7 +961,7 @@ func (c *compiler) compileMethod(val types.Method, protocol Interface, fidlProto
 		AsyncResponseType:  asyncResponseType,
 		CallbackType:       fmt.Sprintf("%s%sCallback", protocol.Name, c.compileUpperCamelIdentifier(val.Name, methodContext)),
 		TypeSymbol:         fmt.Sprintf("_k%s_%s_Type", protocol.Name, val.Name),
-		TypeExpr:           typeExprForMethod(val, request, response.WireParameters, fmt.Sprintf("%s.%s", protocol.Name, val.Name)),
+		TypeExpr:           c.typeExprForMethod(val, request, response.WireParameters, fmt.Sprintf("%s.%s", protocol.Name, val.Name)),
 		Transitional:       transitional,
 		Documented:         docString(val),
 	}
@@ -1130,9 +1137,10 @@ flexible: %t,
 func Compile(r types.Root) Root {
 	root := Root{}
 	c := compiler{
-		decls:     r.DeclsWithDependencies(),
-		library:   types.ParseLibraryName(r.Name),
-		typesRoot: r,
+		decls:                  r.DeclsWithDependencies(),
+		library:                types.ParseLibraryName(r.Name),
+		typesRoot:              r,
+		requestResponsePayload: map[types.EncodedCompoundIdentifier]types.Struct{},
 	}
 
 	root.LibraryName = fmt.Sprintf("fidl_%s", formatLibraryName(c.library))
@@ -1149,16 +1157,12 @@ func Compile(r types.Root) Root {
 		root.Bits = append(root.Bits, c.compileBits(v))
 	}
 
-	for _, v := range r.Interfaces {
-		root.Interfaces = append(root.Interfaces, c.compileInterface(v))
-	}
-
 	for _, v := range r.Structs {
-		// TODO(7704) remove once anonymous structs are supported
 		if v.Anonymous {
-			continue
+			c.requestResponsePayload[v.Name] = v
+		} else {
+			root.Structs = append(root.Structs, c.compileStruct(v))
 		}
-		root.Structs = append(root.Structs, c.compileStruct(v))
 	}
 
 	for _, v := range r.Tables {
@@ -1172,6 +1176,10 @@ func Compile(r types.Root) Root {
 
 	for _, v := range r.XUnions {
 		root.XUnions = append(root.XUnions, c.compileXUnion(v))
+	}
+
+	for _, v := range r.Interfaces {
+		root.Interfaces = append(root.Interfaces, c.compileInterface(v))
 	}
 
 	for _, l := range r.Libraries {

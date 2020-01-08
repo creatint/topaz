@@ -313,7 +313,7 @@ const $fidl.MethodType _kInterface_Method_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"Interface.Method",
-  requestInlineSize: 16,
+  requestInlineSize: 0,
   responseInlineSize: 0,
 );
 // onEvent:  -> ()
@@ -324,7 +324,7 @@ const $fidl.MethodType _kInterface_OnEvent_Type = $fidl.MethodType(
   response: null,
   name: r"Interface.OnEvent",
   requestInlineSize: 0,
-  responseInlineSize: 16,
+  responseInlineSize: 0,
 );
 
 /// interface comment #1
@@ -377,7 +377,8 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
   $fidl.ServiceData get $serviceData => InterfaceData();
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       case _kInterface_OnEvent_Ordinal:
       case _kInterface_OnEvent_GenOrdinal:
@@ -418,7 +419,8 @@ class InterfaceProxy extends $fidl.AsyncProxy<Interface> implements Interface {
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       default:
         ctrl.proxyError(
@@ -472,8 +474,7 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
           final $fidl.Encoder $encoder = $fidl.Encoder();
           $encoder.encodeMessageHeader(_kInterface_OnEvent_GenOrdinal, 0);
           $encoder.alloc(
-              _kInterface_OnEvent_Type.encodingResponseInlineSize($encoder) -
-                  $fidl.kMessageHeaderSize);
+              _kInterface_OnEvent_Type.encodingResponseInlineSize($encoder));
           final List<$fidl.MemberType> $types =
               _kInterface_OnEvent_Type.response;
 
@@ -486,7 +487,8 @@ class InterfaceBinding extends $fidl.AsyncBinding<Interface> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       case _kInterface_Method_Ordinal:
       case _kInterface_Method_GenOrdinal:

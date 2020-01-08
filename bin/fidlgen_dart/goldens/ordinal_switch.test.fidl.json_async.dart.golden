@@ -46,7 +46,7 @@ const $fidl.MethodType _kSwitchingOrdinals_OrdinalFive_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OrdinalFive",
-  requestInlineSize: 16,
+  requestInlineSize: 0,
   responseInlineSize: 0,
 );
 // onlyGeneratedOrdinal: ()
@@ -58,7 +58,7 @@ const $fidl.MethodType _kSwitchingOrdinals_OnlyGeneratedOrdinal_Type =
   request: null,
   response: null,
   name: r"SwitchingOrdinals.OnlyGeneratedOrdinal",
-  requestInlineSize: 16,
+  requestInlineSize: 0,
   responseInlineSize: 0,
 );
 // eventOrdinalFifteen:  -> ()
@@ -71,7 +71,7 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOrdinalFifteen_Type =
   response: null,
   name: r"SwitchingOrdinals.EventOrdinalFifteen",
   requestInlineSize: 0,
-  responseInlineSize: 16,
+  responseInlineSize: 0,
 );
 // eventOnlyGeneratedOrdinal:  -> ()
 const int _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Ordinal =
@@ -84,7 +84,7 @@ const $fidl.MethodType _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type =
   response: null,
   name: r"SwitchingOrdinals.EventOnlyGeneratedOrdinal",
   requestInlineSize: 0,
-  responseInlineSize: 16,
+  responseInlineSize: 0,
 );
 
 abstract class SwitchingOrdinals extends $fidl.Service {
@@ -127,7 +127,8 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
   $fidl.ServiceData get $serviceData => SwitchingOrdinalsData();
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       case _kSwitchingOrdinals_EventOrdinalFifteen_Ordinal:
       case _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal:
@@ -190,7 +191,8 @@ class SwitchingOrdinalsProxy extends $fidl.AsyncProxy<SwitchingOrdinals>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       default:
         ctrl.proxyError(
@@ -261,8 +263,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
           $encoder.encodeMessageHeader(
               _kSwitchingOrdinals_EventOrdinalFifteen_GenOrdinal, 0);
           $encoder.alloc(_kSwitchingOrdinals_EventOrdinalFifteen_Type
-                  .encodingResponseInlineSize($encoder) -
-              $fidl.kMessageHeaderSize);
+              .encodingResponseInlineSize($encoder));
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_EventOrdinalFifteen_Type.response;
 
@@ -275,8 +276,7 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
           $encoder.encodeMessageHeader(
               _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_GenOrdinal, 0);
           $encoder.alloc(_kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type
-                  .encodingResponseInlineSize($encoder) -
-              $fidl.kMessageHeaderSize);
+              .encodingResponseInlineSize($encoder));
           final List<$fidl.MemberType> $types =
               _kSwitchingOrdinals_EventOnlyGeneratedOrdinal_Type.response;
 
@@ -289,7 +289,8 @@ class SwitchingOrdinalsBinding extends $fidl.AsyncBinding<SwitchingOrdinals> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       case _kSwitchingOrdinals_OrdinalFive_Ordinal:
       case _kSwitchingOrdinals_OrdinalFive_GenOrdinal:

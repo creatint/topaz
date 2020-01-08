@@ -19,3 +19,10 @@ import './fidl_async.dart';
 // ignore_for_file: unused_import
 // ignore_for_file: library_prefixes
 // ignore_for_file: unused_shown_name
+
+class SomeProtocol$TestBase extends SomeProtocol {
+  @override
+  $async.Future<void> someMethod() {
+    return $async.Future.error(UnimplementedError());
+  }
+}

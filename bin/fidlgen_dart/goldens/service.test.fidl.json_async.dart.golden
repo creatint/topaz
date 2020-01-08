@@ -46,7 +46,7 @@ const $fidl.MethodType _kFirstProtocol_MethodOnFirst_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"FirstProtocol.MethodOnFirst",
-  requestInlineSize: 16,
+  requestInlineSize: 0,
   responseInlineSize: 0,
 );
 
@@ -83,7 +83,8 @@ class FirstProtocolProxy extends $fidl.AsyncProxy<FirstProtocol>
   $fidl.ServiceData get $serviceData => FirstProtocolData();
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       default:
         ctrl.proxyError(
@@ -104,7 +105,8 @@ class FirstProtocolProxy extends $fidl.AsyncProxy<FirstProtocol>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       default:
         ctrl.proxyError(
@@ -135,7 +137,8 @@ class FirstProtocolBinding extends $fidl.AsyncBinding<FirstProtocol> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       case _kFirstProtocol_MethodOnFirst_Ordinal:
       case _kFirstProtocol_MethodOnFirst_GenOrdinal:
@@ -170,7 +173,7 @@ const $fidl.MethodType _kSecondProtocol_MethodOnSecond_Type = $fidl.MethodType(
   request: null,
   response: null,
   name: r"SecondProtocol.MethodOnSecond",
-  requestInlineSize: 16,
+  requestInlineSize: 0,
   responseInlineSize: 0,
 );
 
@@ -207,7 +210,8 @@ class SecondProtocolProxy extends $fidl.AsyncProxy<SecondProtocol>
   $fidl.ServiceData get $serviceData => SecondProtocolData();
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       default:
         ctrl.proxyError(
@@ -228,7 +232,8 @@ class SecondProtocolProxy extends $fidl.AsyncProxy<SecondProtocol>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       default:
         ctrl.proxyError(
@@ -259,7 +264,8 @@ class SecondProtocolBinding extends $fidl.AsyncBinding<SecondProtocol> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
       case _kSecondProtocol_MethodOnSecond_Ordinal:
       case _kSecondProtocol_MethodOnSecond_GenOrdinal:

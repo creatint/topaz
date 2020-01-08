@@ -12,322 +12,12 @@ const Interface = `
   {{- end -}}
 {{ end }}
 
-{{- define "RequestMethodSignature" -}}
-  {{- if .HasResponse -}}
-{{ .Name }}({{ template "Params" .Request }}{{ if .Request }}, {{ end }}void callback({{ template "Params" .Response.WireParameters }}))
-  {{- else -}}
-{{ .Name }}({{ template "Params" .Request }})
-  {{- end -}}
-{{ end -}}
-
-{{- define "ResponseMethodSignature" -}}
-{{ .Name }}({{ template "Params" .Response.WireParameters }})
-{{ end -}}
-
-{{- define "InterfaceDeclaration" -}}
-abstract class {{ .Name }} {
-  static const String $serviceName = {{ .ServiceName }};
-
-{{- range .Methods }}
-  {{- if .HasRequest }}
-  void {{ template "RequestMethodSignature" . }};
-  {{- end }}
-{{- end }}
-}
-
-{{ range .Methods }}
-// {{ .Name }}: {{ if .HasRequest }}({{ template "Params" .Request }}){{ end }}{{ if .HasResponse }} -> ({{ template "Params" .Response.WireParameters }}){{ end }}
-  {{- range .Ordinals.Reads }}
-const int {{ .Name }} = {{ .Ordinal }};
-  {{- end }}
-const $fidl.MethodType {{ .TypeSymbol }} = {{ .TypeExpr }};
-{{- end }}
-
-{{ range .Methods }}
-  {{- if not .HasRequest }}
-    {{- if .HasResponse }}
-typedef void {{ .CallbackType }}({{ template "Params" .Response.WireParameters }});
-    {{- end }}
-  {{- end }}
-{{- end }}
-
-class {{ .ProxyName }} extends $fidl.Proxy<{{ .Name }}>
-    implements {{ .Name }} {
-
-  {{ .ProxyName }}() : super($fidl.ProxyController<{{ .Name }}>($serviceName: {{ .ServiceName }}, $interfaceName: r'{{ .Name }}')) {
-    ctrl.onResponse = _handleResponse;
-  }
-
-  void _handleEvent($fidl.Message $message) {
-    if (!$message.isCompatible()) {
-      ctrl.proxyError($fidl.FidlError(
-        'Incompatible wire format', $fidl.FidlErrorCode.fidlUnknownMagic
-      ));
-      return;
-    }
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
-    switch ($message.ordinal) {
-{{- range .Methods }}
-{{- if not .HasRequest }}
-  {{- if .HasResponse }}
-      {{- range .Ordinals.Reads }}
-      case {{ .Name }}:
-      {{- end }}
-        final String _name = {{ .TypeSymbol }}.name;
-        try {
-          Timeline.startSync(_name);
-          final Function $callback = {{ .Name }};
-          if ($callback == null) {
-            $message.closeHandles();
-            return;
-          }
-          final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
-          $decoder.claimMemory({{ .TypeSymbol }}.decodeResponseInlineSize($decoder));
-          $callback(
-      {{- range $index, $response := .Response.WireParameters }}
-            $types[{{ $index }}].decode($decoder, 0),
-      {{- end }}
-          );
-        // ignore: avoid_catches_without_on_clauses
-        } catch(_e) {
-          ctrl.proxyError('Exception handling event $_name: $_e');
-          ctrl.close();
-          rethrow;
-        } finally {
-          Timeline.finishSync();
-        }
-        break;
-  {{- end }}
-{{- end }}
-{{- end }}
-      default:
-        ctrl.proxyError('Unexpected message ordinal: ${$message.ordinal}');
-        ctrl.close();
-        break;
-    }
-  }
-
-  void _handleResponse($fidl.Message $message) {
-    final int $txid = $message.txid;
-    if ($txid == 0) {
-      _handleEvent($message);
-      return;
-    }
-    final Function $callback = ctrl.getCallback($txid);
-    if ($callback == null) {
-      $message.closeHandles();
-      return;
-    }
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
-    switch ($message.ordinal) {
-{{- range .Methods }}
-  {{- if .HasRequest }}
-    {{- if .HasResponse }}
-      {{- range .Ordinals.Reads }}
-      case {{ .Name }}:
-      {{- end }}
-        final String _name = {{ .TypeSymbol }}.name;
-        try {
-          Timeline.startSync(_name);
-          final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
-          $decoder.claimMemory({{ .TypeSymbol }}.decodeResponseInlineSize($decoder));
-          $callback(
-        {{- range $index, $response := .Response.WireParameters }}
-            $types[{{ $index }}].decode($decoder, 0),
-        {{- end }}
-          );
-        // ignore: avoid_catches_without_on_clauses
-        } catch(_e) {
-          ctrl.proxyError('Exception handling method response $_name: $_e');
-          ctrl.close();
-          rethrow;
-        } finally {
-          Timeline.finishSync();
-        }
-        break;
-    {{- end }}
-  {{- end }}
-{{- end }}
-      default:
-        ctrl.proxyError('Unexpected message ordinal: ${$message.ordinal}');
-        ctrl.close();
-        break;
-    }
-  }
-
-{{- range .Methods }}
-  {{- if .HasRequest }}
-  @override
-  void {{ template "RequestMethodSignature" . }} {
-    if (!ctrl.isBound) {
-      ctrl.proxyError('The proxy is closed.');
-      return;
-    }
-
-    final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, 0);
-    {{- if .Request }}
-    $encoder.alloc({{ .TypeSymbol }}.encodingRequestInlineSize($encoder) - $fidl.kMessageHeaderSize);
-    final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
-    {{- end }}
-    {{- range $index, $request := .Request }}
-    $types[{{ $index }}].encode($encoder, {{ .Name }}, 0);
-    {{- end }}
-
-    {{- if .HasResponse }}
-    Function $zonedCallback;
-    if ((callback == null) || identical(Zone.current, Zone.root)) {
-      $zonedCallback = callback;
-    } else {
-      Zone $z = Zone.current;
-      {{- if .Response.WireParameters }}
-      $zonedCallback = (({{ template "Params" .Response.WireParameters }}) {
-        $z.bindCallback(() {
-          callback(
-        {{- range .Response.WireParameters -}}
-            {{ .Name }},
-        {{- end -}}
-          );
-        })();
-      });
-      {{- else }}
-      $zonedCallback = $z.bindCallback(callback);
-      {{- end }}
-    }
-    ctrl.sendMessageWithResponse($encoder.message, $zonedCallback);
-    {{- else }}
-    ctrl.sendMessage($encoder.message);
-    {{- end }}
-  }
-  {{- else if .HasResponse }}
-  {{ .CallbackType }} {{ .Name }};
-  {{- end }}
-{{- end }}
-}
-
-{{- if .HasEvents }}
-
-class {{ .EventsName }} {
-  $fidl.Binding<{{ .Name }}> _binding;
-
-{{- range .Methods }}
-  {{- if not .HasRequest }}
-    {{- if .HasResponse }}
-  void {{ template "ResponseMethodSignature" . }} {
-    final $fidl.Encoder $encoder = $fidl.Encoder();
-    $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, 0);
-      {{- if .Response.WireParameters }}
-    $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder) - $fidl.kMessageHeaderSize);
-    final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
-      {{- end }}
-      {{- range $index, $response := .Response.WireParameters }}
-    $types[{{ $index }}].encode($encoder, {{ .Name }}, 0);
-      {{- end }}
-    _binding.sendMessage($encoder.message);
-  }
-    {{- end }}
-  {{- end }}
-{{- end }}
-}
-
-{{- end }}
-
-class {{ .BindingName }} extends $fidl.Binding<{{ .Name }}> {
-{{- if .HasEvents }}
-  {{ .BindingName }}() {
-    events._binding = this;
-  }
-
-  final {{ .EventsName }} events = {{ .EventsName }}();
-{{- end }}
-
-{{ range .Methods }}
-  {{- if .HasRequest }}
-    {{- if .HasResponse }}
-  Function _{{ .Name }}Responder($fidl.MessageSink $respond, int $txid) {
-    return ({{ template "Params" .Response.WireParameters }}) {
-      final $fidl.Encoder $encoder = $fidl.Encoder();
-      $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, $txid);
-      {{- if .Response.WireParameters }}
-      $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder) - $fidl.kMessageHeaderSize);
-      final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
-      {{- end }}
-      {{- range $index, $response := .Response.WireParameters }}
-      $types[{{ $index }}].encode($encoder, {{ .Name }}, 0);
-      {{- end }}
-      $respond($encoder.message);
-    };
-  }
-    {{- end }}
-  {{- end }}
-{{- end }}
-
-  @override
-  void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
-    switch ($message.ordinal) {
-{{- range .Methods }}
-  {{- if .HasRequest }}
-      {{- range .Ordinals.Reads }}
-      case {{ .Name }}:
-      {{- end }}
-        final String _name = {{ .TypeSymbol }}.name;
-        try {
-          Timeline.startSync(_name);
-          final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
-          $decoder.claimMemory({{ .TypeSymbol }}.decodeRequestInlineSize($decoder));
-          impl.{{ .Name }}(
-      {{- range $index, $request := .Request }}
-            $types[{{ $index }}].decode($decoder, 0),
-      {{- end }}
-      {{- if .HasResponse }}
-            _{{ .Name }}Responder($respond, $message.txid),
-      {{- end }}
-          );
-        // ignore: avoid_catches_without_on_clauses
-        } catch(_e) {
-          close();
-          print('Exception handling method call $_name: $_e');
-          rethrow;
-        } finally {
-          Timeline.finishSync();
-        }
-        break;
-  {{- end }}
-{{- end }}
-      default:
-        throw $fidl.FidlError(r'Unexpected message name for {{ .BindingName }}');
-    }
-  }
-}
-
-{{ end }}
-
-
-
-
-{{/*
-
-  New-style Futures-oriented bindings:
-
-*/}}
-
-
 {{/* Generate a parameter list (eg "int foo, String baz") with AsyncDecl types */}}
 {{- define "AsyncParams" -}}
   {{- range $index, $param := . -}}
     {{- if $index }}, {{ end -}}{{ $param.Type.Decl }} {{ $param.Name }}
   {{- end -}}
 {{ end }}
-
-
-{{/* Generate a parameter list (eg "int foo, String baz") with SyncDecl types */}}
-{{- define "SyncParams" -}}
-  {{- range $index, $param := . -}}
-    {{- if $index }}, {{ end -}}{{ $param.Type.SyncDecl }} {{ $param.Name }}
-  {{- end -}}
-{{ end }}
-
 
 {{- define "AsyncReturn" -}}
 {{- if .HasResponse -}}
@@ -341,9 +31,6 @@ $async.Future<void>
 {{ range $index, $param := . }}{{ if $index }}, {{ end }}{{ $param.Name }}{{ end }}
 {{- end -}}
 
-
-
-
 {{/*
   Decode a method response message.
   The current object is the method (ir.Method).
@@ -354,17 +41,17 @@ $async.Future<void>
 */}}
 {{- define "DecodeResponse" -}}
   {{- if .Response.HasError }}
-    $types[0].decode($decoder, 0)
+    $types[0].decode($decoder, $fidl.kMessageHeaderSize)
   {{- else }}
     {{- if .AsyncResponseClass -}}
       {{ .AsyncResponseClass }}(
         {{- range $index, $response := .Response.WireParameters }}
-          $types[{{ $index }}].decode($decoder, 0),
+          $types[{{ $index }}].decode($decoder, $fidl.kMessageHeaderSize),
         {{- end -}}
       )
     {{- else -}}
       {{- if .Response.WireParameters -}}
-        $types[0].decode($decoder, 0)
+        $types[0].decode($decoder, $fidl.kMessageHeaderSize)
       {{- else -}}
         null
       {{- end -}}
@@ -385,11 +72,11 @@ $async.Future<void>
 {{- define "EncodeResponse" -}}
   {{- if (and .AsyncResponseClass (not .Response.HasError)) -}}
     {{- range $index, $response := .Response.WireParameters }}
-      $types[{{ $index }}].encode($encoder, $response.{{ .Name }}, 0);
+      $types[{{ $index }}].encode($encoder, $response.{{ .Name }}, $fidl.kMessageHeaderSize);
     {{- end }}
   {{- else -}}
     {{- if .Response.WireParameters -}}
-      $types[0].encode($encoder, $response, 0);
+      $types[0].encode($encoder, $response, $fidl.kMessageHeaderSize);
     {{- end -}}
   {{- end -}}
 {{ end -}}
@@ -495,7 +182,8 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
   $fidl.ServiceData get $serviceData => {{ .ServiceData }}();
 
   void _handleEvent($fidl.Message $message) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
 {{- range .Methods }}
 {{- if not .HasRequest }}
@@ -541,7 +229,8 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
       $message.closeHandles();
       return;
     }
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
 {{- range .Methods }}
   {{- if .HasRequest }}
@@ -611,11 +300,11 @@ class {{ .ProxyName }} extends $fidl.AsyncProxy<{{ .Name }}>
       final $fidl.Encoder $encoder = $fidl.Encoder();
       $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, 0);
       {{- if .Request }}
-        $encoder.alloc({{ .TypeSymbol }}.encodingRequestInlineSize($encoder) - $fidl.kMessageHeaderSize);
+        $encoder.alloc({{ .TypeSymbol }}.encodingRequestInlineSize($encoder));
         final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.request;
       {{- end }}
       {{- range $index, $request := .Request }}
-        $types[{{ $index }}].encode($encoder, {{ .Name }}, 0);
+        $types[{{ $index }}].encode($encoder, {{ .Name }}, $fidl.kMessageHeaderSize);
       {{- end }}
 
       {{- if .HasResponse }}
@@ -656,7 +345,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
             $subscriptions.add(impl.{{ .Name }}.listen(($response) {
               final $fidl.Encoder $encoder = $fidl.Encoder();
               $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, 0);
-              $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder) - $fidl.kMessageHeaderSize);
+              $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder));
               final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
               {{ template "EncodeResponse" . }}
               sendMessage($encoder.message);
@@ -673,7 +362,8 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
 
   @override
   void handleMessage($fidl.Message $message, $fidl.MessageSink $respond) {
-    final $fidl.Decoder $decoder = $fidl.Decoder($message);
+    final $fidl.Decoder $decoder = $fidl.Decoder($message)
+      ..claimMemory($fidl.kMessageHeaderSize);
     switch ($message.ordinal) {
     {{- range .Methods }}
       {{- if .HasRequest }}
@@ -687,7 +377,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
               $decoder.claimMemory({{ .TypeSymbol }}.decodeRequestInlineSize($decoder));
               final {{ template "AsyncReturn" . }} $future = impl.{{ .Name }}(
               {{- range $index, $request := .Request }}
-                $types[{{ $index }}].decode($decoder, 0),
+                $types[{{ $index }}].decode($decoder, $fidl.kMessageHeaderSize),
               {{- end }});
 
               {{- if .HasResponse }}
@@ -721,7 +411,7 @@ class {{ .BindingName }} extends $fidl.AsyncBinding<{{ .Name }}> {
                   final $fidl.Encoder $encoder = $fidl.Encoder();
                   $encoder.encodeMessageHeader({{ .Ordinals.Write.Name }}, $message.txid);
                   {{- if .Response.WireParameters }}
-                    $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder) - $fidl.kMessageHeaderSize);
+                    $encoder.alloc({{ .TypeSymbol }}.encodingResponseInlineSize($encoder));
                     final List<$fidl.MemberType> $types = {{ .TypeSymbol }}.response;
                     {{ template "EncodeResponse" . -}}
                   {{- end }}
