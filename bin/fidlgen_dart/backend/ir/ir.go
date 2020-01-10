@@ -831,7 +831,7 @@ func (c *compiler) compileBits(val types.Bits) Bits {
 	return b
 }
 
-func (c *compiler) compileParameter(paramName types.Identifier, paramType types.Type, offsetOld, offsetV1 int) Parameter {
+func (c *compiler) compileParameter(paramName types.Identifier, paramType types.Type, offsetV1 int) Parameter {
 	var (
 		t         = c.compileType(paramType)
 		typeStr   = fmt.Sprintf("type: %s", t.typeExpr)
@@ -856,7 +856,7 @@ func (c *compiler) compileParameter(paramName types.Identifier, paramType types.
 func (c *compiler) compileParameterArray(val []types.Parameter) []Parameter {
 	r := []Parameter{}
 	for _, v := range val {
-		r = append(r, c.compileParameter(v.Name, v.Type, v.FieldShapeOld.Offset, v.FieldShapeV1.Offset))
+		r = append(r, c.compileParameter(v.Name, v.Type, v.FieldShapeV1.Offset))
 	}
 	return r
 }
@@ -913,7 +913,7 @@ func (c *compiler) compileMethodResponse(method types.Method) MethodResponse {
 
 	// Turn the struct into a parameter array that will be used for function arguments.
 	for _, v := range valueStruct.Members {
-		parameters = append(parameters, c.compileParameter(v.Name, v.Type, v.FieldShapeOld.Offset, v.FieldShapeV1.Offset))
+		parameters = append(parameters, c.compileParameter(v.Name, v.Type, v.FieldShapeV1.Offset))
 	}
 
 	return MethodResponse{

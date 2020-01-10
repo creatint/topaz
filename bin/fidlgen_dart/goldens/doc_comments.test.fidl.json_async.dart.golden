@@ -41,6 +41,112 @@ import 'package:zircon/zircon.dart' as $zx;
 /// const comment #3
 const int c = 0x4;
 
+/// enum comment #1.
+///
+/// enum comment #2.
+class MyEnum extends $fidl.Enum {
+  factory MyEnum(int _v) {
+    switch (_v) {
+      case 0x1:
+        return foo;
+      case 0x2:
+        return bar;
+      default:
+        return null;
+    }
+  }
+
+  /// enum Member comment 1.
+  static const MyEnum foo = MyEnum._(0x1);
+  static const MyEnum bar = MyEnum._(0x2);
+
+  const MyEnum._(this.$value);
+
+  @override
+  final int $value;
+
+  static const Map<String, MyEnum> $valuesMap = {
+    r'foo': foo,
+    r'bar': bar,
+  };
+
+  static const List<MyEnum> $values = [
+    foo,
+    bar,
+  ];
+
+  // TODO: remove, see: FIDL-587
+  static const List<MyEnum> values = MyEnum.$values;
+
+  static MyEnum $valueOf(String name) => $valuesMap[name];
+
+  @override
+  String toString() {
+    switch ($value) {
+      case 0x1:
+        return r'MyEnum.foo';
+      case 0x2:
+        return r'MyEnum.bar';
+      default:
+        return null;
+    }
+  }
+
+  static MyEnum _ctor(int v) => MyEnum(v);
+}
+
+const $fidl.EnumType<MyEnum> kMyEnum_Type =
+    $fidl.EnumType<MyEnum>(type: $fidl.Uint32Type(), ctor: MyEnum._ctor);
+
+/// bits comment #1
+///
+/// bits comment #2
+class MyBits extends $fidl.Bits {
+  /// bits member comment #1
+  ///
+  /// bits member comment #3
+  static const MyBits myFirstBit = MyBits._(0x1);
+  static const MyBits myOtherBit = MyBits._(0x2);
+  static const MyBits $none = MyBits._(0);
+
+  const MyBits._(this.$value);
+
+  MyBits operator |(MyBits other) {
+    return MyBits._($value | other.$value);
+  }
+
+  MyBits operator &(MyBits other) {
+    return MyBits._($value & other.$value);
+  }
+
+  @override
+  final int $value;
+
+  @override
+  String toString() {
+    if ($value == null) {
+      return null;
+    }
+    List<String> parts = [];
+    if ($value & 0x1 != 0) {
+      parts.add(r'MyBits.myFirstBit');
+    }
+    if ($value & 0x2 != 0) {
+      parts.add(r'MyBits.myOtherBit');
+    }
+    if (parts.isEmpty) {
+      return r'MyBits.$none';
+    } else {
+      return parts.join(" | ");
+    }
+  }
+
+  static MyBits _ctor(int v) => MyBits._(v);
+}
+
+const $fidl.BitsType<MyBits> kMyBits_Type =
+    $fidl.BitsType<MyBits>(type: $fidl.Uint32Type(), ctor: MyBits._ctor);
+
 enum UnionTag {
   field, // 0x1
 }

@@ -196,7 +196,7 @@ class {{ $type }}Converter {
 
 {{- define "TableConverterDecls" }}
   {{- range .Tables }}
-{{- if eq .MaxHandles 0 }}
+{{- if eq .TypeShapeV1.MaxHandles 0 }}
 {{ $type := execTmpl "TypeTemplate" .Name }}
 {{ $className := (execTmpl "CvtClassTemplate" .Name) }}
 class {{ $className}} {
@@ -237,7 +237,7 @@ class {{ $className}} {
 
 {{- define "StructConverterDecls" }}
   {{- range .Structs }}
-{{- if eq .MaxHandles 0 }}
+{{- if eq .TypeShapeV1.MaxHandles 0 }}
 {{ $type := execTmpl "TypeTemplate" .Name }}
 {{ $className := (execTmpl "CvtClassTemplate" .Name) }}
 class {{ $className }} {
@@ -274,7 +274,7 @@ class {{ $className }} {
 
 {{- define "UnionConverterDecls" -}}
   {{- range . -}}
-{{- if eq .MaxHandles 0 }}
+{{- if eq .TypeShapeV1.MaxHandles 0 }}
 {{- $type := execTmpl "TypeTemplate" .Name }}
 {{- $typeKey := "type" }}
 {{- $valueKey := "value" }}
@@ -321,7 +321,7 @@ class {{ $className }} {
 
 {{- define "XUnionConverterDecls" -}}
   {{- range . -}}
-{{- if eq .MaxHandles 0 }}
+{{- if eq .TypeShapeV1.MaxHandles 0 }}
 {{- $type := execTmpl "TypeTemplate" .Name }}
 {{- $typeKey := "type" }}
 {{- $valueKey := "value" }}
