@@ -8,6 +8,7 @@ part of zircon_fakes;
 
 class Handle {
   // No public constructor - this can only be created from native code.
+  // ignore: unused_element
   Handle._();
 
   // Create an invalid handle object.
