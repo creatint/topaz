@@ -66,7 +66,6 @@ group("tests") {
       "//topaz/public/dart/fuchsia_scenic_flutter:fuchsia_scenic_flutter_unittests($host_toolchain)",
       "//topaz/public/dart/fuchsia_services:fuchsia_services_package_unittests($host_toolchain)",
       "//topaz/public/dart/fuchsia_inspect_flutter:inspect_flutter_test($host_toolchain)",
-      "//topaz/lib/keyboard/flutter:keyboard_test($host_toolchain)",
       "//topaz/public/dart/story_shell_labs:layout_unittests($host_toolchain)",
       "//topaz/lib/setui/common:lib_setui_common_test($host_toolchain)",
       "//topaz/lib/setui/flutter:lib_setui_flutter_test($host_toolchain)",
