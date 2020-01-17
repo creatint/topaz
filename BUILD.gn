@@ -77,13 +77,14 @@ group("tests") {
   public_deps = [
                   # TODO: This target should just aggregate the top-level directories and
                   # most of these dependencies should be in those subdirectories.
+                  "//garnet/packages:garnet",
                   "//garnet/packages/tests:run_test_component",
                   "//garnet/packages/tests:scenic",
                   "//garnet/packages/tools:scenic",
-                  "//peridot/packages:peridot",
-                  "//peridot/packages/tests:modular_test_harness",
-                  "//src/fonts",
+                  "//src/modular/bundles:framework_experimental",
+                  "//src/modular/bundles:tools",
                   "//src/modular/bundles:integration_testing",
+                  "//src/fonts",
                   "//topaz/bin/crasher_dart",
                   "//topaz/bin/crasher_flutter",
                   "//topaz/bin/dart_fidl_json/test:dart_fidl_json_test($host_toolchain)",
