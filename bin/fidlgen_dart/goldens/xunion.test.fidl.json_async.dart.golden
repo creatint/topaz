@@ -38,22 +38,22 @@ import 'package:zircon/zircon.dart' as $zx;
 
 enum OlderSimpleUnionTag {
   $unknown,
-  i, // 0x3d32b1d7
-  f, // 0x5136cf7e
+  i, // 0x1
+  f, // 0x2
 }
 
 const Map<int, OlderSimpleUnionTag> _OlderSimpleUnionTag_map = {
-  1026732503: OlderSimpleUnionTag.i,
-  1362546558: OlderSimpleUnionTag.f,
+  1: OlderSimpleUnionTag.i,
+  2: OlderSimpleUnionTag.f,
 };
 
 class OlderSimpleUnion extends $fidl.XUnion {
   const OlderSimpleUnion.withI(int value)
-      : _ordinal = 1026732503,
+      : _ordinal = 1,
         _data = value;
 
   const OlderSimpleUnion.withF(double value)
-      : _ordinal = 1362546558,
+      : _ordinal = 2,
         _data = value;
 
   OlderSimpleUnion._(int ordinal, Object data)
@@ -69,14 +69,14 @@ class OlderSimpleUnion extends $fidl.XUnion {
   }
 
   int get i {
-    if (_ordinal != 1026732503) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   double get f {
-    if (_ordinal != 1362546558) {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
@@ -85,9 +85,9 @@ class OlderSimpleUnion extends $fidl.XUnion {
   @override
   String toString() {
     switch (_ordinal) {
-      case 1026732503:
+      case 1:
         return 'OlderSimpleUnion.i($i)';
-      case 1362546558:
+      case 2:
         return 'OlderSimpleUnion.f($f)';
       default:
         return 'OlderSimpleUnion.<UNKNOWN>';
@@ -110,14 +110,14 @@ class OlderSimpleUnion extends $fidl.XUnion {
 const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_Type =
     $fidl.XUnionType<OlderSimpleUnion>(
   members: <int, $fidl.FidlType>{
-    1026732503: $fidl.Int64Type(),
-    1362546558: $fidl.Float32Type(),
+    1: $fidl.Int64Type(),
+    2: $fidl.Float32Type(),
   },
   readToWriteOrdinals: <int, int>{
-    1: 1026732503,
-    1026732503: 1026732503,
-    2: 1362546558,
-    1362546558: 1362546558,
+    1: 1,
+    1026732503: 1,
+    2: 2,
+    1362546558: 2,
   },
   ctor: OlderSimpleUnion._ctor,
   nullable: false,
@@ -128,14 +128,14 @@ const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_Type =
 const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_OptType =
     $fidl.XUnionType<OlderSimpleUnion>(
   members: <int, $fidl.FidlType>{
-    1026732503: $fidl.Int64Type(),
-    1362546558: $fidl.Float32Type(),
+    1: $fidl.Int64Type(),
+    2: $fidl.Float32Type(),
   },
   readToWriteOrdinals: <int, int>{
-    1: 1026732503,
-    1026732503: 1026732503,
-    2: 1362546558,
-    1362546558: 1362546558,
+    1: 1,
+    1026732503: 1,
+    2: 2,
+    1362546558: 2,
   },
   ctor: OlderSimpleUnion._ctor,
   nullable: true,
@@ -144,28 +144,28 @@ const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_OptType =
 
 enum NewerSimpleUnionTag {
   $unknown,
-  i, // 0x295cbfde
-  s, // 0x1c3b9247
-  v, // 0x6c38b28f
+  i, // 0x1
+  s, // 0x2
+  v, // 0x3
 }
 
 const Map<int, NewerSimpleUnionTag> _NewerSimpleUnionTag_map = {
-  693944286: NewerSimpleUnionTag.i,
-  473666119: NewerSimpleUnionTag.s,
-  1815655055: NewerSimpleUnionTag.v,
+  1: NewerSimpleUnionTag.i,
+  2: NewerSimpleUnionTag.s,
+  3: NewerSimpleUnionTag.v,
 };
 
 class NewerSimpleUnion extends $fidl.XUnion {
   const NewerSimpleUnion.withI(int value)
-      : _ordinal = 693944286,
+      : _ordinal = 1,
         _data = value;
 
   const NewerSimpleUnion.withS(String value)
-      : _ordinal = 473666119,
+      : _ordinal = 2,
         _data = value;
 
   const NewerSimpleUnion.withV(List<String> value)
-      : _ordinal = 1815655055,
+      : _ordinal = 3,
         _data = value;
 
   NewerSimpleUnion._(int ordinal, Object data)
@@ -181,21 +181,21 @@ class NewerSimpleUnion extends $fidl.XUnion {
   }
 
   int get i {
-    if (_ordinal != 693944286) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   String get s {
-    if (_ordinal != 473666119) {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
   }
 
   List<String> get v {
-    if (_ordinal != 1815655055) {
+    if (_ordinal != 3) {
       return null;
     }
     return _data;
@@ -204,11 +204,11 @@ class NewerSimpleUnion extends $fidl.XUnion {
   @override
   String toString() {
     switch (_ordinal) {
-      case 693944286:
+      case 1:
         return 'NewerSimpleUnion.i($i)';
-      case 473666119:
+      case 2:
         return 'NewerSimpleUnion.s($s)';
-      case 1815655055:
+      case 3:
         return 'NewerSimpleUnion.v($v)';
       default:
         return 'NewerSimpleUnion.<UNKNOWN>';
@@ -231,20 +231,20 @@ class NewerSimpleUnion extends $fidl.XUnion {
 const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_Type =
     $fidl.XUnionType<NewerSimpleUnion>(
   members: <int, $fidl.FidlType>{
-    693944286: $fidl.Int64Type(),
-    473666119: $fidl.StringType(maybeElementCount: null, nullable: false),
-    1815655055: $fidl.VectorType<List<String>>(
+    1: $fidl.Int64Type(),
+    2: $fidl.StringType(maybeElementCount: null, nullable: false),
+    3: $fidl.VectorType<List<String>>(
         element: $fidl.StringType(maybeElementCount: null, nullable: false),
         maybeElementCount: null,
         nullable: false),
   },
   readToWriteOrdinals: <int, int>{
-    1: 693944286,
-    693944286: 693944286,
-    2: 473666119,
-    473666119: 473666119,
-    3: 1815655055,
-    1815655055: 1815655055,
+    1: 1,
+    693944286: 1,
+    2: 2,
+    473666119: 2,
+    3: 3,
+    1815655055: 3,
   },
   ctor: NewerSimpleUnion._ctor,
   nullable: false,
@@ -255,20 +255,20 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_Type =
 const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_OptType =
     $fidl.XUnionType<NewerSimpleUnion>(
   members: <int, $fidl.FidlType>{
-    693944286: $fidl.Int64Type(),
-    473666119: $fidl.StringType(maybeElementCount: null, nullable: false),
-    1815655055: $fidl.VectorType<List<String>>(
+    1: $fidl.Int64Type(),
+    2: $fidl.StringType(maybeElementCount: null, nullable: false),
+    3: $fidl.VectorType<List<String>>(
         element: $fidl.StringType(maybeElementCount: null, nullable: false),
         maybeElementCount: null,
         nullable: false),
   },
   readToWriteOrdinals: <int, int>{
-    1: 693944286,
-    693944286: 693944286,
-    2: 473666119,
-    473666119: 473666119,
-    3: 1815655055,
-    1815655055: 1815655055,
+    1: 1,
+    693944286: 1,
+    2: 2,
+    473666119: 2,
+    3: 3,
+    1815655055: 3,
   },
   ctor: NewerSimpleUnion._ctor,
   nullable: true,
@@ -276,28 +276,28 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_OptType =
 );
 
 enum StrictSimpleXUnionTag {
-  i, // 0x6e5ea87c
-  f, // 0x32f96c97
-  s, // 0x32b329f7
+  i, // 0x1
+  f, // 0x2
+  s, // 0x3
 }
 
 const Map<int, StrictSimpleXUnionTag> _StrictSimpleXUnionTag_map = {
-  1851697276: StrictSimpleXUnionTag.i,
-  855207063: StrictSimpleXUnionTag.f,
-  850602487: StrictSimpleXUnionTag.s,
+  1: StrictSimpleXUnionTag.i,
+  2: StrictSimpleXUnionTag.f,
+  3: StrictSimpleXUnionTag.s,
 };
 
 class StrictSimpleXUnion extends $fidl.XUnion {
   const StrictSimpleXUnion.withI(int value)
-      : _ordinal = 1851697276,
+      : _ordinal = 1,
         _data = value;
 
   const StrictSimpleXUnion.withF(double value)
-      : _ordinal = 855207063,
+      : _ordinal = 2,
         _data = value;
 
   const StrictSimpleXUnion.withS(String value)
-      : _ordinal = 850602487,
+      : _ordinal = 3,
         _data = value;
 
   StrictSimpleXUnion._(int ordinal, Object data)
@@ -310,21 +310,21 @@ class StrictSimpleXUnion extends $fidl.XUnion {
   StrictSimpleXUnionTag get $tag => _StrictSimpleXUnionTag_map[_ordinal];
 
   int get i {
-    if (_ordinal != 1851697276) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   double get f {
-    if (_ordinal != 855207063) {
+    if (_ordinal != 2) {
       return null;
     }
     return _data;
   }
 
   String get s {
-    if (_ordinal != 850602487) {
+    if (_ordinal != 3) {
       return null;
     }
     return _data;
@@ -333,11 +333,11 @@ class StrictSimpleXUnion extends $fidl.XUnion {
   @override
   String toString() {
     switch (_ordinal) {
-      case 1851697276:
+      case 1:
         return 'StrictSimpleXUnion.i($i)';
-      case 855207063:
+      case 2:
         return 'StrictSimpleXUnion.f($f)';
-      case 850602487:
+      case 3:
         return 'StrictSimpleXUnion.s($s)';
       default:
         return null;
@@ -360,17 +360,17 @@ class StrictSimpleXUnion extends $fidl.XUnion {
 const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_Type =
     $fidl.XUnionType<StrictSimpleXUnion>(
   members: <int, $fidl.FidlType>{
-    1851697276: $fidl.Int32Type(),
-    855207063: $fidl.Float32Type(),
-    850602487: $fidl.StringType(maybeElementCount: null, nullable: false),
+    1: $fidl.Int32Type(),
+    2: $fidl.Float32Type(),
+    3: $fidl.StringType(maybeElementCount: null, nullable: false),
   },
   readToWriteOrdinals: <int, int>{
-    1: 1851697276,
-    1851697276: 1851697276,
-    2: 855207063,
-    855207063: 855207063,
-    3: 850602487,
-    850602487: 850602487,
+    1: 1,
+    1851697276: 1,
+    2: 2,
+    855207063: 2,
+    3: 3,
+    850602487: 3,
   },
   ctor: StrictSimpleXUnion._ctor,
   nullable: false,
@@ -381,17 +381,17 @@ const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_Type =
 const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_OptType =
     $fidl.XUnionType<StrictSimpleXUnion>(
   members: <int, $fidl.FidlType>{
-    1851697276: $fidl.Int32Type(),
-    855207063: $fidl.Float32Type(),
-    850602487: $fidl.StringType(maybeElementCount: null, nullable: false),
+    1: $fidl.Int32Type(),
+    2: $fidl.Float32Type(),
+    3: $fidl.StringType(maybeElementCount: null, nullable: false),
   },
   readToWriteOrdinals: <int, int>{
-    1: 1851697276,
-    1851697276: 1851697276,
-    2: 855207063,
-    855207063: 855207063,
-    3: 850602487,
-    850602487: 850602487,
+    1: 1,
+    1851697276: 1,
+    2: 2,
+    855207063: 2,
+    3: 3,
+    850602487: 3,
   },
   ctor: StrictSimpleXUnion._ctor,
   nullable: true,
@@ -400,17 +400,17 @@ const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_OptType =
 
 enum XUnionContainingEmptyStructTag {
   $unknown,
-  empty, // 0x1952d1d5
+  empty, // 0x1
 }
 
 const Map<int, XUnionContainingEmptyStructTag>
     _XUnionContainingEmptyStructTag_map = {
-  424858069: XUnionContainingEmptyStructTag.empty,
+  1: XUnionContainingEmptyStructTag.empty,
 };
 
 class XUnionContainingEmptyStruct extends $fidl.XUnion {
   const XUnionContainingEmptyStruct.withEmpty(Empty value)
-      : _ordinal = 424858069,
+      : _ordinal = 1,
         _data = value;
 
   XUnionContainingEmptyStruct._(int ordinal, Object data)
@@ -427,7 +427,7 @@ class XUnionContainingEmptyStruct extends $fidl.XUnion {
   }
 
   Empty get empty {
-    if (_ordinal != 424858069) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
@@ -436,7 +436,7 @@ class XUnionContainingEmptyStruct extends $fidl.XUnion {
   @override
   String toString() {
     switch (_ordinal) {
-      case 424858069:
+      case 1:
         return 'XUnionContainingEmptyStruct.empty($empty)';
       default:
         return 'XUnionContainingEmptyStruct.<UNKNOWN>';
@@ -460,11 +460,11 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
     kXUnionContainingEmptyStruct_Type =
     $fidl.XUnionType<XUnionContainingEmptyStruct>(
   members: <int, $fidl.FidlType>{
-    424858069: kEmpty_Type,
+    1: kEmpty_Type,
   },
   readToWriteOrdinals: <int, int>{
-    1: 424858069,
-    424858069: 424858069,
+    1: 1,
+    424858069: 1,
   },
   ctor: XUnionContainingEmptyStruct._ctor,
   nullable: false,
@@ -476,11 +476,11 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
     kXUnionContainingEmptyStruct_OptType =
     $fidl.XUnionType<XUnionContainingEmptyStruct>(
   members: <int, $fidl.FidlType>{
-    424858069: kEmpty_Type,
+    1: kEmpty_Type,
   },
   readToWriteOrdinals: <int, int>{
-    1: 424858069,
-    424858069: 424858069,
+    1: 1,
+    424858069: 1,
   },
   ctor: XUnionContainingEmptyStruct._ctor,
   nullable: true,
@@ -488,16 +488,16 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
 );
 
 enum StrictBoundedXUnionTag {
-  v, // 0x78ac4468
+  v, // 0x1
 }
 
 const Map<int, StrictBoundedXUnionTag> _StrictBoundedXUnionTag_map = {
-  2024555624: StrictBoundedXUnionTag.v,
+  1: StrictBoundedXUnionTag.v,
 };
 
 class StrictBoundedXUnion extends $fidl.XUnion {
   const StrictBoundedXUnion.withV(Uint8List value)
-      : _ordinal = 2024555624,
+      : _ordinal = 1,
         _data = value;
 
   StrictBoundedXUnion._(int ordinal, Object data)
@@ -510,7 +510,7 @@ class StrictBoundedXUnion extends $fidl.XUnion {
   StrictBoundedXUnionTag get $tag => _StrictBoundedXUnionTag_map[_ordinal];
 
   Uint8List get v {
-    if (_ordinal != 2024555624) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
@@ -519,7 +519,7 @@ class StrictBoundedXUnion extends $fidl.XUnion {
   @override
   String toString() {
     switch (_ordinal) {
-      case 2024555624:
+      case 1:
         return 'StrictBoundedXUnion.v($v)';
       default:
         return null;
@@ -542,12 +542,12 @@ class StrictBoundedXUnion extends $fidl.XUnion {
 const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_Type =
     $fidl.XUnionType<StrictBoundedXUnion>(
   members: <int, $fidl.FidlType>{
-    2024555624: $fidl.VectorType<Uint8List>(
+    1: $fidl.VectorType<Uint8List>(
         element: $fidl.Uint8Type(), maybeElementCount: 10, nullable: false),
   },
   readToWriteOrdinals: <int, int>{
-    1: 2024555624,
-    2024555624: 2024555624,
+    1: 1,
+    2024555624: 1,
   },
   ctor: StrictBoundedXUnion._ctor,
   nullable: false,
@@ -558,12 +558,12 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_Type =
 const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_OptType =
     $fidl.XUnionType<StrictBoundedXUnion>(
   members: <int, $fidl.FidlType>{
-    2024555624: $fidl.VectorType<Uint8List>(
+    1: $fidl.VectorType<Uint8List>(
         element: $fidl.Uint8Type(), maybeElementCount: 10, nullable: false),
   },
   readToWriteOrdinals: <int, int>{
-    1: 2024555624,
-    2024555624: 2024555624,
+    1: 1,
+    2024555624: 1,
   },
   ctor: StrictBoundedXUnion._ctor,
   nullable: true,
@@ -572,22 +572,22 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_OptType =
 
 enum ExplicitXUnionTag {
   $unknown,
-  i, // 0x254890c9
-  f, // 0xae18981
+  i, // 0x1
+  f, // 0x4
 }
 
 const Map<int, ExplicitXUnionTag> _ExplicitXUnionTag_map = {
-  625512649: ExplicitXUnionTag.i,
-  182552961: ExplicitXUnionTag.f,
+  1: ExplicitXUnionTag.i,
+  4: ExplicitXUnionTag.f,
 };
 
 class ExplicitXUnion extends $fidl.XUnion {
   const ExplicitXUnion.withI(int value)
-      : _ordinal = 625512649,
+      : _ordinal = 1,
         _data = value;
 
   const ExplicitXUnion.withF(double value)
-      : _ordinal = 182552961,
+      : _ordinal = 4,
         _data = value;
 
   ExplicitXUnion._(int ordinal, Object data)
@@ -603,14 +603,14 @@ class ExplicitXUnion extends $fidl.XUnion {
   }
 
   int get i {
-    if (_ordinal != 625512649) {
+    if (_ordinal != 1) {
       return null;
     }
     return _data;
   }
 
   double get f {
-    if (_ordinal != 182552961) {
+    if (_ordinal != 4) {
       return null;
     }
     return _data;
@@ -619,9 +619,9 @@ class ExplicitXUnion extends $fidl.XUnion {
   @override
   String toString() {
     switch (_ordinal) {
-      case 625512649:
+      case 1:
         return 'ExplicitXUnion.i($i)';
-      case 182552961:
+      case 4:
         return 'ExplicitXUnion.f($f)';
       default:
         return 'ExplicitXUnion.<UNKNOWN>';
@@ -644,14 +644,14 @@ class ExplicitXUnion extends $fidl.XUnion {
 const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_Type =
     $fidl.XUnionType<ExplicitXUnion>(
   members: <int, $fidl.FidlType>{
-    625512649: $fidl.Int64Type(),
-    182552961: $fidl.Float32Type(),
+    1: $fidl.Int64Type(),
+    4: $fidl.Float32Type(),
   },
   readToWriteOrdinals: <int, int>{
-    1: 625512649,
-    625512649: 625512649,
-    4: 182552961,
-    182552961: 182552961,
+    1: 1,
+    625512649: 1,
+    4: 4,
+    182552961: 4,
   },
   ctor: ExplicitXUnion._ctor,
   nullable: false,
@@ -662,14 +662,14 @@ const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_Type =
 const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_OptType =
     $fidl.XUnionType<ExplicitXUnion>(
   members: <int, $fidl.FidlType>{
-    625512649: $fidl.Int64Type(),
-    182552961: $fidl.Float32Type(),
+    1: $fidl.Int64Type(),
+    4: $fidl.Float32Type(),
   },
   readToWriteOrdinals: <int, int>{
-    1: 625512649,
-    625512649: 625512649,
-    4: 182552961,
-    182552961: 182552961,
+    1: 1,
+    625512649: 1,
+    4: 4,
+    182552961: 4,
   },
   ctor: ExplicitXUnion._ctor,
   nullable: true,
