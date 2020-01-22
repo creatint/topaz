@@ -92,7 +92,8 @@ class IntProperty extends Property<int> with Arithmetic<int> {
       : super._(
             parent, name, writer.createMetric(parent.index, name, 0), writer);
 
-  IntProperty._deleted() : super.deleted();
+  /// Creates an IntProperty that does nothing.
+  IntProperty.deleted() : super.deleted();
 }
 
 /// A property holding a [double].
@@ -103,7 +104,8 @@ class DoubleProperty extends Property<double> with Arithmetic<double> {
       : super._(
             parent, name, writer.createMetric(parent.index, name, 0.0), writer);
 
-  DoubleProperty._deleted() : super.deleted();
+  /// Creates a DoubleProperty that does nothing.
+  DoubleProperty.deleted() : super.deleted();
 }
 
 /// A property holding a [String].
@@ -114,7 +116,8 @@ class StringProperty extends Property<String> with BytesProperty<String> {
       : super._(
             parent, name, writer.createProperty(parent.index, name), writer);
 
-  StringProperty._deleted() : super.deleted();
+  /// Creates a StringProperty that does nothing.
+  StringProperty.deleted() : super.deleted();
 }
 
 /// A property holding a [ByteData].
@@ -125,5 +128,6 @@ class ByteDataProperty extends Property<ByteData> with BytesProperty<ByteData> {
       : super._(
             parent, name, writer.createProperty(parent.index, name), writer);
 
-  ByteDataProperty._deleted() : super.deleted();
+  /// Creates a ByteDataProperty that does nothing.
+  ByteDataProperty.deleted() : super.deleted();
 }

@@ -47,7 +47,7 @@ class Node {
   /// Creates a Node that never does anything.
   ///
   /// These are returned when calling createChild on a deleted [Node].
-  Node._deleted()
+  Node.deleted()
       : _writer = null,
         _parent = null,
         _name = null,
@@ -59,7 +59,7 @@ class Node {
   /// method returns it. Otherwise, it creates a new [Node].
   Node child(String name) {
     if (_writer == null) {
-      return Node._deleted();
+      return Node.deleted();
     }
     if (_children.containsKey(name)) {
       return _children[name];
@@ -116,7 +116,7 @@ class Node {
   /// exists but it is not a [StringProperty].
   StringProperty stringProperty(String name) {
     if (_writer == null) {
-      return StringProperty._deleted();
+      return StringProperty.deleted();
     }
     if (_properties.containsKey(name)) {
       if (_properties[name] is! StringProperty) {
@@ -140,7 +140,7 @@ class Node {
   /// but it is not a [ByteDataProperty].
   ByteDataProperty byteDataProperty(String name) {
     if (_writer == null) {
-      return ByteDataProperty._deleted();
+      return ByteDataProperty.deleted();
     }
     if (_properties.containsKey(name)) {
       if (_properties[name] is! ByteDataProperty) {
@@ -163,7 +163,7 @@ class Node {
   /// already exists but it is not an [IntProperty].
   IntProperty intProperty(String name) {
     if (_writer == null) {
-      return IntProperty._deleted();
+      return IntProperty.deleted();
     }
     if (_properties.containsKey(name)) {
       if (_properties[name] is! IntProperty) {
@@ -186,7 +186,7 @@ class Node {
   /// already exists but it is not a [DoubleProperty].
   DoubleProperty doubleProperty(String name) {
     if (_writer == null) {
-      return DoubleProperty._deleted();
+      return DoubleProperty.deleted();
     }
     if (_properties.containsKey(name)) {
       if (_properties[name] is! DoubleProperty) {

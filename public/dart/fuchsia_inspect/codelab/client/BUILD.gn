@@ -1,0 +1,22 @@
+# Copyright 2020 The Fuchsia Authors. All rights reserved.
+# Use of this source code is governed by a BSD-style license that can be
+# found in the LICENSE file.
+
+import("//topaz/runtime/dart_runner/dart_app.gni")
+
+dart_app("bin") {
+  main_dart = "lib/main.dart"
+
+  fuchsia_package_name = "inspect_dart_codelab_client"
+  package_name = "inspect_dart_codelab_client"
+
+  meta = [
+    {
+      path = rebase_path("meta/inspect_dart_codelab_client.cmx")
+      dest = "inspect_dart_codelab_client.cmx"
+    },
+  ]
+
+  sources = []
+  deps = [ "//topaz/public/dart/fuchsia_inspect/codelab/shared" ]
+}

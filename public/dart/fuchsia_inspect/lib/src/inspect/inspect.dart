@@ -11,6 +11,7 @@ import 'package:fuchsia_vfs/vfs.dart';
 import 'package:meta/meta.dart';
 import 'package:zircon/zircon.dart';
 
+import '../testing/util.dart' show FakeVmoHolder;
 import '../vmo/vmo_writer.dart';
 import 'internal/_inspect_impl.dart';
 
@@ -23,6 +24,14 @@ typedef OnDemandRootFn = Function(Node);
 /// @nodoc
 @visibleForTesting
 const int defaultVmoSizeBytes = 256 * 1024;
+
+int _nextSuffix = 0;
+
+/// Utility function to Generate unique names for nodes and properties.
+String uniqueName(String prefix) {
+  final suffix = _nextSuffix++;
+  return '$prefix$suffix';
+}
 
 /// Thrown when the programmer misuses Inspect.
 class InspectStateError extends StateError {
@@ -76,6 +85,16 @@ abstract class Inspect {
     var context = StartupContext.fromStartupInfo();
     var writer = VmoWriter.withSize(vmoSize);
     var fileName = _nextInstanceWithName(name);
+    return InspectImpl(context.outgoing.debugDir(), fileName, writer);
+  }
+
+  /// Returns a new [Inspect] object at <name>.inspect backed by a fake VMO
+  /// intended for unit testing inspect integrations, so that they can run as
+  /// host tests.
+  factory Inspect.forTesting(FakeVmoHolder vmo, String name) {
+    final writer = VmoWriter.withVmo(vmo);
+    final fileName = _nextInstanceWithName(name);
+    final context = StartupContext.fromStartupInfo();
     return InspectImpl(context.outgoing.debugDir(), fileName, writer);
   }
 

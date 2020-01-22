@@ -63,6 +63,11 @@ void main() {
       expect(VmoMatcher(vmo).node()..missingChild('paella'), hasNoErrors);
     });
 
+    test('deleted property is a no-op', () {
+      final property = StringProperty.deleted();
+      expect(property.valid, false);
+    });
+
     test('removing an already deleted property is a no-op', () {
       var property = node.stringProperty('nothing-here')..delete();
 

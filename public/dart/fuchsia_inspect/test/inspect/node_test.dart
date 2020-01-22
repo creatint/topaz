@@ -64,6 +64,11 @@ void main() {
     expect(VmoMatcher(vmo).node().at(['sheep']), hasNoErrors);
   });
 
+  test('deleted node is a no-op', () {
+    final node = Node.deleted();
+    expect(node.valid, false);
+  });
+
   group('Deleted node tests:', () {
     Node deletedNode;
 

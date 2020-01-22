@@ -5,6 +5,7 @@
 /// The Inspect API for Dart.
 export 'src/inspect/inspect.dart'
     show
+        uniqueName,
         Inspect,
         InspectStateError,
         Node,

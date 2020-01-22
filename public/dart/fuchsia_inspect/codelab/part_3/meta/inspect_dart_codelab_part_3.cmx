@@ -1,0 +1,12 @@
+{
+    "program": {
+        "data": "data/inspect_dart_codelab_part_3"
+    },
+    "sandbox": {
+        "services": [
+            "fuchsia.examples.inspect.FizzBuzz",
+            "fuchsia.logger.LogSink",
+            "fuchsia.sys.Environment"
+        ]
+    }
+}
