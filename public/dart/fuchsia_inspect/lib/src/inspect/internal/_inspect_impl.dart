@@ -8,6 +8,8 @@ import 'package:zircon/zircon.dart';
 import '../../vmo/vmo_writer.dart';
 import '../inspect.dart';
 
+const _kHealthNodeName = 'fuchsia.inspect.Health';
+
 /// A concrete implementation of the [Inspect] interface.
 ///
 /// This class is not intended to be used directly by authors but instead
@@ -15,6 +17,7 @@ import '../inspect.dart';
 class InspectImpl implements Inspect {
   Node _root;
   Vmo _vmo;
+  HealthNode _healthNodeSingleton;
 
   /// The default constructor for this instance.
   InspectImpl(vfs.PseudoDir directory, String fileName, VmoWriter writer) {
@@ -26,6 +29,10 @@ class InspectImpl implements Inspect {
 
   @override
   Node get root => _root;
+
+  @override
+  HealthNode get health =>
+      _healthNodeSingleton ??= HealthNode(_root.child(_kHealthNodeName));
 
   /// For use in testing only. There's probably no way to put @visibleForTesting
   /// because this needs to be used by the Validator Puppet, outside the current

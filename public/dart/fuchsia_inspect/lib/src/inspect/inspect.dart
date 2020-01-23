@@ -136,4 +136,9 @@ abstract class Inspect {
   ///
   /// This node can't be deleted; trying to delete it is a NOP.
   Node get root => _singleton.root;
+
+  /// The health [Node] of this Inspect tree.
+  ///
+  /// This node can't be deleted once created; but its creation is on demand.
+  HealthNode get health => _singleton.health;
 }

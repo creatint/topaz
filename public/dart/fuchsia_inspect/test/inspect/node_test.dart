@@ -15,14 +15,14 @@ import 'package:test/test.dart';
 
 void main() {
   VmoHolder vmo;
+  Inspect inspect;
   Node root;
 
   setUp(() {
     var context = StartupContext.fromStartupInfo();
     vmo = FakeVmoHolder(512);
     var writer = VmoWriter.withVmo(vmo);
-    Inspect inspect =
-        InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
+    inspect = InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
     root = inspect.root;
   });
 
@@ -208,6 +208,51 @@ void main() {
       var missingProperty = tinyRoot.byteDataProperty('missing');
       expect(() => missingProperty.setValue(bytes), returnsNormally);
       expect(missingProperty.valid, false);
+    });
+  });
+
+  group('health', () {
+    test('health statuses', () {
+      const kNodeName = 'fuchsia.inspect.Health';
+
+      final health = inspect.health;
+
+      expect(VmoMatcher(vmo).node().at([kNodeName]), hasNoErrors);
+      expect(
+          VmoMatcher(vmo)
+              .node()
+              .at([kNodeName]).propertyEquals('status', 'STARTING_UP'),
+          hasNoErrors);
+      expect(VmoMatcher(vmo).node().at([kNodeName])..missingChild('message'),
+          hasNoErrors);
+
+      health.setOk();
+      expect(
+          VmoMatcher(vmo).node().at([kNodeName]).propertyEquals('status', 'OK'),
+          hasNoErrors);
+      expect(VmoMatcher(vmo).node().at([kNodeName])..missingChild('message'),
+          hasNoErrors);
+
+      health.setStartingUp();
+      expect(
+          VmoMatcher(vmo)
+              .node()
+              .at([kNodeName]).propertyEquals('status', 'STARTING_UP'),
+          hasNoErrors);
+      expect(VmoMatcher(vmo).node().at([kNodeName])..missingChild('message'),
+          hasNoErrors);
+
+      health.setUnhealthy('Oh no');
+      expect(
+          VmoMatcher(vmo)
+              .node()
+              .at([kNodeName]).propertyEquals('status', 'UNHEALTHY'),
+          hasNoErrors);
+      expect(
+          VmoMatcher(vmo)
+              .node()
+              .at([kNodeName]).propertyEquals('message', 'Oh no'),
+          hasNoErrors);
     });
   });
 }

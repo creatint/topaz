@@ -4,6 +4,9 @@
 
 part of 'inspect.dart';
 
+const _kHealthMessageName = 'message';
+const _kHealthStatusName = 'status';
+
 /// A named node in the Inspect tree that can have [Node]s and
 /// properties under it.
 class Node {
@@ -209,4 +212,60 @@ class RootNode extends Node {
   /// Deletes of the root are NOPs.
   @override
   void delete() {}
+}
+
+enum _Status {
+  startingUp,
+  ok,
+  unhealthy,
+}
+
+/// Contains subsystem health information.
+class HealthNode {
+  _Status _status;
+  Node _node;
+
+  /// Creates a new health node on the given node.
+  HealthNode(Node node) {
+    _node = node;
+    _setStatus(_Status.startingUp);
+  }
+
+  /// Sets the status of the health node to STARTING_UP.
+  void setStartingUp() {
+    _setStatus(_Status.startingUp);
+  }
+
+  /// Sets the status of the health node to OK.
+  void setOk() {
+    _setStatus(_Status.ok);
+  }
+
+  /// Sets the status of the health node to UNHEALTHY and records the given
+  /// `message`.
+  void setUnhealthy(String message) {
+    _setStatus(_Status.unhealthy, message: message);
+  }
+
+  String _statusString() {
+    switch (_status) {
+      case _Status.startingUp:
+        return 'STARTING_UP';
+      case _Status.ok:
+        return 'OK';
+      case _Status.unhealthy:
+        return 'UNHEALTHY';
+    }
+    return 'UNKNOWN';
+  }
+
+  void _setStatus(_Status status, {String message}) {
+    _status = status;
+    _node.stringProperty(_kHealthStatusName).setValue(_statusString());
+    if (message != null) {
+      _node.stringProperty(_kHealthMessageName).setValue(message);
+    } else {
+      _node.stringProperty(_kHealthMessageName).delete();
+    }
+  }
 }
