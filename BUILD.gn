@@ -14,7 +14,6 @@ group("topaz") {
     "//third_party/dart-pkg/git/flutter/examples/flutter_gallery",
     "//topaz:tests",
     "//topaz/bin/fidlgen_dart:install(//build/toolchain:host_x64)",
-    "//topaz/bin/system_dashboard",
     "//topaz/examples/fidl/echo_client_async_dart",
     "//topaz/examples/fidl/echo_server_async_dart",
     "//topaz/examples/mediaplayer/mediaplayer_flutter",
