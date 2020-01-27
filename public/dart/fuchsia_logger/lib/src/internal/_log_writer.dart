@@ -140,7 +140,9 @@ abstract class LogWriter {
     // the call that comes after the user calls Logger.info, Logger.warn, etc.
     // When this line is found we look 2 lines past for their call site.
 
-    const loggerLogLine = r'Logger.log (package:logging/logging.dart';
+    // Newer versions of the logging package use logging/src/logger.dart.
+    final loggerLogLine = RegExp(r'Logger\.log \(package:logging/logging\.dart'
+        r'|Logger\.log \(package:logging/src/logger\.dart');
     const logLineOffset = 2;
     String codeLocation;
 
