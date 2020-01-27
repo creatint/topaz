@@ -17,7 +17,6 @@ group("topaz") {
     "//topaz/examples/fidl/echo_client_async_dart",
     "//topaz/examples/fidl/echo_server_async_dart",
     "//topaz/examples/mediaplayer/mediaplayer_flutter",
-    "//topaz/examples/mine_digger",
     "//topaz/examples/ui/button_flutter",
     "//topaz/lib/story_shell/examples/example_manual_relationships",
     "//topaz/public/dart/fuchsia_inspect/codelab:bin",
