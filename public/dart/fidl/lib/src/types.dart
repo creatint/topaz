@@ -926,14 +926,12 @@ class TableType<T extends Table> extends FidlType<T> {
 class XUnionType<T extends XUnion> extends NullableFidlType<T> {
   const XUnionType({
     this.members,
-    this.readToWriteOrdinals,
     this.ctor,
     bool nullable,
     this.flexible,
   }) : super(inlineSize: 24, nullable: nullable);
 
   final Map<int, FidlType> members;
-  final Map<int, int> readToWriteOrdinals;
   final XUnionFactory<T> ctor;
   final bool flexible;
 
@@ -975,8 +973,7 @@ class XUnionType<T extends XUnion> extends NullableFidlType<T> {
           decoder, envelopeOffset, _envelopeMode.kMustBeAbsent, null);
       return null;
     } else {
-      final int writeOrdinal = readToWriteOrdinals[ordinal];
-      var fieldType = members[writeOrdinal];
+      var fieldType = members[ordinal];
       if (fieldType == null && !flexible)
         throw FidlError('Bad xunion ordinal: $ordinal',
             FidlErrorCode.fidlStrictXUnionUnknownField);
@@ -986,7 +983,7 @@ class XUnionType<T extends XUnion> extends NullableFidlType<T> {
       final field = _decodeEnvelopeContent(
           decoder, _envelopeMode.kDisallowUnknown, header, fieldType);
       if (field == null) throw FidlError('Bad xunion: missing content');
-      return ctor(writeOrdinal ?? ordinal, field);
+      return ctor(ordinal, field);
     }
   }
 }

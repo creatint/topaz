@@ -113,12 +113,6 @@ const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_Type =
     1: $fidl.Int64Type(),
     2: $fidl.Float32Type(),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    1026732503: 1,
-    2: 2,
-    1362546558: 2,
-  },
   ctor: OlderSimpleUnion._ctor,
   nullable: false,
   flexible: true,
@@ -130,12 +124,6 @@ const $fidl.XUnionType<OlderSimpleUnion> kOlderSimpleUnion_OptType =
   members: <int, $fidl.FidlType>{
     1: $fidl.Int64Type(),
     2: $fidl.Float32Type(),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    1026732503: 1,
-    2: 2,
-    1362546558: 2,
   },
   ctor: OlderSimpleUnion._ctor,
   nullable: true,
@@ -238,14 +226,6 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_Type =
         maybeElementCount: null,
         nullable: false),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    693944286: 1,
-    2: 2,
-    473666119: 2,
-    3: 3,
-    1815655055: 3,
-  },
   ctor: NewerSimpleUnion._ctor,
   nullable: false,
   flexible: true,
@@ -261,14 +241,6 @@ const $fidl.XUnionType<NewerSimpleUnion> kNewerSimpleUnion_OptType =
         element: $fidl.StringType(maybeElementCount: null, nullable: false),
         maybeElementCount: null,
         nullable: false),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    693944286: 1,
-    2: 2,
-    473666119: 2,
-    3: 3,
-    1815655055: 3,
   },
   ctor: NewerSimpleUnion._ctor,
   nullable: true,
@@ -364,14 +336,6 @@ const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_Type =
     2: $fidl.Float32Type(),
     3: $fidl.StringType(maybeElementCount: null, nullable: false),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    1851697276: 1,
-    2: 2,
-    855207063: 2,
-    3: 3,
-    850602487: 3,
-  },
   ctor: StrictSimpleXUnion._ctor,
   nullable: false,
   flexible: false,
@@ -384,14 +348,6 @@ const $fidl.XUnionType<StrictSimpleXUnion> kStrictSimpleXUnion_OptType =
     1: $fidl.Int32Type(),
     2: $fidl.Float32Type(),
     3: $fidl.StringType(maybeElementCount: null, nullable: false),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    1851697276: 1,
-    2: 2,
-    855207063: 2,
-    3: 3,
-    850602487: 3,
   },
   ctor: StrictSimpleXUnion._ctor,
   nullable: true,
@@ -462,10 +418,6 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
   members: <int, $fidl.FidlType>{
     1: kEmpty_Type,
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    424858069: 1,
-  },
   ctor: XUnionContainingEmptyStruct._ctor,
   nullable: false,
   flexible: true,
@@ -477,10 +429,6 @@ const $fidl.XUnionType<XUnionContainingEmptyStruct>
     $fidl.XUnionType<XUnionContainingEmptyStruct>(
   members: <int, $fidl.FidlType>{
     1: kEmpty_Type,
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    424858069: 1,
   },
   ctor: XUnionContainingEmptyStruct._ctor,
   nullable: true,
@@ -545,10 +493,6 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_Type =
     1: $fidl.VectorType<Uint8List>(
         element: $fidl.Uint8Type(), maybeElementCount: 10, nullable: false),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2024555624: 1,
-  },
   ctor: StrictBoundedXUnion._ctor,
   nullable: false,
   flexible: false,
@@ -560,10 +504,6 @@ const $fidl.XUnionType<StrictBoundedXUnion> kStrictBoundedXUnion_OptType =
   members: <int, $fidl.FidlType>{
     1: $fidl.VectorType<Uint8List>(
         element: $fidl.Uint8Type(), maybeElementCount: 10, nullable: false),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2024555624: 1,
   },
   ctor: StrictBoundedXUnion._ctor,
   nullable: true,
@@ -647,12 +587,6 @@ const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_Type =
     1: $fidl.Int64Type(),
     4: $fidl.Float32Type(),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    625512649: 1,
-    4: 4,
-    182552961: 4,
-  },
   ctor: ExplicitXUnion._ctor,
   nullable: false,
   flexible: true,
@@ -664,12 +598,6 @@ const $fidl.XUnionType<ExplicitXUnion> kExplicitXUnion_OptType =
   members: <int, $fidl.FidlType>{
     1: $fidl.Int64Type(),
     4: $fidl.Float32Type(),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    625512649: 1,
-    4: 4,
-    182552961: 4,
   },
   ctor: ExplicitXUnion._ctor,
   nullable: true,

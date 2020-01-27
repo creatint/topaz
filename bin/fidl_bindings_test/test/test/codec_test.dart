@@ -101,43 +101,4 @@ void main() async {
               e.code == FidlErrorCode.fidlStrictXUnionUnknownField)));
     });
   });
-
-  test('xunion both ordinals', () async {
-    // xunion can be decoded using both sets of ordinals
-    final hashedBytes = Uint8List.fromList([
-      0x9e, 0xb1, 0x27, 0x72, 0x00, 0x00, 0x00, 0x00, // hashed ordinal
-      0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // num bytes/handles
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, // PRESENT
-      0x04, 0x03, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, // data + padding
-    ]);
-    var decoder = Decoder(Message(ByteData.view(hashedBytes.buffer), []))
-      ..claimMemory(24);
-    ExampleXunion hashedXunion = kExampleXunion_Type.decode(decoder, 0);
-    expect(hashedXunion.$data, 0x01020304);
-
-    final explicitBytes = Uint8List.fromList([
-      0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // explicit ordinal
-      0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // num bytes/handles
-      0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, // PRESENT
-      0x04, 0x03, 0x02, 0x01, 0x00, 0x00, 0x00, 0x00, // data + padding
-    ]);
-    decoder = Decoder(Message(ByteData.view(explicitBytes.buffer), []))
-      ..claimMemory(24);
-    ExampleXunion explicitXunion = kExampleXunion_Type.decode(decoder, 0);
-    expect(explicitXunion.$data, 0x01020304);
-
-    // xunion only uses ordinals provided as keys to the members field when
-    // encoding
-    var encoder = Encoder()..alloc(24);
-    kExampleXunion_Type.encode(encoder, hashedXunion, 0);
-    expect(encoder.message.data.lengthInBytes, 32);
-    expect(
-        encoder.message.data.buffer.asUint8List(0, 32), equals(explicitBytes));
-
-    encoder = Encoder()..alloc(24);
-    kExampleXunion_Type.encode(encoder, explicitXunion, 0);
-    expect(encoder.message.data.lengthInBytes, 32);
-    expect(
-        encoder.message.data.buffer.asUint8List(0, 32), equals(explicitBytes));
-  });
 }

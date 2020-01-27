@@ -21,6 +21,8 @@
           "type": {
             "kind": "handle",
             "subtype": "handle",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "plain_handle",
@@ -32,13 +34,14 @@
           "field_shape_v1": {
             "offset": 0,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "bti",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "bti_handle",
@@ -50,13 +53,14 @@
           "field_shape_v1": {
             "offset": 4,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "channel",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "channel_handle",
@@ -68,13 +72,14 @@
           "field_shape_v1": {
             "offset": 8,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "debuglog",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "debuglog_handle",
@@ -86,13 +91,14 @@
           "field_shape_v1": {
             "offset": 12,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "event",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "event_handle",
@@ -104,13 +110,14 @@
           "field_shape_v1": {
             "offset": 16,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "eventpair",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "eventpair_handle",
@@ -122,13 +129,14 @@
           "field_shape_v1": {
             "offset": 20,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "exception",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "exception_handle",
@@ -140,13 +148,14 @@
           "field_shape_v1": {
             "offset": 24,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "fifo",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "fifo_handle",
@@ -158,13 +167,14 @@
           "field_shape_v1": {
             "offset": 28,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "guest",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "guest_handle",
@@ -176,13 +186,14 @@
           "field_shape_v1": {
             "offset": 32,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "interrupt",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "interrupt_handle",
@@ -194,13 +205,14 @@
           "field_shape_v1": {
             "offset": 36,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "iommu",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "iommu_handle",
@@ -212,13 +224,14 @@
           "field_shape_v1": {
             "offset": 40,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "job",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "job_handle",
@@ -230,13 +243,14 @@
           "field_shape_v1": {
             "offset": 44,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "pager",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "pager_handle",
@@ -248,13 +262,14 @@
           "field_shape_v1": {
             "offset": 48,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "pcidevice",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "pcidevice_handle",
@@ -266,13 +281,14 @@
           "field_shape_v1": {
             "offset": 52,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "pmt",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "pmt_handle",
@@ -284,13 +300,14 @@
           "field_shape_v1": {
             "offset": 56,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "port",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "port_handle",
@@ -302,13 +319,14 @@
           "field_shape_v1": {
             "offset": 60,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "process",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "process_handle",
@@ -320,13 +338,14 @@
           "field_shape_v1": {
             "offset": 64,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "profile",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "profile_handle",
@@ -338,13 +357,14 @@
           "field_shape_v1": {
             "offset": 68,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "resource",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "resource_handle",
@@ -356,13 +376,14 @@
           "field_shape_v1": {
             "offset": 72,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "socket",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "socket_handle",
@@ -374,13 +395,14 @@
           "field_shape_v1": {
             "offset": 76,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "suspendtoken",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "suspendtoken_handle",
@@ -392,13 +414,14 @@
           "field_shape_v1": {
             "offset": 80,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "thread",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "thread_handle",
@@ -410,13 +433,14 @@
           "field_shape_v1": {
             "offset": 84,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "timer",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "timer_handle",
@@ -428,13 +452,14 @@
           "field_shape_v1": {
             "offset": 88,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "vcpu",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "vcpu_handle",
@@ -446,13 +471,14 @@
           "field_shape_v1": {
             "offset": 92,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "vmar",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "vmar_handle",
@@ -464,13 +490,14 @@
           "field_shape_v1": {
             "offset": 96,
             "padding": 0
-          },
-          "size": 4
+          }
         },
         {
           "type": {
             "kind": "handle",
             "subtype": "vmo",
+            "required_rights": 0,
+            "optional_rights": 4294967295,
             "nullable": false
           },
           "name": "vmo_handle",
@@ -482,8 +509,7 @@
           "field_shape_v1": {
             "offset": 100,
             "padding": 0
-          },
-          "size": 4
+          }
         }
       ],
       "type_shape_v1": {

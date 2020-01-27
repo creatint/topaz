@@ -127,11 +127,6 @@ const $fidl.XUnionType<Union> kUnion_Type = $fidl.XUnionType<Union>(
         maybeElementCount: null,
         nullable: false),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
-    3: 3,
-  },
   ctor: Union._ctor,
   nullable: false,
   flexible: false,
@@ -147,12 +142,233 @@ const $fidl.XUnionType<Union> kUnion_OptType = $fidl.XUnionType<Union>(
         maybeElementCount: null,
         nullable: false),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
-    3: 3,
-  },
   ctor: Union._ctor,
+  nullable: true,
+  flexible: false,
+);
+
+enum FlexibleUnionTag {
+  primitive, // 0x1
+  stringNeedsConstructor, // 0x2
+  vectorStringAlsoNeedsConstructor, // 0x3
+}
+
+const Map<int, FlexibleUnionTag> _FlexibleUnionTag_map = {
+  1: FlexibleUnionTag.primitive,
+  2: FlexibleUnionTag.stringNeedsConstructor,
+  3: FlexibleUnionTag.vectorStringAlsoNeedsConstructor,
+};
+
+class FlexibleUnion extends $fidl.XUnion {
+  const FlexibleUnion.withPrimitive(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  const FlexibleUnion.withStringNeedsConstructor(String value)
+      : _ordinal = 2,
+        _data = value;
+
+  const FlexibleUnion.withVectorStringAlsoNeedsConstructor(List<String> value)
+      : _ordinal = 3,
+        _data = value;
+
+  FlexibleUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  FlexibleUnionTag get $tag => _FlexibleUnionTag_map[_ordinal];
+
+  int get primitive {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  String get stringNeedsConstructor {
+    if (_ordinal != 2) {
+      return null;
+    }
+    return _data;
+  }
+
+  List<String> get vectorStringAlsoNeedsConstructor {
+    if (_ordinal != 3) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'FlexibleUnion.primitive($primitive)';
+      case 2:
+        return 'FlexibleUnion.stringNeedsConstructor($stringNeedsConstructor)';
+      case 3:
+        return 'FlexibleUnion.vectorStringAlsoNeedsConstructor($vectorStringAlsoNeedsConstructor)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static FlexibleUnion _ctor(int ordinal, Object data) {
+    return FlexibleUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<FlexibleUnion> kFlexibleUnion_Type =
+    $fidl.XUnionType<FlexibleUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    2: $fidl.StringType(maybeElementCount: null, nullable: false),
+    3: $fidl.VectorType<List<String>>(
+        element: $fidl.StringType(maybeElementCount: null, nullable: false),
+        maybeElementCount: null,
+        nullable: false),
+  },
+  ctor: FlexibleUnion._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<FlexibleUnion> kFlexibleUnion_OptType =
+    $fidl.XUnionType<FlexibleUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    2: $fidl.StringType(maybeElementCount: null, nullable: false),
+    3: $fidl.VectorType<List<String>>(
+        element: $fidl.StringType(maybeElementCount: null, nullable: false),
+        maybeElementCount: null,
+        nullable: false),
+  },
+  ctor: FlexibleUnion._ctor,
+  nullable: true,
+  flexible: false,
+);
+
+enum StrictUnionTag {
+  primitive, // 0x1
+  stringNeedsConstructor, // 0x2
+  vectorStringAlsoNeedsConstructor, // 0x3
+}
+
+const Map<int, StrictUnionTag> _StrictUnionTag_map = {
+  1: StrictUnionTag.primitive,
+  2: StrictUnionTag.stringNeedsConstructor,
+  3: StrictUnionTag.vectorStringAlsoNeedsConstructor,
+};
+
+class StrictUnion extends $fidl.XUnion {
+  const StrictUnion.withPrimitive(int value)
+      : _ordinal = 1,
+        _data = value;
+
+  const StrictUnion.withStringNeedsConstructor(String value)
+      : _ordinal = 2,
+        _data = value;
+
+  const StrictUnion.withVectorStringAlsoNeedsConstructor(List<String> value)
+      : _ordinal = 3,
+        _data = value;
+
+  StrictUnion._(int ordinal, Object data)
+      : _ordinal = ordinal,
+        _data = data;
+
+  final int _ordinal;
+  final _data;
+
+  StrictUnionTag get $tag => _StrictUnionTag_map[_ordinal];
+
+  int get primitive {
+    if (_ordinal != 1) {
+      return null;
+    }
+    return _data;
+  }
+
+  String get stringNeedsConstructor {
+    if (_ordinal != 2) {
+      return null;
+    }
+    return _data;
+  }
+
+  List<String> get vectorStringAlsoNeedsConstructor {
+    if (_ordinal != 3) {
+      return null;
+    }
+    return _data;
+  }
+
+  @override
+  String toString() {
+    switch (_ordinal) {
+      case 1:
+        return 'StrictUnion.primitive($primitive)';
+      case 2:
+        return 'StrictUnion.stringNeedsConstructor($stringNeedsConstructor)';
+      case 3:
+        return 'StrictUnion.vectorStringAlsoNeedsConstructor($vectorStringAlsoNeedsConstructor)';
+      default:
+        return null;
+    }
+  }
+
+  @override
+  int get $ordinal => _ordinal;
+
+  @override
+  Object get $data => _data;
+
+  static StrictUnion _ctor(int ordinal, Object data) {
+    return StrictUnion._(ordinal, data);
+  }
+}
+
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<StrictUnion> kStrictUnion_Type =
+    $fidl.XUnionType<StrictUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    2: $fidl.StringType(maybeElementCount: null, nullable: false),
+    3: $fidl.VectorType<List<String>>(
+        element: $fidl.StringType(maybeElementCount: null, nullable: false),
+        maybeElementCount: null,
+        nullable: false),
+  },
+  ctor: StrictUnion._ctor,
+  nullable: false,
+  flexible: false,
+);
+// See FIDL-308:
+// ignore: recursive_compile_time_constant
+const $fidl.XUnionType<StrictUnion> kStrictUnion_OptType =
+    $fidl.XUnionType<StrictUnion>(
+  members: <int, $fidl.FidlType>{
+    1: $fidl.Int32Type(),
+    2: $fidl.StringType(maybeElementCount: null, nullable: false),
+    3: $fidl.VectorType<List<String>>(
+        element: $fidl.StringType(maybeElementCount: null, nullable: false),
+        maybeElementCount: null,
+        nullable: false),
+  },
+  ctor: StrictUnion._ctor,
   nullable: true,
   flexible: false,
 );
@@ -214,9 +430,6 @@ const $fidl.XUnionType<FieldCollision> kFieldCollision_Type =
   members: <int, $fidl.FidlType>{
     1: $fidl.Int32Type(),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-  },
   ctor: FieldCollision._ctor,
   nullable: false,
   flexible: false,
@@ -227,9 +440,6 @@ const $fidl.XUnionType<FieldCollision> kFieldCollision_OptType =
     $fidl.XUnionType<FieldCollision>(
   members: <int, $fidl.FidlType>{
     1: $fidl.Int32Type(),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
   },
   ctor: FieldCollision._ctor,
   nullable: true,
@@ -309,10 +519,6 @@ const $fidl.XUnionType<ExplicitUnion> kExplicitUnion_Type =
     1: $fidl.Int32Type(),
     3: $fidl.StringType(maybeElementCount: null, nullable: false),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    3: 3,
-  },
   ctor: ExplicitUnion._ctor,
   nullable: false,
   flexible: false,
@@ -324,10 +530,6 @@ const $fidl.XUnionType<ExplicitUnion> kExplicitUnion_OptType =
   members: <int, $fidl.FidlType>{
     1: $fidl.Int32Type(),
     3: $fidl.StringType(maybeElementCount: null, nullable: false),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    3: 3,
   },
   ctor: ExplicitUnion._ctor,
   nullable: true,
@@ -407,10 +609,6 @@ const $fidl.XUnionType<ReverseOrdinalUnion> kReverseOrdinalUnion_Type =
     1: $fidl.Uint32Type(),
     2: $fidl.Uint32Type(),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
-  },
   ctor: ReverseOrdinalUnion._ctor,
   nullable: false,
   flexible: false,
@@ -422,10 +620,6 @@ const $fidl.XUnionType<ReverseOrdinalUnion> kReverseOrdinalUnion_OptType =
   members: <int, $fidl.FidlType>{
     1: $fidl.Uint32Type(),
     2: $fidl.Uint32Type(),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
   },
   ctor: ReverseOrdinalUnion._ctor,
   nullable: true,

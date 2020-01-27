@@ -206,9 +206,6 @@ const $fidl.XUnionType<Union> kUnion_Type = $fidl.XUnionType<Union>(
   members: <int, $fidl.FidlType>{
     1: $fidl.Int32Type(),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-  },
   ctor: Union._ctor,
   nullable: false,
   flexible: false,
@@ -218,9 +215,6 @@ const $fidl.XUnionType<Union> kUnion_Type = $fidl.XUnionType<Union>(
 const $fidl.XUnionType<Union> kUnion_OptType = $fidl.XUnionType<Union>(
   members: <int, $fidl.FidlType>{
     1: $fidl.Int32Type(),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
   },
   ctor: Union._ctor,
   nullable: true,

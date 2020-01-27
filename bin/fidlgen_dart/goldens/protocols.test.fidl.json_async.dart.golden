@@ -165,10 +165,6 @@ const $fidl.XUnionType<WithErrorSyntaxResponseAsStructResult>
     1: kWithErrorSyntax_ResponseAsStruct_Response_Type,
     2: $fidl.Uint32Type(),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
-  },
   ctor: WithErrorSyntaxResponseAsStructResult._ctor,
   nullable: false,
   flexible: false,
@@ -181,10 +177,6 @@ const $fidl.XUnionType<WithErrorSyntaxResponseAsStructResult>
   members: <int, $fidl.FidlType>{
     1: kWithErrorSyntax_ResponseAsStruct_Response_Type,
     2: $fidl.Uint32Type(),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
   },
   ctor: WithErrorSyntaxResponseAsStructResult._ctor,
   nullable: true,
@@ -268,10 +260,6 @@ const $fidl.XUnionType<WithErrorSyntaxErrorAsPrimitiveResult>
     1: kWithErrorSyntax_ErrorAsPrimitive_Response_Type,
     2: $fidl.Uint32Type(),
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
-  },
   ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
   nullable: false,
   flexible: false,
@@ -284,10 +272,6 @@ const $fidl.XUnionType<WithErrorSyntaxErrorAsPrimitiveResult>
   members: <int, $fidl.FidlType>{
     1: kWithErrorSyntax_ErrorAsPrimitive_Response_Type,
     2: $fidl.Uint32Type(),
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
   },
   ctor: WithErrorSyntaxErrorAsPrimitiveResult._ctor,
   nullable: true,
@@ -371,10 +355,6 @@ const $fidl.XUnionType<WithErrorSyntaxErrorAsEnumResult>
     1: kWithErrorSyntax_ErrorAsEnum_Response_Type,
     2: kErrorEnun_Type,
   },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
-  },
   ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
   nullable: false,
   flexible: false,
@@ -387,10 +367,6 @@ const $fidl.XUnionType<WithErrorSyntaxErrorAsEnumResult>
   members: <int, $fidl.FidlType>{
     1: kWithErrorSyntax_ErrorAsEnum_Response_Type,
     2: kErrorEnun_Type,
-  },
-  readToWriteOrdinals: <int, int>{
-    1: 1,
-    2: 2,
   },
   ctor: WithErrorSyntaxErrorAsEnumResult._ctor,
   nullable: true,

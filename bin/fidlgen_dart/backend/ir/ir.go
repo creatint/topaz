@@ -86,13 +86,11 @@ type XUnion struct {
 
 // XUnionMember represents a member of a xunion declaration.
 type XUnionMember struct {
-	Ordinal         uint64
-	HashedOrdinal   uint64
-	ExplicitOrdinal uint64
-	Type            Type
-	Name            string
-	CtorName        string
-	Tag             string
+	Ordinal  uint64
+	Type     Type
+	Name     string
+	CtorName string
+	Tag      string
 	Documented
 }
 
@@ -442,22 +440,6 @@ func formatXUnionMemberList(members []XUnionMember) string {
 	}
 
 	return fmt.Sprintf("<int, $fidl.FidlType>{\n%s  }", strings.Join(lines, ""))
-}
-
-func formatXUnionOrdinalList(members []XUnionMember) string {
-	if len(members) == 0 {
-		return "<int, int>{}"
-	}
-
-	var lines []string
-	for _, v := range members {
-		lines = append(lines, fmt.Sprintf("    %d: %d,\n", v.ExplicitOrdinal, v.Ordinal))
-		if v.HashedOrdinal != v.ExplicitOrdinal {
-			lines = append(lines, fmt.Sprintf("    %d: %d,\n", v.HashedOrdinal, v.Ordinal))
-		}
-	}
-
-	return fmt.Sprintf("<int, int>{\n%s  }", strings.Join(lines, ""))
 }
 
 func formatLibraryName(library types.LibraryIdentifier) string {
@@ -1109,14 +1091,12 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 		}
 		memberType := c.compileType(member.Type)
 		members = append(members, XUnionMember{
-			Ordinal:         uint64(member.Ordinal),
-			ExplicitOrdinal: uint64(member.ExplicitOrdinal),
-			HashedOrdinal:   uint64(member.HashedOrdinal),
-			Type:            memberType,
-			Name:            c.compileLowerCamelIdentifier(member.Name, unionMemberContext),
-			CtorName:        c.compileUpperCamelIdentifier(member.Name, unionMemberContext),
-			Tag:             c.compileLowerCamelIdentifier(member.Name, unionMemberTagContext),
-			Documented:      docString(member),
+			Ordinal:    uint64(member.Ordinal),
+			Type:       memberType,
+			Name:       c.compileLowerCamelIdentifier(member.Name, unionMemberContext),
+			CtorName:   c.compileUpperCamelIdentifier(member.Name, unionMemberContext),
+			Tag:        c.compileLowerCamelIdentifier(member.Name, unionMemberTagContext),
+			Documented: docString(member),
 		})
 	}
 
@@ -1132,18 +1112,16 @@ func (c *compiler) compileXUnion(val types.XUnion) XUnion {
 	}
 	r.TypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
   members: %s,
-  readToWriteOrdinals: %s,
   ctor: %s._ctor,
   nullable: false,
   flexible: %t,
-)`, r.Name, formatXUnionMemberList(r.Members), formatXUnionOrdinalList(r.Members), r.Name, r.IsFlexible())
+)`, r.Name, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
 	r.OptTypeExpr = fmt.Sprintf(`$fidl.XUnionType<%s>(
 members: %s,
-readToWriteOrdinals: %s,
 ctor: %s._ctor,
 nullable: true,
 flexible: %t,
-)`, r.Name, formatXUnionMemberList(r.Members), formatXUnionOrdinalList(r.Members), r.Name, r.IsFlexible())
+)`, r.Name, formatXUnionMemberList(r.Members), r.Name, r.IsFlexible())
 
 	return r
 }
