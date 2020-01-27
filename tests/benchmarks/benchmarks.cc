@@ -18,9 +18,10 @@ int main(int argc, const char** argv) {
 
   auto& benchmarks_runner = *maybe_benchmarks_runner;
 
-  benchmarks_runner.AddTspecBenchmark(
-      "dart_inspect.basic_benchmarks",
-      "/pkgfs/packages/dart_inspect_benchmarks/0/data/basic_benchmarks.tspec");
+  // TODO(fxb/44682): re-enable
+  // benchmarks_runner.AddTspecBenchmark(
+  //     "dart_inspect.basic_benchmarks",
+  //     "/pkgfs/packages/dart_inspect_benchmarks/0/data/basic_benchmarks.tspec");
 
   if (benchmarking::IsVulkanSupported()) {
     AddGraphicsBenchmarks(&benchmarks_runner);
@@ -31,7 +32,8 @@ int main(int argc, const char** argv) {
   // TODO(PT-118): Input latency tests are only currently supported on NUC.
 #if !defined(__aarch64__)
   constexpr const char* kLabel = "fuchsia.input_latency.button_flutter";
-  std::string out_file = benchmarks_runner.MakePerfResultsOutputFilename(kLabel);
+  std::string out_file =
+      benchmarks_runner.MakePerfResultsOutputFilename(kLabel);
   benchmarks_runner.AddCustomBenchmark(
       kLabel,
       {"/bin/run",

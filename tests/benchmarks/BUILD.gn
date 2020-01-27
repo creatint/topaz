@@ -9,7 +9,9 @@ group("all") {
   public_deps = [
     "//topaz/tests/benchmarks:input_latency",
     "//topaz/tests/benchmarks:topaz_benchmarks",
-    "//topaz/tests/benchmarks/dart_inspect:dart_inspect_benchmarks",
+
+    # TODO(fxb/44682): re-enable
+    # "//topaz/tests/benchmarks/dart_inspect:dart_inspect_benchmarks",
   ]
 }
 
@@ -41,9 +43,7 @@ executable("topaz_benchmarks_bin") {
 package("topaz_benchmarks") {
   testonly = true
 
-  deps = [
-    ":topaz_benchmarks_bin",
-  ]
+  deps = [ ":topaz_benchmarks_bin" ]
 
   binaries = [
     {
