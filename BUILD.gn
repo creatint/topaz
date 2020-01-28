@@ -77,7 +77,7 @@ group("tests") {
                   # TODO: This target should just aggregate the top-level directories and
                   # most of these dependencies should be in those subdirectories.
                   "//garnet/packages:garnet",
-                  "//garnet/packages/tests:run_test_component",
+                  "//garnet/packages/testing:run_test_component",
                   "//garnet/packages/tests:scenic",
                   "//garnet/packages/tools:scenic",
                   "//src/modular/bundles:framework_experimental",
