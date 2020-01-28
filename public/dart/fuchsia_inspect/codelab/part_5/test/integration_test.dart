@@ -55,6 +55,7 @@ void main() {
           return json.decode(jsonData);
         }
       }
+      iterator.ctrl.close();
       await Future.delayed(Duration(milliseconds: 150));
     }
   }
@@ -71,6 +72,7 @@ void main() {
   test('start with fizzbuzz', () async {
     final reverser = await startComponentAndConnect(includeFizzbuzz: true);
     final result = await reverser.reverse('hello');
+    reverser.ctrl.close();
     expect(result, equals('olleh'));
 
     final inspectData = await getInspectHierarchy();
@@ -79,8 +81,9 @@ void main() {
   });
 
   test('start without fizzbuzz', () async {
-    final reverser = await startComponentAndConnect();
+    final reverser = await startComponentAndConnect(includeFizzbuzz: false);
     final result = await reverser.reverse('hello');
+    reverser.ctrl.close();
     expect(result, equals('olleh'));
 
     final inspectData = await getInspectHierarchy();

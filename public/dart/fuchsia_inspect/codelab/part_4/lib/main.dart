@@ -8,7 +8,7 @@ import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:inspect_dart_codelab_part_4_lib/reverser.dart';
 
-void main(List<String> args) async {
+void main(List<String> args) {
   setupLogger(name: 'inspect_dart_codelab', globalTags: ['part_4']);
 
   log.info('Starting up...');
@@ -21,19 +21,19 @@ void main(List<String> args) async {
 
   final context = StartupContext.fromStartupInfo();
 
+  final fizzBuzz = fidl_codelab.FizzBuzzProxy();
+  context.incoming.connectToService(fizzBuzz);
+  fizzBuzz.execute(30).timeout(const Duration(seconds: 2), onTimeout: () {
+    throw Exception('timeout');
+  }).then((result) {
+    log.info('Got FizzBuzz: $result');
+    inspector.health.setOk();
+  }).catchError((e) {
+    inspector.health.setUnhealthy('FizzBuzz connection closed');
+  });
+
   context.outgoing.addPublicService<fidl_codelab.Reverser>(
     ReverserImpl.getDefaultBinder(inspector.root.child('reverser_service')),
     fidl_codelab.Reverser.$serviceName,
   );
-
-  final fizzBuzz = fidl_codelab.FizzBuzzProxy();
-  context.incoming.connectToService(fizzBuzz);
-
-  try {
-    final result = await fizzBuzz.execute(30);
-    inspector.health.setOk();
-    log.info('Got FizzBuzz: $result');
-  } on Exception catch (e) {
-    inspector.health.setUnhealthy('FizzBuzz connection closed: $e');
-  }
 }

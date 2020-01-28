@@ -8,7 +8,7 @@ import 'package:fuchsia_logger/logger.dart';
 import 'package:fuchsia_services/services.dart';
 import 'package:inspect_dart_codelab_part_2_lib/reverser.dart';
 
-void main(List<String> args) async {
+void main(List<String> args) {
   setupLogger(name: 'inspect_dart_codelab', globalTags: ['part_2']);
 
   log.info('Starting up...');
@@ -19,20 +19,21 @@ void main(List<String> args) async {
 
   final context = StartupContext.fromStartupInfo();
 
-  context.outgoing.addPublicService<fidl_codelab.Reverser>(
-    ReverserImpl.getDefaultBinder(inspector.root.child('reverser_service')),
-    fidl_codelab.Reverser.$serviceName,
-  );
-
   final fizzBuzz = fidl_codelab.FizzBuzzProxy();
   context.incoming.connectToService(fizzBuzz);
 
   // CODELAB: Instrument our connection to FizzBuzz using Inspect. Is there an error?
-  try {
-    final result = await fizzBuzz.execute(30);
+  fizzBuzz.execute(30).timeout(const Duration(seconds: 2), onTimeout: () {
+    throw Exception('timeout');
+  }).then((result) {
     // CODELAB: Add Inspect here to see if there is a response.
     log.info('Got FizzBuzz: $result');
-  } on Exception {
-    // CODELAB: Add Inspect here to see if there is an error
-  }
+  }).catchError((e) {
+    // CODELAB: Instrument our connection to FizzBuzz using Inspect. Is there an error?
+  });
+
+  context.outgoing.addPublicService<fidl_codelab.Reverser>(
+    ReverserImpl.getDefaultBinder(inspector.root.child('reverser_service')),
+    fidl_codelab.Reverser.$serviceName,
+  );
 }

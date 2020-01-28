@@ -19,7 +19,7 @@ class CodelabEnvironment {
   EnvironmentProxy _childEnvironment;
   EnvironmentControllerProxy _childEnvironmentController;
   LauncherProxy _launcher;
-  Channel fizzbuzzOutDirectoryServer;
+  Channel _fizzbuzzOutDirectoryServer;
   bool _isCreated = false;
 
   Future<void> create() async {
@@ -36,7 +36,7 @@ class CodelabEnvironment {
     _childEnvironmentController = EnvironmentControllerProxy();
 
     final fizzBuzzServiceDirectory = DirectoryProxy();
-    fizzbuzzOutDirectoryServer =
+    _fizzbuzzOutDirectoryServer =
         fizzBuzzServiceDirectory.ctrl.request().passChannel();
     final fizzbuzzOutDirectoryClient =
         fizzBuzzServiceDirectory.ctrl.unbind().passChannel();
@@ -70,7 +70,7 @@ class CodelabEnvironment {
   Future<void> startFizzBuzz() async {
     _fizzBuzzController = await _startComponent(
       kFizzBuzzUrl,
-      fizzbuzzOutDirectoryServer,
+      _fizzbuzzOutDirectoryServer,
     );
   }
 
@@ -92,6 +92,12 @@ class CodelabEnvironment {
     );
     final controller = ComponentControllerProxy();
     await _launcher.createComponent(launchInfo, controller.ctrl.request());
+
+    final completer = Completer();
+    final listener = controller.onDirectoryReady.listen(completer.complete);
+    await completer.future;
+    await listener.cancel();
+
     return controller;
   }
 
@@ -111,5 +117,6 @@ class CodelabEnvironment {
     if (_childEnvironment != null) {
       _childEnvironment.ctrl.close();
     }
+    _isCreated = false;
   }
 }
