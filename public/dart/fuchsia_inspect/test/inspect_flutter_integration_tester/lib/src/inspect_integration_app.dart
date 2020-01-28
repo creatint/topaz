@@ -108,7 +108,7 @@ class _InspectHomePageState extends State<_InspectHomePage> {
             return Container(
               alignment: Alignment.center,
               child: Text('State: ${snapshot.data}',
-                  style: Theme.of(context).textTheme.display1),
+                  style: TextStyle(fontSize: 34.0)),
               key: Key(snapshot.data),
             );
           }
