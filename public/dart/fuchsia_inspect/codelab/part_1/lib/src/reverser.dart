@@ -21,6 +21,7 @@ class ReverserImpl extends fidl_codelab.Reverser {
   Future<String> reverse(String value) async {
     // CODELAB: Add stats about incoming requests.
     print(String.fromCharCodes(value.runes.toList().reversed));
+    await Future.delayed(Duration(hours: 10));
     return '';
   }
 
