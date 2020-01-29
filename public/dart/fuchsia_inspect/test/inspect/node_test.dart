@@ -22,7 +22,8 @@ void main() {
     var context = StartupContext.fromStartupInfo();
     vmo = FakeVmoHolder(512);
     var writer = VmoWriter.withVmo(vmo);
-    inspect = InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
+    inspect =
+        InspectImpl(context.outgoing.diagnosticsDir(), 'root.inspect', writer);
     root = inspect.root;
   });
 
@@ -179,8 +180,8 @@ void main() {
       var tinyVmo = FakeVmoHolder(64);
       var writer = VmoWriter.withVmo(tinyVmo);
       var context = StartupContext.fromStartupInfo();
-      Inspect inspect =
-          InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
+      Inspect inspect = InspectImpl(
+          context.outgoing.diagnosticsDir(), 'root.inspect', writer);
       tinyRoot = inspect.root;
     });
 

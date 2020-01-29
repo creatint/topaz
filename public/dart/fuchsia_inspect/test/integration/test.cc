@@ -64,7 +64,7 @@ class InspectTest : public sys::testing::TestWithEnvironment {
   fit::result<fuchsia::io::FileSyncPtr, zx_status_t> OpenInspectVmoFile(
       const std::string& file_name) {
     files::Glob glob(
-        Substitute("/hub/r/test/*/c/*/*/c/$0/*/out/debug/$1.inspect",
+        Substitute("/hub/r/test/*/c/*/*/c/$0/*/out/diagnostics/$1.inspect",
                    kTestProcessName, file_name));
     if (glob.size() == 0) {
       printf("Size == 0\n");
@@ -214,10 +214,10 @@ TEST_F(InspectTest, DynamicGeneratesNewHierarchy) {
 
 TEST_F(InspectTest, NamedInspectVisible) {
   files::Glob glob1(
-      Substitute("/hub/r/test/*/c/*/*/c/$0/*/out/debug/$1.inspect",
+      Substitute("/hub/r/test/*/c/*/*/c/$0/*/out/diagnostics/$1.inspect",
                  kTestProcessName, kTestInspectFileName1));
   files::Glob glob2(
-      Substitute("/hub/r/test/*/c/*/*/c/$0/*/out/debug/$1.inspect",
+      Substitute("/hub/r/test/*/c/*/*/c/$0/*/out/diagnostics/$1.inspect",
                  kTestProcessName, kTestInspectFileName2));
   EXPECT_TRUE(glob1.size() > 0);
   EXPECT_TRUE(glob2.size() > 0);

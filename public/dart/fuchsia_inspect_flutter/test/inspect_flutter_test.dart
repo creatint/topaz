@@ -62,7 +62,7 @@ void main() {
     vmo = FakeVmoHolder(defaultVmoSize);
     var writer = VmoWriter.withVmo(vmo);
     Inspect inspect =
-        InspectImpl(context.outgoing.debugDir(), 'root.inspect', writer);
+        InspectImpl(context.outgoing.diagnosticsDir(), 'root.inspect', writer);
     root = inspect.root;
   });
 
