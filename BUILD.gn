@@ -5,12 +5,6 @@
 group("topaz") {
   testonly = true
   public_deps = [
-    # TODO: This target should just aggregate the top-level directories and
-    # most of these dependencies should be in those subdirectories.
-    "//garnet/packages/benchmarks:buildbot",
-    "//garnet/packages/prod:drivers",
-    "//garnet/packages/prod:scenic",
-    "//src/fonts",
     "//third_party/dart-pkg/git/flutter/examples/flutter_gallery",
     "//topaz:tests",
     "//topaz/bin/fidlgen_dart:install(//build/toolchain:host_x64)",

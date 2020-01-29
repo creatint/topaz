@@ -10,5 +10,11 @@ group("buildbot") {
     "//src/modular/bundles:tools",
     "//topaz",
     "//topaz/public/sdk",
+    # TODO: the following targets are dependencies of the perf-test
+    # pipeline, but are not explicitly managed by any related perf-test
+    # targets or CQ pipelines or dependencies of those tests.
+    "//garnet/bin/catapult_converter",
+    "//garnet/packages/prod:scenic",
+    "//src/fonts",
   ]
 }
