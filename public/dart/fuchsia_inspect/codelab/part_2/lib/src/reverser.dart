@@ -7,7 +7,9 @@ import 'dart:collection';
 
 import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_examples_inspect/fidl_async.dart' as fidl_codelab;
+// [START part_1_import]
 import 'package:fuchsia_inspect/inspect.dart' as inspect;
+// [END part_1_import]
 import 'package:meta/meta.dart';
 
 typedef BindCallback = void Function(InterfaceRequest<fidl_codelab.Reverser>);
@@ -45,20 +47,33 @@ class ReverserImpl extends fidl_codelab.Reverser {
   Future<String> reverse(String value) async {
     stats.globalRequestCount.add(1);
     stats.requestCount.add(1);
+    // [START part_1_result]
     final result = String.fromCharCodes(value.runes.toList().reversed);
+    // [START_EXCLUDE]
     stats.responseCount.add(1);
+    // [END_EXCLUDE]
     return result;
+    // [END part_1_result]
   }
 
   static final _reversers = HashMap<String, ReverserImpl>();
+  // [START part_1_add_connection_count]
+  // [START part_1_update_reverser]
   static BindCallback getDefaultBinder(inspect.Node node) {
+    // [END part_1_update_reverser]
+    // [START_EXCLUDE]
     final globalRequestCount = node.intProperty('total_requests')..setValue(0);
+    // [END_EXCLUDE]
     final glabalConnectionCount = node.intProperty('connection_count')
       ..setValue(0);
     return (InterfaceRequest<fidl_codelab.Reverser> request) {
       glabalConnectionCount.add(1);
+      // [END part_1_add_connection_count]
+      // [START part_1_connection_child]
       final name = inspect.uniqueName('connection');
-      final stats = ReverserStats(node.child(name), globalRequestCount);
+      // [END part_1_connection_child]
+      final child = node.child(name);
+      final stats = ReverserStats(child, globalRequestCount);
       final reverser = ReverserImpl(stats)
         ..bind(request, onClose: () {
           _reversers.remove(name);

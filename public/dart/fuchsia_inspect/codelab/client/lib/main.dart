@@ -21,11 +21,13 @@ Future<void> main(List<String> args) async {
   await env.startFizzBuzz();
   final reverser = await env.startReverser(reverserUrl);
 
+  // [START reverse_loop]
   for (int i = 1; i < args.length; i++) {
     print('Input: ${args[i]}');
     final response = await reverser.reverse(args[i]);
     print('Output: $response');
   }
+  // [END reverse_loop]
 
   print('Done. Press Ctrl+C to exit');
 

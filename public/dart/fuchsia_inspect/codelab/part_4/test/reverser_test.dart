@@ -15,9 +15,11 @@ void main() {
     return ReverserImpl(ReverserStats(node, globalRequestCount));
   }
 
+  // [START reverser_test]
   test('reverser', () async {
     final vmo = FakeVmoHolder(256 * 1024);
     final inspector = inspect.Inspect.forTesting(vmo, 'root.inspect');
+    // [START_EXCLUDE]
     final node = inspector.root.child('reverser_service');
     final globalRequestCount = node.intProperty('total_requests')..setValue(0);
 
@@ -34,6 +36,7 @@ void main() {
 
     final result3 = await reverser2.reverse('another');
     expect(result3, equals('rehtona'));
+    // [END EXCLUDE]
 
     final matcher = VmoMatcher(vmo);
 
@@ -45,6 +48,7 @@ void main() {
           ..propertyEquals('request_count', 2)
           ..propertyEquals('response_count', 2),
         hasNoErrors);
+    // [END reverser_test]
     expect(
         reverserServiceNode.at(['connection1'])
           ..propertyEquals('request_count', 1)

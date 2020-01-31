@@ -8,6 +8,7 @@ import 'package:fidl/fidl.dart';
 import 'package:fidl_fuchsia_examples_inspect/fidl_async.dart' as fidl_codelab;
 import 'package:meta/meta.dart';
 
+// [START reverser_impl]
 typedef BindCallback = void Function(InterfaceRequest<fidl_codelab.Reverser>);
 typedef VoidCallback = void Function();
 
@@ -49,3 +50,4 @@ class ReverserImpl extends fidl_codelab.Reverser {
 
   void dispose() {}
 }
+// [END reverser_impl]

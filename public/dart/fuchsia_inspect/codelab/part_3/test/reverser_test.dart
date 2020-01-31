@@ -8,7 +8,9 @@ import 'package:inspect_dart_codelab_part_3_lib/reverser.dart';
 
 void main() {
   ReverserImpl openReverser() {
+    // [START open_reverser]
     return ReverserImpl(ReverserStats.noop());
+    // [END open_reverser]
   }
 
   test('reverser', () async {

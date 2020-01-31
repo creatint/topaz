@@ -2,15 +2,19 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// ignore_for_file: directives_ordering
 import 'dart:async';
-import 'dart:convert';
-import 'package:fidl_fuchsia_diagnostics/fidl_async.dart';
 import 'package:fidl_fuchsia_examples_inspect/fidl_async.dart' as fidl_codelab;
-import 'package:fidl_fuchsia_mem/fidl_async.dart';
-import 'package:fuchsia_services/services.dart';
 import 'package:test/test.dart';
 import 'package:inspect_codelab_shared/codelab_environment.dart';
+
+// [START include_test_stuff]
+import 'dart:convert';
+import 'package:fidl_fuchsia_diagnostics/fidl_async.dart';
+import 'package:fidl_fuchsia_mem/fidl_async.dart';
+import 'package:fuchsia_services/services.dart';
 import 'package:zircon/zircon.dart';
+// [END include_test_stuff]
 
 void main() {
   CodelabEnvironment env;
@@ -28,6 +32,7 @@ void main() {
     return await env.startReverser(reverserUrl);
   }
 
+  // [START get_inspect]
   String readBuffer(Buffer buffer) {
     final dataVmo = SizedVmo(buffer.vmo.handle, buffer.size);
     final data = dataVmo.read(buffer.size);
@@ -59,6 +64,7 @@ void main() {
       await Future.delayed(Duration(milliseconds: 150));
     }
   }
+  // [END get_inspect]
 
   setUp(() async {
     env = CodelabEnvironment();
@@ -75,7 +81,9 @@ void main() {
     reverser.ctrl.close();
     expect(result, equals('olleh'));
 
+    // [START result_hierarchy]
     final inspectData = await getInspectHierarchy();
+    // [END result_hierarchy]
     expect(inspectData['contents']['root']['fuchsia.inspect.Health']['status'],
         'OK');
   });

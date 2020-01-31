@@ -23,6 +23,7 @@ void main() {
     return await env.startReverser(reverserUrl);
   }
 
+  // [START integration_test]
   setUp(() async {
     env = CodelabEnvironment();
     await env.create();
@@ -38,6 +39,7 @@ void main() {
     expect(result, equals('olleh'));
     // CODELAB: Check that the component was connected to FizzBuzz.
   });
+  // [END integration_test]
 
   test('start without fizzbuzz', () async {
     final reverser = await startComponentAndConnect();

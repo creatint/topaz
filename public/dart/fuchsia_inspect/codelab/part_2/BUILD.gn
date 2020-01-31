@@ -15,7 +15,11 @@ dart_library("lib") {
 
   deps = [
     "//src/diagnostics/examples/inspect/fidl:fuchsia.examples.inspect",
+
+    # [START part_1_solution_build_dep]
     "//topaz/public/dart/fuchsia_inspect",
+
+    # [END part_1_solution_build_dep]
   ]
 }
 
