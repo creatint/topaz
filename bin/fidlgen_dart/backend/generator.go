@@ -10,7 +10,6 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"fidl/compiler/backend/types"
 	"fidlgen_dart/backend/ir"
 	"fidlgen_dart/backend/templates"
 )
@@ -34,11 +33,7 @@ func NewFidlGenerator() *FidlGenerator {
 	}
 }
 
-func (gen FidlGenerator) generateSyncLibrary(wr io.Writer, tree ir.Root) error {
-	return gen.tmpls.ExecuteTemplate(wr, "GenerateLibraryFile", tree)
-}
-
-func (gen FidlGenerator) generateAsyncLibrary(wr io.Writer, tree ir.Root) error {
+func (gen FidlGenerator) generateAsyncFile(wr io.Writer, tree ir.Root) error {
 	return gen.tmpls.ExecuteTemplate(wr, "GenerateAsyncFile", tree)
 }
 
@@ -70,17 +65,10 @@ func writeFile(
 	return generatedPipe.Close()
 }
 
-// GenerateBindings generates Dart bindings from FIDL types structures.
-func (gen FidlGenerator) GenerateBindings(fidl types.Root, config *types.Config, dartfmt string) error {
-	tree := ir.Compile(fidl)
+func (gen FidlGenerator) GenerateAsyncFile(tree ir.Root, path string, dartfmt string) error {
+	return writeFile(gen.generateAsyncFile, tree, path, dartfmt)
+}
 
-	if err := writeFile(gen.generateAsyncLibrary, tree, filepath.Join(config.OutputBase, "fidl_async.dart"), dartfmt); err != nil {
-		return err
-	}
-
-	if err := writeFile(gen.generateTestFile, tree, filepath.Join(config.OutputBase, "fidl_test.dart"), dartfmt); err != nil {
-		return err
-	}
-
-	return nil
+func (gen FidlGenerator) GenerateTestFile(tree ir.Root, path string, dartfmt string) error {
+	return writeFile(gen.generateTestFile, tree, path, dartfmt)
 }

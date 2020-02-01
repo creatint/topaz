@@ -41,7 +41,7 @@ func TestCodegenAsyncLibrary(t *testing.T) {
 			if err != nil {
 				t.Fatalf("unable to create format pipe: %s", err)
 			}
-			err = NewFidlGenerator().generateAsyncLibrary(actualWrPipe, tree)
+			err = NewFidlGenerator().generateAsyncFile(actualWrPipe, tree)
 			if err != nil {
 				t.Fatalf("unexpected error while generating async library: %s", err)
 			}
