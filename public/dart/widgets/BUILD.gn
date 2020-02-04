@@ -56,6 +56,7 @@ dart_library("lib.widgets") {
 flutter_test("dart_widget_tests") {
   sources = [
     "alphatar_test.dart",
+    "pointer_events_listener_test.dart",
     "providers_test.dart",
     "rk4_spring_simulation_test.dart",
   ]

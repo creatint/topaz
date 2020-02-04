@@ -11,6 +11,25 @@ import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
 
 import 'package:flutter/scheduler.dart';
 
+// Sampling offset is relative to presentation time. If we produce frames
+// 16.667 ms before presentation and input rate is ~60hz, worst case latency
+// is 33.334 ms. This however assumes zero latency from the input driver.
+// 4.666 ms margin is added for this.
+const _defaultSamplingOffset = Duration(milliseconds: -38);
+
+class _Event {
+  PointerEvent p;
+  Flow flow1;
+  Flow flow2;
+  _Event(this.p, this.flow1, this.flow2);
+}
+
+class _DownPointer {
+  _Event last;
+  _Event next;
+  _DownPointer(this.last, this.next);
+}
+
 /// Listens for pointer events and injects them into Flutter input pipeline.
 class PointerEventsListener extends PointerCaptureListenerHack {
   // Holds the fidl binding to receive pointer events.
@@ -20,71 +39,85 @@ class PointerEventsListener extends PointerCaptureListenerHack {
   // Holds the last [PointerEvent] mapped to its pointer id. This is used to
   // determine the correct [PointerDataPacket] to generate at boundary condition
   // of the screen rect.
-  final Map<int, PointerEvent> _lastPointerEvent = <int, PointerEvent>{};
+  final _lastPointerEvent = <int, PointerEvent>{};
 
   // Flag to remember that a down event was seen before a move event.
   // TODO(sanjayc): Should really convert to a FSM for PointerEvent.
-  final Map<int, bool> _downEvent = <int, bool>{};
+  final _downEvent = <int, bool>{};
 
-  // Holds the [onPointerDataCallback] assigned to [ui.window] at
-  // the start of the program.
-  ui.PointerDataPacketCallback _originalCallback;
+  // Scheduler used for frame callbacks.
+  var _scheduler;
 
-  final _queuedEvents = <PointerEvent>[];
-  bool _frameScheduled = false;
+  // [onPointerDataCallback] used to dispatch pointer data callbacks.
+  var _callback;
+
+  // Offset used for re-sampling of move events.
+  var _samplingOffset;
+
+  final _queuedEvents = <_Event>[];
+  var _frameCallbackScheduled = false;
+
+  var _sampleTimeNs = 0;
+  final _downPointers = <int, _DownPointer>{};
+
+  PointerEventsListener(
+      {SchedulerBinding scheduler,
+      ui.PointerDataPacketCallback callback,
+      Duration samplingOffset}) {
+    _scheduler = scheduler ?? SchedulerBinding.instance;
+    _samplingOffset = samplingOffset ?? _defaultSamplingOffset;
+    _callback = callback;
+  }
 
   /// Starts listening to pointer events. Also overrides the original
   /// [ui.window.onPointerDataPacket] callback to a NOP since we
   /// inject the pointer events received from the [Presentation] service.
   void listen(PresentationProxy presentation) {
-    _originalCallback = ui.window.onPointerDataPacket;
+    _callback = ui.window.onPointerDataPacket;
     ui.window.onPointerDataPacket = (ui.PointerDataPacket packet) {};
 
-    if (_pointerCaptureListenerBinding.isUnbound) {
-      presentation
-          .capturePointerEventsHack(_pointerCaptureListenerBinding.wrap(this));
-    }
+    presentation
+        .capturePointerEventsHack(_pointerCaptureListenerBinding.wrap(this));
   }
 
   /// Stops listening to pointer events. Also restores the
   /// [ui.window.onPointerDataPacket] callback.
   void stop() {
-    if (_originalCallback != null) {
+    if (_callback != null) {
       _cleanupPointerEvents();
-      if (_pointerCaptureListenerBinding.isBound) {
-        _pointerCaptureListenerBinding.unbind();
-      }
       _pointerCaptureListenerBinding.close();
 
       // Restore the original pointer events callback on the window.
-      ui.window.onPointerDataPacket = _originalCallback;
-      _originalCallback = null;
+      ui.window.onPointerDataPacket = _callback;
+      _callback = null;
       _lastPointerEvent.clear();
       _downEvent.clear();
     }
   }
 
   void _cleanupPointerEvents() {
-    for (PointerEvent lastEvent in _lastPointerEvent.values.toList()) {
+    for (final lastEvent in _lastPointerEvent.values.toList()) {
       if (lastEvent.phase != PointerEventPhase.remove &&
           lastEvent.type != PointerEventType.mouse) {
-        onPointerEvent(_clone(lastEvent, PointerEventPhase.remove));
+        onPointerEvent(_clone(lastEvent, PointerEventPhase.remove, lastEvent.x,
+            lastEvent.y, lastEvent.eventTime));
       }
     }
   }
 
-  PointerEvent _clone(PointerEvent event, [PointerEventPhase phase]) {
+  PointerEvent _clone(PointerEvent event, PointerEventPhase phase, double x,
+      double y, int eventTime) {
     return PointerEvent(
         buttons: event.buttons,
         deviceId: event.deviceId,
-        eventTime: event.eventTime,
-        phase: phase ?? event.phase,
+        eventTime: eventTime,
+        phase: phase,
         pointerId: event.pointerId,
         radiusMajor: event.radiusMajor,
         radiusMinor: event.radiusMinor,
         type: event.type,
-        x: event.x,
-        y: event.y);
+        x: x,
+        y: y);
   }
 
   /// |PointerCaptureListener|.
@@ -94,20 +127,198 @@ class PointerEventsListener extends PointerCaptureListenerHack {
   }
 
   void _onPointerEvent(PointerEvent event) {
-    if (_originalCallback == null) {
+    if (_callback == null) {
       return;
     }
 
-    Timeline.startSync('PointerEventsListener.onPointerEvent');
-    final packet = _getPacket(event);
-    if (packet != null) {
-      _originalCallback(ui.PointerDataPacket(data: [packet]));
+    final eventArguments = <String, int>{
+      'eventTimeUs': event.eventTime ~/ 1000,
+    };
+    final flow1 = Flow.begin();
+    Timeline.timeSync('PointerEventsListener.onPointerEvent', () {
+      final flow2 = Flow.begin();
+      Timeline.timeSync('PointerEventsListener.queueEvent', () {
+        _queuedEvents.add(_Event(event, flow1, flow2));
+      }, flow: flow2);
+      _dispatchQueuedEvents();
+    }, arguments: eventArguments, flow: flow1);
+  }
+
+  void _dispatchQueuedEvents() {
+    Timeline.timeSync('PointerEventsListener.dispatchQueuedEvents', () {
+      _consumePendingEvents();
+      _updateDownPointers();
+      _dispatchMoveChanges();
+
+      // Schedule frame callback if down pointers exists or events are
+      // still queued. We need the frame callback to determine sample
+      // time. This however makes us produce frames whenever touch points
+      // are present. Probably OK as we'll likely receive an update to
+      // the touch point location each frame that will result in us
+      // actually having to produce a frame.
+      if (_queuedEvents.isNotEmpty || _downPointers.isNotEmpty) {
+        _scheduleFrameCallback();
+      }
+    });
+  }
+
+  void _consumePendingEvents() {
+    final packets = <ui.PointerData>[];
+
+    while (_queuedEvents.isNotEmpty) {
+      final event = _queuedEvents.first;
+
+      // Stop consuming events if more recent than current sample time.
+      if (event.p.eventTime > _sampleTimeNs) {
+        break;
+      }
+
+      switch (event.p.phase) {
+        case PointerEventPhase.down:
+          _downPointers[event.p.pointerId] = _DownPointer(event, event);
+          break;
+        case PointerEventPhase.move:
+          _downPointers[event.p.pointerId].next = event;
+          break;
+        case PointerEventPhase.up:
+        case PointerEventPhase.cancel:
+          _downPointers.remove(event.p.pointerId);
+          break;
+        case PointerEventPhase.add:
+        case PointerEventPhase.remove:
+        case PointerEventPhase.hover:
+          break;
+      }
+
+      // Add non-move changes without re-sampling.
+      if (event.p.phase != PointerEventPhase.move) {
+        final eventArguments = <String, int>{
+          'eventTimeUs': event.p.eventTime ~/ 1000,
+        };
+        Timeline.timeSync('PointerEventsListener.consumePendingEvent', () {
+          final packet = _getPacket(event.p);
+          if (packet != null) {
+            packets.add(packet);
+          }
+        }, arguments: eventArguments, flow: Flow.end(event.flow1.id));
+      }
+
+      _queuedEvents.removeAt(0);
     }
-    Timeline.finishSync();
+
+    if (packets.isNotEmpty) {
+      Timeline.timeSync('PointerEventsListener.dispatchPackets', () {
+        _callback(ui.PointerDataPacket(data: packets));
+      });
+    }
+  }
+
+  void _updateDownPointers() {
+    // Update [_downPointers] by examining queued changes.
+    for (var event in _queuedEvents) {
+      final p = _downPointers[event.p.pointerId];
+      if (p != null) {
+        switch (event.p.phase) {
+          case PointerEventPhase.down:
+          case PointerEventPhase.move:
+          case PointerEventPhase.cancel:
+          case PointerEventPhase.up:
+            // Update next event if not already passed sample time.
+            if (p.next.p.eventTime < _sampleTimeNs) {
+              _downPointers[event.p.pointerId].next = event;
+            }
+            break;
+          case PointerEventPhase.add:
+          case PointerEventPhase.remove:
+          case PointerEventPhase.hover:
+            break;
+        }
+      }
+    }
+  }
+
+  void _dispatchMoveChanges() {
+    final packets = <ui.PointerData>[];
+
+    // Add move changes for [_downPointers].
+    for (var v in _downPointers.values) {
+      var x = v.next.p.x;
+      var y = v.next.p.y;
+      var eventTime = v.next.p.eventTime;
+      // Re-sample if next time stamp is past sample time.
+      if (v.next.p.eventTime > _sampleTimeNs &&
+          v.next.p.eventTime > v.last.p.eventTime) {
+        var resampleArguments = <String, int>{
+          'lastEventTimeUs': v.last.p.eventTime ~/ 1000,
+          'nextEventTimeUs': v.next.p.eventTime ~/ 1000
+        };
+        Timeline.timeSync('PointerEventsListener.resampledEvent', () {
+          final interval = (v.next.p.eventTime - v.last.p.eventTime).toDouble();
+          final scalar =
+              (_sampleTimeNs - v.last.p.eventTime).toDouble() / interval;
+          x = v.last.p.x + (v.next.p.x - v.last.p.x) * scalar;
+          y = v.last.p.y + (v.next.p.y - v.last.p.y) * scalar;
+          eventTime = _sampleTimeNs;
+        }, arguments: resampleArguments);
+      }
+
+      // Add move change if time stamp is greater than last event.
+      if (eventTime > v.last.p.eventTime) {
+        final event = _clone(v.next.p, PointerEventPhase.move, x, y, eventTime);
+        final eventArguments = <String, int>{
+          'eventTimeUs': eventTime ~/ 1000,
+        };
+        Timeline.timeSync('PointerEventsListener.addMoveEvent', () {
+          final packet = _getPacket(event);
+          if (packet != null) {
+            packets.add(packet);
+          }
+        }, arguments: eventArguments, flow: Flow.end(v.last.flow2.id));
+
+        Timeline.timeSync('PointerEventsListener.updateLastEvent', () {
+          v.last.p = event;
+          v.last.flow2 = v.next.flow2;
+        }, flow: Flow.end(v.next.flow1.id));
+      }
+    }
+
+    if (packets.isNotEmpty) {
+      Timeline.timeSync('PointerEventsListener.dispatchPackets', () {
+        _callback(ui.PointerDataPacket(data: packets));
+      });
+    }
+  }
+
+  void _scheduleFrameCallback() {
+    if (_frameCallbackScheduled) {
+      return;
+    }
+    _frameCallbackScheduled = true;
+    _scheduler.scheduleFrameCallback((_) {
+      _frameCallbackScheduled = false;
+      _sampleTimeNs = (_scheduler.currentSystemFrameTimeStamp + _samplingOffset)
+              .inMicroseconds *
+          1000;
+      var frameArguments = <String, int>{
+        'frameTimeUs': _scheduler.currentSystemFrameTimeStamp.inMicroseconds,
+      };
+      if (_queuedEvents.isNotEmpty) {
+        final lastEventTime = _queuedEvents.last.p.eventTime;
+        frameArguments['lastEventTimeUs'] = lastEventTime ~/ 1000;
+        frameArguments['eventTimeMarginUs'] =
+            (lastEventTime - _sampleTimeNs) ~/ 1000;
+      }
+      Timeline.timeSync('PointerEventsListener.onFrameCallback', () {
+        _dispatchQueuedEvents();
+      }, arguments: frameArguments);
+    });
+    Timeline.timeSync('PointerEventsListener.scheduleFrameCallback', () {
+      _scheduler.scheduleFrame();
+    });
   }
 
   ui.PointerChange _changeFromPointerEvent(PointerEvent event) {
-    PointerEvent lastEvent = _lastPointerEvent[event.pointerId] ?? event;
+    final lastEvent = _lastPointerEvent[event.pointerId] ?? event;
 
     switch (event.phase) {
       case PointerEventPhase.add:
@@ -174,7 +385,7 @@ class PointerEventsListener extends PointerCaptureListenerHack {
   }
 
   ui.PointerData _getPacket(PointerEvent event) {
-    PointerEvent lastEvent = _lastPointerEvent[event.pointerId] ?? event;
+    final lastEvent = _lastPointerEvent[event.pointerId];
 
     // Only allow add and remove pointer events from outside the window bounds.
     // For other events, we drop them if the last two were outside the window
@@ -183,10 +394,15 @@ class PointerEventsListener extends PointerCaptureListenerHack {
     if (event.phase != PointerEventPhase.add &&
         event.phase != PointerEventPhase.remove &&
         _outside(event) &&
-        _outside(lastEvent)) {
+        _outside(lastEvent ?? event)) {
       _lastPointerEvent[event.pointerId] = event;
       return null;
     }
+
+    // Calculate the offset between two events.
+    final delta = lastEvent != null
+        ? ui.Offset(event.x - lastEvent.x, event.y - lastEvent.y)
+        : ui.Offset(0, 0);
 
     // Convert from PointerEvent to PointerData.
     final data = ui.PointerData(
@@ -195,8 +411,12 @@ class PointerEventsListener extends PointerCaptureListenerHack {
       timeStamp: Duration(microseconds: event.eventTime ~/ 1000),
       change: _changeFromPointerEvent(event),
       kind: _kindFromPointerEvent(event),
+      physicalDeltaX: delta.dx * ui.window.devicePixelRatio,
+      physicalDeltaY: delta.dy * ui.window.devicePixelRatio,
       physicalX: event.x * ui.window.devicePixelRatio,
       physicalY: event.y * ui.window.devicePixelRatio,
+      pointerIdentifier: event.pointerId,
+      synthesized: false,
     );
 
     // Remember this event for checking boundary condition on the next event.
