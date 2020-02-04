@@ -15,6 +15,8 @@ dart_library("fuchsia_modular_testing") {
 
   sources = [
     "src/agent_interceptor.dart",
+    "src/module_interceptor.dart",
+    "src/module_with_view_provider_impl.dart",
     "src/test_harness_fixtures.dart",
     "src/test_harness_spec_builder.dart",
     "test.dart",
@@ -25,6 +27,7 @@ dart_library("fuchsia_modular_testing") {
     "//sdk/fidl/fuchsia.modular.session",
     "//sdk/fidl/fuchsia.modular.testing",
     "//sdk/fidl/fuchsia.sys",
+    "//sdk/fidl/fuchsia.ui.app",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia_logger",
     "//topaz/public/dart/fuchsia_modular",
@@ -43,9 +46,7 @@ fidl("test_fidl") {
 
   name = "test.modular.dart"
 
-  sources = [
-    "test_support/fidl/testing.fidl",
-  ]
+  sources = [ "test_support/fidl/testing.fidl" ]
 }
 
 # Run tese tests using:
@@ -62,12 +63,14 @@ dart_fuchsia_test("fuchsia_modular_testing_package_integration_tests") {
   sources = [
     "agent_interceptor_test.dart",
     "launch_harness_test.dart",
+    "module_interceptor_test.dart",
     "test_harness_spec_builder_test.dart",
   ]
 
   deps = [
     ":fuchsia_modular_testing",
     ":test_fidl",
+    "//third_party/dart-pkg/pub/mockito",
     "//third_party/dart-pkg/pub/test",
   ]
   environments = basic_envs

@@ -5,5 +5,7 @@
 /// A collection of utilities to help with writing tests
 /// against the fuchsia_modular package.
 export 'src/agent_interceptor.dart';
+export 'src/module_interceptor.dart';
+export 'src/module_with_view_provider_impl.dart';
 export 'src/test_harness_fixtures.dart';
 export 'src/test_harness_spec_builder.dart';

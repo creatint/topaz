@@ -9,4 +9,6 @@ export 'src/module/intent_handler.dart';
 export 'src/module/module.dart';
 export 'src/module/module_state_exception.dart';
 export 'src/module/noop_intent_handler.dart';
+export 'src/module/noop_view_provider.dart';
 export 'src/module/streaming_intent_handler.dart';
+export 'src/module/view_provider.dart';

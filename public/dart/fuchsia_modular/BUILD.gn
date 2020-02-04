@@ -37,10 +37,13 @@ dart_library("fuchsia_modular") {
     "src/module/internal/_module_context.dart",
     "src/module/internal/_module_impl.dart",
     "src/module/internal/_streaming_intent_handler_impl.dart",
+    "src/module/internal/_view_provider_impl.dart",
     "src/module/module.dart",
     "src/module/module_state_exception.dart",
     "src/module/noop_intent_handler.dart",
+    "src/module/noop_view_provider.dart",
     "src/module/streaming_intent_handler.dart",
+    "src/module/view_provider.dart",
     "src/service_connection/agent_service_connection.dart",
   ]
 
@@ -48,6 +51,7 @@ dart_library("fuchsia_modular") {
     "//sdk/fidl/fuchsia.auth",
     "//sdk/fidl/fuchsia.modular",
     "//sdk/fidl/fuchsia.sys",
+    "//sdk/fidl/fuchsia.ui.app",
     "//sdk/fidl/fuchsia.ui.views",
     "//third_party/dart-pkg/pub/async",
     "//third_party/dart-pkg/pub/meta",
