@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'dart:convert' show utf8;
+import 'dart:developer';
 
 import 'package:fidl/fidl.dart' as fidl;
 import 'package:fidl_fuchsia_web/fidl_async.dart' as fidl_web;
@@ -26,7 +27,7 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   /// Helper class to interact with fuchsia web services
   FuchsiaWebServices _fuchsiaWebServices;
   int _nextId = 0;
-  final _currentState = fidl_web.NavigationState();
+  var _currentState = fidl_web.NavigationState();
   // Reason: sdk_version_set_literal unsupported until version 2.2
   // ignore: prefer_collection_literals
   var _beforeLoadChannels = Set<String>();
@@ -181,11 +182,15 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   /// Updates the current state with each field that is set in the new
   /// navigation state.
   void _updateCurrentStateDiff(fidl_web.NavigationState state) {
-    for (final entry in state.$fields.entries) {
-      if (entry.value != null) {
-        _currentState.$fields[entry.key] = entry.value;
-      }
-    }
+    _currentState = fidl_web.NavigationState(
+      title: state.title ?? _currentState.title,
+      url: state.title ?? _currentState.url,
+      canGoBack: state.canGoBack ?? _currentState.canGoBack,
+      canGoForward: state.canGoForward ?? _currentState.canGoForward,
+      isMainDocumentLoaded:
+          state.isMainDocumentLoaded ?? _currentState.isMainDocumentLoaded,
+      pageType: state.pageType ?? _currentState.pageType,
+    );
   }
 
   /// Registers the javascript channels that will be loaded when the page loads.
