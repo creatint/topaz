@@ -8,18 +8,22 @@ import("//build/packages/prebuilt_package.gni")
 
 prebuilt_package("flutter_jit_runner") {
   archive = "//prebuilt/third_party/flutter/$target_cpu/debug/jit/flutter_jit_runner-0.far"
+  debug_archive = "//prebuilt/build_ids/$target_cpu/flutter/flutter-fuchsia-debug-symbols-$target_cpu/flutter-debug-symbols-debug-fuchsia-$target_cpu.tar.bz2"
 }
 
 prebuilt_package("flutter_jit_product_runner") {
   archive = "//prebuilt/third_party/flutter/$target_cpu/release/jit/flutter_jit_product_runner-0.far"
+  debug_archive = "//prebuilt/build_ids/$target_cpu/flutter/flutter-fuchsia-debug-symbols-$target_cpu/flutter-debug-symbols-release-fuchsia-$target_cpu.tar.bz2"
 }
 
 prebuilt_package("flutter_aot_runner") {
   archive = "//prebuilt/third_party/flutter/$target_cpu/debug/aot/flutter_aot_runner-0.far"
+  debug_archive = "//prebuilt/build_ids/$target_cpu/flutter/flutter-fuchsia-debug-symbols-$target_cpu/flutter-debug-symbols-debug-fuchsia-$target_cpu.tar.bz2"
 }
 
 prebuilt_package("flutter_aot_product_runner") {
   archive = "//prebuilt/third_party/flutter/$target_cpu/release/aot/flutter_aot_product_runner-0.far"
+  debug_archive = "//prebuilt/build_ids/$target_cpu/flutter/flutter-fuchsia-debug-symbols-$target_cpu/flutter-debug-symbols-release-fuchsia-$target_cpu.tar.bz2"
 }
 
 copy("flutter_tester") {
