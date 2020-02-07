@@ -11,10 +11,12 @@ import 'package:fidl_fuchsia_ui_policy/fidl_async.dart';
 
 import 'package:flutter/scheduler.dart';
 
-// Sampling offset is relative to presentation time. If we produce frames
-// 16.667 ms before presentation and input rate is ~60hz, worst case latency
-// is 33.334 ms. This however assumes zero latency from the input driver.
-// 4.666 ms margin is added for this.
+/// The default sampling offset.
+///
+/// Sampling offset is relative to presentation time. If we produce frames
+/// 16.667 ms before presentation and input rate is ~60hz, worst case latency
+/// is 33.334 ms. This however assumes zero latency from the input driver.
+/// 4.666 ms margin is added for this.
 const _defaultSamplingOffset = Duration(milliseconds: -38);
 
 class _Event {
@@ -52,7 +54,7 @@ class PointerEventsListener extends PointerCaptureListenerHack {
   var _callback;
 
   // Offset used for re-sampling of move events.
-  var _samplingOffset;
+  final _samplingOffset;
 
   final _queuedEvents = <_Event>[];
   var _frameCallbackScheduled = false;
@@ -60,12 +62,12 @@ class PointerEventsListener extends PointerCaptureListenerHack {
   var _sampleTimeNs = 0;
   final _downPointers = <int, _DownPointer>{};
 
-  PointerEventsListener(
-      {SchedulerBinding scheduler,
-      ui.PointerDataPacketCallback callback,
-      Duration samplingOffset}) {
-    _scheduler = scheduler ?? SchedulerBinding.instance;
-    _samplingOffset = samplingOffset ?? _defaultSamplingOffset;
+  PointerEventsListener({
+    SchedulerBinding scheduler,
+    ui.PointerDataPacketCallback callback,
+    Duration samplingOffset,
+  })  : _scheduler = scheduler,
+        _samplingOffset = samplingOffset ?? _defaultSamplingOffset {
     _callback = callback;
   }
 
@@ -73,6 +75,7 @@ class PointerEventsListener extends PointerCaptureListenerHack {
   /// [ui.window.onPointerDataPacket] callback to a NOP since we
   /// inject the pointer events received from the [Presentation] service.
   void listen(PresentationProxy presentation) {
+    _scheduler ??= SchedulerBinding.instance;
     _callback = ui.window.onPointerDataPacket;
     ui.window.onPointerDataPacket = (ui.PointerDataPacket packet) {};
 
@@ -138,7 +141,15 @@ class PointerEventsListener extends PointerCaptureListenerHack {
     Timeline.timeSync('PointerEventsListener.onPointerEvent', () {
       final flow2 = Flow.begin();
       Timeline.timeSync('PointerEventsListener.queueEvent', () {
-        _queuedEvents.add(_Event(event, flow1, flow2));
+        final frameTime =
+            _scheduler.currentSystemFrameTimeStamp.inMicroseconds * 1000;
+        // Sanity check event time by clamping to frameTime.
+        final eventTime =
+            event.eventTime < frameTime ? event.eventTime : frameTime;
+        _queuedEvents.add(_Event(
+            _clone(event, event.phase, event.x, event.y, eventTime),
+            flow1,
+            flow2));
       }, flow: flow2);
       _dispatchQueuedEvents();
     }, arguments: eventArguments, flow: flow1);
@@ -168,30 +179,36 @@ class PointerEventsListener extends PointerCaptureListenerHack {
     while (_queuedEvents.isNotEmpty) {
       final event = _queuedEvents.first;
 
-      // Stop consuming events if more recent than current sample time.
-      if (event.p.eventTime > _sampleTimeNs) {
-        break;
+      // Dispatch non-touch changes directly.
+      var dispatchEvent = true;
+
+      if (event.p.type == PointerEventType.touch) {
+        // Stop consuming touch events if more recent than current sample time.
+        if (event.p.eventTime > _sampleTimeNs) {
+          break;
+        }
+
+        switch (event.p.phase) {
+          case PointerEventPhase.down:
+            _downPointers[event.p.pointerId] = _DownPointer(event, event);
+            break;
+          case PointerEventPhase.move:
+            // Move changes will be re-sampled instead of dispatched directly.
+            _downPointers[event.p.pointerId].next = event;
+            dispatchEvent = false;
+            break;
+          case PointerEventPhase.up:
+          case PointerEventPhase.cancel:
+            _downPointers.remove(event.p.pointerId);
+            break;
+          case PointerEventPhase.add:
+          case PointerEventPhase.remove:
+          case PointerEventPhase.hover:
+            break;
+        }
       }
 
-      switch (event.p.phase) {
-        case PointerEventPhase.down:
-          _downPointers[event.p.pointerId] = _DownPointer(event, event);
-          break;
-        case PointerEventPhase.move:
-          _downPointers[event.p.pointerId].next = event;
-          break;
-        case PointerEventPhase.up:
-        case PointerEventPhase.cancel:
-          _downPointers.remove(event.p.pointerId);
-          break;
-        case PointerEventPhase.add:
-        case PointerEventPhase.remove:
-        case PointerEventPhase.hover:
-          break;
-      }
-
-      // Add non-move changes without re-sampling.
-      if (event.p.phase != PointerEventPhase.move) {
+      if (dispatchEvent) {
         final eventArguments = <String, int>{
           'eventTimeUs': event.p.eventTime ~/ 1000,
         };

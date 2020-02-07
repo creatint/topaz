@@ -12,7 +12,7 @@ import 'package:fidl_fuchsia_ui_input/fidl_async.dart';
 
 class MockSchedulerBinding extends Mock implements SchedulerBinding {}
 
-const _samplingOffset = Duration(microseconds: -500);
+const _samplingOffset = Duration(microseconds: -5500);
 
 void main() {
   final result = <ui.PointerData>[];
@@ -20,7 +20,8 @@ void main() {
   MockSchedulerBinding scheduler;
   PointerEventsListener pointerEventsListener;
 
-  setUpAll(() {
+  setUp(() {
+    result.clear();
     scheduler = MockSchedulerBinding();
     pointerEventsListener = PointerEventsListener(
         scheduler: scheduler,
@@ -53,6 +54,9 @@ void main() {
     final event3 =
         _createSimulatedPointerEvent(PointerEventPhase.up, 4000, 30.0, 0.0);
 
+    var frameTime = Duration(milliseconds: 6);
+    when(scheduler.currentSystemFrameTimeStamp).thenReturn(frameTime);
+
     pointerEventsListener
       ..onPointerEvent(event0)
       ..onPointerEvent(event1)
@@ -70,7 +74,7 @@ void main() {
     verify(scheduler.scheduleFrame());
     clearInteractions(scheduler);
 
-    var frameTime = Duration(milliseconds: 2);
+    frameTime = Duration(milliseconds: 7);
     when(scheduler.currentSystemFrameTimeStamp).thenReturn(frameTime);
     callback(Duration());
 
@@ -97,7 +101,7 @@ void main() {
     verify(scheduler.scheduleFrame());
     clearInteractions(scheduler);
 
-    frameTime = Duration(milliseconds: 4);
+    frameTime = Duration(milliseconds: 9);
     when(scheduler.currentSystemFrameTimeStamp).thenReturn(frameTime);
     callback(Duration());
 
@@ -117,7 +121,7 @@ void main() {
     verify(scheduler.scheduleFrame());
     clearInteractions(scheduler);
 
-    frameTime = Duration(milliseconds: 6);
+    frameTime = Duration(milliseconds: 11);
     when(scheduler.currentSystemFrameTimeStamp).thenReturn(frameTime);
     callback(Duration());
 
@@ -129,5 +133,39 @@ void main() {
     expect(result[3].physicalY, 0.0);
     expect(result[3].physicalDeltaX, 5.0 * ui.window.devicePixelRatio);
     expect(result[3].physicalDeltaY, 0.0);
+  });
+
+  test('bad event time', () {
+    const _badEventTimeUs = 9999999;
+    final event0 = _createSimulatedPointerEvent(
+        PointerEventPhase.down, _badEventTimeUs, 0.0, 0.0);
+    final event1 = _createSimulatedPointerEvent(
+        PointerEventPhase.up, _badEventTimeUs, 0.0, 0.0);
+
+    var frameTime = Duration(milliseconds: 6);
+    when(scheduler.currentSystemFrameTimeStamp).thenReturn(frameTime);
+
+    pointerEventsListener..onPointerEvent(event0)..onPointerEvent(event1);
+
+    // No pointer events should have been dispatched yet.
+    expect(result.isEmpty, true);
+
+    // Frame callback should have been requested.
+    FrameCallback callback =
+        verify(scheduler.scheduleFrameCallback(captureThat(isNotNull)))
+            .captured
+            .single;
+    verify(scheduler.scheduleFrame());
+    clearInteractions(scheduler);
+
+    frameTime = Duration(milliseconds: 20);
+    when(scheduler.currentSystemFrameTimeStamp).thenReturn(frameTime);
+    callback(Duration());
+
+    // Event time stamps should have been ignored and two pointer events
+    // should have been dispatched.
+    expect(result.length, 2);
+    expect(result[0].change, ui.PointerChange.down);
+    expect(result[1].change, ui.PointerChange.up);
   });
 }
