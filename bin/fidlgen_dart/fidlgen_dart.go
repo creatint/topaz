@@ -10,7 +10,6 @@ import (
 	"log"
 	"os"
 	"path"
-	"path/filepath"
 
 	"fidl/compiler/backend/types"
 	"fidlgen_dart/backend"
@@ -36,14 +35,6 @@ var flags = flagsDef{
 		"output path for the test bindings."),
 	dartfmt: flag.String("dartfmt", "",
 		"path to the dartfmt tool"),
-
-	// TODO(pascallouis): Because invocation of the fidlgen_dart backend is
-	// controlled in fuchsia.git, we must preserve backwards compatibility
-	// with this setting as fidl_dart.gni gets updated, and rolls forward.
-	deprecatedOutputBase: flag.String("output-base", "",
-		"[deprecated] path to the output directory"),
-	deprecatedIncludeBase: flag.String("include-base", "",
-		"[deprecated] unused"),
 }
 
 // valid returns true if the parsed flags are valid.
@@ -78,14 +69,6 @@ func main() {
 	tree := ir.Compile(fidl)
 
 	generator := backend.NewFidlGenerator()
-
-	// TODO(pascallouis): Remove.
-	if outputBase := *flags.deprecatedOutputBase; outputBase != "" {
-		asyncPath := filepath.Join(outputBase, "fidl_async.dart")
-		testPath := filepath.Join(outputBase, "fidl_test.dart")
-		flags.outAsyncPath = &asyncPath
-		flags.outTestPath = &testPath
-	}
 
 	outAsyncPath := *flags.outAsyncPath
 	if outAsyncPath != "" {
