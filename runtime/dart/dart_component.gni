@@ -558,26 +558,10 @@ template("_flutter_dart_aot_package") {
       resources_path = "${component.component_name}/"
       resources += [
         {
-          path = rebase_path(component.snapshot_data_path)
-          dest = "${resources_path}isolate_snapshot_data.bin"
-        },
-        {
-          path = rebase_path(component.snapshot_instructions_path)
-          dest = "${resources_path}isolate_snapshot_instructions.bin"
+          path = rebase_path(component.snapshot_path)
+          dest = "${resources_path}app_aot_snapshot.so"
         },
       ]
-      if (component.component_type == "flutter") {
-        resources += [
-          {
-            path = rebase_path(component.vm_snapshot_data_path)
-            dest = "${resources_path}vm_snapshot_data.bin"
-          },
-          {
-            path = rebase_path(component.vm_snapshot_instructions_path)
-            dest = "${resources_path}vm_snapshot_instructions.bin"
-          },
-        ]
-      }
     }
 
     if (defined(invoker.invoker_resources)) {
@@ -786,12 +770,7 @@ template("flutter_dart_aot_component") {
     }
 
     # TODO(rmacnak): VM snapshot is ignored. Allow skipping its generation.
-    vm_snapshot_data_path = "$target_gen_dir/${kernel_name}_vm_data.aotsnapshot"
-    vm_snapshot_instructions_path =
-        "$target_gen_dir/${kernel_name}_vm_instructions.aotsnapshot"
-    snapshot_data_path = "$target_gen_dir/${kernel_name}_data.aotsnapshot"
-    snapshot_instructions_path =
-        "$target_gen_dir/${kernel_name}_instructions.aotsnapshot"
+    snapshot_path = "$target_gen_dir/${kernel_name}_snapshot.so"
     snapshot_target_name = kernel_name + "_snapshot"
 
     stats_target_name = "${kernel_name}_stats"
@@ -808,10 +787,7 @@ template("flutter_dart_aot_component") {
         kernel_path,
       ]
       outputs = [
-        vm_snapshot_data_path,
-        vm_snapshot_instructions_path,
-        snapshot_data_path,
-        snapshot_instructions_path,
+        snapshot_path,
         stats_json_path,
       ]
 
@@ -824,13 +800,8 @@ template("flutter_dart_aot_component") {
       args = [
         "--no_causal_async_stacks",
         "--deterministic",
-        "--snapshot_kind=app-aot-blobs",
-        "--vm_snapshot_data=" + rebase_path(vm_snapshot_data_path),
-        "--vm_snapshot_instructions=" +
-            rebase_path(vm_snapshot_instructions_path),
-        "--isolate_snapshot_data=" + rebase_path(snapshot_data_path),
-        "--isolate_snapshot_instructions=" +
-            rebase_path(snapshot_instructions_path),
+        "--snapshot_kind=app-aot-elf",
+        "--elf=" + rebase_path(snapshot_path),
         "--print-instructions-sizes-to=" + rebase_path(stats_json_path),
       ]
 
@@ -920,10 +891,7 @@ template("flutter_dart_aot_component") {
 
           snapshot_target_name = snapshot_target_name
           stats_target_name = stats_target_name
-          vm_snapshot_data_path = vm_snapshot_data_path
-          vm_snapshot_instructions_path = vm_snapshot_instructions_path
-          snapshot_data_path = snapshot_data_path
-          snapshot_instructions_path = snapshot_instructions_path
+          snapshot_path = snapshot_path
 
           deps = component.deps
           sources = component.sources
@@ -939,8 +907,7 @@ template("flutter_dart_aot_component") {
 
           snapshot_target_name = snapshot_target_name
           stats_target_name = stats_target_name
-          snapshot_data_path = snapshot_data_path
-          snapshot_instructions_path = snapshot_instructions_path
+          snapshot_path = snapshot_path
 
           deps = component.deps
           sources = component.sources
