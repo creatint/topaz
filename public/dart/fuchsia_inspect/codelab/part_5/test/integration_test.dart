@@ -9,6 +9,8 @@ import 'package:test/test.dart';
 import 'package:inspect_codelab_shared/codelab_environment.dart';
 
 // [START include_test_stuff]
+// NOTE: this test is currently commented out in the BUILD.gn file.
+// TODO(fxb/45831): re-enable
 import 'dart:convert';
 import 'package:fidl_fuchsia_diagnostics/fidl_async.dart';
 import 'package:fidl_fuchsia_mem/fidl_async.dart';

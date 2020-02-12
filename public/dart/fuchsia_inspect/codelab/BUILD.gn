@@ -58,6 +58,8 @@ group("integration_tests") {
     "part_2:inspect_dart_codelab_part_2_integration_tests",
     "part_3:inspect_dart_codelab_part_3_integration_tests",
     "part_4:inspect_dart_codelab_part_4_integration_tests",
-    "part_5:inspect_dart_codelab_part_5_integration_tests",
+
+    # TODO(fxb/45831): re-enable
+    # "part_5:inspect_dart_codelab_part_5_integration_tests",
   ]
 }
