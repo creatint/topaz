@@ -5,9 +5,7 @@
 // This target runs all benchmarks for the Topaz layer.
 
 #include "garnet/testing/benchmarking/benchmarking.h"
-#include "garnet/testing/benchmarking/is_vulkan_supported.h"
 #include "src/lib/fxl/logging.h"
-#include "topaz/tests/benchmarks/gfx_benchmarks.h"
 
 int main(int argc, const char** argv) {
   auto maybe_benchmarks_runner =
@@ -22,12 +20,6 @@ int main(int argc, const char** argv) {
   // benchmarks_runner.AddTspecBenchmark(
   //     "dart_inspect.basic_benchmarks",
   //     "/pkgfs/packages/dart_inspect_benchmarks/0/data/basic_benchmarks.tspec");
-
-  if (benchmarking::IsVulkanSupported()) {
-    AddGraphicsBenchmarks(&benchmarks_runner);
-  } else {
-    FXL_LOG(INFO) << "Vulkan not supported; graphics tests skipped.";
-  }
 
   // TODO(PT-118): Input latency tests are only currently supported on NUC.
 #if !defined(__aarch64__)

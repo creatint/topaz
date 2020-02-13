@@ -26,16 +26,9 @@ group("input_latency") {
 executable("topaz_benchmarks_bin") {
   output_name = "topaz_benchmarks"
 
-  sources = [
-    "benchmarks.cc",
-    "gfx_benchmarks.cc",
-    "gfx_benchmarks.h",
-  ]
+  sources = [ "benchmarks.cc" ]
 
-  deps = [
-    "//garnet/testing/benchmarking:benchmarking",
-    "//garnet/testing/benchmarking:is_vulkan_supported",
-  ]
+  deps = [ "//garnet/testing/benchmarking:benchmarking" ]
 }
 
 # Builds "benchmarks.sh" into a package that runs all Topaz benchmarks
