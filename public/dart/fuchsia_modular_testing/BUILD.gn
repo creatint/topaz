@@ -27,7 +27,7 @@ dart_library("fuchsia_modular_testing") {
     "//sdk/fidl/fuchsia.modular.session",
     "//sdk/fidl/fuchsia.modular.testing",
     "//sdk/fidl/fuchsia.sys",
-    "//sdk/fidl/fuchsia.ui.app",
+    "//third_party/dart-pkg/pub/meta",
     "//topaz/public/dart/fidl",
     "//topaz/public/dart/fuchsia_logger",
     "//topaz/public/dart/fuchsia_modular",
