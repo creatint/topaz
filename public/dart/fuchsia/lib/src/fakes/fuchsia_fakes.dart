@@ -14,6 +14,8 @@ class MxStartupInfo {
   static Handle takeEnvironment() => Handle.invalid();
 
   static Handle takeOutgoingServices() => Handle.invalid();
+
+  static Handle takeViewRef() => Handle.invalid();
 }
 
 void exit(int returnCode) {
