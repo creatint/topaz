@@ -102,8 +102,10 @@ group("tests") {
 
                   # TODO(fxb/38305): Re-enable test when unblocked and inspect paths are corrected
                   # "//topaz/public/dart/fuchsia_inspect/test/inspect_flutter_integration_tester:inspect_dart_integration_test_driver",
-                  "//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test",
-                  "//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test_writer",
+
+                  # TODO: will be re-enabled in fxr/343348
+                  #"//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test",
+                  #"//topaz/public/dart/fuchsia_inspect/test/integration:dart_inspect_vmo_test_writer",
                   "//topaz/public/dart/fuchsia_inspect_flutter/examples/torus15",
                   "//topaz/public/dart/fuchsia_inspect_flutter/examples/torus15:torus15_dart_test",
                   "//topaz/public/dart/fuchsia_logger:fuchsia_logger_package_unittests($host_toolchain)",
