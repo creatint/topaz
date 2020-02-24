@@ -11,8 +11,7 @@ import 'package:fuchsia_modular/src/lifecycle/internal/_lifecycle_impl.dart'; //
 import 'package:fuchsia_modular/src/module/internal/_intent_handler_impl.dart'; // ignore: implementation_imports
 import 'package:fuchsia_modular/src/module/internal/_view_provider_impl.dart'; // ignore: implementation_imports
 import 'package:fuchsia_services/src/internal/_startup_context_impl.dart'; // ignore: implementation_imports
-import 'package:fidl_fuchsia_modular_testing/fidl_async.dart'
-    as fidl_modular_testing;
+import 'package:fidl_fuchsia_modular_testing/fidl_async.dart' as fidl_modular_testing;
 import 'package:fidl_fuchsia_sys/fidl_async.dart' as fidl_sys;
 
 import 'module_with_view_provider_impl.dart';
