@@ -17,13 +17,25 @@ if [ ! -x "${DARTFMT}" ]; then
     exit 1
 fi
 
-EXAMPLE_DIR="$FUCHSIA_DIR/garnet/go/src/fidl/compiler/backend/goldens"
+FIDLC_IR_DIR="${FUCHSIA_DIR}/zircon/tools/fidl/goldens"
 GOLDENS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/goldens"
 GOLDENS=()
-for json_name in `find "${EXAMPLE_DIR}" -name '*.json'`; do
-    json_name="$( basename $json_name )"
-    dart_async_name=${json_name}_async.dart.golden
-    dart_test_name=${json_name}_test.dart.golden
+
+# fresh regen
+find "${GOLDENS_DIR}" -type f -not -name 'BUILD.gn' -exec rm {} \;
+
+for src_path in $(find "${FIDLC_IR_DIR}" -name '*.test.json.golden'); do
+    src_name="$( basename "${src_path}" | sed -e 's/\.json\.golden$//g' )"
+
+    # TODO(fxb/45006): Skipping due to issue with representation of binary
+    # operators.
+    if [ "constants.test" = "${src_name}" ]; then
+        continue
+    fi
+
+    json_name="${src_name}.json"
+    dart_async_name="${json_name}_async.dart.golden"
+    dart_test_name="${json_name}_test.dart.golden"
 
     GOLDENS+=(
       $json_name,
@@ -32,14 +44,12 @@ for json_name in `find "${EXAMPLE_DIR}" -name '*.json'`; do
     )
 
     echo -e "\033[1mexample: ${json_name}\033[0m"
-    cp "${EXAMPLE_DIR}/${json_name}" "${GOLDENS_DIR}/${json_name}"
+    cp "${src_path}" "${GOLDENS_DIR}/${json_name}"
     ${FIDLGEN} \
         -json "${GOLDENS_DIR}/${json_name}" \
-        -output-base "${GOLDENS_DIR}" \
-        -include-base "${GOLDENS_DIR}"
-    mv "${GOLDENS_DIR}/fidl_async.dart" "${GOLDENS_DIR}/${dart_async_name}"
+        -output-async "${GOLDENS_DIR}/${dart_async_name}" \
+        -output-test "${GOLDENS_DIR}/${dart_test_name}"
     $DARTFMT -w "${GOLDENS_DIR}/${dart_async_name}"
-    mv "${GOLDENS_DIR}/fidl_test.dart" "${GOLDENS_DIR}/${dart_test_name}"
     $DARTFMT -w "${GOLDENS_DIR}/${dart_test_name}"
 done
 
