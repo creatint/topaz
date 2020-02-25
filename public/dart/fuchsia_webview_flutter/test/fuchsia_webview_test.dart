@@ -138,4 +138,30 @@ void main() {
       verify(mockWebServices.evaluateJavascript(['*'], script));
     });
   });
+
+  group('FuchsiaWebServices config', () {
+    test('empty config', () {
+      expect(FuchsiaWebServices.parseContextFeatureFlags(''),
+          fidl_web.ContextFeatureFlags.$none);
+    });
+
+    test('vulkan false', () {
+      expect(
+          FuchsiaWebServices.parseContextFeatureFlags(
+              '{"enable-vulkan" : false}'),
+          fidl_web.ContextFeatureFlags.$none);
+    });
+
+    test('vulkan true', () {
+      expect(
+          FuchsiaWebServices.parseContextFeatureFlags(
+              '{"enable-vulkan" : true}'),
+          fidl_web.ContextFeatureFlags.vulkan);
+    });
+
+    test('invalid config', () {
+      expect(FuchsiaWebServices.parseContextFeatureFlags('abcd'),
+          fidl_web.ContextFeatureFlags.$none);
+    });
+  });
 }

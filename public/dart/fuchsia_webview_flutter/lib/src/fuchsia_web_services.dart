@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:fidl/fidl.dart';
@@ -70,8 +71,15 @@ class FuchsiaWebServices {
     final pair = ChannelPair();
     composedDir.serve(InterfaceRequest<fidl_io.Node>(pair.first));
 
+    var webFeatures = fidl_web.ContextFeatureFlags.$none;
+    final configFile = File('/config/data/config.json');
+    if (configFile.existsSync()) {
+      webFeatures = parseContextFeatureFlags(configFile.readAsStringSync());
+    }
+
     final fidl_web.CreateContextParams contextParams =
         fidl_web.CreateContextParams(
+            features: webFeatures,
             serviceDirectory: InterfaceHandle<fidl_io.Directory>(pair.second));
 
     _contextProviderProxy.create(contextParams, _contextProxy.ctrl.request());
@@ -202,5 +210,21 @@ class FuchsiaWebServices {
   void setNavigationEventListener(fidl_web.NavigationEventListener observer) {
     frame.setNavigationEventListener(
         _navigationEventObserverBinding.wrap(observer));
+  }
+
+  /// Parses given |configJson| to find which ContextFeatureFlags to set.
+  static fidl_web.ContextFeatureFlags parseContextFeatureFlags(
+      String configJson) {
+    var webFeatures = fidl_web.ContextFeatureFlags.$none;
+    var config = <String, dynamic>{};
+    try {
+      config = jsonDecode(configJson);
+    } on Exception {
+      // We cannot parse config file or it is empty. Skip setting any features.
+    }
+    if (config['enable-vulkan'] != null && config['enable-vulkan']) {
+      webFeatures |= fidl_web.ContextFeatureFlags.vulkan;
+    }
+    return webFeatures;
   }
 }
