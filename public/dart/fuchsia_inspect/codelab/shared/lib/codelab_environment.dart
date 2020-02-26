@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import 'dart:async';
-import 'package:uuid/uuid.dart';
 import 'package:fidl_fuchsia_io/fidl_async.dart';
 import 'package:fidl_fuchsia_sys/fidl_async.dart';
 import 'package:fidl_fuchsia_examples_inspect/fidl_async.dart' as fidl_codelab;
@@ -13,6 +12,8 @@ import 'package:zircon/zircon.dart';
 const kFizzBuzzUrl =
     'fuchsia-pkg://fuchsia.com/inspect_dart_codelab_fizzbuzz#meta/inspect_dart_codelab_fizzbuzz.cmx';
 
+int counter = 0;
+
 class CodelabEnvironment {
   ComponentControllerProxy _fizzBuzzController;
   ComponentControllerProxy _reverserController;
@@ -21,6 +22,9 @@ class CodelabEnvironment {
   LauncherProxy _launcher;
   Channel _fizzbuzzOutDirectoryServer;
   bool _isCreated = false;
+  String _label;
+
+  String get label => _label;
 
   Future<void> create() async {
     if (_isCreated) {
@@ -53,10 +57,12 @@ class CodelabEnvironment {
       killOnOom: true,
     );
 
+    counter += 1;
+    _label = 'codelab-$counter';
     await environmentProxy.createNestedEnvironment(
       _childEnvironment.ctrl.request(),
       _childEnvironmentController.ctrl.request(),
-      'codelab-${Uuid().v4()}',
+      _label,
       additionalServices,
       options,
     );

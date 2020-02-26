@@ -45,19 +45,23 @@ void main() {
     final archive = ArchiveProxy();
     StartupContext.fromStartupInfo().incoming.connectToService(archive);
 
-    final reader = ReaderProxy();
-    final List<SelectorArgument> selectors = [];
-    await archive.readInspect(reader.ctrl.request(), selectors);
+    final params = StreamParameters(
+        dataType: DataType.inspect,
+        streamMode: StreamMode.snapshot,
+        format: Format.json,
+        selectors: [
+          SelectorArgument.withRawSelector(
+              '${env.label}/inspect_dart_codelab_part_5.cmx:root'),
+        ]);
 
     // ignore: literal_only_boolean_expressions
     while (true) {
       final iterator = BatchIteratorProxy();
-      await reader.getSnapshot(Format.json, iterator.ctrl.request());
+      await archive.streamDiagnostics(iterator.ctrl.request(), params);
       final batch = await iterator.getNext();
       for (final entry in batch) {
-        final jsonData = readBuffer(entry.formattedJsonHierarchy);
-        if (jsonData.contains('inspect_dart_codelab_part_5') &&
-            jsonData.contains('fuchsia.inspect.Health') &&
+        final jsonData = readBuffer(entry.json);
+        if (jsonData.contains('fuchsia.inspect.Health') &&
             !jsonData.contains('STARTING_UP')) {
           return json.decode(jsonData);
         }
@@ -80,7 +84,6 @@ void main() {
   test('start with fizzbuzz', () async {
     final reverser = await startComponentAndConnect(includeFizzbuzz: true);
     final result = await reverser.reverse('hello');
-    reverser.ctrl.close();
     expect(result, equals('olleh'));
 
     // [START result_hierarchy]
@@ -88,12 +91,13 @@ void main() {
     // [END result_hierarchy]
     expect(inspectData['contents']['root']['fuchsia.inspect.Health']['status'],
         'OK');
+
+    reverser.ctrl.close();
   });
 
   test('start without fizzbuzz', () async {
     final reverser = await startComponentAndConnect(includeFizzbuzz: false);
     final result = await reverser.reverse('hello');
-    reverser.ctrl.close();
     expect(result, equals('olleh'));
 
     final inspectData = await getInspectHierarchy();
@@ -101,5 +105,7 @@ void main() {
         inspectData['contents']['root']['fuchsia.inspect.Health'];
     expect(healthNode['status'], 'UNHEALTHY');
     expect(healthNode['message'], 'FizzBuzz connection closed');
+
+    reverser.ctrl.close();
   });
 }
