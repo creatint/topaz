@@ -57,7 +57,8 @@ void main() {
             BlockType.anyValue,
             BlockType.propertyValue,
             BlockType.intValue,
-            BlockType.doubleValue
+            BlockType.doubleValue,
+            BlockType.boolValue
           ],
           (block) => block.nameIndex);
       _accepts(
@@ -67,13 +68,16 @@ void main() {
             BlockType.anyValue,
             BlockType.propertyValue,
             BlockType.intValue,
-            BlockType.doubleValue
+            BlockType.doubleValue,
+            BlockType.boolValue
           ],
           (block) => block.parentIndex);
       _accepts('becomeDoubleMetric', [BlockType.anyValue],
           (block) => block.becomeDoubleMetric(0.0));
       _accepts('becomeIntMetric', [BlockType.anyValue],
           (block) => block.becomeIntMetric(0));
+      _accepts('becomeBoolMetric', [BlockType.anyValue],
+          (block) => block.becomeBoolMetric(false));
       _accepts('intValueGet', [BlockType.intValue], (block) => block.intValue);
       _accepts(
           'intValueSet', [BlockType.intValue], (block) => block.intValue = 0);

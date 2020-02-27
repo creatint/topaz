@@ -157,6 +157,31 @@ class VmoWriter {
     }
   }
 
+  /// Creates and assigns bool.
+  int createBool<T extends bool>(int parent, String name, T value) {
+    _beginWork();
+    try {
+      Block metric = _createValue(parent, name);
+      if (metric == null) {
+        return invalidIndex;
+      }
+      metric.becomeBoolMetric(value);
+      return metric.index;
+    } finally {
+      _commit();
+    }
+  }
+
+  /// Sets a bool property. This is a clone of the setMetric function specifically made for bools since they are a type of metric, but not numerics.
+  void setBool<T extends bool>(int metricIndex, T value) {
+    _beginWork();
+    try {
+      Block.read(_vmo, metricIndex).boolValue = value;
+    } finally {
+      _commit();
+    }
+  }
+
   /// Set the metric's value.
   void setMetric<T extends num>(int metricIndex, T value) {
     _beginWork();

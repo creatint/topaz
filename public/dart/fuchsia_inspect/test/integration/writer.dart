@@ -42,7 +42,8 @@ class Table {
     node
       ..intProperty('value').add(-10)
       ..byteDataProperty('frame').setValue(ByteData(3))
-      ..stringProperty('version').setValue('1.0');
+      ..stringProperty('version').setValue('1.0')
+      ..boolProperty('active').setValue(true);
   }
 
   /// Adds an [Item] with value [value] to the [Table].

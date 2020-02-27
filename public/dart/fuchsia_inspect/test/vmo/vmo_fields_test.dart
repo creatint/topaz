@@ -9,8 +9,10 @@ import 'package:test/test.dart';
 
 void main() {
   group('BlockType', () {
-    test('has 12 types', () {
-      expect(BlockType.values, hasLength(12));
+    // There are 14 entries in the values, but only 13 types as there are types that
+    // haven't been implemented.
+    test('has 14 entries', () {
+      expect(BlockType.values, hasLength(14));
     });
     test('has unique names', () {
       var blockNames = Set.of(BlockType.values.map((value) => value.name));

@@ -291,6 +291,50 @@ void main() {
     });
   });
 
+  group('Bool Properties', () {
+    test('are created with value false', () {
+      var _ = node.boolProperty('foo');
+
+      expect(VmoMatcher(vmo).node().propertyEquals('foo', false), hasNoErrors);
+    });
+
+    test('are written to the VMO when the value is set', () {
+      var _ = node.boolProperty('eggs')..setValue(true);
+
+      expect(VmoMatcher(vmo).node().propertyEquals('eggs', true), hasNoErrors);
+    });
+
+    test('can be mutated', () {
+      var property = node.boolProperty('locusts')..setValue(true);
+      expect(
+          VmoMatcher(vmo).node().propertyEquals('locusts', true), hasNoErrors);
+
+      property.setValue(false);
+
+      expect(
+          VmoMatcher(vmo).node().propertyEquals('locusts', false), hasNoErrors);
+    });
+
+    test('can be deleted', () {
+      var _ = node.boolProperty('sheep')..delete();
+
+      expect(VmoMatcher(vmo).node()..missingChild('sheep'), hasNoErrors);
+    });
+
+    test('setting a value on an already deleted property is a no-op', () {
+      var property = node.boolProperty('webpages')..delete();
+
+      expect(() => property.setValue(false), returnsNormally);
+      expect(VmoMatcher(vmo).node()..missingChild('webpages'), hasNoErrors);
+    });
+
+    test('removing an already deleted property is a no-op', () {
+      var property = node.boolProperty('nothing-here')..delete();
+
+      expect(() => property.delete(), returnsNormally);
+    });
+  });
+
   group('DoubleProperties', () {
     test('are created with value 0', () {
       var _ = node.doubleProperty('foo');

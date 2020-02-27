@@ -96,6 +96,22 @@ class IntProperty extends Property<int> with Arithmetic<int> {
   IntProperty.deleted() : super.deleted();
 }
 
+/// A property holding a [bool].
+///
+/// Only [Node.boolProperty()] can create this object.
+class BoolProperty extends Property<bool> {
+  BoolProperty._(String name, Node parent, VmoWriter writer)
+      : super._(
+            parent, name, writer.createBool(parent.index, name, false), writer);
+
+  @override
+  void setValue(bool value) {
+    _writer?.setBool(index, value);
+  }
+
+  BoolProperty._deleted() : super.deleted();
+}
+
 /// A property holding a [double].
 ///
 /// Only [Node.doubleProperty()] can create this object.

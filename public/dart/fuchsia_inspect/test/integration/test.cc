@@ -129,13 +129,13 @@ TEST_F(InspectTest, ReadHierarchy) {
       AllOf(
           NodeMatches(NameMatches("root")),
           ChildrenMatch(UnorderedElementsAre(
-              AllOf(NodeMatches(
-                        AllOf(NameMatches("t1"),
-                              PropertyList(UnorderedElementsAre(
-                                  StringIs("version", "1.0"),
-                                  ByteVectorIs("frame",
-                                               std::vector<uint8_t>({0, 0, 0})),
-                                  IntIs("value", -10))))),
+              AllOf(NodeMatches(AllOf(
+                        NameMatches("t1"),
+                        PropertyList(UnorderedElementsAre(
+                            StringIs("version", "1.0"),
+                            ByteVectorIs("frame",
+                                         std::vector<uint8_t>({0, 0, 0})),
+                            IntIs("value", -10), BoolIs("active", true))))),
                     ChildrenMatch(UnorderedElementsAre(
                         NodeMatches(AllOf(NameMatches("item-0x0"),
                                           PropertyList(UnorderedElementsAre(
@@ -152,7 +152,7 @@ TEST_F(InspectTest, ReadHierarchy) {
                           StringIs("version", "1.0"),
                           ByteVectorIs("frame",
                                        std::vector<uint8_t>({0, 0, 0})),
-                          IntIs("value", -10))))),
+                          IntIs("value", -10), BoolIs("active", true))))),
                   ChildrenMatch(UnorderedElementsAre(NodeMatches(AllOf(
                       NameMatches("item-0x2"),
                       PropertyList(UnorderedElementsAre(IntIs("value", 4)))))))

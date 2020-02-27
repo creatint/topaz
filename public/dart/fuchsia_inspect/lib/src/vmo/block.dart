@@ -288,6 +288,43 @@ class Block {
     _writeAllBits();
   }
 
+  /// Converts a [BlockType.anyValue] block to a [BlockType.boolValue] block,
+  /// and sets starting [value].
+  ///
+  /// Throws [StateError] if block wasn't a [BlockType.anyValue] block.
+  // ignore: avoid_positional_boolean_parameters
+  void becomeBoolMetric(bool value) {
+    _checkType(BlockType.anyValue);
+    _header.write(typeBits, BlockType.boolValue.value);
+    _payloadBits.value = value ? 1 : 0;
+    _writeAllBits();
+  }
+
+  /// Value payload stored in a [BlockType.boolValue] block.
+  ///
+  /// Throws [StateError] if block isn't a [BlockType.intValue] block.
+  bool get boolValue {
+    _checkType(BlockType.boolValue);
+    if (_payloadBits.value == 1) {
+      return true;
+    } else if (_payloadBits.value == 0) {
+      return false;
+    } else {
+      // Should never get here.
+      throw StateError(
+          'Invalid boolean value $_payloadBits.value (must be 0 or 1)');
+    }
+  }
+
+  /// Writes bool value payload to a [BlockType.boolValue] block.
+  ///
+  /// Throws [StateError] if block isn't a [BlockType.boolValue] block.
+  set boolValue(bool value) {
+    _checkType(BlockType.boolValue);
+    _payloadBits.value = value ? 1 : 0;
+    _writePayloadBits();
+  }
+
   /// Value payload stored in a [BlockType.intValue] block.
   ///
   /// Throws [StateError] if block isn't a [BlockType.intValue] block.
@@ -409,7 +446,8 @@ class Block {
         type != BlockType.nodeValue &&
         type != BlockType.propertyValue &&
         type != BlockType.intValue &&
-        type != BlockType.doubleValue) {
+        type != BlockType.doubleValue &&
+        type != BlockType.boolValue) {
       throw StateError('Value block expected; this block is $type.');
     }
   }

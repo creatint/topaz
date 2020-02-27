@@ -77,6 +77,7 @@ class VmoMatcher implements _HasErrors {
         case BlockType.propertyValue:
         case BlockType.intValue:
         case BlockType.doubleValue:
+        case BlockType.boolValue:
           if (block.parentIndex == parentIndex &&
               _nameForBlock(block) == name) {
             return index;
@@ -276,6 +277,11 @@ class PropertyMatcher implements _HasErrors {
       } else if (maybeNegate(block.doubleValue != val)) {
         _parent._addError(
             'Expected ${negation}value $val, found ${block.doubleValue}');
+      }
+    } else if (val is bool) {
+      if (block.type != BlockType.boolValue) {
+        _parent
+            ._addError('Expected bool ($val), found ${block.type.toString()}');
       }
     } else if (val is String) {
       if (block.type != BlockType.propertyValue) {

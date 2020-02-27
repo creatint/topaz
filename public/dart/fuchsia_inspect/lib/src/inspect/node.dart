@@ -175,6 +175,29 @@ class Node {
     return _properties[name] = IntProperty._(name, this, _writer);
   }
 
+  /// Returns an [BoolProperty] with [name] on this node.
+  ///
+  /// If an [BoolProperty] with [name] already exists and is not
+  /// deleted, this method returns it.
+  ///
+  /// Otherwise, it creates a new property initialized to false.
+  ///
+  /// Throws [InspectStateError] if a non-deleted property with [name]
+  /// already exists but it is not a [BoolProperty].
+  BoolProperty boolProperty(String name) {
+    if (_writer == null) {
+      return BoolProperty._deleted();
+    }
+    if (_properties.containsKey(name)) {
+      if (_properties[name] is! BoolProperty) {
+        throw InspectStateError(
+            "Can't create BoolProperty named $name; a different type exists.");
+      }
+      return _properties[name];
+    }
+    return _properties[name] = BoolProperty._(name, this, _writer);
+  }
+
   /// Returns a [DoubleProperty] with [name] on this node.
   ///
   /// If a [DoubleProperty] with [name] already exists and is not

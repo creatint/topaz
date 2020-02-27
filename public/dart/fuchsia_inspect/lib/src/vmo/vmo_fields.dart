@@ -59,7 +59,9 @@ class BlockType {
     extent,
     nameUtf8,
     tombstone,
-    anyValue
+    anyValue,
+    blockType12NotImplemented, // Dummy Value because not all header types are implemented.
+    boolValue
   ];
 
   @override
@@ -108,6 +110,13 @@ class BlockType {
   ///
   /// Not valid if written to VMO.
   static const BlockType anyValue = BlockType._(11, 'anyValue');
+
+  /// Dummy block type because things aren't implemented
+  static const BlockType blockType12NotImplemented =
+      BlockType._(12, 'blockType12NotImplemented');
+
+  /// A bool Metric.
+  static const BlockType boolValue = BlockType._(13, 'boolValue');
 }
 
 /// Order defines the block size: 1 << (order + 4).

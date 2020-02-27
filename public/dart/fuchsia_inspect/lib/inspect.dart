@@ -12,4 +12,5 @@ export 'src/inspect/inspect.dart'
         IntProperty,
         DoubleProperty,
         StringProperty,
-        ByteDataProperty;
+        ByteDataProperty,
+        BoolProperty;
