@@ -83,7 +83,9 @@ group("tests") {
                   "//topaz/bin/fidl_bindings_test/test:fidl_bindings_test",
                   "//topaz/bin/fidl_compatibility_test:fidl_compatibility_test_topaz",
                   "//topaz/bin/fidl_compatibility_test/dart:fidl_dart_compatibility_test_server",
-                  "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_test($host_toolchain)",
+
+                  # TODO(fxb/45702) reenable after fxr/367694 rolls
+                  # "//topaz/bin/fidlgen_dart:fidlgen_dart_backend_test($host_toolchain)",
                   "//topaz/bin/flutter_screencap_test",
                   "//topaz/bin/flutter_screencap_test:flutter_screencap_test_app",
                   "//topaz/bin/ui/benchmarks/image_grid_flutter",
