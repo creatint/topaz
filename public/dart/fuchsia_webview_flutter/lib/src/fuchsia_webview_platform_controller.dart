@@ -184,7 +184,7 @@ class FuchsiaWebViewPlatformController extends WebViewPlatformController {
   void _updateCurrentStateDiff(fidl_web.NavigationState state) {
     _currentState = fidl_web.NavigationState(
       title: state.title ?? _currentState.title,
-      url: state.title ?? _currentState.url,
+      url: state.url ?? _currentState.url,
       canGoBack: state.canGoBack ?? _currentState.canGoBack,
       canGoForward: state.canGoForward ?? _currentState.canGoForward,
       isMainDocumentLoaded:
