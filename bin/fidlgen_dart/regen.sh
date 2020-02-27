@@ -48,9 +48,8 @@ for src_path in $(find "${FIDLC_IR_DIR}" -name '*.test.json.golden'); do
     ${FIDLGEN} \
         -json "${GOLDENS_DIR}/${json_name}" \
         -output-async "${GOLDENS_DIR}/${dart_async_name}" \
-        -output-test "${GOLDENS_DIR}/${dart_test_name}"
-    $DARTFMT -w "${GOLDENS_DIR}/${dart_async_name}"
-    $DARTFMT -w "${GOLDENS_DIR}/${dart_test_name}"
+        -output-test "${GOLDENS_DIR}/${dart_test_name}" \
+        -dartfmt "$DARTFMT"
 done
 
 > "${GOLDENS_DIR}/goldens.txt"
