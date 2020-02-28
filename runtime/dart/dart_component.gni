@@ -126,9 +126,7 @@ template("_flutter_dart_jit_package") {
   }
 
   group(target_name) {
-    deps = [
-      ":${_package_target_name}",
-    ]
+    deps = [ ":${_package_target_name}" ]
     data_deps = invoker.runner_package_deps
     forward_variables_from(invoker, [ "testonly" ])
   }
@@ -167,9 +165,7 @@ template("_flutter_jit_asset_manifest") {
       flutter_asset_tools_label,
     ]
 
-    outputs = [
-      invoker.asset_manifest,
-    ]
+    outputs = [ invoker.asset_manifest ]
 
     forward_variables_from(invoker, [ "testonly" ])
   }
@@ -367,9 +363,7 @@ template("flutter_dart_jit_component") {
           "--out=" + rebase_path(generated_extension_wrapper),
         ]
 
-        outputs = [
-          generated_extension_wrapper,
-        ]
+        outputs = [ generated_extension_wrapper ]
       }
     }
 
@@ -575,9 +569,7 @@ template("_flutter_dart_aot_package") {
   }
 
   group(target_name) {
-    deps = [
-      ":${_package_target_name}",
-    ]
+    deps = [ ":${_package_target_name}" ]
     data_deps = invoker.runner_package_deps
     forward_variables_from(invoker, [ "testonly" ])
   }
@@ -783,9 +775,7 @@ template("flutter_dart_aot_component") {
       }
 
       deps = gen_snapshot_deps + [ ":$kernel_target_name" ]
-      inputs = [
-        kernel_path,
-      ]
+      inputs = [ kernel_path ]
       outputs = [
         snapshot_path,
         stats_json_path,
@@ -821,16 +811,10 @@ template("flutter_dart_aot_component") {
         testonly = invoker.testonly
       }
 
-      deps = [
-        ":$snapshot_target_name",
-      ]
+      deps = [ ":$snapshot_target_name" ]
       script = prebuilt_dart
-      inputs = [
-        stats_json_path,
-      ]
-      outputs = [
-        "$stats_html_dir/index.html",
-      ]
+      inputs = [ stats_json_path ]
+      outputs = [ "$stats_html_dir/index.html" ]
       args = [
         rebase_path(
             "//third_party/dart/pkg/vm/bin/run_binary_size_analysis.dart"),
@@ -846,6 +830,10 @@ template("flutter_dart_aot_component") {
       dot_packages = "$dart_target_gen_dir/$dart_library_target_name.packages"
 
       action("${kernel_name}_resources") {
+        if (defined(invoker.testonly)) {
+          testonly = invoker.testonly
+        }
+
         script = "//topaz/runtime/flutter_runner/build/asset_package.py"
 
         args = [
@@ -877,9 +865,7 @@ template("flutter_dart_aot_component") {
           flutter_asset_tools_label,
         ]
 
-        outputs = [
-          asset_manifest,
-        ]
+        outputs = [ asset_manifest ]
       }
 
       components_with_kernel += [
